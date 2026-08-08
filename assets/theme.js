@@ -128,6 +128,38 @@
     }).catch(function () { /* no-op */ });
   }
 
+  // La ficha directa a la CUENTA, sin esperar compra: se la mandamos al
+  // worker (app-ficha/) y él escribe los metafields del cliente al momento.
+  // Solo con sesión (theme.liquid solo emite fichaApi con customer). Si el
+  // worker está apagado (fichaApi ausente) no pasa nada: queda el camino de
+  // respaldo por atributos de carrito + Flow, que también cubre a quien
+  // compra sin sesión. Fire-and-forget, igual que el carrito.
+  function sincronizarCuenta(ficha) {
+    var api = window.BUNGOT && window.BUNGOT.fichaApi;
+    if (!api || !api.url) return;
+    var cuerpo = JSON.stringify({
+      id: api.id,
+      firma: api.firma,
+      ficha: {
+        nombre: ficha.nombre || '',
+        tamano: ficha.tamano || '',
+        cumple: ficha.cumple || '',
+        avatar: ficha.avatar || ''
+      }
+    });
+    try {
+      if (sessionStorage.getItem('bungot:perro-cuenta') === cuerpo) return;
+    } catch (e) { /* sin sessionStorage, se manda igual */ }
+    fetch(api.url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: cuerpo
+    }).then(function (res) {
+      if (!res.ok) return;
+      try { sessionStorage.setItem('bungot:perro-cuenta', cuerpo); } catch (e) { /* no-op */ }
+    }).catch(function () { /* no-op */ });
+  }
+
   var Perro = {
     read: function () {
       try {
@@ -153,6 +185,7 @@
       // las OTRAS, y el header tiene que refrescarse en esta.
       document.dispatchEvent(new CustomEvent('bungot:perro', { detail: actual }));
       sincronizarCarrito(actual);
+      sincronizarCuenta(actual);
       return actual;
     },
 
@@ -164,6 +197,7 @@
       }
       document.dispatchEvent(new CustomEvent('bungot:perro', { detail: {} }));
       sincronizarCarrito({});
+      sincronizarCuenta({});
     }
   };
 

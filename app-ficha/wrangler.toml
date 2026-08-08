@@ -1,0 +1,7 @@
+# BUNGOT — worker de la ficha del perro. Ver worker.js para el porqué.
+# Desplegar: npx wrangler deploy   (desde esta carpeta)
+# Secretos:  npx wrangler secret put SHOPIFY_TOKEN
+#            npx wrangler secret put FIRMA_SECRET
+name = "bungot-ficha"
+main = "worker.js"
+compatibility_date = "2026-08-01"

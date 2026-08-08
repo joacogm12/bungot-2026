@@ -78,6 +78,11 @@
       assign mf_tamano = customer.metafields.custom.perro_tamano.value
       assign mf_cumple = customer.metafields.custom.perro_cumple.value
       assign mf_avatar = customer.metafields.custom.dog_avatar.value
+
+      # El worker que guarda la ficha en la cuenta AL MOMENTO (app-ficha/).
+      # Vacío = apagado y el tema cae solo al camino de respaldo (atributos de
+      # carrito + Flow). Se llena con la URL que da `wrangler deploy`.
+      assign ficha_api_url = ''
     -%}
     <script>
       window.BUNGOT = window.BUNGOT || {};
@@ -88,6 +93,19 @@
         tamano: {{ mf_tamano | json }},
         cumple: {{ mf_cumple | json }},
         avatar: {{ mf_avatar | json }}
+      };
+      {%- endif %}
+      {%- if customer and ficha_api_url != blank %}
+      {%- comment -%}
+        La firma amarra el id del cliente: solo una página que Shopify
+        renderizó con esta sesión la trae válida, y el worker la verifica con
+        el MISMO secreto (FIRMA_SECRET) antes de escribir. Si cambias el
+        secreto aquí, cámbialo también allá.
+      {%- endcomment -%}
+      window.BUNGOT.fichaApi = {
+        url: {{ ficha_api_url | json }},
+        id: {{ customer.id | json }},
+        firma: {{ customer.id | append: '' | hmac_sha256: '060fe14124f280d2c146929a63ee046647b5059de28b11cf8be9752ade168aa0' | json }}
       };
       {%- endif %}
     </script>
