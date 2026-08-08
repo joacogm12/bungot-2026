@@ -20,10 +20,14 @@ Tema de **Shopify Online Store 2.0** para **BUNGOT**, una marca mexicana de prem
 ```bash
 shopify theme dev      # levantar en local con hot reload
 shopify theme check    # linter de Liquid/tema (córrelo antes de dar por hecho un cambio)
-shopify theme push     # subir a la tienda (con cuidado)
+shopify theme push     # subir a la tienda (solo si el tema NO está conectado a GitHub)
 ```
 
-Este proyecto **no** es un repo git todavía. No asumas historial ni ramas.
+Este proyecto **sí** es un repo git (rama `main`). El plan es conectarlo a GitHub con la
+integración de Shopify (sync de ida y vuelta): una vez conectado, **no uses `theme push`
+contra el tema conectado** — el deploy es commit → push a GitHub, y los cambios del
+customizer regresan como commits del bot de Shopify, así que haz `git pull` antes de
+trabajar. Nada de force-push a la rama conectada.
 
 ## Estructura
 
