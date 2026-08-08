@@ -1,0 +1,95 @@
+{%- comment -%}
+  Barra lateral de las pantallas internas (2a y 2c del handoff).
+
+  Sin "Favoritos": quedó fuera del alcance a propósito.
+
+  El renglón activo se deduce de request.path — no de un string que cada
+  sección tenga que pasar bien — y se pinta como <span>: la página en la que
+  ya estás no es un enlace a sí misma. El param `active` queda como override
+  para las rutas donde el path no dice nada (p. ej. /account con cuentas
+  clásicas, que renderiza Mis pedidos).
+
+  Todo lo demás son <a> con URL real: funcionan aunque el JS falle. En celu
+  la columna se vuelve fila de pestañas horizontal, como pide el README.
+
+  Params:
+    active (string, opcional) 'pedidos' | 'direcciones' | 'perro'
+{%- endcomment -%}
+
+{%- liquid
+  assign act = active
+  # El sufijo de plantilla manda: cubre la página real (page.mis-pedidos) Y la
+  # misma plantilla servida con ?view=mis-pedidos sobre otra página, donde el
+  # path no dice nada.
+  if template.suffix == 'mis-pedidos'
+    assign act = 'pedidos'
+  elsif template.suffix == 'mis-direcciones'
+    assign act = 'direcciones'
+  elsif request.path contains 'mis-pedidos'
+    assign act = 'pedidos'
+  elsif request.path contains 'mis-direcciones'
+    assign act = 'direcciones'
+  elsif request.path contains 'mi-perro'
+    assign act = 'perro'
+  elsif request.path contains '/account/addresses'
+    assign act = 'direcciones'
+  elsif act == blank and request.path contains '/account'
+    assign act = 'pedidos'
+  endif
+-%}
+
+<aside class="cnav">
+  <div class="cnav__me">
+    <span class="cnav__face">
+      {%- render 'dog-avatar', size: 52 -%}
+    </span>
+    <div class="cnav__who">
+      <p class="cnav__name">
+        {%- if customer.first_name != blank -%}
+          {{ customer.first_name }}
+        {%- else -%}
+          {{ 'cuenta.nav.greeting' | t }}
+        {%- endif -%}
+      </p>
+      {%- comment -%} Lo llena el JS con "Ramona · mediana", o se queda vacío. {%- endcomment -%}
+      <p class="cnav__dog" data-dog-line hidden></p>
+    </div>
+  </div>
+
+  {%- if act == 'pedidos' -%}
+    <span class="cnav__row" aria-current="page">{{ 'cuenta.nav.orders' | t }}</span>
+  {%- else -%}
+    <a class="cnav__row" href="{% render 'account-url', destino: 'mis-pedidos' %}">{{ 'cuenta.nav.orders' | t }}</a>
+  {%- endif -%}
+
+  {%- if act == 'perro' -%}
+    <span class="cnav__row" aria-current="page" data-dog-link data-tpl="{{ 'cuenta.nav.my_dog' | t: name: '__NOMBRE__' | escape }}">{{ 'cuenta.nav.my_dog_generic' | t }}</span>
+  {%- else -%}
+    <a
+      class="cnav__row"
+      href="{{ routes.root_url }}pages/mi-perro"
+      data-dog-link
+      data-tpl="{{ 'cuenta.nav.my_dog' | t: name: '__NOMBRE__' | escape }}"
+    >{{ 'cuenta.nav.my_dog_generic' | t }}</a>
+  {%- endif -%}
+
+  {%- if act == 'direcciones' -%}
+    <span class="cnav__row" aria-current="page">{{ 'cuenta.nav.addresses' | t }}</span>
+  {%- else -%}
+    <a class="cnav__row" href="{% render 'account-url', destino: 'mis-direcciones' %}">{{ 'cuenta.nav.addresses' | t }}</a>
+  {%- endif -%}
+
+  {%- if customer -%}
+    <a class="cnav__row cnav__row--out" href="{{ routes.account_logout_url }}">
+      {{ 'cuenta.nav.logout' | t }}
+    </a>
+  {%- else -%}
+    {%- comment -%}
+      Con href de verdad: con JS el delegado abre la ventana de entrar; sin
+      JS navega a iniciar sesión. Nunca un botón muerto.
+    {%- endcomment -%}
+    <a class="cnav__row cnav__row--out" href="{{ routes.account_login_url }}" data-login-open>
+      {{ 'cuenta.signed_out.cta' | t }}
+    </a>
+  {%- endif -%}
+</aside>

@@ -1,0 +1,87 @@
+{%- comment -%}
+  1b — La página de "crear cuenta"… que ya no crea la cuenta (handoff 8).
+
+  El alta y la autenticación son de Shopify (pantalla hospedada): el cliente
+  llega aquí YA con su cuenta hecha y esta página guarda lo que Shopify no
+  guarda — la ficha del perro y su cara. Cero <input> de correo o contraseña,
+  cero botones de Google/Apple.
+
+  La ficha se guarda donde siempre: window.BUNGOT.perro (localStorage, ver
+  theme.js). Los metafields del handoff (custom.perro_*) no se pueden escribir
+  desde el tema — el form de cliente de Liquid no acepta metafields y la
+  tienda no tiene app ni App Proxy. Si algún día los hay, el guardado vive en
+  un solo lugar y se cambia ahí.
+
+  Tampoco hay redirect por sesión: con las cuentas nuevas el objeto `customer`
+  de Liquid no es confiable (llega vacío con sesión iniciada), y un redirect en
+  falso echaría a un cliente logueado. La página funciona igual sin sesión,
+  porque la ficha es local.
+
+  El header y el footer son los globales del tema (ver CLAUDE.md). El handoff
+  dibujaba los suyos en un marco de 1280px: no se copian.
+{%- endcomment -%}
+
+<section class="cuenta" data-ficha-perro>
+  <div class="cuenta__body">
+    <aside class="cuenta__aside">
+      <p class="cuenta__eyebrow">{{ 'cuenta.registro.eyebrow' | t }}</p>
+      <h1 class="cuenta__title">{{ 'cuenta.registro.title' | t }}</h1>
+      <p class="cuenta__intro">{{ 'cuenta.registro.intro' | t }}</p>
+
+      <ul class="cuenta__list">
+        <li><span class="cuenta__num" aria-hidden="true">1</span>{{ 'cuenta.registro.benefit_1' | t }}</li>
+        <li><span class="cuenta__num" aria-hidden="true">2</span>{{ 'cuenta.registro.benefit_2' | t }}</li>
+        <li><span class="cuenta__num" aria-hidden="true">3</span>{{ 'cuenta.registro.benefit_3' | t }}</li>
+      </ul>
+
+      <img
+        class="cuenta__ilus"
+        src="{{ 'bungot-ilus-ramona.png' | asset_url }}"
+        alt=""
+        aria-hidden="true"
+        width="215"
+        height="215"
+        loading="lazy"
+        decoding="async"
+      >
+    </aside>
+
+    <div class="cuenta__main">
+      <div class="cuenta__head">
+        <h2 class="cuenta__h2">{{ 'cuenta.registro.heading' | t }}</h2>
+        <p class="cuenta__note">
+          {{ 'cuenta.registro.done' | t }}
+          <a href="{% render 'account-url', destino: 'mis-pedidos' %}">{{ 'cuenta.registro.skip' | t }}</a>
+        </p>
+      </div>
+
+      <p class="cuenta__lead">{{ 'cuenta.registro.lead' | t }}</p>
+
+      {%- comment -%}
+        Toda la pantalla es del perro: los campos van sin el encabezado interno
+        "Tu perro" (encabezado: false) y sin la palabra "opcional" como marca.
+        Al guardar, el JS manda de vuelta a la cuenta (data-redirect).
+      {%- endcomment -%}
+      <form
+        class="cuenta__form"
+        data-redirect="{% render 'account-url', destino: 'mis-pedidos' %}"
+        novalidate
+      >
+        {%- render 'ficha-campos', encabezado: false -%}
+
+        <div class="cuenta__foot">
+          <button class="cuenta__save" type="submit">{{ 'cuenta.registro.submit' | t }}</button>
+          <p class="cuenta__legal">{{ 'cuenta.registro.legal' | t }}</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Crear cuenta",
+  "settings": [],
+  "presets": [{ "name": "Crear cuenta" }]
+}
+{% endschema %}

@@ -1,0 +1,101 @@
+<section class="newsletter">
+  <div class="wrap newsletter__inner">
+    <h2 class="newsletter__title">{{ section.settings.title }}</h2>
+    <p class="newsletter__text">{{ section.settings.text }}</p>
+
+    {%- form 'customer', class: 'newsletter__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <label class="visually-hidden" for="newsletter-email">{{ 'newsletter.email' | t }}</label>
+      <input
+        class="newsletter__input"
+        id="newsletter-email"
+        type="email"
+        name="contact[email]"
+        placeholder="{{ 'newsletter.placeholder' | t }}"
+        autocomplete="email"
+        required
+      >
+      <button class="btn btn--brand" type="submit">{{ section.settings.button }}</button>
+
+      {%- if form.errors -%}
+        <p class="form-status form-status--error" role="alert" style="flex-basis:100%;">
+          {{ form.errors.messages.form }}
+        </p>
+      {%- elsif form.posted_successfully? -%}
+        <p class="form-status form-status--ok" role="status" style="flex-basis:100%;">
+          {{ 'newsletter.success' | t }}
+        </p>
+      {%- endif -%}
+    {%- endform -%}
+
+    {%- if section.settings.note != blank -%}
+      <p class="newsletter__note">{{ section.settings.note }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- if section.settings.popup_enabled -%}
+  <aside class="popup" data-popup data-delay="{{ section.settings.popup_delay | times: 1000 }}" data-open="false" aria-label="{{ section.settings.popup_title | escape }}">
+    <button class="popup__close" type="button" data-popup-close aria-label="{{ 'general.close' | t }}">✕</button>
+    <h2 class="popup__title">{{ section.settings.popup_title }}</h2>
+    <p class="popup__text">{{ section.settings.popup_text }}</p>
+
+    {%- form 'customer', class: 'newsletter__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter,popup">
+      <label class="visually-hidden" for="popup-email">{{ 'newsletter.email' | t }}</label>
+      <input
+        class="newsletter__input"
+        id="popup-email"
+        type="email"
+        name="contact[email]"
+        placeholder="{{ 'newsletter.placeholder' | t }}"
+        autocomplete="email"
+        required
+      >
+      <button class="btn btn--coral" type="submit">{{ section.settings.popup_button }}</button>
+
+      {%- if form.posted_successfully? -%}
+        <p class="form-status form-status--ok" role="status">{{ 'newsletter.success' | t }}</p>
+      {%- endif -%}
+    {%- endform -%}
+  </aside>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Título", "default": "10% off para el primer premio" },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Texto",
+      "default": "Dejanos tu mail y te mandamos el código. Escribimos poco, prometido — solo cuando hay algo nuevo para mordisquear."
+    },
+    { "type": "text", "id": "button", "label": "Botón", "default": "Quiero mi 10%" },
+    { "type": "text", "id": "note", "label": "Nota al pie", "default": "Sin spam. Te podés borrar cuando quieras." },
+    { "type": "header", "content": "Popup" },
+    {
+      "type": "checkbox",
+      "id": "popup_enabled",
+      "label": "Activar popup",
+      "default": true,
+      "info": "Aparece abajo a la izquierda, no tapa la pantalla. Una sola vez por visitante."
+    },
+    {
+      "type": "range",
+      "id": "popup_delay",
+      "label": "Aparece después de",
+      "min": 2,
+      "max": 30,
+      "step": 1,
+      "unit": "s",
+      "default": 8
+    },
+    { "type": "text", "id": "popup_title", "label": "Título del popup", "default": "¿Primera vez por acá? 🐾" },
+    { "type": "textarea", "id": "popup_text", "label": "Texto del popup", "default": "Llevate 10% off en tu primera compra. Tu perro no se va a enterar de dónde salió." },
+    { "type": "text", "id": "popup_button", "label": "Botón del popup", "default": "Dale" }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

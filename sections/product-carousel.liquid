@@ -1,0 +1,129 @@
+{%- comment -%}
+  Carrusel numerado 01/03 con mood + "perfecto para" — idea de gethapply.com
+{%- endcomment -%}
+
+<section class="carousel" data-carousel>
+  <div class="wrap">
+    <div class="carousel__head">
+      <h2 class="carousel__title">{{ section.settings.title }}</h2>
+
+      <div class="carousel__nav">
+        <span class="carousel__counter" data-carousel-counter aria-live="polite">01 / 01</span>
+        <button class="carousel__btn" type="button" data-carousel-prev aria-label="{{ 'carousel.prev' | t }}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 5l-7 7 7 7"/>
+          </svg>
+        </button>
+        <button class="carousel__btn" type="button" data-carousel-next aria-label="{{ 'carousel.next' | t }}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="carousel__viewport" data-carousel-viewport>
+      {%- for block in section.blocks -%}
+        {%- assign p = block.settings.product -%}
+        <article class="slide" style="--slide-bg: {{ block.settings.bg }};" data-slide {{ block.shopify_attributes }}>
+          <div class="slide__media">
+            {%- if p.featured_image -%}
+              <img
+                class="slide__img"
+                src="{{ p.featured_image | image_url: width: 700 }}"
+                alt="{{ p.featured_image.alt | default: p.title | escape }}"
+                width="700"
+                height="700"
+                loading="lazy"
+              >
+            {%- else -%}
+              {{ 'product-2' | placeholder_svg_tag: 'slide__img' }}
+            {%- endif -%}
+          </div>
+
+          <div class="slide__copy">
+            <span class="slide__num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+            <h3 class="slide__title">{{ block.settings.title | default: p.title }}</h3>
+            <p>{{ block.settings.text }}</p>
+
+            <div class="slide__tags">
+              {%- if block.settings.mood != blank -%}
+                <span class="slide__tag">🎯 {{ block.settings.mood }}</span>
+              {%- endif -%}
+              {%- if block.settings.perfect_for != blank -%}
+                <span class="slide__tag">✨ {{ block.settings.perfect_for }}</span>
+              {%- endif -%}
+            </div>
+
+            {%- if p != blank -%}
+              <p style="margin-top:1.2rem;">
+                <a class="btn" href="{{ p.url }}">{{ 'products.card.buy' | t }} · {{ p.price | money }}</a>
+              </p>
+            {%- endif -%}
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Carrusel de producto",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "title", "label": "Título", "default": "Los que más vuelan" }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Producto" },
+        { "type": "text", "id": "title", "label": "Título", "info": "Si lo dejás vacío usa el nombre del producto." },
+        { "type": "textarea", "id": "text", "label": "Descripción" },
+        { "type": "text", "id": "mood", "label": "Mood", "default": "Premio de todos los días" },
+        { "type": "text", "id": "perfect_for", "label": "Perfecto para", "default": "Entrenar" },
+        { "type": "color", "id": "bg", "label": "Fondo", "default": "#E6BDDB" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Carrusel de producto",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "title": "Pulmón de cerdo",
+            "text": "Súper liviano y aireado, se deshace en la boca. El premio ideal para repetir muchas veces sin pasarse de calorías.",
+            "mood": "Liviano",
+            "perfect_for": "Entrenar",
+            "bg": "#F6A762"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "title": "Aritos de tráquea",
+            "text": "Crocantes y fibrosos. Masticar de verdad, que es lo que a tu perro le gusta y a sus dientes les hace bien.",
+            "mood": "Crocante",
+            "perfect_for": "Dientes sanos",
+            "bg": "#70C4E8"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "title": "Patas de pollo",
+            "text": "El clásico que dura. Fuente natural de colágeno, ideal para articulaciones y para tenerlo entretenido un rato largo.",
+            "mood": "Larga duración",
+            "perfect_for": "Tardes tranquilas",
+            "bg": "#88CBC4"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

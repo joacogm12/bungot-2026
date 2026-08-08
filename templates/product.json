@@ -1,0 +1,192 @@
+{
+  "sections": {
+    "main": {
+      "type": "producto-bungot",
+      "settings": {
+        "family_color": "#E24E2E",
+        "lote": "Lote 04 · Guadalajara",
+        "eyebrow": "",
+        "lead": "",
+        "cta_prefix": "Agregar",
+        "note": "Precio por confirmar · envío gratis desde $500",
+        "stat1_value": "",
+        "stat1_label": "Proteína",
+        "stat2_value": "",
+        "stat2_label": "",
+        "stat3_value": "0",
+        "stat3_label": "Conservadores",
+        "reviews_title": "Opiniones de los clientes",
+        "cross_title": "La manada también se lleva",
+        "cross_link_label": "Ver todos los productos"
+      },
+      "blocks": {
+        "acc-1": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Ingredientes y análisis",
+            "source": "ingredientes",
+            "body": "<p>Un solo ingrediente, deshidratado a baja temperatura. Sin conservadores, químicos ni colorantes.</p>"
+          }
+        },
+        "acc-2": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Cómo se lo doy",
+            "source": "recomendacion",
+            "body": "<p>Como premio suelto, en el entrenamiento o partido encima de su comida. Es un complemento, no reemplaza su alimento.</p>"
+          }
+        },
+        "acc-3": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Cómo se guarda",
+            "source": "instrucciones",
+            "body": "<p>En un lugar fresco y seco, no necesita refrigeración. Cierra bien la bolsa para que conserve el sabor.</p>"
+          }
+        },
+        "acc-4": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Envíos y devoluciones",
+            "source": "manual",
+            "body": "<p>Enviamos a todo México en 2 a 4 días hábiles. Envío gratis en pedidos desde $500.</p><p>Si la bolsa llegó abierta o algo no está bien, escríbenos dentro de los 15 días y te la reponemos sin vueltas.</p>"
+          }
+        },
+        "ben-1": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Un solo ingrediente",
+            "text": "Pulmón de cerdo y nada más. Sin conservadores, químicos ni colorantes."
+          }
+        },
+        "ben-2": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Vitaminas del grupo B",
+            "text": "Aporta B12 y hierro, de los que ayudan a que ande con energía."
+          }
+        },
+        "ben-3": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Fácil de digerir",
+            "text": "Ligero y bajo en grasa: cae bien hasta en las panzas delicadas."
+          }
+        },
+        "ben-4": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Hecho en México",
+            "text": "Deshidratado en lotes chicos, con proteína de productores de aquí."
+          }
+        },
+        "op-1": {
+          "type": "opinion",
+          "settings": {
+            "rating": "5",
+            "text": "Se lo doy en el parque y hace caso a la primera. Antes ni volteaba.",
+            "autor": "Ana · Frida"
+          }
+        },
+        "op-2": {
+          "type": "opinion",
+          "settings": {
+            "rating": "5",
+            "text": "Huele fuerte, pero eso es justo lo que le gusta. La bolsa nos dura una semana.",
+            "autor": "Rodrigo · Nube"
+          }
+        },
+        "op-3": {
+          "type": "opinion",
+          "settings": {
+            "rating": "4",
+            "text": "Buen tamaño para partirlo. Mi perra es chiquita y le rinde un montón.",
+            "autor": "Mariana · Chispa"
+          }
+        },
+        "op-4": {
+          "type": "opinion",
+          "settings": {
+            "rating": "5",
+            "text": "Un solo ingrediente y se nota. Mi perro es alérgico y con esto no le pasa nada.",
+            "autor": "Diego · Otto"
+          }
+        },
+        "op-5": {
+          "type": "opinion",
+          "settings": {
+            "rating": "5",
+            "text": "Llegó rapidísimo y bien sellado. Ya es el premio oficial de la casa.",
+            "autor": "Paulina · Rocco"
+          }
+        },
+        "op-6": {
+          "type": "opinion",
+          "settings": {
+            "rating": "4",
+            "text": "Me gustaría que la bolsa viniera más grande, se nos acaba muy pronto.",
+            "autor": "Iván · Lupe"
+          }
+        },
+        "op-7": {
+          "type": "opinion",
+          "settings": {
+            "rating": "3",
+            "text": "A la mía le costó agarrarle el gusto, pero a la semana ya lo pedía.",
+            "autor": "Sofía · Kira"
+          }
+        },
+        "op-8": {
+          "type": "opinion",
+          "settings": {
+            "rating": "5",
+            "text": "Lo usamos en el entrenamiento y funciona increíble. Cero desperdicio.",
+            "autor": "Carlos · Bruno"
+          }
+        },
+        "op-9": {
+          "type": "opinion",
+          "settings": {
+            "rating": "4",
+            "text": "Se ve que es producto de verdad, no relleno. Vale lo que cuesta.",
+            "autor": "Renata · Pecas"
+          }
+        },
+        "xs-1": {
+          "type": "cruzada",
+          "settings": {
+            "title": "Hígado deshidratado",
+            "detail": "cerdo y res · 80 g",
+            "price": "$70.00",
+            "color": "#85CCC6"
+          }
+        },
+        "xs-2": {
+          "type": "cruzada",
+          "settings": {
+            "title": "Patas de pollo",
+            "detail": "colágeno · 14 piezas",
+            "price": "$95.00",
+            "color": "#F59E28"
+          }
+        },
+        "xs-3": {
+          "type": "cruzada",
+          "settings": {
+            "title": "Caja de la manada",
+            "detail": "cuatro premios surtidos",
+            "price": "$260.00",
+            "color": "#6CC2EA"
+          }
+        }
+      },
+      "block_order": [
+        "acc-1", "acc-2", "acc-3", "acc-4",
+        "ben-1", "ben-2", "ben-3", "ben-4",
+        "op-1", "op-2", "op-3", "op-4", "op-5", "op-6", "op-7", "op-8", "op-9",
+        "xs-1", "xs-2", "xs-3"
+      ]
+    }
+  },
+  "order": ["main"]
+}

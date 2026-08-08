@@ -1,0 +1,144 @@
+{%- comment -%}
+  Footer estilo "happly": arriba a la izquierda el tagline + alta al newsletter
+  (con el 10%), a la derecha las columnas de links; en el medio el WORDMARK
+  gigante a todo el ancho; abajo la barra legal y una franja de disclaimer clara.
+{%- endcomment -%}
+
+<footer
+  class="footer"
+  style="--ft-bg: {{ section.settings.bg }}; --ft-fg: {{ section.settings.fg }}; --ft-btn-bg: {{ section.settings.btn_bg }}; --ft-btn-fg: {{ section.settings.btn_fg }};"
+>
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__lead">
+        {%- if section.settings.tagline != blank -%}
+          <h2 class="footer__tagline">{{ section.settings.tagline | newline_to_br }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.signup_text != blank -%}
+          <p class="footer__signup-label">{{ section.settings.signup_text }}</p>
+        {%- endif -%}
+
+        {%- form 'customer', class: 'footer__signup' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <input
+            type="email"
+            name="contact[email]"
+            class="footer__signup-input"
+            placeholder="{{ section.settings.signup_placeholder | default: 'tu@email.com' }}"
+            aria-label="Email"
+            required
+          >
+          <button type="submit" class="footer__signup-btn">{{ section.settings.signup_button | default: 'Suscribirme' }}</button>
+          {%- if form.posted_successfully? -%}
+            <p class="footer__signup-msg">¡Listo! Revisá tu correo.</p>
+          {%- elsif form.errors -%}
+            <p class="footer__signup-msg">Revisá el mail e intentá de nuevo.</p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+
+      <nav class="footer__nav" aria-label="Enlaces del pie">
+        {%- for block in section.blocks -%}
+          <div class="footer__col" {{ block.shopify_attributes }}>
+            <h3 class="footer__heading">{{ block.settings.title }}</h3>
+            <ul class="footer__links">
+              {%- for link in block.settings.menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endfor -%}
+
+        {%- liquid
+          assign has_social = false
+          if settings.social_instagram != blank or settings.social_facebook != blank or settings.social_tiktok != blank or settings.social_whatsapp != blank
+            assign has_social = true
+          endif
+        -%}
+        {%- if has_social -%}
+          <div class="footer__col">
+            <h3 class="footer__heading">Redes</h3>
+            <ul class="footer__links">
+              {%- if settings.social_instagram != blank -%}<li><a href="{{ settings.social_instagram }}" rel="noopener" target="_blank">Instagram</a></li>{%- endif -%}
+              {%- if settings.social_facebook != blank -%}<li><a href="{{ settings.social_facebook }}" rel="noopener" target="_blank">Facebook</a></li>{%- endif -%}
+              {%- if settings.social_tiktok != blank -%}<li><a href="{{ settings.social_tiktok }}" rel="noopener" target="_blank">TikTok</a></li>{%- endif -%}
+              {%- if settings.social_whatsapp != blank -%}<li><a href="{{ settings.social_whatsapp }}" rel="noopener" target="_blank">WhatsApp</a></li>{%- endif -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      </nav>
+    </div>
+  </div>
+
+  {%- comment -%} Wordmark gigante a todo el ancho (decorativo). {%- endcomment -%}
+  <div class="footer__wordmark" aria-hidden="true">{{ shop.name }}</div>
+
+  <div class="wrap">
+    <div class="footer__bottom">
+      <span>{{ 'footer.rights' | t }} · &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
+      {%- if section.settings.policy_menu != blank and section.settings.policy_menu.links.size > 0 -%}
+        <span class="footer__policies">
+          {%- for link in section.settings.policy_menu.links -%}
+            <a href="{{ link.url }}">{{ link.title }}</a>
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.settings.disclaimer != blank -%}
+    <div class="footer__disclaimer">
+      <div class="wrap footer__disclaimer-inner">
+        <span class="footer__disclaimer-label">Disclaimer</span>
+        <p class="footer__disclaimer-text">{{ section.settings.disclaimer }}</p>
+      </div>
+    </div>
+  {%- endif -%}
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "tagline",
+      "label": "Frase grande",
+      "default": "La porción justa\nde bueno",
+      "info": "Va grande arriba a la izquierda. Enter para partir en renglones."
+    },
+    {
+      "type": "text",
+      "id": "signup_text",
+      "label": "Texto del alta",
+      "default": "Sumate a BUNGOT y llevate 10% en tu primer pedido"
+    },
+    { "type": "text", "id": "signup_placeholder", "label": "Placeholder del email", "default": "tu@email.com" },
+    { "type": "text", "id": "signup_button", "label": "Botón del alta", "default": "Suscribirme" },
+    { "type": "link_list", "id": "policy_menu", "label": "Menú legal (abajo a la derecha)", "info": "Ej.: Política de privacidad, Términos. Opcional." },
+    {
+      "type": "text",
+      "id": "disclaimer",
+      "label": "Disclaimer (franja clara)",
+      "default": "Los snacks son un complemento, no reemplazan una dieta balanceada. Consultá con tu veterinario ante cualquier duda."
+    },
+    { "type": "header", "content": "Colores" },
+    { "type": "color", "id": "bg", "label": "Fondo", "default": "#E94925" },
+    { "type": "color", "id": "fg", "label": "Texto", "default": "#F7F1E3" },
+    { "type": "color", "id": "btn_bg", "label": "Fondo del botón", "default": "#163C69" },
+    { "type": "color", "id": "btn_fg", "label": "Texto del botón", "default": "#F7F1E3" }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Columna de links",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Título", "default": "Tienda" },
+        { "type": "link_list", "id": "menu", "label": "Menú", "default": "footer" }
+      ]
+    }
+  ]
+}
+{% endschema %}

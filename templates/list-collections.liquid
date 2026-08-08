@@ -1,0 +1,46 @@
+{%- comment -%}
+  Índice de colecciones. Reutiliza el lenguaje visual de las tarjetas del grid:
+  fondo de color sólido rotando + franja oscura abajo.
+{%- endcomment -%}
+
+{%- liquid
+  assign palette = settings.card_colors | split: ','
+-%}
+
+<section class="collection">
+  <div class="wrap">
+    <div class="collection__head">
+      <h1 class="collection__title">{{ 'collections.all_title' | t }}</h1>
+      <span class="collection__count">
+        {{- collections.size }} {{ 'collections.count_collections' | t -}}
+      </span>
+    </div>
+
+    <div class="product-grid">
+      {%- for collection in collections -%}
+        {%- assign slot = forloop.index0 | modulo: palette.size -%}
+        <a class="card" href="{{ collection.url }}" style="--card-bg: {{ palette[slot] | strip }};">
+          <div class="card__media">
+            {%- if collection.featured_image -%}
+              <img
+                class="card__img"
+                src="{{ collection.featured_image | image_url: width: 600 }}"
+                alt="{{ collection.featured_image.alt | default: collection.title | escape }}"
+                width="600"
+                height="600"
+                loading="lazy"
+              >
+            {%- else -%}
+              {{ 'collection-1' | placeholder_svg_tag: 'card__img' }}
+            {%- endif -%}
+            {% render 'pup-illustration' %}
+          </div>
+          <div class="card__foot">
+            <h2 class="card__name">{{ collection.title }}</h2>
+            <span class="card__price">{{ collection.products_count }}</span>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,78 @@
+{%- comment -%}
+  Preloader "armando el premio perfecto" — idea tomada del loader de
+  cravburgers.shop, traducida a la marca: van cayendo hueso, pata y snack.
+
+  Se puede apagar entero desde el customizer. Se muestra una vez por sesión y
+  se respeta prefers-reduced-motion (ver theme.js).
+{%- endcomment -%}
+
+{%- if section.settings.enabled -%}
+  {%- liquid
+    assign msgs = section.settings.messages | split: ','
+    assign ms = section.settings.duration | times: 1000
+  -%}
+
+  {%- comment -%}
+    Sin JS no hay quién lo quite: se apaga solo, o la cortina taparía la
+    tienda entera para siempre e interceptaría todos los clics.
+  {%- endcomment -%}
+  <noscript>
+    <style>.preloader { display: none; }</style>
+  </noscript>
+
+  <div
+    class="preloader"
+    data-preloader
+    data-duration="{{ ms }}"
+    data-messages='{{ msgs | json }}'
+    style="--preloader-duration: {{ section.settings.duration }}s;"
+    role="status"
+    aria-live="polite"
+  >
+    <div>
+      <div class="preloader__stack">
+        <span class="preloader__bit">🦴</span>
+        <span class="preloader__bit">🐾</span>
+        <span class="preloader__bit">🥩</span>
+        <span class="preloader__bit">🐕</span>
+      </div>
+
+      <p class="preloader__msg" data-preloader-msg>{{ msgs.first | strip }}</p>
+
+      <div class="preloader__bar">
+        <div class="preloader__fill"></div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Preloader",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Activar preloader",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "messages",
+      "label": "Mensajes",
+      "default": "eligiendo el mejor corte..., deshidratando a fuego lento..., sumando una pata de más..., ¡premio listo!",
+      "info": "Separados por coma. Van rotando durante la animación."
+    },
+    {
+      "type": "range",
+      "id": "duration",
+      "label": "Duración",
+      "min": 1,
+      "max": 5,
+      "step": 0.5,
+      "unit": "s",
+      "default": 2.5
+    }
+  ]
+}
+{% endschema %}

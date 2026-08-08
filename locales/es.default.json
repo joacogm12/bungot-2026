@@ -1,0 +1,253 @@
+{
+  "general": {
+    "meta": {
+      "tags": "Etiquetado con {{ tags }}",
+      "page": "Página {{ page }}"
+    },
+    "close": "Cerrar",
+    "previous": "Anterior",
+    "next": "Siguiente"
+  },
+  "accessibility": {
+    "skip_to_content": "Ir al contenido",
+    "main_nav": "Navegación principal",
+    "menu": "Menú",
+    "account": "Mi cuenta",
+    "cart": "Carrito",
+    "breadcrumbs": "Migas de pan",
+    "pagination": "Paginación"
+  },
+  "collections": {
+    "count_label": "PRODUCTOS",
+    "count_collections": "CATEGORÍAS",
+    "all_title": "Categorías",
+    "filter_by": "Filtrar por categoría",
+    "empty": "No hay nada por acá todavía 🐾"
+  },
+  "products": {
+    "back": "← Volver a productos",
+    "card": {
+      "buy": "Agregar al carrito",
+      "on_sale": "Oferta",
+      "sold_out": "Agotado"
+    }
+  },
+  "favoritos": {
+    "label": "Favorito"
+  },
+  "sections": {
+    "collection_bandas": {
+      "aria": "Catálogo BUNGOT",
+      "nav": "Navegación",
+      "filters": "Filtrar catálogo",
+      "filter": "Filtrar",
+      "count_label": "Productos en el catálogo",
+      "price_tbd": "Precio por confirmar"
+    },
+    "producto": {
+      "thumbs": "Fotos del producto",
+      "photo_pending": "Foto pendiente",
+      "shot_bag": "Bolsa del producto",
+      "shot_treat": "El premio fuera de la bolsa",
+      "shot_dog": "Un perro comiéndose el premio",
+      "shot_prod": "El premio en producción",
+      "qty_less": "Quitar uno",
+      "qty_more": "Agregar uno",
+      "added": "¡Agregado!",
+      "unavailable": "No disponible",
+      "content": "Contenido",
+      "ingredient_one": "Ingrediente",
+      "ingredient_other": "Ingredientes",
+      "analysis_labels": "Proteína cruda,Grasa cruda,Fibra cruda,Humedad,Cenizas,E.L.N.",
+      "reviews_write": "Escribe una opinión",
+      "reviews_first": "Sé el primero en evaluar este producto",
+      "reviews_one": "1 opinión",
+      "reviews_many": "{{ count }} opiniones",
+      "reviews_more_one": "Ver 1 opinión más",
+      "reviews_more_many": "Ver {{ count }} opiniones más",
+      "reviews_less": "Ver menos",
+      "reviews_of_five": "{{ count }} de 5",
+      "reviews_pick": "Tu calificación",
+      "reviews_star_one": "1 estrella",
+      "reviews_star_many": "{{ count }} estrellas",
+      "reviews_placeholder": "¿Cómo le fue a tu perro?",
+      "reviews_name": "Tu nombre y tu perro",
+      "reviews_submit": "Publicar opinión",
+      "reviews_cancel": "Cancelar",
+      "reviews_anon": "Tú"
+    }
+  },
+  "carousel": {
+    "prev": "Anterior",
+    "next": "Siguiente"
+  },
+  "cart": {
+    "title": "Tu carrito",
+    "empty": "Está vacío. Tu perro te está mirando.",
+    "keep_shopping": "Ver productos",
+    "quantity": "Cantidad",
+    "remove": "Quitar",
+    "subtotal": "Subtotal",
+    "taxes_note": "Impuestos y envío se calculan en el checkout.",
+    "update": "Actualizar",
+    "checkout": "Finalizar compra"
+  },
+  "newsletter": {
+    "email": "Email",
+    "placeholder": "tu@email.com",
+    "success": "¡Listo! Revisá tu casilla 🐾"
+  },
+  "search": {
+    "title": "Buscar",
+    "placeholder": "¿Qué estás buscando?",
+    "submit": "Buscar",
+    "results": "RESULTADOS",
+    "empty": "No encontramos nada con eso. Probá con otra cosa."
+  },
+  "404": {
+    "title": "Esta página se la llevó el perro",
+    "text": "En serio. No está por ningún lado. Pero los premios sí.",
+    "cta": "Ver productos"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados."
+  },
+  "cuenta": {
+    "perro": {
+      "eyebrow": "La manada",
+      "title": "La ficha de tu perro",
+      "intro": "Con esto te recomendamos el tamaño correcto y te avisamos en su cumpleaños.",
+      "benefit_1": "Te sugerimos el tamaño que le queda",
+      "benefit_2": "Le ponemos cara a tu manada",
+      "benefit_3": "Un regalo en el cumpleaños",
+      "form_title": "Tu perro",
+      "form_note": "todo es opcional — nos sirve para recomendarte tamaños",
+      "name_label": "Cómo se llama",
+      "name_placeholder": "Ramona",
+      "size_label": "Tamaño",
+      "size_none": "Elige uno",
+      "size_small": "Chico",
+      "size_medium": "Mediano",
+      "size_large": "Grande",
+      "birthday_label": "Cumpleaños",
+      "avatar_label": "Escoge su cara",
+      "save": "Guardar la ficha",
+      "saved": "¡Listo! Ya guardamos la ficha.",
+      "legal": "Esto se guarda solo en este dispositivo. Nada de esto es obligatorio ni bloquea tu compra.",
+      "clear": "Borrar la ficha",
+      "default_name": "tu perro"
+    },
+    "nav": {
+      "greeting": "Hola",
+      "my_dog": "La ficha de {{ name }}",
+      "my_dog_generic": "La ficha de tu perro",
+      "orders": "Mis pedidos",
+      "addresses": "Mis direcciones",
+      "logout": "Cerrar sesión",
+      "open": "Abrir el menú de mi cuenta"
+    },
+    "login": {
+      "eyebrow": "La manada",
+      "title": "Qué bueno verte",
+      "intro": "Entra y termina el pedido donde lo dejaste.",
+      "heading": "Entra a tu cuenta",
+      "lead": "Te llevamos a la pantalla segura de acceso. Tu carrito se queda justo como está.",
+      "cta_entrar": "Entrar",
+      "cta_crear": "Crear cuenta",
+      "foot_link": "¿No puedes entrar?",
+      "foot_note": "El correo y el código de acceso los pide Shopify en su pantalla segura — aquí no se capturan.",
+      "close": "Cerrar"
+    },
+    "registro": {
+      "eyebrow": "La manada",
+      "title": "Bienvenida la manada",
+      "intro": "Una cuenta para que la próxima compra te tome dos toques y no vuelvas a escribir tu dirección.",
+      "benefit_1": "Repite tu pedido en un toque",
+      "benefit_2": "Guarda tus premios favoritos",
+      "benefit_3": "Un regalo en el cumpleaños",
+      "heading": "Cuéntanos de tu perro",
+      "done": "Tu cuenta ya quedó.",
+      "skip": "Saltar por ahora",
+      "lead": "Con esto te recomendamos el tamaño correcto y le ponemos cara a tu cuenta. Lo puedes cambiar cuando quieras.",
+      "submit": "Guardar su ficha",
+      "legal": "Nada de esto es obligatorio: guarda lo que quieras y sigue comprando."
+    },
+    "pedidos": {
+      "title": "Mis pedidos",
+      "count": "{{ count }} pedidos",
+      "count_one": "1 pedido",
+      "last": "último el {{ date }}",
+      "empty_title": "Todavía no hay pedidos",
+      "empty_text": "Cuando hagas el primero aparece aquí, listo para repetirlo en un toque.",
+      "empty_cta": "Ver los premios",
+      "track": "Rastrear",
+      "detail": "Ver detalle",
+      "repeat": "Repetir",
+      "repeat_done": "Listo, lo agregamos al carrito",
+      "repeat_go": "Ver el carrito",
+      "repeat_empty": "Ninguno de esos premios está disponible ahora",
+      "repeat_partial": "Agregamos lo que sigue disponible",
+      "status_paid": "Pagado",
+      "status_pending": "Pago pendiente",
+      "status_sent": "Enviado",
+      "status_preparing": "Preparando",
+      "status_partial": "Enviado en partes",
+      "status_cancelled": "Cancelado",
+      "detail_title": "Pedido {{ name }}",
+      "meta": "Pedido el {{ date }} · {{ count }} productos",
+      "meta_one": "Pedido el {{ date }} · 1 producto",
+      "more_items": "y {{ count }} más",
+      "repeat_note": "Repetir agrega los mismos productos al carrito.",
+      "repeat_error": "No se pudo agregar al carrito. Intenta de nuevo.",
+      "back": "Volver a mis pedidos",
+      "timeline_1": "Confirmado",
+      "timeline_2": "Pagado",
+      "timeline_3": "Enviado",
+      "tracking": "Guía {{ number }}",
+      "tracking_company": "Paquetería",
+      "items": "Lo que pediste",
+      "shipping_to": "Se envía a",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "shipping": "Envío",
+      "qty": "Cantidad"
+    },
+    "direcciones": {
+      "title": "Mis direcciones",
+      "count": "{{ count }} guardadas",
+      "count_one": "1 guardada",
+      "default": "Predeterminada",
+      "edit": "Editar",
+      "delete": "Borrar",
+      "make_default": "Hacer predeterminada",
+      "add": "+ Agregar dirección",
+      "empty_title": "Todavía no hay direcciones",
+      "empty_text": "Guarda una y el próximo pedido sale en dos toques.",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "confirm_delete": "¿Borrar esta dirección?",
+      "cant_delete_default": "Primero haz predeterminada otra dirección: Shopify no deja borrar la que está en uso.",
+      "f_first_name": "Nombre",
+      "f_last_name": "Apellido",
+      "f_company": "Empresa",
+      "f_address1": "Calle y número",
+      "f_address2": "Interior, colonia",
+      "f_city": "Ciudad",
+      "f_country": "País",
+      "f_province": "Estado",
+      "f_zip": "Código postal",
+      "f_phone": "Teléfono",
+      "set_default": "Usar como predeterminada",
+      "note_title": "Envío gratis desde $500",
+      "note_text": "Guardamos tu dirección para que el próximo pedido salga en dos toques."
+    },
+    "signed_out": {
+      "title": "Entra a tu cuenta",
+      "text": "Aquí verás tus pedidos y tus direcciones guardadas.",
+      "cta": "Entrar"
+    }
+  },
+  "onboarding": {
+    "product_title": "Nombre del producto"
+  }
+}

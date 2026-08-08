@@ -1,0 +1,222 @@
+/* ==========================================================================
+   BUNGOT 2026 — productos.css
+   Página de productos "bandas por familia". Reproduce el artboard de diseño
+   (1440–1582px, solo desktop por ahora).
+
+   Todo va scopeado bajo .pgal a propósito: base.css ya define .card, .marquee
+   y .rail para el resto del tema, y no queremos que se pisen. Los valores son
+   idénticos al spec del artboard, solo cambia el prefijo.
+
+   Los hex de esta vista son un sistema propio dado por diseño para el catálogo
+   (no salen de /pantones): por eso viven acá como vars locales y no en :root.
+   ========================================================================== */
+
+.pgal {
+  --pg-navy:     #013C3E; /* verde profundo — fondo del bloque superior */
+  --pg-teal:     #00968F;
+  --pg-celeste:  #6CC2EA;
+  --pg-menta:    #85CCC6;
+  --pg-ladrillo: #8E3237;
+  --pg-mango:    #F59E28;
+  --pg-naranja:  #EA4A27;
+  --pg-crema:    #F7F1E3;
+
+  background: var(--pg-crema);
+  color: var(--pg-navy);
+  font-family: var(--font-body, 'Inter', sans-serif);
+  /* relative (no overflow:hidden) para no recortar el ::before que pinta la
+     crema detrás del header. El scroll horizontal lo evita el body (overflow-x:
+     clip), igual que en la portada. */
+  position: relative;
+}
+
+/* La crema de la sección se estira hacia ARRIBA, por detrás del header
+   transparente y sticky del tema, para que la barra tome el color de la sección
+   —igual que la portada con .hero::before—. La altura es solo la franja del
+   header (--nav-h, con fallback 58px) más su gap: así NO tapa el marquee de
+   promos. Full-bleed a lo ancho del viewport. */
+.pgal::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  height: calc(var(--nav-h, 58px) + var(--nav-gap, 14px));
+  background: var(--pg-crema);
+}
+
+/* Bloque superior: encabezado + filtros van sobre crema. */
+.pgal .pg-top { background: var(--pg-crema); }
+
+/* El marquee global del tema (header-group) toma la crema de la sección cuando
+   el catálogo está presente, con texto verde. Va con hex literal porque
+   .marquee vive fuera de .pgal y no ve las vars. */
+body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
+
+/* El "Carrito" del header (amarillo por defecto) quedaría bajo de contraste
+   sobre crema: en esta página va verde profundo con texto crema. Scopeado a
+   .pgal para no tocar otras páginas. */
+body:has(.pgal) .header__cart { background: #013C3E; color: #F7F1E3; }
+
+/* --- Encabezado ---------------------------------------------------------- */
+.pgal .phead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  /* Aire extra arriba: el encabezado ya no tiene nav propio encima, así que
+     este padding es lo que lo separa del nav global del tema. */
+  padding: 96px 63px 46px;
+}
+.pgal .phead__title {
+  margin: 0;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 700;
+  font-size: 128px;
+  line-height: .82;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+  color: var(--pg-navy);
+}
+/* "de verdad" en naranja intenso; nowrap para que nunca se parta. */
+.pgal .phead__title .phead__accent {
+  display: inline-block;
+  color: var(--pg-naranja);
+  white-space: nowrap;
+}
+.pgal .phead__count { text-align: right; flex: 0 0 auto; }
+.pgal .phead__num {
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 700;
+  font-size: 60px;
+  line-height: 1;
+  color: var(--pg-naranja);
+}
+.pgal .phead__label {
+  margin-top: 6px;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(1, 60, 62, .7);
+}
+
+/* --- Barra de filtros ---------------------------------------------------- */
+.pgal .pfilters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 63px 42px;
+}
+.pgal .pfilters__label {
+  margin-right: 6px;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(1, 60, 62, .7);
+}
+.pgal .pfilter {
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 16px;
+  padding: 12px 26px;
+  border-radius: 999px;
+  border: 2px solid rgba(1, 60, 62, .35);
+  background: transparent;
+  color: var(--pg-navy);
+  cursor: pointer;
+}
+.pgal .pfilter--active {
+  background: var(--pg-mango);
+  border-color: var(--pg-mango);
+  color: var(--pg-navy);
+}
+
+/* --- Bandas -------------------------------------------------------------- */
+/* Contenedor en columna: el filtrado sube una banda con order:0, sin recargar
+   ni hacer scroll. Los colores llegan por vars inline desde cada bloque. */
+.pgal .pbandas { display: flex; flex-direction: column; }
+
+/* Sobre crema: la banda ya no es un bloque de color, se separa con un hairline.
+   --banda-bg (color inline por familia) pasa a ser el ACENTO tipográfico:
+   número, título de banda y nombre/eyebrow de las tarjetas. El texto base es
+   verde profundo. */
+.pgal .banda {
+  padding: 56px 0 60px;
+  background: var(--pg-crema);
+  color: var(--pg-navy);
+  border-top: 2px solid rgba(1, 60, 62, .13);
+}
+.pgal .banda__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 0 63px;
+}
+.pgal .banda__title {
+  margin: 4px 0 0;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 700;
+  font-size: 62px;
+  line-height: .94;
+  color: var(--banda-bg); /* acento de la familia */
+}
+.pgal .banda__right { display: flex; align-items: flex-end; gap: 28px; }
+.pgal .banda__text {
+  margin: 0;
+  max-width: 430px;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 19px;
+  line-height: 1.55;
+}
+.pgal .banda__arrows { display: flex; gap: 12px; }
+.pgal .parrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  /* currentColor = texto de la banda; 40% aproxima el .45 sobre oscuro y el
+     .35 sobre claro que pide el spec con un solo valor. */
+  border: 2px solid color-mix(in srgb, currentColor 40%, transparent);
+  background: transparent;
+  color: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.pgal .parrow:disabled { opacity: .35; cursor: default; }
+
+/* --- Carrusel ------------------------------------------------------------ */
+.pgal .rail {
+  display: flex;
+  gap: 24px;
+  /* overflow-x: auto recorta también en vertical, así que el padding arriba y
+     abajo es el aire para que el lift y la sombra del hover no se corten. El
+     margin-top baja para compensar el nuevo padding-top y no separar de más. */
+  margin-top: 28px;
+  padding: 16px 63px 26px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scroll-padding-left: 63px; /* la primera tarjeta nunca se pega al borde */
+  scrollbar-width: none;
+}
+.pgal .rail::-webkit-scrollbar { display: none; }
+
+/* --- Tarjeta ------------------------------------------------------------
+   La tarjeta de banda-card.liquid ya NO vive acá: se mudó a base.css bajo
+   .cardset porque también la usa la venta cruzada de la PDP. El .rail lleva
+   la clase .cardset, y acá solo queda lo que es propio del catálogo. */
+
+/* --- prefers-reduced-motion --------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .pgal .rail { scroll-behavior: auto; }
+}

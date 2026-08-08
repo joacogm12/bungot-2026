@@ -1,0 +1,120 @@
+{%- comment -%}
+  "Lo que dicen los dueños" con pin + reviews que suben (ref: sección "They
+  Drizzle They Dunk They Devour" de una marca de salsa).
+
+  Cómo funciona: la sección es ALTA; adentro hay un escenario `position: sticky`
+  que se frena a pantalla completa. Mientras la sección scrollea por debajo, el
+  titular queda quieto en el centro y los globos de review suben desde abajo,
+  cruzan y salen por arriba (la posición vertical la calcula theme.js según el
+  progreso del scroll). Después de que pasan todos, el sticky se suelta y la
+  página sigue normal.
+
+  Cada review lleva un sticker de animal (no caras) y una estrellita, como la ref.
+  El offset horizontal (--x) se reparte de un patrón para que caigan a los lados.
+{%- endcomment -%}
+
+{%- liquid
+  assign xs = "36,-38,34,-40,38,-36,40,-34" | split: ","
+  assign stk = "bungot-review-greta.png,bungot-review-bache.png,bungot-review-bruno.png,bungot-review-cleo.png,bungot-review-manolo.png,bungot-review-ramona.png" | split: ","
+  assign stkn = stk | size
+-%}
+
+<section
+  class="reviews"
+  data-reviews
+  style="--reviews-bg: {{ section.settings.bg }}; --n: {{ section.blocks.size }};"
+>
+  {%- comment -%}
+    La ola va ARRIBA del borde superior de la sección (bottom: 100%), así que
+    sube por encima de lo que venga antes en vez de cortarlo con una línea
+    recta. Se pinta del navy de la sección — ver .reviews en base.css.
+  {%- endcomment -%}
+  {%- if section.settings.show_wave -%}
+    {%- render 'wave-edge' -%}
+  {%- endif -%}
+
+  <div class="reviews__stage">
+    {%- if section.settings.headline != blank -%}
+      <h2 class="reviews__headline">{{ section.settings.headline | newline_to_br }}</h2>
+    {%- endif -%}
+
+    <div class="reviews__belt" aria-label="{{ section.settings.headline | strip_newlines }}">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign xi = forloop.index0 | modulo: 8
+          assign x = xs[xi]
+          assign xnum = x | plus: 0
+          # Ancla horizontal: las de la derecha (x>0) se anclan por su borde
+          # derecho y crecen hacia el centro; las de la izquierda al revés.
+          assign ax = '-50%'
+          assign side = 'is-center'
+          if xnum > 0
+            assign ax = '-100%'
+            assign side = 'is-right'
+          elsif xnum < 0
+            assign ax = '0%'
+            assign side = 'is-left'
+          endif
+          assign sticker = block.settings.sticker
+          if sticker == blank
+            assign si = forloop.index0 | modulo: stkn
+            assign sticker = stk[si]
+          endif
+        -%}
+        <div class="reviews__item {{ side }}" data-review style="--x: {{ x }}vw; --ax: {{ ax }};" {{ block.shopify_attributes }}>
+          <div class="reviews__bubble">{{ block.settings.text }}</div>
+          {%- if sticker != blank -%}
+            <div class="reviews__mark">
+              <span class="reviews__spark" aria-hidden="true">✦</span>
+              {%- comment -%} Sticker decorativo, asset elegido por el cliente y dimensionado por CSS: sin w/h fija. {%- endcomment -%}
+              {%- # theme-check-disable ImgWidthAndHeight -%}
+              <img class="reviews__sticker" src="{{ sticker | asset_url }}" alt="" aria-hidden="true" loading="lazy">
+              {%- # theme-check-enable ImgWidthAndHeight -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Reviews (pin)",
+  "max_blocks": 10,
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "headline",
+      "label": "Titular (queda pineado)",
+      "default": "Lo olfatean.\nLo mordisquean.\nLo devoran.",
+      "info": "Enter para partir en renglones. Se frena en el centro mientras suben los reviews."
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Fondo",
+      "default": "#2A6BFF",
+      "info": "Azul de marca (no es un pantone de las hojas, es el mismo --blue-ola de la sección Ola). Pinta la sección y la ola a la vez."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wave",
+      "label": "Borde de arriba en ola",
+      "default": true,
+      "info": "La cresta sube por encima de la sección anterior y se le come la orilla de abajo. Desactívalo si arriba viene algo que no se puede tapar."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "textarea", "id": "text", "label": "Texto del review" },
+        { "type": "text", "id": "sticker", "label": "Sticker (asset)", "info": "Nombre de archivo en assets/. Vacío = se asigna uno de animal automáticamente." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Reviews (pin)" }]
+}
+{% endschema %}

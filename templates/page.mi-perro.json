@@ -1,0 +1,8 @@
+{
+  "sections": {
+    "ficha": {
+      "type": "cuenta-perro"
+    }
+  },
+  "order": ["ficha"]
+}

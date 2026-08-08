@@ -1,0 +1,217 @@
+{%- comment -%}
+  Wave — sección con el borde de arriba en ola, que sube por encima de la
+  sección anterior.
+
+  Cómo funciona: la ola es un SVG puesto en `bottom: 100%` del bloque, o sea
+  justo arriba de su borde superior. El path pinta del color de la sección solo
+  la parte de abajo; lo de arriba queda transparente y deja ver lo que hay atrás.
+
+  La sección anterior queda congelada y esta le sube por encima: el efecto de
+  que el scroll se frena y lo único que se mueve son las olas. El pin no está
+  acá ni depende de qué sección sea la de arriba: lo pone la regla
+  `.shopify-section:has(+ .shopify-section .wave-edge)` de base.css, o sea que
+  viaja con la ola. Lo mismo pasa en la sección de reviews, que monta el mismo
+  snippet.
+
+  preserveAspectRatio="none" para que la ola se estire a lo ancho de cualquier
+  pantalla sin cambiar de alto.
+
+  El contenido va en tres columnas, calcado del bloque "from farm to bite" de
+  cravburgers.shop: titular enorme arriba a la izquierda, foto vertical al
+  centro y texto corto + botón a la derecha, con dos stickers de mascota
+  asomando en las esquinas.
+{%- endcomment -%}
+
+{%- comment -%}
+  El cálculo de `photo` vive junto al bloque de la foto (comentado más abajo).
+  Si reponés la foto, descomentá ese bloque completo — trae su propio assign.
+{%- endcomment -%}
+
+<section
+  class="wave"
+  style="--wave-bg: {{ section.settings.bg }}; --wave-fg: {{ section.settings.fg }}; --wave-title-color: {{ section.settings.title_color }}; --wave-outline: {{ section.settings.outline }};"
+>
+  {%- comment -%}
+    Una sola ola sólida que respira: las crestas suben y bajan en el lugar, sin
+    correrse de lado (ver @keyframes wave-swell en base.css). El SVG vive en
+    snippets/wave-edge.liquid, que es de donde lo saca también la sección de
+    reviews.
+  {%- endcomment -%}
+  {%- render 'wave-edge' -%}
+
+  <div class="wrap wave__inner">
+    {%- comment -%}
+      Tres columnas, calcado del bloque "from farm to bite" de cravburgers.shop:
+      titular enorme a la izquierda | foto vertical al centro | texto corto +
+      botón a la derecha. Dos stickers de mascota asoman en las esquinas
+      (abajo-izquierda y arriba-derecha), absolutos sobre .wave__inner. La
+      ubicación de cada elemento en la grilla se fija por grid-column en base.css,
+      así que el orden del DOM está pensado para el apilado en móvil: titular,
+      foto, texto.
+
+      `newline_to_br`: el titular respeta los saltos de línea del customizer.
+      Los stickers son decorativos: aria-hidden y sin alt.
+    {%- endcomment -%}
+    {%- comment -%} Mitad de ARRIBA del titular gigante. {%- endcomment -%}
+    {%- if section.settings.title != blank -%}
+      <h2 class="wave__title wave__title--top">{{ section.settings.title | newline_to_br }}</h2>
+    {%- endif -%}
+
+    {%- comment -%} Foto al centro, por delante del titular. image_picker tiene prioridad sobre el asset del tema. {%- endcomment -%}
+    {%- liquid
+      assign wave_photo = ''
+      if section.settings.image != blank
+        assign wave_photo = section.settings.image | image_url: width: 1200
+      elsif section.settings.image_asset != blank
+        assign wave_photo = section.settings.image_asset | asset_url
+      endif
+    -%}
+    {%- if wave_photo != blank -%}
+      <figure class="wave__media">
+        <img
+          class="wave__photo"
+          src="{{ wave_photo }}"
+          alt="{{ section.settings.image_alt | escape }}"
+          width="1600"
+          height="1629"
+          loading="lazy"
+        >
+        {%- comment -%} Bache: anclado a la esquina superior derecha de la foto. {%- endcomment -%}
+        {%- if section.settings.sticker_b != blank -%}
+          <img
+            class="wave__sticker wave__sticker--b"
+            src="{{ section.settings.sticker_b | asset_url }}"
+            alt=""
+            aria-hidden="true"
+            width="653"
+            height="758"
+            loading="lazy"
+          >
+        {%- endif -%}
+      </figure>
+    {%- endif -%}
+
+    {%- comment -%} Mitad de ABAJO del titular; la foto le pasa por delante. {%- endcomment -%}
+    {%- if section.settings.title_bottom != blank -%}
+      <p class="wave__title wave__title--bot">{{ section.settings.title_bottom | newline_to_br }}</p>
+    {%- endif -%}
+
+    <div class="wave__pitch">
+      {%- if section.settings.text != blank -%}
+        <p class="wave__text">{{ section.settings.text }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.cta_label != blank -%}
+        <a
+          class="wave__cta"
+          href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}"
+        >{{ section.settings.cta_label }}</a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Greta: sticker de la esquina abajo-izquierda (absoluto, ver base.css) {%- endcomment -%}
+    {%- if section.settings.sticker_a != blank -%}
+      <img
+        class="wave__sticker wave__sticker--a"
+        src="{{ section.settings.sticker_a | asset_url }}"
+        alt=""
+        aria-hidden="true"
+        width="679"
+        height="1192"
+        loading="lazy"
+      >
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Ola",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Titular (arriba)",
+      "default": "Hecho en familia,",
+      "info": "Mitad de arriba del titular gigante, por encima de la foto. Enter para partir en renglones."
+    },
+    {
+      "type": "textarea",
+      "id": "title_bottom",
+      "label": "Titular (abajo)",
+      "default": "criado en manada",
+      "info": "Mitad de abajo del titular; la foto le pasa por delante. Enter para partir en renglones."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Texto",
+      "default": "Un solo ingrediente y lotes chicos no son un eslogan. Te contamos quiénes lo hacen y por qué lo hacemos así.",
+      "info": "Corto: va chico y en mayúsculas, a la derecha."
+    },
+    { "type": "text", "id": "cta_label", "label": "Botón", "default": "Conócenos" },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Link del botón",
+      "info": "⚠️ Si apuntás a una página (ej. /pages/conocenos), verificá que exista y tenga contenido: el titular promete que del otro lado hay algo para leer."
+    },
+    { "type": "header", "content": "Foto" },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Foto (subida a Shopify)",
+      "info": "Tiene prioridad sobre el asset del tema. Vertical: se recorta a 4:5."
+    },
+    {
+      "type": "text",
+      "id": "image_asset",
+      "label": "Foto (asset del tema)",
+      "info": "Nombre de archivo dentro de assets/, ej: bungot-equipo-producto.webp. Es lo que se usa hoy."
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Texto alternativo de la foto",
+      "info": "Describí lo que se ve. Esta foto SÍ es contenido, no decoración: necesita alt."
+    },
+    { "type": "header", "content": "Stickers" },
+    {
+      "type": "text",
+      "id": "sticker_a",
+      "label": "Sticker de la izquierda",
+      "info": "Asset del tema. Va debajo del titular. Decorativo: no lee un lector de pantalla."
+    },
+    {
+      "type": "text",
+      "id": "sticker_b",
+      "label": "Sticker de la derecha",
+      "info": "Asset del tema. Va arriba del texto."
+    },
+    { "type": "header", "content": "Colores" },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Fondo",
+      "default": "#2A6BFF",
+      "info": "Azul de marca (no es un pantone de las hojas). Pinta la sección y la ola a la vez."
+    },
+    { "type": "color", "id": "fg", "label": "Texto", "default": "#FFFFFF" },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Relleno del titular",
+      "default": "#70C4E8",
+      "info": "PANTONE 297 (celeste). Es el color de las letras enormes."
+    },
+    {
+      "type": "color",
+      "id": "outline",
+      "label": "Contorno del titular",
+      "default": "#FFFFFF",
+      "info": "El contorno grueso del titular enorme, igual que en 'Para chuparse las patas'."
+    }
+  ],
+  "presets": [{ "name": "Ola" }]
+}
+{% endschema %}

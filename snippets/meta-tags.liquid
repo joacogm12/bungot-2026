@@ -1,0 +1,21 @@
+{%- comment -%} Open Graph / Twitter para que compartir en redes se vea bien. {%- endcomment -%}
+
+<meta property="og:site_name" content="{{ shop.name }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{{ page_title | default: shop.name | escape }}">
+<meta property="og:type" content="{% if request.page_type == 'product' %}product{% elsif request.page_type == 'article' %}article{% else %}website{% endif %}">
+<meta property="og:description" content="{{ page_description | default: shop.description | default: shop.name | escape }}">
+
+{%- if request.page_type == 'product' and product.featured_image -%}
+  <meta property="og:image" content="http:{{ product.featured_image | image_url: width: 1200 }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="product:price:amount" content="{{ product.price | divided_by: 100.0 }}">
+  <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+{%- elsif settings.logo -%}
+  <meta property="og:image" content="http:{{ settings.logo | image_url: width: 1200 }}">
+{%- endif -%}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ page_title | default: shop.name | escape }}">
+<meta name="twitter:description" content="{{ page_description | default: shop.description | default: shop.name | escape }}">

@@ -1,0 +1,132 @@
+{%- comment -%}
+  Foto a lo ancho — una sola foto grande, enmarcada como el escenario de
+  Favoritos: mismo marco por los cuatro lados (--favs-frame) y los mismos cantos
+  redondeados (--radius-lg), para que se lean como la misma familia y no como
+  dos piezas de dos diseños distintos. El color del marco lo elige el
+  customizer; hoy va del navy de los reviews, que es la sección de arriba, así
+  que las dos se leen como un solo bloque azul con la foto adentro.
+
+  Hoy cierra la landing, después de los reviews. Baja en flujo normal, sin
+  congelarse ni nada: el congelado lo pone la ola sobre la sección que tiene
+  JUSTO ARRIBA (ver .shopify-section:has(+ .shopify-section .wave-edge) en
+  base.css), así que si algún día vuelve a quedar arriba de una sección con ola,
+  la foto se congela sola y la ola le sube por encima.
+
+  El alto lo manda el customizer en svh —el marco se lo saca de adentro, igual
+  que en Favoritos— y la foto se recorta con object-fit, así que sirve igual una
+  horizontal o una vertical. El foco elige qué parte se conserva al recortar (en
+  la foto de hoy, las caras están arriba del centro).
+{%- endcomment -%}
+
+{%- liquid
+  assign photo = ''
+  assign is_upload = false
+  # Medidas de la foto que está en assets/ hoy; solo fijan la proporción
+  # intrínseca, el alto real lo manda el CSS.
+  assign img_w = 2400
+  assign img_h = 1583
+  if section.settings.image != blank
+    assign photo = section.settings.image | image_url: width: 2400
+    assign is_upload = true
+    assign img_w = section.settings.image.width
+    assign img_h = section.settings.image.height
+  elsif section.settings.image_asset != blank
+    assign photo = section.settings.image_asset | asset_url
+  endif
+-%}
+
+{%- if photo != blank -%}
+  <section
+    class="fphoto"
+    style="--fphoto-h: {{ section.settings.height }}svh; --fphoto-focus: {{ section.settings.focus }}; --fphoto-bg: {{ section.settings.bg }}; --fphoto-frame: {{ section.settings.frame_bg }};"
+  >
+    <img
+      class="fphoto__img"
+      src="{{ photo }}"
+      {%- comment -%}
+        El srcset solo sale con la foto subida a Shopify: un asset del tema no
+        admite los filtros de image_url, así que ahí va el archivo tal cual
+        (mismo criterio que en favoritos.liquid).
+      {%- endcomment -%}
+      {%- if is_upload %}
+        srcset="{{ section.settings.image | image_url: width: 800 }} 800w,
+                {{ section.settings.image | image_url: width: 1200 }} 1200w,
+                {{ section.settings.image | image_url: width: 1800 }} 1800w,
+                {{ section.settings.image | image_url: width: 2400 }} 2400w"
+        sizes="100vw"
+      {%- endif %}
+      width="{{ img_w }}"
+      height="{{ img_h }}"
+      alt="{{ section.settings.image_alt | escape }}"
+      loading="lazy"
+    >
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Foto a lo ancho",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Foto (subida a Shopify)",
+      "info": "Tiene prioridad sobre el asset del tema. Como se sirve a pantalla completa, súbela de 2400 px de ancho para arriba."
+    },
+    {
+      "type": "text",
+      "id": "image_asset",
+      "label": "Foto (asset del tema)",
+      "default": "bungot-equipo-banda.jpg",
+      "info": "Nombre de archivo dentro de assets/. Es lo que se usa hoy."
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Texto alternativo de la foto",
+      "default": "El equipo de BUNGOT sostiene las bolsas de premios sobre un fondo rojo",
+      "info": "Describe lo que se ve. Esta foto SÍ es contenido, no decoración: necesita alt."
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Alto",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "svh",
+      "default": 80,
+      "info": "Porcentaje del alto de la pantalla. En celular baja al 70% de este valor para que se vea más de la escena. OJO: si abajo viene una sección con ola, el efecto necesita que la foto tape la pantalla entera y el CSS la sube a 100 aunque acá pongas menos (ver base.css)."
+    },
+    {
+      "type": "select",
+      "id": "focus",
+      "label": "Foco del recorte",
+      "options": [
+        { "value": "50% 20%", "label": "Arriba" },
+        { "value": "50% 50%", "label": "Centro" },
+        { "value": "50% 80%", "label": "Abajo" },
+        { "value": "20% 50%", "label": "Izquierda" },
+        { "value": "80% 50%", "label": "Derecha" }
+      ],
+      "default": "50% 20%",
+      "info": "Qué parte de la foto se conserva al recortarla. Apunta a las caras."
+    },
+    {
+      "type": "color",
+      "id": "frame_bg",
+      "label": "Fondo del marco",
+      "default": "#163C69",
+      "info": "PANTONE 654 (navy). Es el color que rodea a la foto por los cuatro lados. Ponle el mismo que la sección de arriba y las dos se leen como un solo bloque."
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Color de carga",
+      "default": "#E94925",
+      "info": "PANTONE 172. Va DEBAJO de la foto: solo se ve un instante mientras carga — que sea parecido al fondo de la foto."
+    }
+  ],
+  "presets": [{ "name": "Foto a lo ancho" }]
+}
+{% endschema %}

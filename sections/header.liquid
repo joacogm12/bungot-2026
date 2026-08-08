@@ -1,0 +1,147 @@
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="header__logo" href="{{ routes.root_url }}">
+      {%- if settings.logo != blank -%}
+        <img
+          src="{{ settings.logo | image_url: width: 300 }}"
+          alt="{{ shop.name | escape }}"
+          width="150"
+          height="46"
+        >
+      {%- else -%}
+        {{ shop.name }}
+      {%- endif -%}
+    </a>
+
+    {%- comment -%}
+      Nav en pastillas: el grupo entero es una cápsula translúcida y el link de
+      la página actual va en una pastilla amarilla. En celu la cápsula se
+      desarma y el nav vuelve al panel del burger (ver base.css).
+    {%- endcomment -%}
+    <nav class="header__nav" data-nav data-open="false" aria-label="{{ 'accessibility.main_nav' | t }}">
+      {%- for link in section.settings.menu.links -%}
+        {%- comment -%}
+          Saltamos el link a la página principal (normalmente "Inicio"): el logo
+          ya lleva ahí, así que en el nav sería redundante. Se compara la URL, no
+          el título, para que aguante aunque lo renombren o reordenen.
+        {%- endcomment -%}
+        {%- unless link.url == routes.root_url -%}
+          <a
+            href="{{ link.url }}"
+            {% if link.current %}aria-current="page"{% endif %}
+          >{{ link.title }}</a>
+        {%- endunless -%}
+      {%- endfor -%}
+    </nav>
+
+    <div class="header__actions">
+      {%- comment -%}
+        Botón de cuenta. Un solo componente, no varios botones: sin sesión se
+        ve "Yo" SIEMPRE — aunque haya ficha local del perro, el botón no debe
+        aparentar una cuenta que no existe (pedido del cliente). Con sesión y
+        ficha guardada se estira a píldora con la cara del perro y el nombre
+        del cliente. Lo enciende initPerroNav() en theme.js poniendo
+        data-perro="true" (solo con data-logged="true"); el CSS hace el resto.
+
+        La cara NO se pinta desde Liquid porque hoy vive en localStorage (por
+        usuario, ver theme.js). Si algún día la ficha se muda a metafields,
+        dog-avatar.liquid ya la lee server-side y esto sale pintado de una.
+      {%- endcomment -%}
+      {%- liquid
+        # URL plantilla de las caras: se saca de un asset REAL y se le cambia el
+        # nombre del archivo por un hueco. Así el mapa id -> archivo sigue
+        # viviendo en dog-avatar.liquid y acá no se arma ninguna ruta a mano,
+        # ni se pierde el ?v= que rompe la caché al actualizar las imágenes.
+        assign face_real = 'bungot-face-ramona.png' | asset_url
+        assign face_tpl = face_real | replace: 'bungot-face-ramona.png', 'bungot-face-__ID__.png'
+      -%}
+      <div class="header__account">
+        {%- if customer -%}
+          {%- comment -%}
+            Con sesión el botón NAVEGA directo a Mis pedidos — la casa de la
+            cuenta, donde la barra lateral ya lleva a las demás pantallas. Va
+            ahí y no a routes.account_url porque este último saca de la tienda
+            al área hospedada de Shopify. Hubo un menú desplegable colgado de
+            este botón (1c del handoff): se quitó a pedido, no lo revivas.
+          {%- endcomment -%}
+          <a
+            class="header__me"
+            href="{% render 'account-url', destino: 'mis-pedidos' %}"
+            aria-label="{{ 'accessibility.account' | t }}"
+            data-me
+            data-perro="false"
+            data-logged="true"
+            data-avatar-src="{{ face_tpl }}"
+          >
+            {%- render 'dog-avatar', size: 32 -%}
+            <span class="header__me-initial" aria-hidden="true">
+              {{ customer.first_name | default: customer.email | slice: 0 | upcase }}
+            </span>
+            {%- comment -%}
+              El nombre es el del CLIENTE, pintado desde Liquid; la ficha del
+              perro solo aporta la cara.
+            {%- endcomment -%}
+            <span class="header__me-name">{{ customer.first_name }}</span>
+          </a>
+        {%- else -%}
+          {%- comment -%}
+            Sin sesión, el botón de cuenta es el componente <shopify-account>
+            de Shopify: al picarlo abre SU hoja de acceso — Shop (un tap),
+            Google, Facebook o correo — sin salir de la tienda, que es lo más
+            cómodo que permiten las cuentas nuevas. El slot pinta nuestro
+            círculo "Yo", así el navbar se ve igual que siempre; la hoja la
+            controla Shopify (solo se tiñe con sus CSS vars, ver base.css).
+            Al entrar, la página recarga con sesión y toma la rama de arriba.
+          {%- endcomment -%}
+          <shopify-account menu="customer-account-main-menu">
+            <span slot="signed-out-avatar" class="header__me" aria-hidden="true">
+              <span class="header__me-initial">Yo</span>
+            </span>
+          </shopify-account>
+        {%- endif -%}
+      </div>
+
+      <a class="header__cart" href="{{ routes.cart_url }}">
+        {{ 'accessibility.cart' | t }} ·
+        <span data-cart-count>{{ cart.item_count }}</span>
+      </a>
+
+      <button
+        class="header__burger"
+        type="button"
+        data-burger
+        aria-expanded="false"
+        aria-label="{{ 'accessibility.menu' | t }}"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+{%- comment -%}
+  La ventana de inicio de sesión (1a) vive acá y no en cada plantilla: el botón
+  que la abre es este, y así sale en toda la tienda sin tocar ningún JSON.
+  Va FUERA de <header> para que el velo cubra la pantalla completa sin pelearse
+  con el sticky de la barra.
+{%- endcomment -%}
+{%- render 'account-modal' -%}
+
+{{ 'cuenta.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'cuenta.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menú",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

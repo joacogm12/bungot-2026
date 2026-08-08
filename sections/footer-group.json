@@ -1,0 +1,30 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "shop": {
+          "type": "menu",
+          "settings": { "title": "Tienda", "menu": "main-menu" }
+        },
+        "help": {
+          "type": "menu",
+          "settings": { "title": "Ayuda", "menu": "footer" }
+        }
+      },
+      "block_order": ["shop", "help"],
+      "settings": {
+        "tagline": "La porción justa\nde bueno",
+        "signup_text": "Únete a BUNGOT y llévate 10% en tu primer pedido",
+        "disclaimer": "Los snacks son un complemento, no reemplazan una dieta balanceada. Consulta a tu veterinario ante cualquier duda.",
+        "bg": "#E94925",
+        "fg": "#F7F1E3",
+        "btn_bg": "#163C69",
+        "btn_fg": "#F7F1E3"
+      }
+    }
+  },
+  "order": ["footer"]
+}

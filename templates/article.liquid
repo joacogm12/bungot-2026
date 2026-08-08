@@ -1,0 +1,21 @@
+<section class="page-section">
+  <div class="wrap wrap--narrow">
+    <h1 class="page-section__title">{{ article.title }}</h1>
+    <p class="article__meta">
+      {{ article.published_at | date: '%d de %B, %Y' }}
+      {%- if article.author != blank %} · {{ article.author }}{% endif -%}
+    </p>
+
+    {%- if article.image -%}
+      <img
+        src="{{ article.image | image_url: width: 1200 }}"
+        alt="{{ article.image.alt | default: article.title | escape }}"
+        width="1200"
+        height="675"
+        style="border:3px solid var(--ink);border-radius:var(--radius);margin-bottom:2rem;"
+      >
+    {%- endif -%}
+
+    <div class="rte">{{ article.content }}</div>
+  </div>
+</section>

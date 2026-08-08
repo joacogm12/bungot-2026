@@ -1,0 +1,263 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "p1": {
+          "type": "pup",
+          "settings": {
+            "image_asset": "pup-guion-trim.png",
+            "height": 372,
+            "width": 304,
+            "margin_left": -46,
+            "margin_right": -46,
+            "z_index": 1
+          }
+        },
+        "p2": {
+          "type": "pup",
+          "settings": {
+            "image_asset": "pup-greta-trim.png",
+            "height": 712,
+            "width": 241,
+            "margin_left": -46,
+            "margin_right": -30,
+            "z_index": 2
+          }
+        },
+        "p3": {
+          "type": "pup",
+          "settings": {
+            "image_asset": "pup-manolo-trim.png",
+            "height": 573,
+            "width": 378,
+            "margin_left": -45,
+            "margin_right": -120,
+            "z_index": 3
+          }
+        },
+        "p4": {
+          "type": "pup",
+          "settings": {
+            "image_asset": "pup-ramona-trim.png",
+            "height": 725,
+            "width": 293,
+            "margin_left": -46,
+            "margin_right": -46,
+            "z_index": 4
+          }
+        },
+        "p5": {
+          "type": "pup",
+          "settings": {
+            "image_asset": "pup-pecas-trim.png",
+            "height": 508,
+            "width": 264,
+            "margin_left": -46,
+            "margin_right": -46,
+            "z_index": 3
+          }
+        },
+        "p6": {
+          "type": "pup",
+          "settings": {
+            "image_asset": "pup-mac-trim.png",
+            "height": 470,
+            "width": 0,
+            "margin_left": -46,
+            "margin_right": -46,
+            "z_index": 2
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5",
+        "p6"
+      ],
+      "settings": {
+        "wordmark": "BUNGOT",
+        "tagline": "¡Para chuparse las patas!",
+        "pack_boost": 100,
+        "duck_at": 25
+      }
+    },
+    "favoritos": {
+      "type": "favoritos",
+      "blocks": {
+        "pulmon": {
+          "type": "favorito",
+          "settings": {
+            "product": "snack-pulmon-de-cerdo",
+            "color": "#00847C",
+            "image_asset": "bungot-pulmon.webp",
+            "title": "Pulmón de cerdo",
+            "eyebrow": "Para perros · Masa muscular",
+            "text": "40 g de pulmón de cerdo deshidratado. Proteína real para la masa muscular de tu perro.",
+            "pills": "Alta proteína, Masa muscular, 40 g",
+            "fg": "#FFFFFF"
+          }
+        },
+        "patas": {
+          "type": "favorito",
+          "settings": {
+            "product": "premios-patas-de-pollo",
+            "color": "#DA3C1A",
+            "image_asset": "bungot-patas.webp",
+            "title": "Patas de pollo",
+            "eyebrow": "Para perros · Salud articular",
+            "text": "14 piezas de patas de pollo deshidratadas. Masticado largo que acompaña sus articulaciones.",
+            "pills": "Alta proteína, Salud articular, 14 pzas",
+            "fg": "#FFFFFF"
+          }
+        },
+        "higado": {
+          "type": "favorito",
+          "settings": {
+            "product": "snacks-higado-de-cerdo",
+            "color": "#FED140",
+            "image_asset": "bungot-higado.webp",
+            "title": "Hígado de cerdo",
+            "eyebrow": "Para perros · Sistema inmune",
+            "text": "80 g de hígado de cerdo deshidratado. Un solo ingrediente para su sistema inmune.",
+            "pills": "Alta proteína, Sistema inmune, 80 g",
+            "fg": "#163C69"
+          }
+        }
+      },
+      "block_order": [
+        "pulmon",
+        "patas",
+        "higado"
+      ],
+      "settings": {
+        "title": "Los favoritos de la manada",
+        "claim": "100% natural",
+        "hold": 0.6,
+        "trans": 0.8,
+        "parallax": 110
+      }
+    },
+    "testimonials": {
+      "type": "reviews-pin",
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "text": "Escucha el ruido de la bolsa desde el otro lado de la casa. No falla nunca."
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "text": "Probé mil premios y siempre volvía uno con olor a químico. Estos huelen a comida de verdad."
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "text": "Las patas de pollo le duran un rato largo y quedan los dientes impecables. Compro fijo."
+          }
+        },
+        "r4": {
+          "type": "review",
+          "settings": {
+            "text": "Se sienta al lado de la alacena a esperar. Sabe perfectamente dónde los guardo."
+          }
+        },
+        "r5": {
+          "type": "review",
+          "settings": {
+            "text": "Un solo ingrediente y se los pelea hasta el gato. Cero culpa, pura cola moviéndose."
+          }
+        },
+        "r6": {
+          "type": "review",
+          "settings": {
+            "text": "Los usamos para premiar en el adiestramiento. Hace lo que sea por uno."
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5",
+        "r6"
+      ],
+      "settings": {
+        "headline": "Lo olfatean.\nLo mordisquean.\nLo devoran.",
+        "bg": "#163C69",
+        "show_wave": true
+      }
+    },
+    "statement": {
+      "type": "statement",
+      "settings": {
+        "eyebrow": "",
+        "title": "Para chuparse las patas",
+        "text": "Proteína real, deshidratada en lotes chicos. Un solo ingrediente y nada más — sin conservadores, sin rellenos, sin letra chica.",
+        "cta_label": "Comprar ahora",
+        "image_asset": "bungot-premio.webp",
+        "image_alt": "Un perro se para en dos patas para alcanzar un premio BUNGOT",
+        "bg": "#F7F1E3",
+        "accent": "#E94925",
+        "image_height": 80,
+        "show_sticker": true,
+        "sticker_asset": "bungot-sticker-logo.webp",
+        "sticker_size": 50,
+        "sticker_bottom": -6,
+        "sticker_peel": 30,
+        "peel_start": 55,
+        "peel_end": 10,
+        "outline": "#FFFFFF",
+        "cta_bg": "#E94925",
+        "cta_fg": "#FFFFFF"
+      }
+    },
+    "panel": {
+      "type": "feature-panel",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "title": "Una cajita para chuparse las patas",
+        "text": "20% off en tu primera entrega",
+        "cta_label": "Empieza tu suscripción",
+        "cta_url": "",
+        "bg": "#E94925",
+        "fg": "#FFFFFF",
+        "cta_bg": "#FED140",
+        "cta_fg": "#163C69",
+        "eyebrow": "",
+        "chips": "",
+        "note": "",
+        "show_art": true,
+        "art_bg": "#FED140",
+        "badge": "-20%"
+      }
+    },
+    "foto-ancho": {
+      "type": "full-photo",
+      "settings": {
+        "image_asset": "bungot-equipo-banda.jpg",
+        "image_alt": "El equipo de BUNGOT sostiene las bolsas de premios sobre un fondo rojo",
+        "height": 80,
+        "focus": "50% 20%",
+        "frame_bg": "#163C69",
+        "bg": "#E94925"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "favoritos",
+    "statement",
+    "panel",
+    "testimonials",
+    "foto-ancho"
+  ]
+}

@@ -1,0 +1,43 @@
+{%- comment -%}
+  Perrito de las tarjetas. Si el cliente sube una ilustración propia desde el
+  customizer usamos esa; si no, este SVG inline (sin request extra).
+{%- endcomment -%}
+
+{%- if settings.pup_illustration != blank -%}
+  <img
+    class="card__pup"
+    src="{{ settings.pup_illustration | image_url: width: 200 }}"
+    alt=""
+    width="200"
+    height="200"
+    loading="lazy"
+    aria-hidden="true"
+  >
+{%- else -%}
+  <svg class="card__pup" viewBox="0 0 100 100" fill="none" aria-hidden="true" focusable="false">
+    <!-- orejas -->
+    <ellipse cx="26" cy="40" rx="9" ry="17" fill="#163C69" transform="rotate(-14 26 40)"/>
+    <ellipse cx="74" cy="40" rx="9" ry="17" fill="#163C69" transform="rotate(14 74 40)"/>
+    <!-- cabeza -->
+    <circle cx="50" cy="50" r="27" fill="#F7F1E3" stroke="#163C69" stroke-width="3.5"/>
+    <!-- mancha del ojo -->
+    <circle cx="38" cy="44" r="10" fill="#163C69" opacity="0.14"/>
+    <!-- ojos -->
+    <circle cx="40" cy="46" r="3.6" fill="#163C69"/>
+    <circle cx="60" cy="46" r="3.6" fill="#163C69"/>
+    <circle cx="41.2" cy="44.8" r="1.2" fill="#FFFFFF"/>
+    <circle cx="61.2" cy="44.8" r="1.2" fill="#FFFFFF"/>
+    <!-- hocico -->
+    <ellipse cx="50" cy="62" rx="13" ry="10" fill="#FFFFFF" stroke="#163C69" stroke-width="2.5"/>
+    <ellipse cx="50" cy="57" rx="4.2" ry="3.2" fill="#163C69"/>
+    <path d="M50 60v4" stroke="#163C69" stroke-width="2.4" stroke-linecap="round"/>
+    <path
+      d="M50 64c0 3-2.6 4.4-4.8 3.2M50 64c0 3 2.6 4.4 4.8 3.2"
+      stroke="#163C69"
+      stroke-width="2.4"
+      stroke-linecap="round"
+    />
+    <!-- lengua -->
+    <path d="M46 68c1.6 4 6.4 4 8 0z" fill="#EB5F7A" stroke="#163C69" stroke-width="1.6"/>
+  </svg>
+{%- endif -%}

@@ -1,0 +1,59 @@
+{%- comment -%}
+  Avatar del perro — ÚNICA FUENTE DE VERDAD del avatar en todo el tema.
+
+  Igual que card-color.liquid con el color de un producto: si necesitas la cara
+  del perro en cualquier lado, renderiza este snippet. No armes el nombre del
+  archivo a mano en otra parte.
+
+  Orden de prioridad (de más duradero a más frágil):
+    1. Metafield del cliente  — server-side, sale ya pintado en el HTML.
+    2. localStorage           — lo pisa cuenta.js apenas carga (ver PerroStore).
+    3. Default                — Ramona, la del handoff.
+
+  Hoy manda el 2: las cuentas de la tienda son las NUEVAS de Shopify, así que no
+  hay forma de escribir un metafield del cliente desde el storefront. El paso 1
+  ya está cableado para el día que exista el workflow de Flow que copie la ficha
+  a `custom.dog_avatar`: ese día esto empieza a salir server-side sin tocar nada.
+
+  Params:
+    id    (string) cuál cara. Vacío = la del cliente, o el default.
+    size  (number) lado en px. Default 32.
+    class (string) clase extra para el <img>.
+    alt   (string) texto alternativo. Default vacío (es decorativo).
+    fixed (bool)   true = no dejar que el JS lo pise. Para la rejilla del
+                   selector, donde cada celda muestra SU cara, no la elegida.
+{%- endcomment -%}
+
+{%- liquid
+  assign dog_avatar_default = 'ramona'
+
+  assign dog_avatar_id = id
+  if dog_avatar_id == blank and customer != blank
+    assign dog_avatar_id = customer.metafields.custom.dog_avatar.value
+  endif
+  if dog_avatar_id == blank
+    assign dog_avatar_id = dog_avatar_default
+  endif
+
+  # Blindaje: el id viaja en un data-attribute y puede venir de localStorage,
+  # o sea del usuario. Solo se acepta si está en la lista de caras que existen;
+  # cualquier otra cosa cae al default en vez de pedir un asset inventado.
+  assign dog_avatar_all = 'bruno,cleo,greta,manolo,ramona,bache,chuleta,felipe,guion,mac,pecas,sansa' | split: ','
+  unless dog_avatar_all contains dog_avatar_id
+    assign dog_avatar_id = dog_avatar_default
+  endunless
+
+  assign dog_avatar_size = size | default: 32
+  assign dog_avatar_file = 'bungot-face-' | append: dog_avatar_id | append: '.png'
+-%}
+
+<img
+  {% unless fixed %}data-dog-avatar{% endunless %}
+  class="dog-avatar {{ class }}"
+  src="{{ dog_avatar_file | asset_url }}"
+  alt="{{ alt | default: '' | escape }}"
+  width="{{ dog_avatar_size }}"
+  height="{{ dog_avatar_size }}"
+  loading="lazy"
+  decoding="async"
+>

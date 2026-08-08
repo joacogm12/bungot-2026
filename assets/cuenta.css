@@ -1,0 +1,1134 @@
+/* ==========================================================================
+   BUNGOT 2026 — cuenta.css
+   Todo el flujo de cuenta: la ventana de entrar (1a), el registro con la
+   ficha del perro (1b), Mis pedidos (2a, con su detalle), Mis direcciones
+   (2c) y la ficha del perro en su página. El menú desplegable del navbar
+   (1c) se quitó a pedido: el botón de cuenta ahora navega directo.
+
+   Lo carga el header en todas las páginas (la ventana de entrar cuelga del
+   botón de cuenta), así que aquí no va nada que no sea del flujo de cuenta.
+
+   Sobre los colores: el handoff trae su propia tabla de hex, pero casi todos
+   son pantones que el tema ya tiene con otro redondeo. Se mapean contra las
+   vars de base.css en vez de duplicarlos —un color, un lugar—. Los tintes que
+   no son pantones van marcados.
+   ========================================================================== */
+
+:where(.cuenta, .cpage, .clog, .ctoast, .header__account) {
+  /* --- Mapeo del handoff a la paleta del tema --- */
+  /* #013C3E del handoff = PANTONE 2217 C. Ojo: NO es --ink (que es el marino
+     654): el paquete de cuenta usa el petróleo como tinta. */
+  --cta-ink: var(--p-2217);
+  --cta-brand: var(--p-7716);   /* #00978E — paneles, nav pill */
+  --cta-yellow: var(--p-122);   /* #FED140 — badges, números de la lista */
+  --cta-action: var(--p-172);   /* #EA4A27 del handoff = 172 C */
+  --cta-cream: var(--cream);    /* #F7F1E3 */
+
+  /* --- Tintes que NO salen de los pantones --- */
+  /* Estados de hover y superficies apagadas. No había tintes claros en las
+     hojas de /pantones; vienen tal cual del handoff. */
+  --cta-pick: #FFE7B8;          /* amarillo claro: avatar elegido, hover de menú */
+  --cta-danger-soft: #FBE0D8;   /* rosa claro: hover destructivo */
+  --cta-teal-soft: #D8EFEC;     /* verde claro: hover secundario */
+  --cta-muted: #EFE7D6;         /* superficie apagada (miniaturas, cancelado) */
+
+  /* --- Bordes y textos derivados de la tinta --- */
+  --cta-line: rgba(1, 60, 62, 0.14);
+  --cta-line-2: rgba(1, 60, 62, 0.2);
+  --cta-line-3: rgba(1, 60, 62, 0.3);
+  --cta-soft: rgba(1, 60, 62, 0.65);
+}
+
+/* ==========================================================================
+   Piezas compartidas
+   ========================================================================== */
+
+/* --- Botones de las pantallas internas --- */
+.cbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.18s, border-color 0.18s;
+}
+.cbtn:focus-visible { outline: 3px solid var(--cta-brand); outline-offset: 2px; }
+.cbtn--sec {
+  border: 2px solid var(--cta-line-3);
+  background: transparent;
+  color: var(--cta-ink);
+}
+.cbtn--sec:hover { border-color: var(--cta-ink); }
+.cbtn--pri {
+  background: var(--cta-ink);
+  color: var(--cta-cream);
+}
+.cbtn--pri:hover { background: var(--cta-action); }
+.cbtn--pri:disabled { background: var(--cta-line-3); cursor: not-allowed; }
+.cbtn--danger {
+  background: transparent;
+  color: var(--cta-action);
+}
+.cbtn--danger:hover { background: var(--cta-danger-soft); }
+.cbtn--teal {
+  background: transparent;
+  color: var(--cta-brand);
+}
+.cbtn--teal:hover { background: var(--cta-teal-soft); }
+
+/* --- Badges de estado --- */
+.cbadge {
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.cbadge--sun { background: var(--cta-yellow); color: var(--brand-dark); }
+.cbadge--ok  { background: var(--cta-brand);  color: var(--cta-cream); }
+.cbadge--mut { background: var(--cta-muted);  color: var(--cta-soft); }
+.cbadge--xs  { padding: 4px 12px; font-size: 12px; }
+
+/* --- Tarjeta de vacío / sin sesión --- */
+.cempty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 40px 24px;
+  border: 2px dashed var(--cta-line-3);
+  border-radius: 24px;
+  text-align: center;
+}
+.cempty__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  text-transform: uppercase;
+  color: var(--cta-ink);
+}
+.cempty__text { margin: 0; max-width: 40ch; font-size: 15px; color: var(--cta-soft); }
+
+/* ==========================================================================
+   1a — La ventana de entrar
+   ========================================================================== */
+.clog { display: none; }
+.clog[data-open='true'] {
+  display: grid;
+  place-items: center;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  padding: 26px;
+}
+.clog__veil {
+  position: fixed;
+  inset: 0;
+  border: none;
+  cursor: pointer;
+  background: rgba(1, 60, 62, 0.55);
+}
+.clog__box {
+  position: relative;
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  width: 1000px;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius-lg);
+  border: 3px solid var(--cta-ink);
+  background: var(--cta-cream);
+  box-shadow: 0 30px 70px rgba(1, 60, 62, 0.35);
+  overflow: hidden;
+}
+.clog__x {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(1, 60, 62, 0.25);
+  background: var(--cta-cream);
+  color: var(--cta-ink);
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+.clog__x:hover { background: var(--cta-yellow); border-color: var(--cta-ink); }
+.clog__x:focus-visible { outline: 3px solid var(--cta-brand); outline-offset: 2px; }
+
+.clog__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 34px 28px;
+  background: var(--cta-brand);
+}
+.clog__eyebrow {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cta-yellow);
+}
+.clog__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: var(--cta-cream);
+}
+.clog__intro { margin: 0; max-width: 24ch; font-size: 15px; color: rgba(247, 241, 227, 0.9); }
+/* En flujo y no anclada en absolute: la caja sin formulario es más baja y la
+   ilustración pegada abajo se encimaba con el texto. El margen inferior
+   negativo la asoma sobre el borde; el overflow:hidden de .clog__box recorta
+   el sobrante. */
+.clog__ilus {
+  display: block;
+  width: 190px;
+  height: auto;
+  margin: auto auto -34px;
+  pointer-events: none;
+}
+
+.clog__main {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 34px 40px 32px;
+  overflow: auto;
+}
+.clog__h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--cta-ink);
+}
+/* El párrafo que explica el salto a la pantalla de Shopify. */
+.clog__lead {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 16px;
+  color: rgba(1, 60, 62, 0.75);
+}
+
+.clog__check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--cta-ink);
+}
+.clog__check input { width: 18px; height: 18px; accent-color: var(--cta-brand); }
+/* Los dos CTA son enlaces (navegan a la pantalla de Shopify), no botones:
+   por eso el flex centrado y el text-decoration fuera. */
+.clog__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  padding: 0 24px;
+  border-radius: var(--radius-pill);
+  background: var(--cta-action);
+  color: var(--cta-cream);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  transition: background 0.18s;
+}
+.clog__cta:hover { background: var(--cta-ink); }
+.clog__cta:focus-visible { outline: 3px solid var(--cta-brand); outline-offset: 2px; }
+
+.clog__alt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  padding: 0 24px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--cta-ink);
+  background: var(--white);
+  color: var(--cta-ink);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  transition: background 0.18s;
+}
+.clog__alt:hover { background: var(--cta-teal-soft); }
+.clog__alt:focus-visible { outline: 3px solid var(--cta-brand); outline-offset: 2px; }
+
+.clog__dash {
+  margin: 0;
+  border: none;
+  border-top: 2px dashed rgba(1, 60, 62, 0.18);
+}
+
+.clog__foot { margin: 0; font-size: 14px; color: rgba(1, 60, 62, 0.7); }
+.clog__foot a { color: var(--cta-ink); font-weight: 600; }
+
+/* El fondo de la tienda se desenfoca mientras la ventana está abierta. La
+   transición vive en los propios elementos para que también se note al volver. */
+main,
+.shopify-section:has(> .footer) {
+  transition: filter 0.25s ease, opacity 0.25s ease;
+}
+body[data-login-abierta] { overflow: hidden; }
+body[data-login-abierta] main,
+body[data-login-abierta] .shopify-section:has(> .footer) {
+  filter: blur(2px);
+  opacity: 0.5;
+}
+
+/* Versión en página (templates/customers/login): la misma caja, en flujo. */
+.clog--page {
+  display: grid;
+  place-items: center;
+  padding: 40px var(--gutter);
+  background: var(--cta-cream);
+}
+.cuenta--login { background: var(--cta-cream); }
+
+/* En celu la ventana es una hoja completa desde abajo. */
+@media (max-width: 720px) {
+  .clog[data-open='true'] { padding: 0; align-items: end; }
+  .clog__box {
+    grid-template-columns: 1fr;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    border-width: 3px 0 0;
+  }
+  .clog__aside { display: none; }
+  .clog__main { padding: 28px var(--gutter); }
+}
+
+/* ==========================================================================
+   El botón de cuenta del header
+   (El menú desplegable 1c que colgaba de él se quitó a pedido: el botón
+   ahora navega directo y la barra lateral de .cpage hace de menú.)
+   ========================================================================== */
+.header__account {
+  display: flex;
+  align-items: center;
+}
+
+/* ==========================================================================
+   1b — panel verde + formulario (registro; la ficha ahora vive en .cpage)
+   ========================================================================== */
+.cuenta { background: var(--cta-cream); color: var(--cta-ink); }
+
+.cuenta__body {
+  display: grid;
+  grid-template-columns: 420px minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.cuenta__aside {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 44px 38px;
+  background: var(--cta-brand);
+  /* Espacio para que la ilustración anclada abajo no pise la lista. */
+  padding-bottom: 240px;
+}
+.cuenta__aside > *:not(.cuenta__ilus) { position: relative; z-index: 1; }
+
+.cuenta__eyebrow {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cta-yellow);
+}
+.cuenta__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 54px;
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--cta-cream);
+}
+.cuenta__intro {
+  margin: 0;
+  max-width: 26ch;
+  font-size: 16px;
+  color: rgba(247, 241, 227, 0.92);
+}
+
+.cuenta__list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--cta-cream);
+}
+.cuenta__list li { display: flex; gap: 10px; align-items: center; }
+.cuenta__num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--cta-yellow);
+  color: var(--brand-dark);
+  font-size: 14px;
+}
+
+.cuenta__ilus {
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 215px;
+  height: auto;
+  pointer-events: none;
+}
+
+.cuenta__main {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 40px 56px;
+}
+.cuenta__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.cuenta__h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 38px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--cta-ink);
+}
+.cuenta__note { margin: 0; font-size: 14px; color: rgba(1, 60, 62, 0.7); }
+.cuenta__note a { color: var(--cta-ink); font-weight: 600; }
+
+/* La bajada bajo el encabezado (crear-cuenta). */
+.cuenta__lead {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 16px;
+  color: rgba(1, 60, 62, 0.75);
+}
+
+.cuenta__form { display: flex; flex-direction: column; gap: 16px; }
+
+.cuenta__block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 18px;
+  border-top: 2px dashed var(--cta-line-2);
+}
+/* Sin encabezado interno (crear-cuenta): toda la pantalla ya es del perro,
+   así que tampoco hace falta la línea que separaba el bloque. */
+.cuenta__block--solo { padding-top: 0; border-top: none; }
+.cuenta__block-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.cuenta__h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  text-transform: uppercase;
+  color: var(--cta-ink);
+}
+.cuenta__hint { font-size: 13px; color: rgba(1, 60, 62, 0.6); }
+
+/* --- Campos --- */
+.cuenta__row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 12px;
+}
+.cuenta__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--cta-ink);
+}
+.cuenta__field input,
+.cuenta__field select {
+  min-height: 52px;
+  padding: 0 18px;
+  border-radius: 14px;
+  /* Borde suave: en la ficha no queda ningún campo obligatorio (las
+     credenciales las pide Shopify) y NUNCA se escribe "opcional". */
+  border: 2px solid var(--cta-line-3);
+  background: var(--white);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--cta-ink);
+}
+.cuenta__field select { padding: 0 14px; }
+.cuenta__field input:focus-visible,
+.cuenta__field select:focus-visible {
+  outline: 3px solid var(--cta-brand);
+  outline-offset: 1px;
+  border-color: var(--cta-ink);
+}
+/* --- Selector de avatar --- */
+.cuenta__pick { display: flex; flex-direction: column; gap: 10px; }
+.cuenta__pick-label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--cta-ink);
+}
+
+.apick {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  max-width: 560px;
+}
+.apick__cell {
+  position: relative;
+  height: 86px;
+  padding: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 3px solid var(--cta-line-2);
+  background: var(--white);
+  transition: border-color 0.18s, background 0.18s, transform 0.18s var(--ease-bounce);
+}
+.apick__cell:hover { border-color: var(--cta-ink); transform: translateY(-2px); }
+.apick__cell:focus-visible { outline: 3px solid var(--cta-brand); outline-offset: 2px; }
+.apick__cell[aria-checked='true'] {
+  border-color: var(--cta-action);
+  background: var(--cta-pick);
+}
+.apick__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- Pie del formulario --- */
+.cuenta__foot { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.cuenta__save {
+  min-height: 56px;
+  padding: 0 38px;
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  background: var(--cta-action);
+  color: var(--cta-cream);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  transition: background 0.18s;
+}
+.cuenta__save:hover { background: var(--cta-ink); }
+.cuenta__save:focus-visible { outline: 3px solid var(--cta-brand); outline-offset: 2px; }
+
+.cuenta__legal { margin: 0; max-width: 34ch; font-size: 13px; color: var(--cta-soft); }
+
+.cuenta__clear {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--cta-action);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.cuenta__clear:hover { color: var(--cta-ink); }
+
+.cuenta__flash {
+  display: none;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: var(--radius-pill);
+  background: var(--cta-brand);
+  color: var(--cta-cream);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+}
+.cuenta__flash[data-on='true'] { display: flex; }
+
+/* ==========================================================================
+   2a y 2c — layout con barra lateral
+   ========================================================================== */
+.cpage {
+  display: grid;
+  grid-template-columns: 292px minmax(0, 1fr);
+  background: var(--cta-cream);
+  color: var(--cta-ink);
+  /* Pantalla completa: la sección llena lo que queda del viewport debajo del
+     header sticky (--nav-h la mide theme.js; --nav-gap es su despegue). Así
+     Mi perro, Mis pedidos y Mis direcciones ocupan toda la pantalla y el
+     footer arranca fuera de la vista. svh y no vh: en celu la barra del
+     navegador se come la diferencia. */
+  min-height: calc(100svh - var(--nav-h, 58px) - var(--nav-gap, 14px));
+}
+
+/* --- Barra lateral --- */
+.cnav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 28px 22px;
+  background: var(--white);
+  border-right: 2px solid var(--cta-line);
+}
+.cnav__me {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px 18px;
+}
+.cnav__face {
+  position: relative;
+  flex: none;
+  display: block;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--cta-pick);
+}
+.cnav__face .dog-avatar {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cnav__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--cta-ink);
+}
+.cnav__dog { margin: 0; font-size: 13px; color: var(--cta-soft); }
+
+.cnav__row {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 14px;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--cta-ink);
+  transition: background 0.15s;
+}
+.cnav__row:hover { background: var(--cta-pick); }
+.cnav__row:focus-visible { outline: 3px solid var(--cta-brand); outline-offset: -3px; }
+.cnav__row[aria-current='page'] {
+  background: var(--cta-ink);
+  color: var(--cta-cream);
+  font-weight: 600;
+}
+.cnav__row[aria-current='page']:hover { background: var(--cta-ink); }
+.cnav__row--out {
+  margin-top: auto;
+  color: var(--cta-action);
+  font-weight: 600;
+}
+.cnav__row--out:hover { background: var(--cta-danger-soft); }
+
+/* --- Contenido --- */
+.cped,
+.cdir,
+.cper {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 32px 40px;
+}
+.cped__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.cped__h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--cta-ink);
+}
+.cped__meta { margin: 0; font-size: 14px; color: var(--cta-soft); }
+
+/* --- Tarjeta de pedido --- */
+.cord {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 20px 24px;
+  border-radius: 24px;
+  border: 2px solid rgba(1, 60, 62, 0.16);
+  background: var(--white);
+}
+.cord__left { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.cord__top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cord__folio {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--cta-ink);
+}
+.cord__date { font-size: 14px; color: var(--cta-soft); }
+.cord__items { display: flex; align-items: center; gap: 10px; }
+.cord__thumb {
+  flex: none;
+  display: block;
+  width: 62px;
+  height: 62px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--cta-muted);
+}
+.cord__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.cord__sum { font-size: 14px; color: rgba(1, 60, 62, 0.7); }
+.cord__right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+.cord__total {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--cta-ink);
+}
+.cord__btns { display: flex; gap: 8px; }
+/* El form de "Repetir" (el respaldo sin JS contra /cart/add) no participa del
+   layout: sus botones se acomodan como hermanos directos. */
+.crepeat { display: contents; }
+
+/* ==========================================================================
+   Detalle del pedido
+   ========================================================================== */
+.cdet { display: none; }
+.cdet[data-open='true'] {
+  display: grid;
+  place-items: center;
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  padding: 20px;
+}
+.cdet__veil {
+  position: fixed;
+  inset: 0;
+  border: none;
+  cursor: pointer;
+  background: rgba(1, 60, 62, 0.5);
+}
+.cdet__box {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 28px;
+  border: 3px solid var(--cta-ink);
+  background: var(--cta-cream);
+  box-shadow: 0 24px 60px rgba(1, 60, 62, 0.32);
+}
+.cdet__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 22px 70px 18px 26px;
+  background: var(--white);
+  border-bottom: 2px solid var(--cta-line);
+}
+.cdet__folio {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--cta-ink);
+}
+.cdet__meta { margin: 0; font-size: 14px; color: var(--cta-soft); }
+.cdet__x {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(1, 60, 62, 0.25);
+  background: var(--cta-cream);
+  color: var(--cta-ink);
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+.cdet__x:hover { background: var(--cta-yellow); border-color: var(--cta-ink); }
+.cdet__x:focus-visible { outline: 3px solid var(--cta-brand); outline-offset: 2px; }
+
+/* --- Línea de tiempo: barra encendida = tramo alcanzado --- */
+.ctl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 18px 26px 0;
+}
+.ctl__seg { display: flex; flex-direction: column; gap: 6px; }
+.ctl__bar {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(1, 60, 62, 0.18);
+}
+.ctl__seg[data-on] .ctl__bar { background: var(--cta-brand); }
+.ctl__label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--cta-soft);
+}
+.ctl__seg[data-on] .ctl__label { color: var(--cta-ink); }
+
+.cdet__guia { margin: 12px 26px 0; font-size: 14px; }
+.cdet__guia a { color: var(--cta-ink); font-weight: 600; }
+
+.cdet__sub {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: var(--cta-ink);
+}
+.cdet__items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 26px;
+}
+.cdet__row {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border: 2px solid var(--cta-line);
+  border-radius: 20px;
+  background: var(--white);
+}
+.cdet__thumb {
+  display: block;
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--cta-muted);
+}
+.cdet__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.cdet__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--cta-ink);
+}
+.cdet__desc { margin: 0; font-size: 13px; color: var(--cta-soft); }
+.cdet__price {
+  min-width: 76px;
+  text-align: right;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--cta-ink);
+}
+
+.cdet__foot {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 18px 26px;
+  border-top: 2px dashed rgba(1, 60, 62, 0.18);
+}
+.cdet__ship p { margin: 0; font-size: 14px; line-height: 1.5; color: rgba(1, 60, 62, 0.8); }
+.cdet__sums p {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: rgba(1, 60, 62, 0.8);
+}
+.cdet__total {
+  padding-top: 8px;
+  border-top: 2px dashed rgba(1, 60, 62, 0.18);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px !important;
+  color: var(--cta-ink) !important;
+}
+
+.cdet__act {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 0 26px 24px;
+}
+.cdet__repeat {
+  min-height: 52px;
+  padding: 0 30px;
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  background: var(--cta-action);
+  color: var(--cta-cream);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  transition: background 0.18s;
+}
+.cdet__repeat:hover { background: var(--cta-ink); }
+.cdet__repeat:disabled { background: var(--cta-line-3); cursor: not-allowed; }
+.cdet__repeat:focus-visible { outline: 3px solid var(--cta-brand); outline-offset: 2px; }
+.cdet__note { margin: 0; width: 100%; font-size: 13px; color: var(--cta-soft); }
+
+/* --- Aviso flotante de "Repetir" --- */
+.ctoast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 110;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 32px);
+  padding: 14px 22px;
+  border-radius: var(--radius-pill);
+  background: var(--cta-ink);
+  color: var(--cta-cream);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 14px 30px rgba(1, 60, 62, 0.35);
+}
+.ctoast[data-on='true'] { display: flex; }
+.ctoast a { color: var(--cta-yellow); font-weight: 700; }
+
+/* ==========================================================================
+   2c — Mis direcciones
+   ========================================================================== */
+.cdir__list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 640px;
+}
+.cadr {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 22px;
+  border-radius: 24px;
+  border: 2px solid rgba(1, 60, 62, 0.16);
+  background: var(--white);
+}
+/* La predeterminada es la protagonista: borde de 3px, como el modal. */
+.cadr--def { border: 3px solid var(--cta-ink); }
+.cadr__top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cadr__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--cta-ink);
+}
+.cadr__text { margin: 0; font-size: 15px; line-height: 1.5; color: rgba(1, 60, 62, 0.8); }
+.cadr__btns { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; align-items: center; }
+
+/* Los formularios en línea (editar / agregar) despliegan bajo la tarjeta. */
+.cadr__form {
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: 2px dashed rgba(1, 60, 62, 0.18);
+}
+.cadr__form[data-open='true'] { display: grid; }
+.cadr__form--new {
+  margin-top: 0;
+  padding: 20px 22px;
+  border: 2px solid rgba(1, 60, 62, 0.16);
+  border-radius: 24px;
+  background: var(--white);
+}
+.cadr__wide { grid-column: 1 / -1; }
+
+.cdir__add {
+  min-height: 56px;
+  border: 2px dashed rgba(1, 60, 62, 0.35);
+  border-radius: 20px;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--cta-ink);
+  transition: background 0.18s, border-color 0.18s;
+}
+.cdir__add:hover { background: var(--cta-pick); border-color: var(--cta-ink); }
+.cdir__add:focus-visible { outline: 3px solid var(--cta-brand); outline-offset: 2px; }
+
+.cdir__note {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 18px 22px;
+  border-radius: 24px;
+  background: var(--cta-brand);
+  color: var(--cta-cream);
+}
+.cdir__note-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+}
+.cdir__note-text { margin: 0; font-size: 14px; color: rgba(247, 241, 227, 0.9); }
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1000px) {
+  .cuenta__body { grid-template-columns: 1fr; }
+  .cuenta__aside { padding-bottom: 44px; align-items: flex-start; }
+  .cuenta__ilus { position: static; transform: none; width: 160px; margin-top: 8px; }
+  .cuenta__title { font-size: 40px; }
+  .cuenta__main { padding: 32px var(--gutter); }
+}
+
+@media (max-width: 900px) {
+  /* La barra lateral se vuelve fila de pestañas, como pide el handoff. */
+  .cpage { grid-template-columns: 1fr; }
+  .cnav {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 12px var(--gutter);
+    border-right: none;
+    border-bottom: 2px solid var(--cta-line);
+  }
+  .cnav__me { display: none; }
+  .cnav__row { white-space: nowrap; }
+  .cnav__row--out { margin-top: 0; margin-left: auto; }
+  .cped,
+  .cdir,
+  .cper { padding: 24px var(--gutter); }
+}
+
+@media (max-width: 720px) {
+  .cuenta__row { grid-template-columns: 1fr; }
+  .cuenta__h2 { font-size: 30px; }
+  .apick { grid-template-columns: repeat(4, 1fr); }
+  .cuenta__foot { flex-direction: column; align-items: stretch; }
+  .cuenta__save { width: 100%; }
+
+  /* La tarjeta de pedido apila total y botones a lo ancho. */
+  .cord { grid-template-columns: 1fr; }
+  .cord__right { align-items: stretch; }
+  .cord__total { text-align: left; }
+  .cord__btns { width: 100%; }
+  .cord__btns .cbtn { flex: 1; }
+
+  .cdet__foot { grid-template-columns: 1fr; }
+  .cadr__form { grid-template-columns: 1fr; }
+
+  /* Las tarjetas de dirección apilan sus botones a lo ancho. El de "hacer
+     predeterminada" vive dentro de un form anidado: también se estira. */
+  .cadr__btns { flex-direction: column; align-items: stretch; }
+  .cadr__btns form { display: contents; }
+  .cadr__btns .cbtn { width: 100%; }
+
+  /* El detalle del pedido, como la ventana de entrar: hoja completa que sube
+     desde abajo. La línea de tiempo no cambia — mismos tramos, en fila. */
+  .cdet[data-open='true'] { padding: 0; place-items: end center; }
+  .cdet__box {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92vh;
+    border-radius: 28px 28px 0 0;
+    border-width: 3px 0 0;
+  }
+}
+
+/* Las transiciones son decorativas: se apagan todas. */
+@media (prefers-reduced-motion: reduce) {
+  .apick__cell,
+  .cuenta__save,
+  .cbtn,
+  .clog__x,
+  .clog__cta,
+  .clog__alt,
+  .cdet__x,
+  .cdet__repeat,
+  .cdir__add,
+  .cnav__row,
+  main,
+  .shopify-section:has(> .footer) { transition: none; }
+  .apick__cell:hover { transform: none; }
+}

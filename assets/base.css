@@ -1,0 +1,3198 @@
+/* ==========================================================================
+   BUNGOT 2026 — base.css
+   Paleta: los 8 pantones de /pantones tratados como un solo sistema.
+   Los hex están muestreados de los JPGs originales, no inventados.
+   ========================================================================== */
+
+:root {
+  /* UN SOLO marco de crema para todos los bloques de color que van de borde a
+     borde: el escenario de Favoritos, el panel de suscripción y la foto a lo
+     ancho. Un solo número para los tres, o se ve que uno es más ancho que el
+     otro justo cuando quedan uno abajo del otro.
+     OJO: en Favoritos cada píxel de marco se lo saca al escenario y la bolsa se
+     mide contra él — subir esto obliga a bajar el max-height de .fav__img. */
+  --favs-frame: clamp(1.5rem, 3vw, 2.5rem);
+
+  /* El marco del panel naranja tiene nombre propio porque el statement lo
+     necesita para calcular su aire de arriba (el hueco de abajo es este marco
+     más el padding del statement, y los dos tienen que dar igual). El valor sale
+     del de arriba: el panel y la foto que le sigue son del mismo ancho. */
+  --fpanel-frame: var(--favs-frame);
+
+  /* --- Sheet 1 --- */
+  --p-2905: #8FC7E8; /* celeste */
+  --p-2354: #94508D; /* violeta */
+  --p-516:  #E6BDDB; /* rosa pastel */
+
+  /* --- Sheet 2 --- */
+  --p-2217: #003B3F; /* verde muy oscuro */
+  --p-7716: #00978E; /* verde azulado — color madre BUNGOT */
+  --p-122:  #FED140; /* amarillo */
+
+  /* --- Sheet 3 --- */
+  --p-492:  #8E3235; /* bordó */
+  --p-714:  #F6A762; /* naranja suave */
+
+  /* --- Sheet 4 --- */
+  --p-654:  #163C69; /* azul marino */
+  --p-297:  #70C4E8; /* celeste */
+  --p-605:  #E1CC00; /* amarillo ácido */
+
+  /* --- Sheet 5 --- */
+  --p-7700: #0D5C7D; /* azul */
+  --p-172:  #E94925; /* naranja intenso */
+
+  /* --- Sheet 6 --- */
+  --p-7477: #234D59; /* petróleo */
+  --p-6141: #88CBC4; /* aqua */
+  --p-709:  #EB5F7A; /* rosa coral */
+
+  /* --- Sheet 7 --- */
+  --p-7470: #005B70; /* petróleo profundo */
+  --p-2170: #619AC5; /* azul medio */
+  --p-1375: #F59C26; /* naranja */
+
+  /* --- Sheet 8 --- */
+  --p-5493: #7FA8AC; /* verde grisáceo */
+
+  /* --- Roles semánticos --- */
+  --brand:        var(--p-7716);
+  --brand-dark:   var(--p-654);
+  --brand-yellow: var(--p-122);
+  --ink:          var(--p-654);
+  --ink-soft:     #4A6B6E;
+
+  /* Neutrales de superficie. Ojo: NO salen de los pantones — no había
+     un crema en las hojas. Editables desde el customizer. */
+  --cream:   #F7F1E3;
+  --cream-2: #FBF7EE;
+  --white:   #FFFFFF;
+
+  /* Azul de la sección Ola. Tampoco sale de los pantones: lo pidió la marca
+     aparte, y es bastante más vivo que el marino 654 que había antes. Vive acá
+     y no en la sección para que el respaldo del CSS no revierta al marino si
+     algún día falta el valor del customizer. */
+  --blue-ola: #2A6BFF;
+
+  /* --- Tipografía --- */
+  --font-display: 'Fredoka', 'Trebuchet MS', system-ui, sans-serif;
+  /* La del logotipo. Solo para donde dice BUNGOT: header, footer y la portada.
+     El respaldo es Anton porque es la condensada que más se le parece, así el
+     salto es chico si la fuente no llega a cargar. */
+  --font-wordmark: 'Brookline', 'Anton', Impact, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Cuerpo y grosor del BUNGOT gigante. Viven acá arriba y no en cada sección
+     porque la portada y el footer tienen que pintar EXACTAMENTE el mismo
+     logotipo: un solo lugar donde cambiarlo, o se vuelven a separar. */
+  --wordmark-size: 420px;
+  /* Engorde. Brookline tiene un solo peso (400), así que no hay una versión más
+     gorda que pedir: se engorda con un contorno del MISMO color, que suma trazo
+     sin cambiar el cuerpo de la letra ni su ancho de layout —el contorno no
+     entra en las métricas, así que el sangrado lateral y el centrado quedan
+     igual—. Subirlo de más empieza a cerrar los huecos de la B, la U, la G y
+     la O. */
+  --wordmark-weight: 14px;
+
+  /* --- Escala fluida --- */
+  --step--1: clamp(0.83rem, 0.78rem + 0.22vw, 0.94rem);
+  --step-0:  clamp(1rem, 0.95rem + 0.25vw, 1.13rem);
+  --step-1:  clamp(1.25rem, 1.14rem + 0.55vw, 1.6rem);
+  --step-2:  clamp(1.6rem, 1.36rem + 1.2vw, 2.4rem);
+  --step-3:  clamp(2.1rem, 1.6rem + 2.5vw, 3.8rem);
+  --step-4:  clamp(2.8rem, 1.5rem + 6.5vw, 7.5rem);
+
+  /* --- Layout --- */
+  --wrap: 1320px;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  /* Separación de arriba de la barra: la misma en reposo y ya fija (ver el
+     header). En :root para que el bordó de la portada (.hero::before) también
+     la pueda usar. */
+  --nav-gap: 14px;
+  --radius: 22px;
+  --radius-lg: 34px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 10px 0 rgba(22, 60, 105, 0.14);
+  --shadow-soft: 0 12px 34px rgba(22, 60, 105, 0.12);
+
+  /* Cuánto sube la barra de "Favoritos" sobre la portada para tapar el corte de
+     las patas (del handoff). Vive acá porque lo usan tanto el hero como la
+     sección siguiente, que no es descendiente suya. */
+  --hero-seam: 38px;
+  /* Respiro de crema entre el verde de la portada y la barra navy, para que no
+     queden pegados. Es el valor por defecto: la sección Portada lo pisa con el
+     que se elija en el customizer. */
+
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Abajo de 900px el logotipo deja de ser un cuerpo fijo y se ata al ancho, para
+   que BUNGOT siga entrando de un solo renglón. Se pisa acá, en el token, y no en
+   cada sección: así la portada y el footer bajan juntos y no se despegan. */
+@media (max-width: 900px) {
+  :root { --wordmark-size: 21vw; }
+}
+
+/* --------------------------------------------------------------------------
+   Reset acotado
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  /* clip y no hidden: `overflow-x: hidden` haría del body un contenedor de
+     scroll y rompería position:sticky en los descendientes — que es la base
+     del stacking de Favoritos y del header pegajoso. clip recorta igual. */
+  overflow-x: clip;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.4em;
+  text-wrap: balance;
+}
+
+p { margin: 0 0 1em; text-wrap: pretty; }
+
+img, svg, video { max-width: 100%; height: auto; display: block; }
+
+a { color: inherit; }
+
+button { font: inherit; cursor: pointer; }
+
+ul { margin: 0; padding: 0; list-style: none; }
+
+:focus-visible {
+  outline: 3px solid var(--brand-yellow);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -60px; left: var(--gutter);
+  z-index: 200;
+  background: var(--brand-yellow);
+  color: var(--ink);
+  padding: 0.7em 1.2em;
+  border-radius: 0 0 12px 12px;
+  font-weight: 600;
+  transition: top 0.2s;
+}
+.skip-link:focus { top: 0; }
+
+/* --------------------------------------------------------------------------
+   Botones
+   -------------------------------------------------------------------------- */
+.btn {
+  --btn-bg: var(--brand-yellow);
+  --btn-fg: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step-0);
+  text-decoration: none;
+  padding: 0.85em 1.7em;
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 5px 0 var(--ink);
+  transition: transform 0.14s var(--ease-bounce), box-shadow 0.14s;
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 8px 0 var(--ink); }
+.btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--ink); }
+
+.btn--brand  { --btn-bg: var(--brand); --btn-fg: var(--white); }
+.btn--coral  { --btn-bg: var(--p-709); --btn-fg: var(--white); }
+.btn--ghost  { --btn-bg: transparent; box-shadow: 0 5px 0 var(--ink); }
+
+/* --------------------------------------------------------------------------
+   Marquee de anuncios
+   -------------------------------------------------------------------------- */
+.marquee {
+  background: var(--brand-dark);
+  color: var(--brand-yellow);
+  overflow: hidden;
+  padding: 0.6em 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--step--1);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  gap: 2.5rem;
+  animation: marquee-scroll var(--marquee-speed, 26s) linear infinite;
+}
+.marquee:hover .marquee__track { animation-play-state: paused; }
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.5rem;
+  white-space: nowrap;
+}
+.marquee__item::after {
+  content: '🦴';
+  font-size: 0.9em;
+}
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* --------------------------------------------------------------------------
+   Cierre / CTA (estilo garcy.studio): titular gigante + círculo con el botón
+   -------------------------------------------------------------------------- */
+.closer {
+  background: var(--cl-bg, var(--p-654));
+  color: var(--cl-fg, var(--cream));
+  /* Arriba corto: todo el bloque sube y el titular arranca casi pegado al borde. */
+  padding-block: clamp(1.75rem, 3.5vw, 3rem) clamp(3rem, 6vw, 5.5rem);
+  /* Pantalla completa: el cierre ocupa el viewport entero, como en la ref. */
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: clip;
+}
+.closer__inner {
+  position: relative; /* ancla el círculo absoluto */
+  /* Columna a todo el alto: así la fila de links baja hasta el fondo. */
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.closer__head {
+  font-family: var(--font-display);
+  font-weight: 700;
+  /* GIGANTE (~90% del ancho, como la ref) y cada mitad entra en UN renglón. */
+  font-size: clamp(2.8rem, 11vw, 8.25rem);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin: 0 0 clamp(1.5rem, 4vw, 3rem);
+}
+.closer__tagline {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
+  margin: 0 0 clamp(1.2rem, 3vw, 2rem);
+  /* deja lugar al círculo de la derecha para que no lo pise */
+  max-width: 62%;
+}
+.closer__body {
+  font-size: var(--step-0);
+  line-height: 1.5;
+  max-width: 46ch;
+  margin: 0;
+  color: rgba(247, 241, 227, 0.82);
+}
+.closer__check {
+  color: var(--cl-fg, var(--cream));
+  margin-right: 0.4em;
+}
+/* Círculo con el CTA, flotando a la derecha sobre la banda del medio. */
+.closer__circle {
+  position: absolute;
+  right: 0;
+  /* Banda media, como la ref: arranca justo DEBAJO del titular (que queda libre
+     arriba) y queda a la altura de la línea de marca + párrafo. */
+  top: clamp(12rem, 21vw, 18rem);
+  width: clamp(10rem, 19vw, 17rem);
+  height: clamp(10rem, 19vw, 17rem);
+  border-radius: 50%;
+  background: var(--cl-accent, var(--p-172));
+  color: var(--white);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: transform 0.2s var(--ease-bounce, ease);
+}
+.closer__circle:hover { transform: scale(1.06) rotate(-3deg); }
+.closer__foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  /* Al fondo de la pantalla (el cierre es 100svh); el padding garantiza no
+     chocar con el círculo (que baja hasta ~33rem) si el alto no alcanza. */
+  margin-top: auto;
+  padding-top: clamp(4.5rem, 11vw, 9.5rem);
+  font-size: var(--step--1);
+}
+.closer__links { display: flex; gap: clamp(1rem, 2.5vw, 2rem); flex-wrap: wrap; }
+.closer__links a {
+  color: var(--cl-accent, var(--p-172));
+  text-decoration: none;
+  font-family: var(--font-display);
+}
+.closer__links a:hover { text-decoration: underline; }
+.closer__copy { color: rgba(247, 241, 227, 0.55); }
+@media (max-width: 760px) {
+  /* El círculo baja al flujo, centrado, para no encimarse con el texto. */
+  .closer__tagline { max-width: 100%; }
+  .closer__circle {
+    position: static;
+    margin: 2rem auto 0;
+    width: clamp(9rem, 42vw, 13rem);
+    height: clamp(9rem, 42vw, 13rem);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Cinta / Marquee grande (palabras enormes + fotitos, corriendo sin parar)
+   -------------------------------------------------------------------------- */
+.wmarquee {
+  background: var(--wmq-bg, var(--p-1375));
+  color: var(--wmq-fg, var(--cream));
+  overflow: hidden;
+  padding-block: clamp(0.6rem, 1.6vw, 1.4rem);
+}
+.wmarquee__track {
+  display: flex;
+  width: max-content;
+  /* Corre siempre; -50% = el ancho de una secuencia, por eso el loop es continuo. */
+  animation: wmarquee-scroll var(--wmq-speed, 40s) linear infinite;
+}
+.wmarquee__seq {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  /* Mismo hueco entre la última palabra de una copia y la primera de la otra. */
+  padding-right: clamp(1.5rem, 4vw, 3.5rem);
+}
+.wmarquee__word {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(3.6rem, 11vw, 9rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.wmarquee__img {
+  height: clamp(3.8rem, 11vw, 7.5rem);
+  width: auto;
+  flex: none;
+  object-fit: contain;
+}
+@keyframes wmarquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wmarquee__track { animation: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+.header {
+  /* Barra transparente: la franja no tiene fondo propio, solo flotan encima el
+     logo y las burbujas translúcidas. El contenido de la página se ve detrás. */
+  background: transparent;
+  color: var(--white);
+}
+/* El header se pega arriba y queda SIEMPRE visible en toda la página. La sticky
+   va en el WRAPPER de sección y no en .header: el <header> vive dentro de su
+   propia .shopify-section, tan alta como el header, donde una sticky quedaría
+   atrapada en su propio alto; en el wrapper el bloque contenedor es el <body>,
+   así que se pega a lo largo de toda la página. */
+.shopify-section:has(> .header) {
+  position: sticky;
+  /* La misma distancia en las dos situaciones: en reposo (arriba del todo) el
+     margin-top la baja del borde; ya FIJA, el top la mantiene despegada. Con la
+     misma variable nunca se desincronizan. En la portada, ese hueco de arriba
+     lo pinta el bordó del hero (.hero::before mide --top-h, que ya incluye este
+     margen), así que sigue fundido con la portada. */
+  margin-top: var(--nav-gap);
+  /* EL FOOTER LA EMPUJA AFUERA: --nav-push (lo escribe initFooterPushesNav en
+     theme.js) arranca en 0 y crece recién cuando el footer llega CASI a tocar
+     la base de la barra, hasta valer todo el alto de la barra más su hueco de
+     arriba; con el top ya negativo la sticky se queda por encima del borde de
+     la pantalla, o sea fuera de la vista. Pasa en todas las páginas: el header
+     y el footer vienen de los grupos de sección del layout.
+     Va en `top` y NO en un transform: en celu el panel del nav es
+     position: fixed y un transform acá lo volvería relativo al header (se
+     dejaría de pegar al viewport). Sin transición: se mueve pegado al scroll,
+     así que tampoco es una animación que haya que apagar con reduced-motion. */
+  top: calc(var(--nav-gap) - var(--nav-push, 0px));
+  z-index: 60;
+}
+/* La barra es transparente en TODA la página: arriba solo flotan el logo (izq.)
+   y el grupo de burbujas (der.), con el contenido pasando por detrás. En la
+   portada, el bordó que se ve al inicio detrás de la barra NO lo pinta el
+   header: lo pone la propia portada estirando su bordó hacia arriba con
+   `.hero::before` (ver abajo), así se funde al inicio y se va limpio al bajar,
+   sin dejar ningún hueco cream/"blanco". */
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  /* Más compacto = la barra queda más arriba (menos aire arriba/abajo). */
+  min-height: 58px;
+  /* El header ocupa TODO el ancho, no los 1320px del .wrap: así el logo se pega
+     a la izquierda y las burbujas a la derecha, con solo un respiro pequeño en
+     los bordes. */
+  max-width: none;
+  padding-inline: clamp(1rem, 2.5vw, 1.75rem);
+}
+.header__logo {
+  font-family: var(--font-wordmark);
+  font-weight: 400;
+  text-transform: uppercase;
+  /* Cuerpo y tracking calibrados contra el logotipo original: Brookline pinta
+     0.859em de alto de tinta (no 0.70 como una fuente normal), por eso el
+     cuerpo es menor que el que tenía en Fredoka aunque se vea igual de grande.
+     El tracking positivo replica el interletraje del logotipo, que viene más
+     suelto que el que trae la fuente de fábrica. */
+  font-size: clamp(1.34rem, 0.98rem + 1.45vw, 1.98rem);
+  letter-spacing: 0.108em;
+  text-decoration: none;
+  color: var(--white);
+  /* "bubble letters" a la rocky's hot honey */
+  text-shadow:
+    -2px -2px 0 var(--brand-dark), 2px -2px 0 var(--brand-dark),
+    -2px 2px 0 var(--brand-dark), 2px 2px 0 var(--brand-dark),
+    0 6px 0 var(--brand-dark);
+  transition: transform 0.2s var(--ease-bounce);
+}
+.header__logo:hover { transform: rotate(-2deg) scale(1.03); }
+.header__logo img { max-height: 46px; width: auto; }
+
+/* Nav en cápsula: el grupo entero es una pastilla verde SÓLIDA y la página
+   actual va en una pastilla amarilla adentro. Al ser sólida, se lee sobre
+   cualquier fondo (la barra es transparente y puede pasar por zonas claras).
+   Mismo alto (46px) que las burbujas "Yo" y "Carrito" para que queden parejas:
+   los links se estiran a lo alto de la cápsula (align-items: stretch) y solo
+   llevan padding horizontal. */
+.header__nav {
+  margin-left: auto;
+  display: flex;
+  align-items: stretch;
+  gap: 0.35rem;
+  height: 46px;
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--brand);
+}
+.header__nav a {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-weight: 500;
+  text-decoration: none;
+  font-size: var(--step--1);
+  color: var(--cream);
+  padding: 0 1.25em;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  transition: background 0.18s, color 0.18s;
+}
+.header__nav a:hover { background: rgba(247, 241, 227, 0.18); }
+.header__nav a[aria-current='page'] {
+  background: var(--brand-yellow);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.header__actions { display: flex; align-items: center; gap: 0.6rem; }
+/* Botón de cuenta: círculo calado. Con sesión muestra la inicial. */
+.header__me {
+  display: grid;
+  place-items: center;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: var(--cream);
+  text-decoration: none;
+  font-size: var(--step--1);
+  font-weight: 600;
+  transition: background 0.18s, transform 0.18s var(--ease-bounce);
+}
+.header__me:hover { background: var(--brand-dark); transform: translateY(-2px); }
+
+/* Sin sesión, el botón de cuenta es el componente <shopify-account> (su hoja
+   trae Shop, Google, Facebook y correo, sin salir de la tienda). El slot pone
+   nuestro círculo "Yo"; estas vars solo tiñen la hoja con la marca — el resto
+   del componente lo controla Shopify y no se puede tocar. */
+shopify-account {
+  display: block;
+  --shopify-account-color-accent: var(--brand);
+  --shopify-account-color-background: var(--cream);
+  --shopify-account-color-text: var(--p-2217);
+  --shopify-account-font-body: var(--font-body);
+}
+/* El envoltorio del avatar sin sesión, en cero: el círculo lo pinta el slot. */
+shopify-account::part(signed-out-avatar) {
+  padding: 0;
+  width: auto;
+  height: auto;
+  background: none;
+  border: none;
+}
+
+/* El botón de cuenta con la ficha del perro cargada (handoff 1c): el MISMO
+   componente, no otro. En reposo es el círculo de arriba con "Yo" o la inicial;
+   cuando initPerroNav() encuentra una ficha guardada pone data-perro="true" y
+   se estira a píldora con la cara y el nombre del perro.
+   Vive en base.css y no en cuenta.css porque el header sale en todas las
+   páginas y cuenta.css solo se carga en la ficha. */
+.header__me .dog-avatar,
+.header__me-name { display: none; }
+
+.header__me[data-perro='true'] {
+  width: auto;
+  min-width: 46px;
+  gap: 8px;
+  padding: 0 16px 0 7px;
+  grid-auto-flow: column;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  /* Con ficha, la pastilla es la del diseño de cuenta: crema con borde y la
+     tinta petróleo del paquete (2217C), no el círculo verde de "Yo". El borde
+     la separa del fondo, que en este tema también es crema. */
+  background: var(--cream);
+  border: 2px solid rgba(1, 60, 62, 0.2);
+  color: var(--p-2217);
+}
+.header__me[data-perro='true']:hover {
+  background: var(--cream);
+  border-color: var(--p-2217);
+}
+.header__me[data-perro='true'] .dog-avatar,
+.header__me[data-perro='true'] .header__me-name { display: block; }
+.header__me[data-perro='true'] .header__me-initial { display: none; }
+
+.header__me .dog-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  /* Las caras vienen recortadas sobre su propio fondo claro; sin este aro se
+     funden con el verde de la píldora. */
+  border: 2px solid var(--cream);
+  background: var(--cream);
+}
+/* El nombre se cae primero en pantallas chicas: la cara sola ya dice de quién
+   es la cuenta, y el header ahí ya va apretado. */
+@media (max-width: 700px) {
+  .header__me[data-perro='true'] { width: 46px; padding: 0; gap: 0; }
+  .header__me[data-perro='true'] .header__me-name { display: none; }
+}
+.header__cart {
+  display: flex;
+  align-items: center;
+  /* El contador es su propio hijo: sin gap, flex lo pega al "·". */
+  gap: 0.3em;
+  height: 46px;
+  padding: 0 1.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--brand-yellow);
+  color: var(--ink);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step--1);
+  white-space: nowrap;
+  transition: transform 0.18s var(--ease-bounce);
+}
+.header__cart:hover { transform: translateY(-2px); }
+
+.header__burger {
+  display: none;
+  place-items: center;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid rgba(247, 241, 227, 0.4);
+  color: var(--cream);
+  cursor: pointer;
+}
+
+/* La cápsula necesita aire: por debajo de esto el nav no entra en una línea y
+   se va al panel lateral del burger. */
+@media (max-width: 900px) {
+  .header__burger { display: grid; }
+  .header__nav {
+    /* En el panel lateral la cápsula estorba: se desarma. El alto de 46px del
+       desktop no aplica acá: el panel ocupa toda la pantalla (inset: 0). */
+    border: 0;
+    margin-left: 0;
+    height: auto;
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(78vw, 320px);
+    background: var(--brand-dark);
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem var(--gutter);
+    gap: 1.4rem;
+    transform: translateX(100%);
+    transition: transform 0.3s var(--ease-bounce);
+    z-index: 70;
+  }
+  .header__nav[data-open='true'] { transform: translateX(0); }
+  /* En el panel los links recuperan aire vertical (mejor blanco de toque). */
+  .header__nav a { font-size: var(--step-1); padding: 0.4em 1em; }
+}
+/* En celu el botón de cuenta estorba: quedan carrito y burger. */
+@media (max-width: 560px) {
+  .header__me,
+  shopify-account { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Preloader — "armando el premio perfecto"
+   -------------------------------------------------------------------------- */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: var(--cream);
+  display: grid;
+  place-items: center;
+  gap: 1.5rem;
+  transition: opacity 0.5s ease, visibility 0.5s;
+}
+.preloader[data-done='true'] { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.preloader__stack {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.6rem;
+  height: 96px;
+  font-size: 54px;
+  line-height: 1;
+}
+.preloader__bit {
+  opacity: 0;
+  transform: translateY(-26px) rotate(-14deg);
+  animation: drop-in 0.55s var(--ease-bounce) forwards;
+}
+.preloader__bit:nth-child(1) { animation-delay: 0.05s; }
+.preloader__bit:nth-child(2) { animation-delay: 0.45s; }
+.preloader__bit:nth-child(3) { animation-delay: 0.85s; }
+.preloader__bit:nth-child(4) { animation-delay: 1.25s; }
+@keyframes drop-in {
+  60%  { opacity: 1; transform: translateY(4px) rotate(4deg); }
+  100% { opacity: 1; transform: translateY(0) rotate(0); }
+}
+
+.preloader__msg {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  color: var(--brand);
+  min-height: 1.4em;
+  text-align: center;
+}
+.preloader__bar {
+  width: min(240px, 60vw);
+  height: 10px;
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: var(--white);
+}
+.preloader__fill {
+  height: 100%;
+  width: 0;
+  background: var(--brand-yellow);
+  animation: fill-up var(--preloader-duration, 2s) linear forwards;
+}
+@keyframes fill-up { to { width: 100%; } }
+
+/* --------------------------------------------------------------------------
+   Portada (hero) — el logotipo ES la portada
+
+   Sin foto: todo el peso visual lo carga la palabra BUNGOT en Brookline, cortada
+   por los dos costados sobre crema. Valores en px del artboard de 1440; no se
+   ajustan a ojo. La manada (.hero__pups, más abajo) NO se toca: sigue en
+   z-index 3, por delante del logotipo y desbordando hacia la sección siguiente.
+   -------------------------------------------------------------------------- */
+.hero {
+  /* Factor único de la manada: lo que cabe (--pup-scale, lo mide theme.js)
+     por el gusto del cliente (--pack-boost, ajustable desde el customizer). */
+  --pup-k: calc(var(--pup-scale, 1) * var(--pack-boost, 1));
+  /* Verde profundo (la bajada) y teal (el logotipo). Son los mismos que ya usa
+     la PDP en producto.css y no están en la paleta de :root, así que van como
+     vars locales igual que allá — no son colores inventados. */
+  --hero-green: #013C3E;
+  --hero-teal: #00968F;
+  /* El logotipo se posiciona solo con esto. La bajada tiene el suyo, así que
+     mover uno no arrastra al otro — pero entre los dos solo hay ~27px de aire:
+     para subir o bajar "el bloque de texto" hay que restarles o sumarles LO
+     MISMO a ambos, o la bajada termina montada sobre las mayúsculas. */
+  --hero-wordmark-top: 165px;
+  /* La bajada va en la franja libre ENTRE el header y las mayúsculas. Ojo: el
+     tope real no es el top del logotipo — Brookline pinta muy por encima de su
+     caja de línea, así que su tinta arranca ~26px más arriba de lo que dice su
+     top. Con el logotipo en 165px, la tinta empieza cerca de los 139px. */
+  --hero-tagline-top: 66px;
+  /* Corrimiento horizontal del logotipo. Se aplica a la TINTA, no a su caja:
+     la caja tiene que seguir midiendo lo mismo que el hero porque es la que
+     recorta el sangrado en los dos costados. Si se moviera la caja, el corte
+     dejaría de coincidir con los bordes de la pantalla. */
+  --hero-wordmark-nudge: 18px;
+
+  background: var(--cream);
+  color: var(--hero-green);
+  padding: 26px 44px 0;
+  position: relative;
+  /* Alto del diseño. NADA de overflow: hidden acá: la manada tiene que poder
+     desbordar hacia abajo, y recortando en el hero se corta al ras del borde. */
+  height: 910px;
+  display: flex;
+  flex-direction: column;
+  /* El único hijo en flujo es la fila de la manada, que se va hasta abajo; el
+     logotipo, la pastilla y el párrafo van absolutos. */
+  justify-content: flex-end;
+}
+/* La crema de la portada se estira hacia ARRIBA, por detrás del header
+   transparente y sticky, para que la barra quede sobre el mismo fondo del hero
+   y no sobre el del body. Alto = solo la franja del header (--nav-h, que mide
+   theme.js) más su gap: así llega justo a la base del marquee y NO lo tapa.
+   Full-bleed a lo ancho del viewport (el body ya tiene overflow-x: clip). */
+.hero::before {
+  content: '';
+  position: absolute;
+  bottom: 100%; /* justo pegado al borde de arriba del hero */
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  height: calc(var(--nav-h, 58px) + var(--nav-gap));
+  background: var(--cream);
+}
+
+/* --- El logotipo gigante -------------------------------------------------- */
+/* top: 221px no es a ojo. Brookline pinta ~74px por encima de su caja de línea
+   (Anton pintaba ~23px), así que al cambiar de fuente hubo que subir el mismo
+   valor que creció ese desborde para que la tinta caiga donde caía antes y la
+   "T" final no se le encime al párrafo de la derecha. */
+.hero__wordmark {
+  position: absolute;
+  top: var(--hero-wordmark-top);
+  left: 0;
+  right: 0;
+  z-index: 2; /* por debajo de la manada, que va en 3 */
+  margin: 0;
+  /* Recorte SOLO horizontal. Con este cuerpo y line-height: .78 la tinta de
+     Brookline se sale de su caja de línea por arriba y por abajo: overflow: hidden
+     le afeitaría los remates a las mayúsculas. El inset negativo en vertical
+     las deja salir enteras y corta nada más a los lados. */
+  clip-path: inset(-260px 0px);
+}
+.hero__wordmark-ink {
+  display: block;
+  margin: 0 -20px; /* el sangrado por los dos costados */
+  /* Relativo y no un margen: mueve lo que se ve sin cambiar el ancho de la caja
+     ni, por lo tanto, dónde recorta el clip-path de arriba. */
+  position: relative;
+  left: var(--hero-wordmark-nudge);
+  font-family: var(--font-wordmark);
+  font-weight: 400;
+  /* Cuerpo y grosor salen de los tokens de :root, que comparte con el footer:
+     los dos BUNGOT gigantes son el mismo logotipo y se mueven juntos. */
+  font-size: var(--wordmark-size);
+  line-height: .78;
+  letter-spacing: .04em;
+  /* SIEMPRE la mitad del letter-spacing. El tracking también agrega espacio
+     DESPUÉS de la última letra, y eso descentra la palabra hacia la izquierda;
+     este text-indent le devuelve la mitad y la vuelve a centrar ópticamente.
+     Si cambias uno, cambia el otro o BUNGOT queda corrido. */
+  text-indent: .02em;
+  color: var(--hero-teal);
+  text-align: center;
+  /* Engorde: el contorno va del mismo color que el relleno, así no se lee como
+     borde sino como letra más gruesa. Si el navegador no lo soporta, la palabra
+     se ve con su grosor normal — no se rompe nada. */
+  -webkit-text-stroke: var(--wordmark-weight) currentColor;
+}
+
+/* --- La bajada ------------------------------------------------------------
+   Va ARRIBA del logotipo, en la franja que quedó libre entre el marquee y las
+   mayúsculas. Abajo del logotipo no cabe: ahí empiezan los cuerpos de la
+   manada y este naranja sobre el pelaje deja de leerse. z-index 4 para que
+   pase por encima del logotipo si algún día se acercan. */
+.hero__tagline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--hero-tagline-top);
+  z-index: 4;
+  margin: 0;
+  font-family: Anton, sans-serif;
+  font-weight: 400;
+  font-size: 46px;
+  /* line-height explícito: con el de por defecto la caja mide bastante más que
+     la letra y la holgura contra el logotipo dejaba de ser la que se calcula. */
+  line-height: 1;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--hero-green);
+}
+
+/* --- Fila de la manada -----------------------------------------------------
+   .hero__pups reserva el espacio y define la LÍNEA DE CORTE. clip-path (y no
+   overflow: hidden) deja que las mascotas desborden hacia ARRIBA sobre el hero
+   y se corten solo abajo, donde la barra navy de la sección siguiente las tapa.
+   La altura de .hero__pups es fija: al scrollear solo se mueve el inner. Si
+   cambiara, la sección de arriba brincaría (ese bug ya se corrigió una vez). */
+.hero__pups {
+  position: relative;
+  z-index: 3;
+  clip-path: inset(-800px 0 0 0);
+  margin: 0 -44px; /* anula el padding lateral del hero */
+  height: calc(300px * var(--pup-k));
+  flex: none;
+  /* La fila mide 1312px de layout aunque el scale la muestre más chica (un
+     transform no cambia el layout), y eso ensanchaba el documento. `clip` y no
+     `hidden`: con hidden el eje Y también se recortaría y las mascotas ya no
+     podrían desbordar hacia arriba sobre el hero. */
+  overflow-x: clip;
+  overflow-y: visible;
+}
+.hero__pups-inner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* 760 y no los 660 del paquete: al esconderse se baja el 101% de ESTE alto, y
+     con 660 la mascota más alta (Ramona, 725) seguía asomando ~58px sobre el
+     corte. Subirlo solo estira la caja hacia arriba, que es invisible. */
+  height: 760px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* Más lenta y sin rebote: el handoff traía .6s con un cubic-bezier que se
+     pasa de largo (1.4) y el tirón se sentía brusco. Ahora solo frena, sin
+     sobrepasarse. */
+  transition: transform 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+  /* --pup-scale (lo pone theme.js) achica la fila ENTERA cuando la ventana es
+     más baja que el artboard. Un scale sobre el contenedor cumple sola la regla
+     del README —"si re-escalas las alturas, escala los márgenes con el mismo
+     factor"— porque altos, anchos y traslapes se multiplican por lo mismo.
+     Origen abajo: las patas no se despegan de la línea de corte. */
+  transform-origin: bottom center;
+  transform: scale(var(--pup-k));
+}
+.hero__pups-inner[data-hidden] { transform: scale(var(--pup-k)) translateY(101%); }
+.hero__pup {
+  position: relative; /* necesario para que z-index aplique */
+  filter: drop-shadow(0 18px 26px rgba(22, 60, 105, 0.24));
+}
+
+/* La barra "LOS FAVORITOS DE LA MANADA" vive en la sección siguiente, pero su
+   margen negativo es parte de la costura: sube 38px sobre el hero y tapa el
+   corte de las mascotas. Sin él se ve la línea recta de las patas. Va acá y no
+   en Favoritos porque es la costura de la portada: si se saca la portada, no
+   debe quedar nada tirando hacia arriba. */
+.shopify-section:has(.hero) + .shopify-section {
+  position: relative;
+  z-index: 4;
+  margin-top: calc(-1 * var(--hero-seam));
+  /* Fondo propio y no el del body: la sección sube --hero-seam sobre el hero, y
+     sin pintar ese tramo el fondo de la portada se colaba por los costados de
+     la barra navy (que va metida --favs-frame hacia adentro). Con esto el corte
+     de las mascotas cae en el filo de la sección, parejo de lado a lado. */
+  background: var(--cream);
+}
+
+/* Móvil: el paquete lo marca como propuesta, no diseño aprobado. */
+@media (max-width: 900px) {
+  /* --pup-k a 1: acá abajo las alturas se fijan a mano (ver .hero__pup), así que
+     el scale del contenedor sobra — encimado achicaba dos veces y dejaba a la
+     manada del tamaño de un sello. */
+  /* El alto de 910px y el posicionamiento absoluto son de escritorio: acá el
+     hero vuelve al flujo y los dos textos se apilan en orden de lectura. */
+  .hero {
+    padding: 20px 20px 0;
+    height: auto;
+    min-height: 0;
+    justify-content: flex-start;
+    --pup-k: 1;
+  }
+  .hero__tagline,
+  .hero__wordmark { position: static; z-index: auto; }
+  .hero__tagline { font-size: 7vw; margin-bottom: 10px; }
+  /* Sin caja absoluta que recortar. El cuerpo ya lo bajó --wordmark-size. */
+  .hero__wordmark { clip-path: none; }
+  .hero__wordmark-ink { margin: 0; }
+  .hero__pups { height: 180px; margin: 0 -20px; }
+  .hero__pups-inner { height: 420px; }
+  /* A tamaño de diseño no entran seis en 390px: se achican parejo y se muestran
+     las cuatro del centro, que son las que quedan completas. */
+  .hero__pup {
+    height: 260px !important;
+    width: auto !important;
+    margin-left: -28px !important;
+    margin-right: -28px !important;
+  }
+  .hero__pup:nth-child(n + 5) { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Favoritos — el color sube, el contenido se queda quieto
+
+   Los paneles están todos superpuestos en un escenario pineado, en la misma
+   posición. El scroll no los mueve: revela cada uno con clip-path de abajo
+   hacia arriba (--fav-reveal, lo maneja theme.js). Por eso la foto y el texto
+   no se mueven nunca de lugar y lo único que viaja es el color.
+
+   Sin JS no hay [data-enhanced] y todo esto no aplica: quedan secciones
+   normales, una abajo de la otra, con su color. Se lee igual.
+   -------------------------------------------------------------------------- */
+.favs {
+  position: relative;
+  /* --favs-frame (el marco de crema alrededor del bloque de color) se declara en
+     :root: lo comparte la foto a lo ancho, que copia este mismo encuadre. */
+  /* Línea de tiempo con nombre para que el escenario pueda animarse contra la
+     posición de TODA la sección, y no contra la suya (que es sticky y miente). */
+  view-timeline-name: --favs;
+  view-timeline-axis: block;
+}
+
+/* Banda a todo el ancho, con la mitad del alto que tenía originalmente:
+   ~70px contra los ~141px de antes (era padding 2.6rem + step-3). */
+.favs__heading {
+  background: var(--brand-dark);
+  color: var(--brand-yellow);
+  font-size: var(--step-2);
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0;
+  width: 100%;
+  padding: clamp(0.75rem, 1.2vw, 1.05rem) var(--gutter);
+}
+
+/* Con enhancement se despega del flujo y queda clavada arriba del escenario,
+   por encima de los paneles (que van con z-index 1..n). Como tiene fondo
+   propio, no la alcanza el cambio de color de atrás. */
+.favs[data-enhanced='true'] .favs__heading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+@media (max-width: 820px) {
+  .favs__heading { font-size: var(--step-1); }
+}
+
+/* --- Sin enhancement: secciones normales apiladas --- */
+.fav {
+  position: relative;
+  background: var(--fav-bg);
+  border-top: 3px solid var(--ink);
+  /* var(--fav-fg) y no var(--ink) fijo: cada panel elige su tinta según su
+     fondo. Sobre 7716 C la tinta da 3.4:1 y el blanco 3.6:1; sobre 122 C el
+     blanco da 1.6:1. No hay un color de texto que sirva para toda la paleta. */
+  color: var(--fav-fg, var(--ink));
+  padding-block: clamp(2.5rem, 7vw, 4.5rem);
+  overflow: hidden;
+}
+
+/* --- Con enhancement: escenario pineado + capas superpuestas --- */
+.favs[data-enhanced='true'] {
+  /* El recorrido tiene que dar para: una pausa por panel, un cambio entre cada
+     par, y la pantalla que ocupa el escenario pineado. Esta cuenta es la misma
+     que hace theme.js — si se tocan, se tocan las dos. */
+  height: calc(
+    (var(--fav-count) * var(--fav-hold) + (var(--fav-count) - 1) * var(--fav-trans) + 1) * 100svh
+  );
+}
+.favs[data-enhanced='true'] .favs__stage {
+  position: sticky;
+  /* Se pega a la altura del marco, no al techo: así queda crema arriba también
+     cuando está pineado. */
+  top: var(--favs-frame);
+  height: calc(100svh - var(--favs-frame) * 2);
+  margin-inline: var(--favs-frame);
+  border-radius: var(--radius-lg);
+  /* overflow hidden hace dos cosas acá: recorta las capas al radio (si no, las
+     esquinas de color se salen del marco) y contiene el clip-path de los
+     paneles. */
+  overflow: hidden;
+}
+
+/* Parallax de salida: en el último tramo la BOLSA se rezaga dentro del marco.
+   El marco, el color y el texto se van con el scroll; la bolsa los sigue más
+   lento. Esa diferencia de velocidad es el efecto.
+
+   Por qué la bolsa y nada más. Medido en Chrome a 700/900/1080px de alto:
+     - el escenario: mover el marco entero es mover toda la sección (no).
+     - los paneles: son los que pintan el color; moverlos deja el marco vacío.
+     - el texto: a 700px de alto le quedan 24px abajo y 34px arriba. Cualquier
+       recorrido que se note lo mete debajo de la barra del título.
+     - la bolsa: ya se sale del marco en todos los tamaños (a 900px sobresale
+       7px, a 700px 53px) y overflow:hidden la recorta. Le sobra lugar.
+   Con .fav__inner (bolsa + texto juntos) mandaba el más apretado: 40px contra
+   860px de recorrido, un 4.6% — invisible.
+
+   El signo es POSITIVO: baja mientras el scroll sube. Rezagarse es lo que lee
+   como profundidad, y clavando la bolsa hacia abajo solo se recorta más contra
+   el borde — nunca aparece un canto flotando dentro del marco.
+
+   El rango `exit` de una sección más alta que la pantalla equivale justo al
+   último viewport de scroll: exactamente la transición que queremos suavizar. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .favs[data-enhanced='true'] .fav__num,
+    .favs[data-enhanced='true'] .fav__media,
+    .favs[data-enhanced='true'] .fav__claim,
+    .favs[data-enhanced='true'] .fav__copy {
+      animation: favs-parallax linear both;
+      animation-timeline: --favs;
+      animation-range: exit 0% exit 100%;
+    }
+
+    /* Cuántos px baja cada capa al salir la sección. TODAS para el mismo lado
+       (positivo = se rezaga); lo que cambia es cuánto. El número es el fondo y
+       es el que más se queda; la bolsa, el claim y el texto van juntos.
+
+       El texto va con clamp() y no con un número fijo porque es el único al
+       que se le acaba el aire. Hacia abajo el borde inferior del marco se ve
+       hasta el final, así que ahí un recorte se nota (hacia arriba no pasaba:
+       se metía bajo la barra opaca del título, y por eso antes lo mandé al
+       revés que la bolsa).
+
+       El aire sale de la geometría, no de probar números:
+         escenario  = 100svh - 2*marco(40)
+         .fav       = padding-block 5rem 0  -> 80px arriba
+         caja       = 100svh - 160
+         el texto queda centrado ahí, así que:
+         aire debajo = (100svh - 160 - 491) / 2 = 50svh - 326px
+       (491px es el alto del bloque de texto. Verificado contra Chrome a 700,
+       800, 900 y 1080: da 24 / 74 / 124 / 214px, clavado. Si cambiás el copy
+       o el alto de la barra, rehacer esta cuenta.)
+
+       Uso 300 y no 326 a propósito: deja ~25px de sobrepaso, y el recorte
+       recién aparece cuando del marco ya casi no queda nada en pantalla.
+       Resultado: de 830px de alto para arriba el texto se mueve los mismos
+       110px que la bolsa; más abajo se recorta solo, sin cortar el botón. */
+    .favs[data-enhanced='true'] .fav__num { --favs-shift: calc(var(--favs-parallax) * 1.45); }
+    .favs[data-enhanced='true'] .fav__media { --favs-shift: var(--favs-parallax); }
+    .favs[data-enhanced='true'] .fav__claim { --favs-shift: var(--favs-parallax); }
+    .favs[data-enhanced='true'] .fav__copy { --favs-shift: clamp(0px, calc(50svh - 300px), var(--favs-parallax)); }
+  }
+}
+@keyframes favs-parallax {
+  from { transform: translateY(0); }
+  /* En px y no en %: el % se mide contra el alto del propio elemento, que
+     cambia con el viewport, y el desplazamiento quedaba impredecible. */
+  to { transform: translateY(var(--favs-shift, 0px)); }
+}
+
+/* El escenario es sticky, o sea posicionado: se pinta por encima de cualquier
+   sección estática que venga después. Sin esto, el escenario rezagado taparía a
+   la sección siguiente en vez de meterse por debajo, y el parallax se vería al
+   revés. Se la sube de plano a la que sigue, sea cual sea — así aguanta que
+   reordenen las secciones desde el customizer. */
+.shopify-section:has(.favs) + .shopify-section {
+  position: relative;
+  z-index: 1;
+}
+.favs[data-enhanced='true'] .fav {
+  position: absolute;
+  inset: 0;
+  /* Deja el techo libre para la pestaña del título, que va por encima. */
+  padding-block: 5rem 0;
+  display: grid;
+  place-items: center;
+  border-top: 0;
+  /* La cortina. 0% = revelado del todo; 100% = escondido abajo. */
+  clip-path: inset(var(--fav-reveal, 0%) 0 0 0);
+}
+
+.fav__num {
+  position: absolute;
+  left: clamp(0.5rem, 3vw, 2.5rem);
+  bottom: clamp(0.5rem, 2vw, 1.5rem);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(5rem, 16vh, 11rem);
+  line-height: 0.75;
+  /* Sigue al color del panel: en tinta fija se perdía sobre los fondos oscuros. */
+  color: currentColor;
+  opacity: 0.16;
+  pointer-events: none;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+  z-index: 0;
+}
+
+.fav__inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  /* Más ancho que el --wrap del resto del sitio, y con menos aire a los lados:
+     son los píxeles que necesita la columna del texto para no partirse una vez
+     que los laterales quedan iguales (ver grid-template-columns abajo).
+     Medido a 1440, el ancho más apretado donde todavía se ven las tres
+     columnas: el texto queda en 350px y necesita 346. */
+  max-width: min(1480px, 100%);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 2vw, 1.75rem);
+  display: grid;
+  /* Laterales IGUALES para que la foto quede en el centro exacto del panel.
+     Antes eran 0.45fr y 1fr: 156px contra 346px, y esa diferencia dejaba la
+     columna del medio 95px corrida a la izquierda. No se veía porque las
+     bolsas venían descentradas dentro de su propio recorte y compensaban de
+     casualidad; al alinearlas bien, el desbalance quedó a la vista.
+
+     El medio va a 540px fijos y no en fr: es el max-width de la foto, así que
+     la columna mide exactamente lo que puede ocupar y los dos lados se
+     reparten el resto en partes iguales. Con fr el ancho dependía del reparto
+     y volvía a descentrarse. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 540px) minmax(0, 1fr);
+  gap: clamp(0.75rem, 2.2vw, 2rem);
+  align-items: center;
+}
+
+.fav__claim {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 5.5vw, 4.4rem);
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin: 0;
+  align-self: start;
+}
+
+.fav__media { display: grid; place-items: center; }
+.fav__img {
+  width: 100%;
+  /* El packaging es vertical (645x900) y sin rotar la caja que ocupa es la del
+     propio alto. El tope sale de: alto del escenario (100svh - 2*marco) menos
+     la barra del título (~70px) menos el aire de arriba del panel (5rem).
+     A 700px de alto, el caso peor: 620 - 70 - 80 = 470px = 67svh. Dejo 66svh.
+     Antes esto era 62svh porque a 30° la caja crecía x1.224 y había que
+     descontarlo; sin ángulo esa cuenta ya no corre. Verificado de 700 a 1440.
+     Si volvés a rotarla o cambiás el marco o la barra, hay que rehacer esto. */
+  max-width: 540px;
+  max-height: 66svh;
+  object-fit: contain;
+  filter: drop-shadow(0 22px 34px rgba(22, 60, 105, 0.32));
+}
+
+.fav__copy { text-align: right; }
+
+.fav__eyebrow {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.55);
+  /* Tinta fija, no heredada: la pastilla tiene fondo claro propio. */
+  color: var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 0.3em 1em;
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.7rem;
+}
+.fav__title {
+  font-size: clamp(1.9rem, 1rem + 3.6vw, 4rem);
+  text-transform: uppercase;
+  margin: 0 0 0.4em;
+}
+.fav__desc {
+  font-size: var(--step-0);
+  max-width: 40ch;
+  margin: 0 0 1rem auto;
+  /* El panel no puede crecer más allá de la pantalla. */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.fav__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: flex-end;
+  margin: 0 0 1.2rem;
+  padding: 0;
+  list-style: none;
+}
+.fav__pill {
+  background: rgba(255, 255, 255, 0.72);
+  /* Tinta fija, no heredada: el pill tiene fondo claro propio. */
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 0.22em 0.8em;
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  white-space: nowrap;
+}
+
+.fav__foot {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.fav__price {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step-2);
+}
+.fav__price s { opacity: 0.5; font-size: 0.6em; margin-right: 0.3em; }
+.fav__form { margin: 0; }
+.fav__btn:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; transform: none; }
+
+/* 1400 y no 980: con las tres columnas y los laterales iguales, la del texto
+   se parte por debajo de 1410px (medido — el eyebrow se va a dos líneas y los
+   pills a dos filas). El claim es decorativo (aria-hidden), así que soltarlo
+   antes le devuelve ese ancho al texto. Debajo de acá la foto ya no queda
+   centrada en el panel: sin columna izquierda no hay contra qué centrarla, y
+   es otra composición. */
+@media (max-width: 1400px) {
+  .fav__claim { display: none; }
+  .fav__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+@media (max-width: 720px) {
+  .fav__inner { grid-template-columns: 1fr; gap: 0.8rem; }
+  .fav__copy { text-align: center; }
+  .fav__pills, .fav__foot { justify-content: center; }
+  .fav__desc { margin-inline: auto; -webkit-line-clamp: 2; line-clamp: 2; }
+  .fav__img { max-height: 34svh; }
+  .fav__num { font-size: 4.5rem; opacity: 0.13; }
+}
+
+/* --------------------------------------------------------------------------
+   Statement — bloque editorial (tipo hero de crav burgers)
+   -------------------------------------------------------------------------- */
+.statement {
+  background: var(--st-bg, var(--cream));
+  /* Sin overflow:hidden a propósito: recortaba el sticker cuando cuelga por
+     debajo de la foto. Nada acá se sale de ancho (la foto termina justo en el
+     borde) y el body ya tiene overflow-x: clip. */
+}
+.statement__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: center;
+  /* Los dos huecos que rodean a esta sección tienen que medir lo mismo:
+       arriba  = este padding-top, y ahí arranca la foto (lo primero que pinta).
+       abajo   = este padding-bottom MÁS el marco del panel naranja, que se
+                 suma porque el panel pinta su cuadro por dentro de su padding.
+     De ahí el calc: el de arriba se deriva del de abajo en vez de ser un
+     número aparte, así siguen iguales en cualquier ancho sin que nadie los
+     tenga que sincronizar a mano.
+
+     Antes eran 13vw arriba (187px) contra 6vw abajo (80px): el hueco de arriba
+     casi duplicaba al de abajo. */
+  --st-air: clamp(3rem, 6vw, 5rem);
+  padding-block: calc(var(--st-air) + var(--fpanel-frame)) var(--st-air);
+
+  /* El elemento lleva .wrap, que lo centra y lo corta en 1320px. Acá se anula
+     para que la foto llegue al borde real de la pantalla: el texto se sigue
+     alineando con el resto de la página gracias al padding-left calculado
+     (mismo eje que el wrap), y la derecha queda sin padding para que sangre.
+     El max() evita que el padding se vaya en negativo abajo de 1320px. */
+  max-width: none;
+  margin-inline: 0;
+  padding-left: max(var(--gutter), calc((100% - var(--wrap)) / 2 + var(--gutter)));
+  padding-right: 0;
+}
+@media (max-width: 900px) {
+  .statement__inner {
+    grid-template-columns: 1fr;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+  .statement__copy { text-align: center; }
+}
+
+.statement__copy { position: relative; }
+
+.statement__eyebrow {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1rem, 0.8rem + 0.7vw, 1.5rem);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--st-accent);
+  /* Mismo recurso del titular, en chico. */
+  text-shadow:
+    -2px -2px 0 var(--st-outline, var(--white)), 2px -2px 0 var(--st-outline, var(--white)),
+    -2px 2px 0 var(--st-outline, var(--white)), 2px 2px 0 var(--st-outline, var(--white)),
+    0 -2px 0 var(--st-outline, var(--white)), 0 2px 0 var(--st-outline, var(--white)),
+    -2px 0 0 var(--st-outline, var(--white)), 2px 0 0 var(--st-outline, var(--white));
+  transform: rotate(-4deg);
+  margin-bottom: 0.6rem;
+}
+
+.statement__title {
+  font-size: clamp(2.8rem, 1rem + 8.5vw, 7rem);
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--st-accent);
+  margin: 0 0 0.5em;
+  /* El contorno se arma con 8 sombras en vez de -webkit-text-stroke, que
+     recorta hacia adentro del glifo y adelgaza la tipografía.
+
+     Su color es clave para la legibilidad: si el relleno del titular es claro
+     (ej. 6141 C sobre crema da 1.6:1), el contorno es lo único que define la
+     letra y tiene que ir oscuro. */
+  text-shadow:
+    -4px -4px 0 var(--st-outline, var(--white)), 4px -4px 0 var(--st-outline, var(--white)),
+    -4px 4px 0 var(--st-outline, var(--white)), 4px 4px 0 var(--st-outline, var(--white)),
+    0 -4px 0 var(--st-outline, var(--white)), 0 4px 0 var(--st-outline, var(--white)),
+    -4px 0 0 var(--st-outline, var(--white)), 4px 0 0 var(--st-outline, var(--white)),
+    0 10px 0 rgba(22, 60, 105, 0.1);
+}
+
+.statement__text {
+  font-size: var(--step-0);
+  max-width: 44ch;
+  color: var(--ink);
+  margin-bottom: 1.6rem;
+}
+@media (max-width: 900px) { .statement__text { margin-inline: auto; } }
+
+.statement__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Color propio y no --st-accent: si el acento es claro, el botón con texto
+     blanco queda ilegible (6141 C + blanco = 1.8:1). */
+  background: var(--st-cta-bg, var(--st-accent));
+  color: var(--st-cta-fg, var(--white));
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step-1);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  /* Píldora bien ancha y ovalada, como el "ORDER NOW" de la referencia. */
+  padding: 0.9em 3.2em;
+  border-radius: 50% / 50%;
+  transition: transform 0.16s var(--ease-bounce), box-shadow 0.16s;
+  box-shadow: 0 6px 0 rgba(22, 60, 105, 0.18);
+}
+.statement__cta:hover { transform: translateY(-3px); box-shadow: 0 10px 0 rgba(22, 60, 105, 0.2); }
+.statement__cta:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(22, 60, 105, 0.2); }
+
+.statement__media { justify-self: end; width: 100%; position: relative; }
+
+/* --- Sticker de la esquina ---
+   El sticker no se mueve: lo que pasa es que se le despega el papel. Una capa
+   gris (el liner) va tapando la impresión y se repliega en diagonal con el
+   scroll, hasta quedar en la esquinita doblada de arriba a la izquierda.
+
+   Estado base = ya pegado, con la esquinita. La animación solo se monta encima
+   si el navegador soporta scroll-driven; si no, se ve así, puesto.
+   ------------------------------------------------------------------------- */
+.sticker {
+  display: block;
+  position: absolute;
+  /* Pisa el borde de la foto, como un sticker pegado sobre el canto. */
+  left: -8%;
+  /* Negativo = cuelga por debajo del canto de la foto. */
+  bottom: var(--st-sticker-b, -6%);
+  width: var(--st-sticker-w, 45%);
+  /* El tope tiene que dejar respirar al %: con 200px el porcentaje casi nunca
+     llegaba a mandar y el sticker quedaba chico en cualquier monitor. */
+  max-width: 400px;
+  height: auto;
+  z-index: 2;
+  pointer-events: none;
+  transform: rotate(-8deg);
+  /* Sombra corta = pegado contra la superficie. */
+  filter: drop-shadow(0 5px 5px rgba(22, 60, 105, 0.3));
+}
+@media (max-width: 900px) {
+  .sticker { left: 0; bottom: 4%; width: 34%; max-width: 190px; }
+}
+
+/* La geometría del doblez. El pliegue es la diagonal x + y = P:
+
+     · la cara impresa se recorta al lado pegado (el cuadrado MENOS la esquina):
+       donde se despegó ya no tapa nada y se ve la foto de atrás;
+     · la solapa es esa MISMA esquina reflejada sobre el pliegue. No la dibujo a
+       mano: recorto la esquina y le aplico el reflejo con transform, así el
+       dorso sale con la silueta correcta y del tamaño exacto que se despegó.
+
+   El reflejo sobre x+y=P es (x,y) -> (P-y, P-x), o sea rotar -90°, espejar en X
+   y correr P. Solo es exacto si la caja es cuadrada — por eso los .webp están
+   padeados a cuadrado.
+
+   P va de 100% (medio sticker doblado) al valor final del customizer. */
+.sticker__print {
+  display: block;
+  width: 100%;
+  height: auto;
+  clip-path: polygon(
+    var(--st-peel, 30%) 0, 100% 0, 100% 100%, 0 100%, 0 var(--st-peel, 30%)
+  );
+}
+
+.sticker__flap {
+  position: absolute;
+  inset: 0;
+  /* Dorso del papel: más oscuro contra el borde suelto, más claro en el pliegue. */
+  background: linear-gradient(135deg, #8b8880 0%, #c9c6c0 45%, #e7e4de 100%);
+  /* Misma silueta que el sticker; el reflejo de abajo se la lleva puesta. */
+  -webkit-mask-image: var(--sticker-src);
+  mask-image: var(--sticker-src);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  /* La esquina despegada, en coordenadas sin reflejar. */
+  clip-path: polygon(0 0, var(--st-peel, 30%) 0, 0 var(--st-peel, 30%));
+  transform-origin: 0 0;
+  transform: translate(var(--st-peel, 30%), var(--st-peel, 30%)) scaleX(-1) rotate(-90deg);
+  /* Sombra: es lo que hace que se lea levantado y no plano. */
+  filter: drop-shadow(-3px 3px 4px rgba(22, 60, 105, 0.4));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* @supports: sin scroll-driven no se declara animación y queda el estado
+     base (pegado, con la esquina doblada). Nada de JS ni de fallback a tiempo. */
+  @supports (animation-timeline: view()) {
+    .sticker__print {
+      animation: peel-print linear both;
+      animation-timeline: view();
+      /* Arranca cuando el sticker ya asomó bastante y termina dentro de la fase
+         `contain` (el tramo en que el sticker ya está entero en pantalla).
+
+         Antes el final estaba clavado en `entry 100%` y eso ataba las dos
+         puntas: retrasar el arranque acortaba la animación. Con el final en
+         `contain` las dos se mueven independientes. */
+      animation-range: entry var(--st-peel-from, 55%) contain var(--st-peel-to, 10%);
+    }
+    .sticker__flap {
+      animation: peel-flap linear both;
+      animation-timeline: view();
+      /* Arranca cuando el sticker ya asomó bastante y termina dentro de la fase
+         `contain` (el tramo en que el sticker ya está entero en pantalla).
+
+         Antes el final estaba clavado en `entry 100%` y eso ataba las dos
+         puntas: retrasar el arranque acortaba la animación. Con el final en
+         `contain` las dos se mueven independientes. */
+      animation-range: entry var(--st-peel-from, 55%) contain var(--st-peel-to, 10%);
+    }
+  }
+}
+
+/* Arranque: pliegue en la diagonal completa. Media cara pegada, media
+   despegada, y la solapa (esa mitad reflejada) cae justo encima de la mitad
+   pegada: se ve casi todo dorso, como recién despegado del papel. */
+@keyframes peel-print {
+  from { clip-path: polygon(100% 0, 100% 0, 100% 100%, 0 100%, 0 100%); }
+  to {
+    clip-path: polygon(
+      var(--st-peel, 30%) 0, 100% 0, 100% 100%, 0 100%, 0 var(--st-peel, 30%)
+    );
+  }
+}
+@keyframes peel-flap {
+  from {
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+    transform: translate(100%, 100%) scaleX(-1) rotate(-90deg);
+  }
+  to {
+    clip-path: polygon(0 0, var(--st-peel, 30%) 0, 0 var(--st-peel, 30%));
+    transform: translate(var(--st-peel, 30%), var(--st-peel, 30%)) scaleX(-1) rotate(-90deg);
+  }
+}
+.statement__img {
+  width: 100%;
+  /* El alto se ata a la pantalla, no al ancho de la columna: con aspect-ratio
+     la foto crecía junto con el monitor (en 1920 daba ~1016px y se comía la
+     pantalla entera). object-fit recorta lo que sobra. */
+  height: var(--st-img-h, 80svh);
+  object-fit: cover;
+  /* 45% y no centro: sube el encuadre para no perder la mano con el premio. */
+  object-position: center 45%;
+  border-radius: 44px 0 0 44px;
+}
+@media (max-width: 900px) {
+  .statement__img {
+    height: auto;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Grid de productos + filtros
+   -------------------------------------------------------------------------- */
+.collection { background: var(--brand); padding-block: clamp(2rem, 5vw, 3.5rem); }
+
+/* Página de shop: fondo crema (el de "Para chuparse las patas"), texto oscuro y
+   grilla fija de 3 por línea. Scopeado para no tocar el grid del home. */
+.collection--page {
+  background: var(--cream);
+  /* Alto mínimo de pantalla completa: con pocos productos (o al filtrar) la
+     sección quedaba enana y el footer asomaba en el primer viewport. Con esto
+     el footer siempre arranca por debajo del fold y solo aparece al scrollear;
+     además el padding de abajo absorbe la pisada breve del parallax. */
+  min-height: 100svh;
+  /* Más aire entre el último producto y el footer. */
+  padding-bottom: clamp(4.5rem, 9vw, 8rem);
+}
+.collection--page .collection__title { color: var(--ink); }
+.collection--page .collection__count { color: var(--ink-soft); }
+.collection--page .product-grid {
+  grid-template-columns: repeat(3, 1fr);
+  /* Cada tarjeta a su alto natural: si no, la grilla las estira al alto de la
+     fila y la foto absorbe ese estirado (ignorando el aspect-ratio). */
+  align-items: start;
+}
+/* Foto más baja (5:4) para que la tarjeta entera —foto + barra del nombre— quede
+   más cuadrada, no tan alta. Las fotos de producto son verticales, así que la
+   fila del grid se fija a minmax(0,1fr): si no, se dimensiona al alto natural de
+   la img (que es alta) y pisa el aspect-ratio. Con esto la img se ajusta adentro
+   (object-fit: contain ya está) y manda el aspect-ratio de la tarjeta. */
+.collection--page .card__media {
+  aspect-ratio: 5 / 4;
+  /* Clave: sin esto, el min-height:auto del flex-item toma el min-content de la
+     img (vertical, ~500px) y pisa el aspect-ratio. Con min-height:0 manda el
+     aspect-ratio y la img se ajusta adentro (object-fit: contain). */
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr);
+}
+.collection--page .card__img { min-height: 0; }
+@media (max-width: 720px) {
+  .collection--page .product-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 440px) {
+  .collection--page .product-grid { grid-template-columns: 1fr; }
+}
+
+.collection__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.6rem;
+}
+.collection__title {
+  font-size: var(--step-3);
+  color: var(--brand-yellow);
+  text-transform: uppercase;
+  margin: 0;
+}
+.collection__count {
+  font-family: var(--font-display);
+  color: var(--white);
+  font-size: var(--step-0);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1.8rem;
+}
+.filters::-webkit-scrollbar { display: none; }
+@media (max-width: 640px) {
+  .filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+  }
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  background: var(--white);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 0.5em 1.15em;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--step--1);
+  white-space: nowrap;
+  box-shadow: 0 4px 0 var(--ink);
+  transition: transform 0.14s var(--ease-bounce), background 0.14s, box-shadow 0.14s;
+}
+.chip:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); }
+/* Activo. En el home los chips son <button> (filtro por JS) y en la página de
+   colección son <a> a colecciones reales — de ahí los dos selectores. */
+.chip[aria-pressed='true'],
+.chip[aria-current='page'] {
+  background: var(--brand-yellow);
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--ink);
+}
+a.chip { text-decoration: none; }
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  gap: clamp(0.9rem, 2vw, 1.4rem);
+}
+
+.card {
+  --card-bg: var(--p-714);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.18s var(--ease-bounce), box-shadow 0.18s;
+}
+.card:hover { transform: translateY(-6px); box-shadow: 0 16px 0 rgba(22, 60, 105, 0.14); }
+.card[hidden] { display: none; }
+
+.card__media {
+  position: relative;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+}
+.card__img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(22, 60, 105, 0.25));
+  transition: transform 0.3s var(--ease-bounce);
+}
+.card:hover .card__img { transform: scale(1.07) rotate(-2deg); }
+
+/* Ilustración del perrito, esquina inferior izquierda de la tarjeta */
+.card__pup {
+  position: absolute;
+  left: 8px; bottom: 6px;
+  width: 30%;
+  max-width: 84px;
+  opacity: 0.92;
+  pointer-events: none;
+  transition: transform 0.3s var(--ease-bounce);
+}
+.card:hover .card__pup { transform: translateY(-4px) rotate(-6deg); }
+
+.card__tag {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 0.2em 0.7em;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Franja oscura inferior — la firma visual de bungot.com actual */
+.card__foot {
+  margin-top: auto;
+  background: var(--brand-dark);
+  color: var(--white);
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.card__name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--step--1);
+  line-height: 1.2;
+  margin: 0;
+  /* Una sola línea (con "…" si no entra): así el pie mide siempre igual y todas
+     las tarjetas quedan del mismo alto, aunque el nombre sea largo. */
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card__price {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step-0);
+  color: var(--brand-yellow);
+  white-space: nowrap;
+}
+.card__price s { color: rgba(255,255,255,0.5); font-size: 0.8em; margin-right: 0.3em; }
+
+.collection__empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  padding: 3rem 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   Carrusel numerado 01/03 (idea de gethapply)
+   -------------------------------------------------------------------------- */
+.carousel { background: var(--cream-2); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+.carousel__head {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.carousel__title { font-size: var(--step-3); text-transform: uppercase; margin: 0; }
+.carousel__nav { display: flex; align-items: center; gap: 0.7rem; }
+.carousel__counter {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.carousel__btn {
+  width: 46px; height: 46px;
+  display: grid; place-items: center;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: 0 4px 0 var(--ink);
+  transition: transform 0.14s var(--ease-bounce);
+}
+.carousel__btn:hover { transform: translateY(-2px); }
+.carousel__btn:disabled { opacity: 0.35; box-shadow: none; transform: none; cursor: not-allowed; }
+
+.carousel__viewport {
+  display: flex;
+  gap: 1.2rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 0.6rem;
+}
+.carousel__viewport::-webkit-scrollbar { display: none; }
+
+.slide {
+  flex: 0 0 min(100%, 620px);
+  scroll-snap-align: start;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  background: var(--slide-bg, var(--p-516));
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.2rem, 3vw, 2rem);
+}
+@media (max-width: 700px) { .slide { grid-template-columns: 1fr; } }
+.slide__num {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+}
+.slide__title { font-size: var(--step-2); text-transform: uppercase; }
+.slide__tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+.slide__tag {
+  background: rgba(255,255,255,0.75);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 0.25em 0.8em;
+  font-size: var(--step--1);
+  font-family: var(--font-display);
+}
+.slide__img { border-radius: var(--radius); aspect-ratio: 1; object-fit: cover; }
+
+/* --------------------------------------------------------------------------
+   Beneficios
+   -------------------------------------------------------------------------- */
+.benefits { background: var(--cream); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+.benefits__title {
+  font-size: var(--step-3);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.benefits__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 1.2rem;
+}
+.benefit {
+  background: var(--benefit-bg, var(--white));
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  padding: 1.6rem 1.3rem;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.18s var(--ease-bounce);
+}
+.benefit:hover { transform: translateY(-5px) rotate(-1deg); }
+.benefit__icon { font-size: 42px; line-height: 1; margin-bottom: 0.6rem; }
+.benefit__title { font-size: var(--step-1); text-transform: uppercase; margin-bottom: 0.3em; }
+.benefit__text { font-size: var(--step--1); color: var(--ink-soft); margin: 0; }
+
+/* --------------------------------------------------------------------------
+   Panel destacado (estructura del bloque de gethapply)
+   -------------------------------------------------------------------------- */
+.fpanel {
+  background: var(--cream);
+  /* Este marco entra en la cuenta del aire del statement — ver --fpanel-frame.
+     Abajo va bastante más: la foto a lo ancho que viene después arrancaba pegada
+     al panel y los dos se leían como un solo bloque. Con esta franja de crema en
+     medio, el panel cierra en su propio marco y la foto entra como otra cosa. */
+  padding: var(--fpanel-frame) var(--fpanel-frame) clamp(3rem, 7vw, 5.5rem);
+  /* Sin min-height: alto natural. Forzarlo a 100svh para centrarlo al pinearse
+     le metía una pantalla de crema arriba y lo empujaba lejos del statement. */
+}
+
+/* El panel NO se congela: baja con el scroll como cualquier otra sección.
+
+   Antes se pineaba (`sticky` con top: max(0px, 100svh - 700px)) para que la
+   sección siguiente le subiera por encima y se lo fuera comiendo, y el
+   statement se congelaba junto con él desde theme.js (initStatementPin) para
+   que entre los dos no se abriera una franja. Ese efecto se sacó: recortaba el
+   titular del panel contra el borde del statement. Si algún día vuelve, tienen
+   que volver las dos piezas juntas — el pin del panel solo deja al statement
+   despegado, y al revés el statement le come el titular al panel. */
+.fpanel__box {
+  background: var(--fp-bg, var(--p-709));
+  color: var(--fp-fg, var(--white));
+  border-radius: var(--radius-lg);
+  /* Franja compacta: copy a la izquierda, gráfico a la derecha. El `auto` de la
+     segunda columna deja que el gráfico pida lo suyo y el texto se quede con el
+     resto. */
+  padding: clamp(1.6rem, 3.5vw, 2.8rem) clamp(1.5rem, 4vw, 3.5rem);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+}
+@media (max-width: 640px) {
+  .fpanel__box { grid-template-columns: 1fr; text-align: center; }
+}
+
+.fpanel__lead { text-align: left; max-width: 34ch; }
+@media (max-width: 640px) {
+  .fpanel__lead { text-align: center; margin-inline: auto; }
+}
+
+/* Etiqueta y pastillas van con fondo BLANCO y tinta, no texto suelto: sobre un
+   naranja saturado el blanco chico da 3.9:1 y no llega a AA. Con fondo propio
+   pasan a 12.4:1. */
+.fpanel__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step--1);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.4em 1.1em;
+  border-radius: var(--radius-pill);
+  margin-bottom: 1.1rem;
+}
+
+/* Informativas, no un selector: por eso no tienen estado :hover ni cursor. */
+.fpanel__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0 0 1.8rem;
+  padding: 0;
+  list-style: none;
+}
+.fpanel__chip {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  padding: 0.35em 1em;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.fpanel__note {
+  font-size: var(--step--1);
+  margin: 1rem 0 0;
+  opacity: 0.85;
+}
+
+.fpanel__title {
+  font-size: clamp(2.2rem, 1rem + 5.5vw, 5rem);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: inherit;
+  margin: 0 0 0.4em;
+}
+.fpanel__text {
+  font-size: var(--step-1);
+  max-width: 46ch;
+  margin: 0 auto 1.8rem;
+  /* Sin opacity: sobre un fondo saturado el contraste ya está justo, y bajarle
+     la opacidad al blanco lo hunde todavía más. */
+}
+
+.fpanel__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fp-cta-bg, var(--brand-dark));
+  color: var(--fp-cta-fg, var(--white));
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step-0);
+  text-decoration: none;
+  padding: 0.85em 2.2em;
+  border-radius: var(--radius-pill);
+  transition: transform 0.16s var(--ease-bounce), box-shadow 0.16s;
+}
+.fpanel__cta:hover { transform: translateY(-3px); box-shadow: 0 8px 0 rgba(0, 0, 0, 0.18); }
+.fpanel__cta:active { transform: translateY(1px); box-shadow: none; }
+
+/* --- El regalo de la derecha --- */
+.fpanel__art { position: relative; justify-self: end; }
+@media (max-width: 640px) { .fpanel__art { justify-self: center; } }
+
+.fpanel__art-box {
+  width: clamp(96px, 12vw, 140px);
+  aspect-ratio: 1;
+  background: var(--fp-art, var(--brand-yellow));
+  color: var(--ink);
+  border-radius: 22%;
+  display: grid;
+  place-items: center;
+  transform: rotate(-8deg);
+  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.12);
+}
+.fpanel__art-box svg { width: 46%; height: auto; }
+
+.fpanel__badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background: var(--brand-dark);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step--1);
+  padding: 0.25em 0.7em;
+  border-radius: var(--radius-pill);
+}
+
+.fpanel__items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fpanel__item { text-align: center; }
+.fpanel__icon { font-size: 26px; line-height: 1; display: block; margin-bottom: 0.6rem; }
+.fpanel__photo {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: 0.9rem;
+}
+.fpanel__item-title {
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  color: inherit;
+  margin: 0 0 0.25em;
+}
+.fpanel__item-text {
+  /* step-0 y no step--1, y sin opacity: es el texto más chico sobre el fondo
+     saturado, o sea el peor caso de contraste de toda la sección. */
+  font-size: var(--step-0);
+  margin: 0 auto;
+  max-width: 30ch;
+}
+
+/* --------------------------------------------------------------------------
+   Foto a lo ancho — foto enmarcada, con el mismo encuadre que Favoritos
+   -------------------------------------------------------------------------- */
+.fphoto {
+  /* display:block + line-height:0 matan el renglón fantasma que deja la img
+     inline: sin eso queda una franja de fondo abajo del marco. */
+  display: block;
+  line-height: 0;
+  height: var(--fphoto-h, 80svh);
+  /* Mismo encuadre que el escenario de Favoritos: marco de crema del mismo
+     ancho por los cuatro lados, así las dos piezas se leen como la misma
+     familia. Va como padding (y no como margen de la img) para que el alto de
+     la sección siga siendo el que pide el customizer y el marco se lo saque de
+     adentro, igual que allá con height: calc(100svh - frame * 2). */
+  padding: var(--favs-frame);
+  /* El marco no es siempre crema: lo elige el customizer para poder empatarlo
+     con la sección de arriba y que las dos se lean como un solo bloque. */
+  background: var(--fphoto-frame, var(--cream));
+}
+
+/* En celular la pantalla es más alta que ancha: el mismo porcentaje se come
+   media pantalla de foto recortada. Se baja el alto y se ve más de la escena. */
+@media (max-width: 640px) {
+  .fphoto { height: calc(var(--fphoto-h, 80svh) * 0.7); }
+}
+
+/* Si abajo viene una ola, esta sección es la que se congela (ver la regla del
+   pin más abajo) y tiene que ocupar la pantalla ENTERA. Si midiera menos, en la
+   pausa —el tramo en que ya está quieta y la ola todavía no llegó— el marco de
+   abajo se vería más ancho que el de arriba: la pausa es espacio vacío que no
+   pinta nada, así que ahí sigue el crema pero la tarjeta queda descentrada.
+
+   max() y no un valor fijo: el ajuste del customizer sigue mandando para
+   agrandarla, nunca para achicarla abajo del mínimo que el efecto necesita. */
+.shopify-section:has(+ .shopify-section .wave-edge) .fphoto {
+  height: max(var(--fphoto-h, 80svh), 100svh);
+}
+
+.fphoto__img {
+  width: 100%;
+  height: 100%;
+  /* Los mismos cantos que el escenario de Favoritos. */
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  object-position: var(--fphoto-focus, 50% 20%);
+  /* El color de relleno se ve mientras la foto carga; por eso va acá y no en la
+     sección, que ahora es el marco de crema. */
+  background: var(--fphoto-bg, var(--p-172));
+}
+
+/* --------------------------------------------------------------------------
+   Ola — sección con el borde de arriba curvo, que sube sobre la anterior
+   -------------------------------------------------------------------------- */
+.wave {
+  position: relative;
+  background: var(--wave-bg, var(--blue-ola));
+  color: var(--wave-fg, var(--white));
+  --wave-edge-color: var(--wave-bg, var(--blue-ola));
+  /* Este margen es la PAUSA: el tramo en que el panel de arriba ya está
+     congelado y se ve entero, todavía sin olas. Recién después empieza a subir
+     el azul.
+
+     Sin él la ola arranca ~500px por encima del panel (su borde SVG vive 200px
+     arriba del bloque), o sea que lo tapa desde el primer píxel de scroll y
+     nunca llegás a verlo limpio. 80svh deja ~220px de pausa. */
+  margin-top: 80svh;
+  /* Arriba GENEROSO a propósito: cuando la sección sube y la ola aparece, el
+     titular tiene que quedar despegado de la cresta, no pegado a las letras.
+     Abajo también generoso: titular, stickers y texto derivan ~90px hacia abajo
+     con el scroll (ver wave-title-drift), y sin este colchón el sticker de la
+     esquina inferior se metía en Testimonios, que lo pintaba por encima y lo
+     cortaba. No se lee como vacío: Testimonios es del mismo navy y ese tramo lo
+     ocupa el contenido derivado. El piso (6.5rem) cubre los 90px aun en el ancho
+     más angosto donde los stickers todavía se ven (>860px).
+
+     Extra abajo (piso 10rem) para SEPARAR la cinta/marquee que viene después:
+     ese tramo navy despega la banda naranja del contenido de la ola. */
+  padding-block: clamp(3.5rem, 7vw, 6.5rem) clamp(10rem, 14vw, 13rem);
+}
+
+/* La sección de ARRIBA se congela y la ola le sube por encima. El scroll no se
+   detiene de verdad (eso rompe el gesto del usuario): esa sección queda fija y
+   la de la ola la tapa, que se ve igual y no secuestra la rueda.
+
+   La regla no nombra a la sección que se congela: es la que esté justo ANTES de
+   una que monte la ola. Así el efecto viaja con la ola a donde la pongas, sin
+   tener que acordarse de pinear nada a mano.
+
+   La excepción es el panel de suscripción: se pidió expresamente que no se
+   congele (le recortaba el titular contra la sección de arriba). Si la ola le
+   queda encima, la ola pasa y el panel baja derecho.
+
+   El sticky va en el envoltorio de Shopify y no en la sección misma: la sección
+   está dentro de ese div y pegarla a sí misma no le daría recorrido. Y queda
+   pineada hasta el final de <main> — no importa, porque todo lo que sigue la
+   tapa con z-index 1. */
+.shopify-section:not(:has(.fpanel)):has(+ .shopify-section .wave-edge) {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  /* PAUSA: el tramo en que la sección ya está congelada y se ve entera,
+     todavía sin olas. Es espacio vacío que no pinta nada, así que lo que se ve
+     ahí es esta misma sección de atrás.
+
+     Va acá y no en la sección de la ola a propósito: pausa y congelado son la
+     misma pieza y tienen que aparecer y desaparecer juntos. Si la de arriba no
+     se congela, este margen sería un agujero de 60svh.
+
+     Bastante MÁS que el alto de la ola: los primeros ~200px de pausa se los
+     come la cresta, que vive por encima del borde de la sección siguiente. */
+  margin-bottom: 60svh;
+}
+
+/* La sección de la ola y todo lo que venga después tienen que pintarse ENCIMA
+   de la congelada. Sin esto, la congelada (posicionada) taparía a las secciones
+   estáticas que siguen y quedaría flotando sobre ellas. */
+.shopify-section:has(.wave-edge),
+.shopify-section:has(.wave-edge) ~ .shopify-section {
+  position: relative;
+  z-index: 1;
+}
+
+/* Aire mínimo arriba de la ola, se congele algo o no: la cresta vive por encima
+   del borde de su sección, así que sin esto se mete adentro de la anterior y le
+   pisa el contenido. Si hay pausa (o sea, si la de arriba se congela), este
+   margen se colapsa contra ella y manda la pausa, que es más grande. */
+.shopify-section:has(.wave-edge) {
+  --wave-edge-h: clamp(95px, 12vw, 200px);
+  margin-top: var(--wave-edge-h);
+}
+
+/* Congelar es movimiento: sin él la página baja derecho y la ola queda como un
+   borde curvo más. La pausa se va con el congelado — sola sería un hueco. */
+@media (prefers-reduced-motion: reduce) {
+  .shopify-section:not(:has(.fpanel)):has(+ .shopify-section .wave-edge) {
+    position: static;
+    margin-bottom: 0;
+  }
+}
+
+/* La ola es un componente suelto (snippets/wave-edge.liquid), no una parte de
+   .wave: la usan la sección Ola y la de reviews. Cada sección que la monta se
+   declara `position: relative` y pasa su color en --wave-edge-color. */
+.wave-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* Justo encima del borde superior de la sección. */
+  bottom: 100%;
+  width: 100%;
+  /* El mismo alto que el aire de arriba de la sección: la variable la declara el
+     envoltorio (ver .shopify-section:has(.wave-edge)) justo para que no se
+     puedan desincronizar. */
+  height: var(--wave-edge-h, clamp(95px, 12vw, 200px));
+  display: block;
+  /* currentColor en el path: hereda este color, así el fondo de la sección y la
+     ola no se pueden desincronizar. */
+  color: var(--wave-edge-color, var(--blue-ola));
+  /* Cierra la costura de subpíxel contra el borde de la sección. */
+  margin-bottom: -1px;
+  pointer-events: none;
+}
+
+/* Ondas que crecen y bajan en el lugar. Nada se corre ni se inclina.
+
+   ONDA Y NO MONTAÑA. La diferencia está en el cruce con la línea base: una
+   montaña arranca desde plano (pendiente cero) y por eso se lee como bultos
+   separados por mesetas. Una onda cruza en su punto MÁS inclinado. Acá la
+   pendiente del cruce es la de una sinusoide real: H*pi/L. Ojo — con pi/2 (la
+   mitad) el resultado vuelve a parecer montaña.
+
+   Cada cresta son DOS curvas: subida hasta el vértice y bajada espejo. El
+   vértice está clavado en el centro del segmento y con pendiente cero, así que
+   lo único que la cresta puede hacer es crecer o achicarse — no ladearse ni
+   arrastrar el pico. Con una sola curva por cresta, el path queda descrito por
+   la pendiente de sus extremos y animarlas por separado corre el vértice: eso
+   es lo que se veía como movimiento en ángulo.
+
+   El resto de las garantías:
+   · ANCHOS DISTINTOS: anclas en 0 / 300 / 640 / 1090 / 1440 -> 300, 340, 450, 350.
+   · NADA HORIZONTAL: anclas y vértices (150/470/865/1265) idénticos en los seis
+     pasos. Lo único que cambia es la altura.
+   · SIN ESQUINAS: la pendiente de cada cruce la comparten los dos segmentos
+     vecinos, así que la tangente coincide sin importar alturas ni anchos.
+   · INDEPENDIENTES: cada cresta con su base, su amplitud y su fase.
+   · TOPE DE PENDIENTE: la del cruce se limita a 5.4*min(H/L) de las dos crestas
+     vecinas. Sin ese tope, una cresta chica al lado de una grande recibe una
+     pendiente que no puede absorber, la curva se sobrepasa y su pico se corre
+     del vértice — o sea, vuelve el arrastre horizontal en esa cresta sola.
+
+   El path cierra en y=260 y no en 160 (el borde de la sección). El <svg> recorta
+   ese colchón, así que no se ve; está para que el relleno nunca falte contra el
+   borde aunque la ola se mueva.
+
+   Generado. Verificado: sin sobrepaso y todo dentro del viewBox. */
+@media (prefers-reduced-motion: no-preference) {
+  .wave-edge__path {
+    animation: wave-swell 10s ease-in-out infinite;
+  }
+}
+
+@keyframes wave-swell {
+  0% {
+    d: path("M0,260 L0,80 C50,57.0 100,36.0 150,36.0 C200,36.0 250,55.6 300,80 C357,107.7 413,135.8 470,135.8 C527,135.8 583,103.9 640,80 C715,48.4 790,33.2 865,33.2 C940,33.2 1015,70.7 1090,80 C1148,87.2 1207,88.0 1265,88.0 C1323,88.0 1382,84.2 1440,80 L1440,260 Z");
+  }
+  20% {
+    d: path("M0,260 L0,80 C50,45.0 100,13.2 150,13.2 C200,13.2 250,53.7 300,80 C357,109.8 413,118.0 470,118.0 C527,118.0 583,95.6 640,80 C715,59.3 790,51.3 865,51.3 C940,51.3 1015,64.3 1090,80 C1148,92.2 1207,104.3 1265,104.3 C1323,104.3 1382,92.7 1440,80 L1440,260 Z");
+  }
+  40% {
+    d: path("M0,260 L0,80 C50,49.6 100,21.9 150,21.9 C200,21.9 250,68.3 300,80 C357,93.2 413,94.7 470,94.7 C527,94.7 583,91.2 640,80 C715,65.2 790,42.8 865,42.8 C940,42.8 1015,53.0 1090,80 C1148,101.0 1207,131.2 1265,131.2 C1323,131.2 1382,106.8 1440,80 L1440,260 Z");
+  }
+  60% {
+    d: path("M0,260 L0,80 C50,64.3 100,50.1 150,50.1 C200,50.1 250,68.0 300,80 C357,93.6 413,98.0 470,98.0 C527,98.0 583,96.2 640,80 C715,58.5 790,19.3 865,19.3 C940,19.3 1015,46.7 1090,80 C1148,105.9 1207,131.6 1265,131.6 C1323,131.6 1382,107.0 1440,80 L1440,260 Z");
+  }
+  80% {
+    d: path("M0,260 L0,80 C50,68.9 100,58.8 150,58.8 C200,58.8 250,64.4 300,80 C357,97.7 413,123.4 470,123.4 C527,123.4 583,104.6 640,80 C715,47.5 790,13.4 865,13.4 C940,13.4 1015,54.2 1090,80 C1148,100.1 1207,104.9 1265,104.9 C1323,104.9 1382,93.0 1440,80 L1440,260 Z");
+  }
+  100% {
+    d: path("M0,260 L0,80 C50,57.0 100,36.0 150,36.0 C200,36.0 250,55.6 300,80 C357,107.7 413,135.8 470,135.8 C527,135.8 583,103.9 640,80 C715,48.4 790,33.2 865,33.2 C940,33.2 1015,70.7 1090,80 C1148,87.2 1207,88.0 1265,88.0 C1323,88.0 1382,84.2 1440,80 L1440,260 Z");
+  }
+}
+
+/* Composición "envolvente" (ref Brar's "ROOTED IN TRADITION, GROWING WITH
+   COMMUNITY"): el titular GIGANTE va partido en dos —una frase arriba y otra
+   abajo, a todo el ancho— y la foto queda en el medio, centro-izquierda,
+   asomando POR DELANTE de las letras. El texto + botón van a la derecha, a media
+   altura; los stickers rematan las esquinas como los sellos de la ref.
+   `position: relative` ancla la foto, el texto y los stickers absolutos. */
+.wave__inner {
+  position: relative;
+  min-height: clamp(30rem, 62vw, 52rem);
+}
+
+/* Separación al scrollear: el contenido (titular, foto, texto) baja de a poco a
+   medida que la sección entra, alejándose de la ola —que queda fija en el borde
+   superior de .wave (es hija de .wave, no de .wave__inner, así que no se mueve).
+   Ligado al scroll con view-timeline; sin soporte queda estático y no se rompe. */
+@keyframes wave-content-drift {
+  from { translate: 0 0; }
+  to { translate: 0 var(--wave-drift, 90px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .wave { view-timeline-name: --wave-vt; view-timeline-axis: block; }
+    .wave__inner {
+      animation: wave-content-drift linear both;
+      animation-timeline: --wave-vt;
+      animation-range: entry 12% cover 60%;
+    }
+  }
+}
+
+/* Las dos mitades del titular, a todo el ancho. Comparten estilo; solo cambia
+   dónde caen (arriba / abajo de la foto). Van POR DELANTE de la foto (z-index 2):
+   las letras pisan la foto, no al revés. */
+.wave__title {
+  position: relative;
+  z-index: 2;
+  /* Mismas letras que el titular del statement ("Para chuparse las patas"):
+     misma fuente (Fredoka), mismo peso (600) y mismo tracking (-0.04em). Se pone
+     explícito además para que las DOS mitades queden iguales entre sí — la de
+     arriba es <h2> y la de abajo <p>, que si no heredan fuente/peso distintos. */
+  font-family: var(--font-display);
+  font-weight: 600;
+  /* Mismo tamaño que el titular del statement ("Para chuparse las patas"). */
+  font-size: clamp(2.8rem, 1rem + 8.5vw, 7rem);
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--wave-title-color, var(--white));
+  margin: 0;
+}
+
+/* Foto al centro-izquierda, POR DETRÁS del titular (z-index menor): las letras
+   de arriba y de abajo le pasan por encima. Más ancha para que domine el cuadro
+   como en la ref. */
+.wave__media {
+  position: relative;
+  z-index: 1;
+  /* Más ancha SIN tocar el texto ni ganar alto: crece hacia la IZQUIERDA (el
+     margin negativo la saca del gutter hasta el borde de la ventana) y el recorte
+     se aplana a 2:1 (ver .wave__photo) para que el alto no suba. El borde derecho
+     casi no se mueve, así el texto de la derecha queda igual. */
+  width: clamp(22rem, 76%, 58rem);
+  margin-left: clamp(-2.5rem, -3vw, -1rem);
+  /* Solape con las dos mitades del titular: como las letras van encima, pisan el
+     borde de la foto. */
+  margin-top: clamp(-1.5rem, -1.5vw, -0.5rem);
+  margin-bottom: clamp(-3.5rem, -3.5vw, -1.5rem);
+}
+.wave__photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center 35%;
+  border-radius: var(--radius-lg);
+}
+
+/* Mitad de ARRIBA del titular: corrida a la izquierda, saliéndose del gutter
+   para pegarse casi al borde de la ventana. */
+.wave__title--top {
+  margin-left: clamp(-2rem, -2.5vw, -0.75rem);
+}
+/* Mitad de ABAJO del titular, corrida a la derecha. */
+.wave__title--bot {
+  margin-left: clamp(6rem, 30vw, 30rem);
+}
+
+/* Texto + botón: a la derecha, a media altura, por encima de todo (como el
+   párrafo + "Learn More" de la ref). */
+.wave__pitch {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: clamp(16rem, 27%, 23rem);
+  display: grid;
+  justify-items: start;
+  gap: clamp(1.1rem, 2vw, 1.6rem);
+}
+
+.wave__text {
+  font-size: var(--step-0);
+  /* En mayúsculas y algo más apretado, como el texto de la derecha de la ref.
+     Misma tipografía (solo cambia el text-transform y el interlineado). */
+  text-transform: uppercase;
+  line-height: 1.4;
+  letter-spacing: 0.015em;
+  color: var(--wave-fg, var(--cream));
+  margin: 0;
+}
+
+/* Botón pill SÓLIDO con la flechita en círculo, como el "Learn More" de la ref
+   (invertido para el fondo navy: pastilla clara, círculo oscuro). Lleva a la
+   página de conócenos. */
+.wave__cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65em 0.8em 0.65em 1.5em;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.2s;
+}
+.wave__cta::after {
+  content: "\203A"; /* › */
+  display: grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  margin-left: 0.7em;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 0.95em;
+  line-height: 1;
+}
+.wave__cta:hover {
+  background: var(--brand-yellow);
+  transform: translateY(-2px);
+}
+
+/* Stickers superpuestos al titular, como la mariposa y el sol de la ref.
+   Absolutos sobre .wave__inner, rotados, con el filo blanco de siempre. */
+.wave__sticker {
+  position: absolute;
+  z-index: 2;
+  height: auto;
+  pointer-events: none;
+}
+/* Greta: sello de la esquina ABAJO-IZQUIERDA de la foto (como el starburst
+   naranja de la ref). Por delante de la foto. */
+.wave__sticker--a {
+  z-index: 3;
+  left: -1%;
+  bottom: 6%;
+  width: clamp(6.5rem, 10vw, 10rem);
+  transform: rotate(-8deg);
+}
+/* Bache: sello clavado en la esquina ARRIBA-DERECHA de la FOTO (va dentro de
+   .wave__media en el markup, por eso se ancla a la imagen y no al fondo). El
+   translate lo hace montar sobre la esquina, mitad adentro mitad afuera, como
+   el sello redondo "Canadian Made" de la ref. */
+.wave__sticker--b {
+  z-index: 3;
+  top: 0;
+  right: 0;
+  left: auto;
+  bottom: auto;
+  width: clamp(5.5rem, 9vw, 9rem);
+  transform: translate(35%, -45%) rotate(7deg);
+}
+
+@media (max-width: 860px) {
+  /* Todo apilado y centrado: titular arriba, foto, titular abajo, texto. El
+     texto deja de estar absoluto y vuelve al flujo. Los stickers se ocultan
+     (como absolutos encimados se salían de cuadro en angosto). */
+  .wave__inner {
+    min-height: 0;
+    text-align: center;
+  }
+  .wave__title--top,
+  .wave__title--bot { margin-left: 0; }
+  .wave__media {
+    width: 100%;
+    max-width: 22rem;
+    margin: clamp(0.75rem, 3vw, 1.5rem) auto;
+  }
+  .wave__pitch {
+    position: static;
+    transform: none;
+    width: 100%;
+    margin-top: clamp(1.25rem, 4vw, 2rem);
+    justify-items: center;
+    text-align: center;
+  }
+  .wave__sticker { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Reviews con pin: el titular se frena en el centro y los globos suben
+   -------------------------------------------------------------------------- */
+.reviews {
+  position: relative;
+  background: var(--reviews-bg, var(--blue-ola));
+  color: var(--cream);
+  /* El color con el que se pinta la ola de arriba (snippets/wave-edge.liquid):
+     el mismo de la sección, o el borde curvo se despega del fondo. */
+  --wave-edge-color: var(--reviews-bg, var(--blue-ola));
+  /* Sección ALTA: mientras scrollea, el escenario sticky se queda quieto. Cuanto
+     más alto, más dura el pin. Escala con la cantidad de reviews. */
+  min-height: calc(140svh + var(--n, 6) * 28svh);
+}
+.reviews__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;               /* recorta los globos que entran/salen */
+  display: grid;
+  place-items: center;
+}
+.reviews__headline {
+  position: relative;
+  z-index: 1;                     /* detrás de los globos */
+  font-family: var(--font-display);
+  /* Mismas letras que el titular de la ola de arriba: Fredoka peso 600 y
+     tracking -0.04em. */
+  font-weight: 600;
+  font-size: clamp(2.8rem, 1rem + 8.5vw, 7rem);   /* mismo tamaño que la ola de arriba */
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;      /* igual que la ola de arriba */
+  text-align: center;
+  color: var(--white);
+  margin: 0;
+  padding-inline: var(--gutter);
+}
+.reviews__belt {
+  position: absolute;
+  inset: 0;
+  z-index: 2;                     /* delante del titular */
+  pointer-events: none;
+}
+.reviews__item {
+  position: absolute;
+  /* Ancla en (centro + --x). --ax decide hacia dónde crece la burbuja: las de la
+     derecha (--ax: -100%) se pegan por su borde derecho y crecen hacia el centro;
+     las de la izquierda (--ax: 0%) al revés. --y (de theme.js) es la altura. */
+  left: calc(50% + var(--x, 0px));
+  top: 50%;
+  width: min(33rem, 90vw);
+  transform: translate(var(--ax, -50%), calc(-50% + var(--y, 80vh)));
+  will-change: transform;
+}
+.reviews__bubble {
+  position: relative;
+  /* Amarillo de marca (PANTONE 122 C). Antes era un naranja suelto que no salía
+     de las hojas; el amarillo ya lo usan los botones y pega más contra el
+     marino. El ink navy encima mantiene el contraste. */
+  background: var(--review-bubble, var(--brand-yellow));
+  color: var(--review-ink, var(--p-654));
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  padding: 1.5rem 1.9rem;
+  font-family: var(--font-body);
+  font-size: var(--step-1);
+  line-height: 1.4;
+  text-align: center;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.28);
+}
+/* Pico (colita triangular) que baja hacia el sticker. Dos triángulos: uno ink
+   (el contorno) detrás y uno del color del globo adelante. */
+.reviews__bubble::before,
+.reviews__bubble::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+.reviews__bubble::before {   /* contorno ink, un poco más grande */
+  bottom: -22px;
+  left: 30px;
+  border-width: 22px 18px 0 18px;
+  border-color: var(--ink) transparent transparent transparent;
+}
+.reviews__bubble::after {    /* relleno del color del globo */
+  bottom: -16px;
+  left: 34px;
+  border-width: 17px 14px 0 14px;
+  border-color: var(--review-bubble, var(--brand-yellow)) transparent transparent transparent;
+}
+.reviews__mark {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.9rem 0 0 0.9rem;
+}
+.reviews__spark {
+  color: var(--white);
+  font-size: 1.15rem;
+  order: 2;
+}
+.reviews__sticker {
+  width: clamp(4rem, 7vw, 5.6rem);
+  height: auto;
+  order: 1;
+}
+
+/* Lado derecho: la burbuja crece hacia el centro y el perro va del lado EXTERIOR
+   (derecha), con la colita apuntándole. (Izquierda queda como el default.) */
+.reviews__item.is-right .reviews__bubble::before { left: auto; right: 30px; }
+.reviews__item.is-right .reviews__bubble::after { left: auto; right: 34px; }
+.reviews__item.is-right .reviews__mark {
+  justify-content: flex-end;
+  margin-left: 0;
+  margin-right: 0.9rem;
+}
+.reviews__item.is-right .reviews__spark { order: 1; }
+.reviews__item.is-right .reviews__sticker { order: 2; }
+
+/* Sin animación (reduce motion): se desactiva el pin y los reviews se listan
+   normal debajo del titular, para que igual se lean. Ver theme.js. */
+.reviews[data-static] { min-height: 0; }
+.reviews[data-static] .reviews__stage {
+  position: static;
+  height: auto;
+  overflow: visible;
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  gap: 2rem;
+}
+.reviews[data-static] .reviews__belt {
+  position: static;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+.reviews[data-static] .reviews__item {
+  position: static;
+  transform: none;
+  width: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Testimonios
+   -------------------------------------------------------------------------- */
+.testimonials {
+  background: var(--tm-bg, var(--p-654));
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+.testimonials__title {
+  font-size: var(--step-3);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 2rem;
+  /* Color propio y no heredado: el body hereda tinta oscura, que sobre el
+     654 C da 1.1:1 — el título desaparecía. */
+  color: var(--tm-fg, var(--white));
+}
+.testimonials__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: 1.2rem;
+}
+.testimonial {
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.testimonial:nth-child(even) { transform: rotate(-1deg); }
+.testimonial:nth-child(odd)  { transform: rotate(1deg); }
+.testimonial__stars { color: var(--p-1375); font-size: 18px; letter-spacing: 2px; }
+.testimonial__quote { font-size: var(--step-0); margin: 0; }
+.testimonial__who {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+
+/* --------------------------------------------------------------------------
+   Newsletter
+   -------------------------------------------------------------------------- */
+.newsletter { background: var(--p-122); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+.newsletter__inner {
+  max-width: 660px;
+  margin-inline: auto;
+  text-align: center;
+}
+.newsletter__title { font-size: var(--step-3); text-transform: uppercase; }
+.newsletter__text { font-size: var(--step-1); color: var(--ink); margin-bottom: 1.4rem; }
+.newsletter__form {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.newsletter__input {
+  flex: 1 1 260px;
+  min-width: 0;
+  font: inherit;
+  padding: 0.85em 1.2em;
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--ink);
+}
+.newsletter__input::placeholder { color: var(--ink-soft); }
+.newsletter__note { font-size: var(--step--1); color: var(--ink-soft); margin: 1rem 0 0; }
+.form-status { font-family: var(--font-display); margin-top: 0.8rem; }
+.form-status--error { color: var(--p-492); }
+.form-status--ok { color: var(--brand-dark); }
+
+/* Popup */
+.popup {
+  position: fixed;
+  left: var(--gutter);
+  bottom: var(--gutter);
+  z-index: 90;
+  width: min(360px, calc(100vw - var(--gutter) * 2));
+  background: var(--cream);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  box-shadow: var(--shadow-soft);
+  transform: translateY(140%);
+  transition: transform 0.45s var(--ease-bounce);
+}
+.popup[data-open='true'] { transform: translateY(0); }
+.popup__close {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 30px; height: 30px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--white);
+  display: grid; place-items: center;
+  font-family: var(--font-display);
+  line-height: 1;
+}
+.popup__title { font-size: var(--step-1); text-transform: uppercase; }
+.popup__text { font-size: var(--step--1); color: var(--ink-soft); }
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+/* Footer estilo "happly": tagline + alta arriba-izq, columnas de links a la
+   derecha, WORDMARK gigante a todo el ancho, barra legal y franja de disclaimer.
+
+   El footer scrollea en flujo normal (nada fijo, sin parallax): lo único que
+   hace al entrar es empujar el nav sticky fuera de pantalla (initFooterPushesNav
+   en theme.js, vía --nav-push).
+
+   z-index 20: por encima de cualquier pieza suelta de las secciones (llegan
+   hasta 10), por debajo del header (60), popup (90) y preloader (999). */
+.footer {
+  position: relative;
+  z-index: 20;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ft-bg, var(--p-172));
+  color: var(--ft-fg, var(--cream));
+  overflow: hidden; /* recorta el wordmark que sangra a los bordes */
+  padding-top: clamp(2.5rem, 5vw, 4rem);
+}
+.footer__top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+.footer__tagline {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.9rem, 3.6vw, 3.1rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  margin: 0 0 1.2rem;
+}
+.footer__signup-label { font-size: var(--step--1); margin: 0 0 0.8rem; max-width: 36ch; }
+.footer__signup { display: flex; gap: 0.6rem; flex-wrap: wrap; max-width: 30rem; }
+.footer__signup-input {
+  flex: 1 1 12rem;
+  min-width: 0;
+  font: inherit;
+  padding: 0.8em 1.3em;
+  border-radius: var(--radius-pill);
+  border: 2px solid rgba(247, 241, 227, 0.5);
+  background: transparent;
+  color: inherit;
+}
+.footer__signup-input::placeholder { color: rgba(247, 241, 227, 0.62); }
+.footer__signup-btn {
+  border: none;
+  cursor: pointer;
+  padding: 0.8em 1.9em;
+  border-radius: var(--radius-pill);
+  background: var(--ft-btn-bg, var(--ink));
+  color: var(--ft-btn-fg, var(--cream));
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  transition: transform 0.16s;
+}
+.footer__signup-btn:hover { transform: translateY(-2px); }
+.footer__signup-msg { flex-basis: 100%; margin: 0.4rem 0 0; font-family: var(--font-display); font-size: var(--step--1); }
+.footer__nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: clamp(1.2rem, 2.5vw, 2rem);
+}
+.footer__heading {
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+  color: rgba(247, 241, 227, 0.6);
+  margin: 0 0 0.9rem;
+}
+.footer__links { display: grid; gap: 0.55rem; list-style: none; margin: 0; padding: 0; }
+.footer__links a {
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  color: inherit;
+  transition: opacity 0.16s;
+}
+.footer__links a:hover { opacity: 0.68; }
+.footer__wordmark {
+  /* Crece para llenar el alto sobrante del footer (100svh) y apoya el wordmark
+     abajo, así al revelarse "BUNGOT" se ve enorme y completo. */
+  flex: 1 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-family: var(--font-wordmark);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 0.78;
+  /* Las mismas letras que la portada (.hero__wordmark-ink): mismo cuerpo, mismo
+     grosor y mismo tracking. Cuerpo y grosor salen de los tokens de :root, que
+     comparten los dos — si tocas uno, se mueven juntos. */
+  font-size: var(--wordmark-size);
+  letter-spacing: 0.04em;
+  /* SIEMPRE la mitad del letter-spacing: el tracking también agrega espacio
+     DESPUÉS de la última letra y eso corre la palabra a la izquierda; este
+     indent devuelve la mitad y la vuelve a centrar ópticamente. */
+  text-indent: 0.02em;
+  white-space: nowrap;
+  color: var(--ft-fg, var(--cream));
+  -webkit-text-stroke: var(--wordmark-weight) currentColor;
+  margin: 0;
+  padding-top: clamp(1.5rem, 4vw, 3.5rem);
+  /* Aire para que el borde de la barra legal no cruce las letras. La tinta cae
+     por debajo de la caja de línea por dos motivos, los dos medidos, no a ojo:
+     Brookline declara winAscent 1081 / winDescent 264 sobre 1000 upm, así que
+     con line-height .78 la línea base queda 0.0185em MÁS ABAJO que el borde de
+     la caja (y la O y la U rebasan otro 0.004em); encima el engorde pinta media
+     pluma hacia afuera. Suman ~0.04em: el resto es el respiro. La media pluma
+     va atada al token para que aguante si algún día se engorda más. */
+  padding-bottom: calc(var(--wordmark-weight) / 2 + 0.05em);
+}
+.footer__bottom {
+  border-top: 1px solid rgba(247, 241, 227, 0.22);
+  padding-block: 1.2rem clamp(1.5rem, 3vw, 2.5rem);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: var(--step--1);
+  color: rgba(247, 241, 227, 0.78);
+}
+.footer__policies { display: flex; gap: 1.5rem; }
+.footer__policies a { color: inherit; text-decoration: none; }
+.footer__policies a:hover { opacity: 0.68; }
+.footer__disclaimer { background: var(--cream); color: var(--ink); }
+.footer__disclaimer-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.28fr) minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 3rem);
+  padding-block: clamp(1.1rem, 2.4vw, 1.9rem);
+  align-items: start;
+}
+.footer__disclaimer-label { font-family: var(--font-display); font-size: var(--step-0); }
+.footer__disclaimer-text { font-size: var(--step--1); margin: 0; color: var(--ink-soft); max-width: 72ch; }
+@media (max-width: 760px) {
+  .footer__top { grid-template-columns: 1fr; }
+  .footer__disclaimer-inner { grid-template-columns: 1fr; gap: 0.4rem; }
+}
+
+/* --------------------------------------------------------------------------
+   Páginas internas (producto, carrito, contenido)
+   -------------------------------------------------------------------------- */
+.wrap--narrow { max-width: 760px; }
+
+.page-section { padding-block: clamp(2.5rem, 6vw, 4.5rem); background: var(--cream); }
+.page-section__title { font-size: var(--step-3); text-transform: uppercase; }
+
+.rte { font-size: var(--step-0); }
+.rte h2 { font-size: var(--step-2); margin-top: 1.6em; }
+.rte h3 { font-size: var(--step-1); margin-top: 1.4em; }
+.rte a { color: var(--brand); text-underline-offset: 3px; }
+.rte ul { list-style: none; padding-left: 0; }
+.rte ul li { padding-left: 1.6em; position: relative; margin-bottom: 0.4em; }
+.rte ul li::before { content: '🐾'; position: absolute; left: 0; font-size: 0.85em; }
+.rte ol { padding-left: 1.3em; }
+.rte img { border-radius: var(--radius); border: 3px solid var(--ink); }
+
+/* --- PDP --- */
+.pdp { padding-block: clamp(2rem, 5vw, 3.5rem); background: var(--cream); }
+.pdp__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+}
+@media (max-width: 900px) { .pdp__inner { grid-template-columns: 1fr; } }
+
+.pdp__media {
+  background: var(--pdp-bg, var(--p-714));
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-lg);
+  padding: clamp(1rem, 3vw, 2rem);
+  box-shadow: var(--shadow-card);
+  position: sticky;
+  top: 100px;
+}
+@media (max-width: 900px) { .pdp__media { position: static; } }
+
+.pdp__img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 22px rgba(22, 60, 105, 0.28));
+}
+.pdp__thumbs { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+.pdp__thumb {
+  width: 62px; height: 62px;
+  object-fit: cover;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--white);
+}
+
+.pdp__crumbs {
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  margin-bottom: 0.8rem;
+}
+.pdp__crumbs a { color: var(--ink-soft); text-decoration: none; }
+.pdp__crumbs a:hover { color: var(--brand); }
+
+.pdp__title { font-size: var(--step-3); text-transform: uppercase; }
+.pdp__price {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  color: var(--brand);
+  margin-bottom: 1rem;
+}
+.pdp__price s { color: var(--ink-soft); font-size: 0.6em; margin-right: 0.4em; }
+
+.pdp__form { margin: 1.6rem 0; }
+.pdp__option { margin-bottom: 1rem; }
+.pdp__label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+.pdp__select {
+  font: inherit;
+  width: 100%;
+  padding: 0.7em 1em;
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--ink);
+}
+.pdp__add { width: 100%; justify-content: center; }
+.pdp__add:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; transform: none; }
+.pdp__desc { border-top: 2px dashed rgba(22, 60, 105, 0.25); padding-top: 1.4rem; }
+
+/* --- Carrito --- */
+.cart-empty { text-align: center; padding: 3rem 1rem; }
+.cart-empty__emoji { font-size: 64px; line-height: 1; margin: 0 0 0.6rem; }
+
+.cart-list { display: grid; gap: 1rem; margin-bottom: 2rem; }
+.cart-item {
+  display: grid;
+  grid-template-columns: 92px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  padding: 0.8rem;
+}
+@media (max-width: 560px) {
+  .cart-item { grid-template-columns: 68px 1fr; }
+  .cart-item__qty { grid-column: 2; justify-self: start; }
+}
+.cart-item__media img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 14px;
+  background: var(--p-6141);
+}
+.cart-item__title {
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  text-decoration: none;
+}
+.cart-item__variant,
+.cart-item__price { font-size: var(--step--1); color: var(--ink-soft); margin: 0.2rem 0 0; }
+.cart-item__price { font-family: var(--font-display); color: var(--brand); }
+.cart-item__qty { display: flex; align-items: center; gap: 0.5rem; }
+.cart-item__input {
+  font: inherit;
+  width: 68px;
+  padding: 0.5em;
+  text-align: center;
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--ink);
+}
+.cart-item__remove {
+  text-decoration: none;
+  color: var(--ink-soft);
+  font-size: 18px;
+  padding: 0.2em 0.4em;
+  line-height: 1;
+}
+.cart-item__remove:hover { color: var(--p-492); }
+
+.cart-foot {
+  background: var(--brand-dark);
+  color: var(--cream);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-left: auto;
+  max-width: 420px;
+}
+.cart-foot__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+}
+.cart-foot__total strong { color: var(--brand-yellow); font-size: var(--step-2); }
+.cart-foot__note { font-size: var(--step--1); color: rgba(247, 241, 227, 0.65); margin: 0.4rem 0 1.2rem; }
+.cart-foot__actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.cart-foot__actions .btn { flex: 1; justify-content: center; }
+.cart-foot__actions .btn--ghost { color: var(--cream); border-color: var(--cream); box-shadow: 0 5px 0 var(--cream); }
+
+/* --- Paginación / varios --- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 2rem;
+}
+.pagination .chip { text-decoration: none; }
+
+.collection__desc {
+  color: var(--white);
+  max-width: 70ch;
+  margin-bottom: 1.5rem;
+}
+
+.article__meta {
+  font-family: var(--font-display);
+  color: var(--ink-soft);
+  font-size: var(--step--1);
+  margin-bottom: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Accesibilidad: respetar prefers-reduced-motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee__track { animation: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Tarjeta de catálogo (.cardset .card)
+   La tarjeta de `snippets/banda-card.liquid`. Vivía en productos.css scopeada
+   bajo .pgal, pero la usan el catálogo Y la venta cruzada de la PDP, así que
+   se mudó acá — una sola tarjeta, una sola definición.
+
+   Va scopeada bajo .cardset (la clase del contenedor que las agrupa) porque
+   base.css ya define .card para la OTRA tarjeta del tema (product-card.liquid)
+   y si no, se pisan. Cualquier contenedor de estas tarjetas lleva .cardset.
+   -------------------------------------------------------------------------- */
+.cardset .card {
+  flex: 0 0 344px;
+  width: 344px;
+  background: #FFFCF5;
+  border: 2px solid rgba(1, 60, 62, .12);
+  border-radius: 26px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  text-decoration: none;
+  /* Sombra y hover propios: si no, se cuela el .card:hover de más arriba (lift
+     de -6px + sombra azul dura) pensado para la otra tarjeta del tema. */
+  box-shadow: 0 10px 24px rgba(1, 60, 62, .14);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.cardset .card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 34px rgba(1, 60, 62, .20);
+}
+.cardset .card__media {
+  height: 236px;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #EFE7D6; /* mosaico crema profundo, igual en todas las tarjetas */
+  text-decoration: none; /* la media puede ser un <a> al producto */
+}
+/* El título linkea al producto sin verse como link. */
+.cardset .card__title-link { text-decoration: none; color: inherit; display: block; }
+/* El form de "Agregar" no debe romper el layout del pie. */
+.cardset .card__addform { margin: 0; display: contents; }
+.cardset .card__media img,
+.cardset .card__media svg {
+  max-height: 100%;
+  max-width: 74%;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 22px rgba(1, 60, 62, .32));
+}
+.cardset .card__body {
+  padding: 22px 24px 26px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+/* --banda-bg es el acento de la familia en el catálogo; fuera de ahí (la PDP)
+   no existe, así que el teal de la marca hace de respaldo. */
+.cardset .card__eyebrow {
+  font: 600 13px/1 var(--font-body, 'Inter', sans-serif);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--banda-bg, #00968F);
+}
+/* min-height iguala títulos de 1 y 2 líneas: mantiene todas las tarjetas
+   idénticas. No lo quites ni pongas alturas por familia. */
+.cardset .card__title {
+  font: 700 26px/1.02 var(--font-display, 'Fredoka', sans-serif);
+  color: var(--banda-bg, #00968F);
+  margin: 8px 0 0;
+  min-height: 54px;
+}
+/* margin-top:auto empuja el pie abajo: alinea precio + botón en todas.
+   background:transparent resetea la "franja oscura" que este mismo archivo le
+   pone a .card__foot para la otra tarjeta; acá el pie va sobre la crema. */
+.cardset .card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding: 20px 0 0;
+  background: transparent;
+  color: inherit;
+}
+.cardset .card__price {
+  font: 700 15px var(--font-display, 'Fredoka', sans-serif);
+  color: rgba(1, 60, 62, .78);
+}
+.cardset .card__add {
+  font: 600 14px var(--font-display, 'Fredoka', sans-serif);
+  background: #013C3E;
+  color: #F7F1E3;
+  padding: 11px 20px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardset .card { transition: none; }
+  .cardset .card:hover { transform: none; }
+}

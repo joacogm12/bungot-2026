@@ -1,0 +1,337 @@
+{%- comment -%}
+  2a — Mis pedidos, con su modal de detalle y "Repetir".
+
+  Todo sale de customer.orders, sin datos inventados. Como la tienda usa las
+  cuentas nuevas de Shopify, el `customer` de Liquid solo se puebla si la
+  sesión llega al storefront; si no hay, la página ofrece entrar (la ventana
+  de 1a) en vez de enseñar una pantalla rota.
+
+  El estado del pedido se calcula UNA vez por pedido (badge + tramos encendidos
+  de la línea de tiempo salen de la misma variable): así nunca se contradicen,
+  que es la regla del handoff. La línea tiene 3 tramos honestos — Confirmado ·
+  Pagado · Enviado — y no los 4 del prototipo: "Entregado" no existe en Liquid
+  (fulfilled = salió del almacén) y no vamos a encender un tramo que no podemos
+  saber. El rastreo real está a un clic, ahí sí se ve dónde va.
+
+  "Rastrear" aparece cuando hay guía (tracking_url de la paquetería); si no,
+  el botón secundario es "Ver detalle", tal cual el handoff.
+
+  "Repetir" arma su lista de variantes DISPONIBLES desde Liquid y el JS la
+  manda a /cart/add.js: actualiza el contador del navbar y avisa 4 segundos
+  con enlace al carrito. Las variantes borradas o agotadas se filtran acá para
+  que el clic nunca truene contra el carrito.
+{%- endcomment -%}
+
+<section
+  class="cpage"
+  data-pedidos
+  data-msg-done="{{ 'cuenta.pedidos.repeat_done' | t | escape }}"
+  data-msg-partial="{{ 'cuenta.pedidos.repeat_partial' | t | escape }}"
+  data-msg-empty="{{ 'cuenta.pedidos.repeat_empty' | t | escape }}"
+  data-msg-error="{{ 'cuenta.pedidos.repeat_error' | t | escape }}"
+>
+  {%- render 'account-nav', active: 'pedidos' -%}
+
+  <div class="cped">
+    {%- if customer -%}
+      {%- paginate customer.orders by 12 -%}
+        <div class="cped__head">
+          <h1 class="cped__h1">{{ 'cuenta.pedidos.title' | t }}</h1>
+          {%- if customer.orders_count > 0 -%}
+            {%- liquid
+              assign primero = customer.orders.first
+              assign f_ultimo = primero.created_at | date: '%e de %B' | lstrip
+            -%}
+            <p class="cped__meta">
+              {%- if customer.orders_count == 1 -%}
+                {{ 'cuenta.pedidos.count_one' | t }}
+              {%- else -%}
+                {{ 'cuenta.pedidos.count' | t: count: customer.orders_count }}
+              {%- endif %}
+              · {{ 'cuenta.pedidos.last' | t: date: f_ultimo }}
+            </p>
+          {%- endif -%}
+        </div>
+
+        {%- if customer.orders_count == 0 -%}
+          <div class="cempty">
+            <p class="cempty__title">{{ 'cuenta.pedidos.empty_title' | t }}</p>
+            <p class="cempty__text">{{ 'cuenta.pedidos.empty_text' | t }}</p>
+            <a class="cbtn cbtn--pri" href="{{ routes.all_products_collection_url }}">{{ 'cuenta.pedidos.empty_cta' | t }}</a>
+          </div>
+        {%- endif -%}
+
+        {%- for order in customer.orders -%}
+          {%- liquid
+            # --- Estado unificado: badge y línea de tiempo de la MISMA variable ---
+            # lit = tramos encendidos (1 Confirmado · 2 Pagado · 3 Enviado)
+            assign pagado = false
+            case order.financial_status
+              when 'paid', 'partially_paid', 'partially_refunded', 'refunded', 'authorized'
+                assign pagado = true
+            endcase
+
+            if order.cancelled
+              assign estado = 'cancelled'
+              assign lit = 1
+            elsif order.fulfillment_status == 'fulfilled'
+              assign estado = 'sent'
+              assign lit = 3
+            elsif order.fulfillment_status == 'partial'
+              assign estado = 'partial'
+              assign lit = 2
+            elsif pagado
+              assign estado = 'preparing'
+              assign lit = 2
+            else
+              assign estado = 'pending'
+              assign lit = 1
+            endif
+
+            assign estado_key = 'cuenta.pedidos.status_' | append: estado
+            assign f_orden = order.created_at | date: '%e de %B' | lstrip
+
+            # --- Guía de rastreo: la primera línea que ya tenga una ---
+            assign guia_url = ''
+            assign guia_num = ''
+            for line in order.line_items
+              if line.fulfillment and line.fulfillment.tracking_url
+                assign guia_url = line.fulfillment.tracking_url
+                assign guia_num = line.fulfillment.tracking_number
+                break
+              endif
+            endfor
+
+            # --- Lo que se puede repetir: solo variantes vivas y con stock ---
+            assign rep = ''
+            assign rep_n = 0
+            for line in order.line_items
+              if line.variant and line.variant.available
+                assign pieza = '{"id":' | append: line.variant.id | append: ',"quantity":' | append: line.quantity | append: '}'
+                if rep == ''
+                  assign rep = pieza
+                else
+                  assign rep = rep | append: ',' | append: pieza
+                endif
+                assign rep_n = rep_n | plus: 1
+              endif
+            endfor
+
+            # --- Resumen textual: dos nombres y "y N más" ---
+            assign nombres = ''
+            for line in order.line_items limit: 2
+              if nombres == ''
+                assign nombres = line.title
+                else
+                assign nombres = nombres | append: ' · ' | append: line.title
+              endif
+            endfor
+            assign lineas_extra = order.line_items.size | minus: 2
+          -%}
+
+          <article class="cord">
+            <div class="cord__left">
+              <div class="cord__top">
+                <span class="cord__folio">{{ order.name }}</span>
+                <span class="cbadge {% if estado == 'sent' %}cbadge--ok{% elsif estado == 'cancelled' %}cbadge--mut{% else %}cbadge--sun{% endif %}">
+                  {{ estado_key | t }}
+                </span>
+                <span class="cord__date">{{ f_orden }}</span>
+              </div>
+
+              <div class="cord__items">
+                {%- for line in order.line_items limit: 3 -%}
+                  <span class="cord__thumb">
+                    {%- if line.image -%}
+                      <img
+                        src="{{ line.image | image_url: width: 124 }}"
+                        alt="{{ line.title | escape }}"
+                        width="62"
+                        height="62"
+                        loading="lazy"
+                      >
+                    {%- endif -%}
+                  </span>
+                {%- endfor -%}
+                <span class="cord__sum">
+                  {{ nombres }}
+                  {%- if lineas_extra > 0 %} {{ 'cuenta.pedidos.more_items' | t: count: lineas_extra }}{% endif -%}
+                </span>
+              </div>
+            </div>
+
+            <div class="cord__right">
+              <span class="cord__total">{{ order.total_price | money }}</span>
+              <div class="cord__btns">
+                {%- if guia_url != blank -%}
+                  <a class="cbtn cbtn--sec" href="{{ guia_url }}" target="_blank" rel="noopener">
+                    {{ 'cuenta.pedidos.track' | t }}
+                  </a>
+                {%- else -%}
+                  {%- comment -%}
+                    Con JS abre el detalle acá mismo; sin JS el href de
+                    respaldo lleva a la página del pedido en Shopify.
+                  {%- endcomment -%}
+                  <a class="cbtn cbtn--sec" href="{{ order.customer_url }}" data-detail-open="{{ order.id }}">
+                    {{ 'cuenta.pedidos.detail' | t }}
+                  </a>
+                {%- endif -%}
+                {%- comment -%}
+                  "Repetir" es un form de verdad contra el carrito: sin JS
+                  postea las mismas líneas y aterriza en /cart; con JS el
+                  handler lo intercepta y hace lo mismo sin salir (aviso de 4s).
+                {%- endcomment -%}
+                <form method="post" action="{{ routes.cart_add_url }}" class="crepeat">
+                  {%- assign idx = 0 -%}
+                  {%- for line in order.line_items -%}
+                    {%- if line.variant and line.variant.available -%}
+                      <input type="hidden" name="items[{{ idx }}][id]" value="{{ line.variant.id }}">
+                      <input type="hidden" name="items[{{ idx }}][quantity]" value="{{ line.quantity }}">
+                      {%- assign idx = idx | plus: 1 -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                  <button
+                    class="cbtn cbtn--pri"
+                    type="submit"
+                    data-repeat='[{{ rep }}]'
+                    data-lines="{{ order.line_items.size }}"
+                    {% if rep_n == 0 %}disabled{% endif %}
+                  >{{ 'cuenta.pedidos.repeat' | t }}</button>
+                </form>
+              </div>
+            </div>
+          </article>
+
+          {%- comment -%} --- El detalle del pedido, oculto hasta que se pide --- {%- endcomment -%}
+          <div class="cdet" data-order-detail="{{ order.id }}" data-open="false" role="dialog" aria-modal="true" aria-label="{{ 'cuenta.pedidos.detail_title' | t: name: order.name }}">
+            <button class="cdet__veil" type="button" data-detail-close tabindex="-1" aria-label="{{ 'general.close' | t }}"></button>
+
+            <div class="cdet__box">
+              <header class="cdet__head">
+                <div>
+                  <p class="cdet__folio">{{ order.name }}</p>
+                  <p class="cdet__meta">
+                    {%- if order.item_count == 1 -%}
+                      {{ 'cuenta.pedidos.meta_one' | t: date: f_orden }}
+                    {%- else -%}
+                      {{ 'cuenta.pedidos.meta' | t: date: f_orden, count: order.item_count }}
+                    {%- endif -%}
+                  </p>
+                </div>
+                <span class="cbadge {% if estado == 'sent' %}cbadge--ok{% elsif estado == 'cancelled' %}cbadge--mut{% else %}cbadge--sun{% endif %}">
+                  {{ estado_key | t }}
+                </span>
+                <button class="cdet__x" type="button" data-detail-close aria-label="{{ 'general.close' | t }}">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13"/></svg>
+                </button>
+              </header>
+
+              {%- comment -%}
+                Línea de tiempo: los tramos encendidos salen del MISMO `lit` que
+                el badge de arriba. Cancelado se queda en 1 con el badge gris.
+              {%- endcomment -%}
+              <div class="ctl" aria-hidden="true">
+                {%- for i in (1..3) -%}
+                  {%- assign tl_key = 'cuenta.pedidos.timeline_' | append: i -%}
+                  <div class="ctl__seg" {% if lit >= i %}data-on{% endif %}>
+                    <span class="ctl__bar"></span>
+                    <span class="ctl__label">{{ tl_key | t }}</span>
+                  </div>
+                {%- endfor -%}
+              </div>
+
+              {%- if guia_url != blank -%}
+                <p class="cdet__guia">
+                  <a href="{{ guia_url }}" target="_blank" rel="noopener">
+                    {{ 'cuenta.pedidos.tracking' | t: number: guia_num }}
+                  </a>
+                </p>
+              {%- endif -%}
+
+              <div class="cdet__items">
+                <p class="cdet__sub">{{ 'cuenta.pedidos.items' | t }}</p>
+                {%- for line in order.line_items -%}
+                  <div class="cdet__row">
+                    <span class="cdet__thumb">
+                      {%- if line.image -%}
+                        <img src="{{ line.image | image_url: width: 116 }}" alt="" width="58" height="58" loading="lazy">
+                      {%- endif -%}
+                    </span>
+                    <div class="cdet__what">
+                      <p class="cdet__name">{{ line.title }}</p>
+                      <p class="cdet__desc">{{ 'cuenta.pedidos.qty' | t }}: {{ line.quantity }}</p>
+                    </div>
+                    <span class="cdet__price">{{ line.final_line_price | money }}</span>
+                  </div>
+                {%- endfor -%}
+              </div>
+
+              <div class="cdet__foot">
+                <div class="cdet__ship">
+                  <p class="cdet__sub">{{ 'cuenta.pedidos.shipping_to' | t }}</p>
+                  {%- if order.shipping_address -%}
+                    <p>{{ order.shipping_address.name }}<br>{{ order.shipping_address.street }}<br>{{ order.shipping_address.city }}{% if order.shipping_address.province_code %}, {{ order.shipping_address.province_code }}{% endif %}</p>
+                  {%- endif -%}
+                </div>
+                <div class="cdet__sums">
+                  <p><span>{{ 'cuenta.pedidos.subtotal' | t }}</span><span>{{ order.line_items_subtotal_price | money }}</span></p>
+                  <p><span>{{ 'cuenta.pedidos.shipping' | t }}</span><span>{{ order.shipping_price | money }}</span></p>
+                  <p class="cdet__total"><span>{{ 'cuenta.pedidos.total' | t }}</span><span>{{ order.total_price | money }}</span></p>
+                </div>
+              </div>
+
+              <div class="cdet__act">
+                <form method="post" action="{{ routes.cart_add_url }}" class="crepeat">
+                  {%- assign idx2 = 0 -%}
+                  {%- for line in order.line_items -%}
+                    {%- if line.variant and line.variant.available -%}
+                      <input type="hidden" name="items[{{ idx2 }}][id]" value="{{ line.variant.id }}">
+                      <input type="hidden" name="items[{{ idx2 }}][quantity]" value="{{ line.quantity }}">
+                      {%- assign idx2 = idx2 | plus: 1 -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                  <button
+                    class="cdet__repeat"
+                    type="submit"
+                    data-repeat='[{{ rep }}]'
+                    data-lines="{{ order.line_items.size }}"
+                    {% if rep_n == 0 %}disabled{% endif %}
+                  >{{ 'cuenta.pedidos.repeat' | t }} {{ order.name }}</button>
+                </form>
+                <button class="cbtn cbtn--sec" type="button" data-detail-close>{{ 'cuenta.pedidos.back' | t }}</button>
+                <p class="cdet__note">{{ 'cuenta.pedidos.repeat_note' | t }}</p>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endpaginate -%}
+    {%- else -%}
+      {%- comment -%}
+        Sin sesión: se ofrece entrar, nunca una pantalla rota. Con href real —
+        con JS abre la ventana, sin JS navega a iniciar sesión.
+      {%- endcomment -%}
+      <div class="cempty">
+        <p class="cempty__title">{{ 'cuenta.signed_out.title' | t }}</p>
+        <p class="cempty__text">{{ 'cuenta.signed_out.text' | t }}</p>
+        <a class="cbtn cbtn--pri" href="{{ routes.account_login_url }}" data-login-open>{{ 'cuenta.signed_out.cta' | t }}</a>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%}
+      Un solo aviso flotante para toda la página: un segundo "Repetir" reinicia
+      el temporizador en vez de apilar avisos.
+    {%- endcomment -%}
+    <div class="ctoast" data-toast data-on="false" role="status" aria-live="polite">
+      <span data-toast-msg></span>
+      <a href="{{ routes.cart_url }}" data-toast-link>{{ 'cuenta.pedidos.repeat_go' | t }}</a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Mis pedidos",
+  "settings": [],
+  "presets": [{ "name": "Mis pedidos" }]
+}
+{% endschema %}

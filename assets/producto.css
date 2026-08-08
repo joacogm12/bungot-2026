@@ -1,0 +1,828 @@
+/* ==========================================================================
+   BUNGOT 2026 — producto.css  (PDP, split fijo 50/50)
+
+   Todo va scopeado bajo .pdpage: la clase .pdp ya es de main-product/base.css.
+   Sistema: bordes de 3px + sombra dura (4px 4px 0), pastillas de 999px, nada
+   de degradados ni sombras difusas. Ancho de diseño 1582px, padding 63px.
+
+   El header y el footer son los globales del tema — esta hoja NO los oculta.
+   ========================================================================== */
+
+.pdpage {
+  --pd-green:   #013C3E;
+  --pd-teal:    #00968F;
+  --pd-celeste: #6CC2EA;
+  --pd-menta:   #85CCC6;
+  --pd-mango:   #F59E28;
+  --pd-naranja: #E24E2E;
+  --pd-crema:   #F7F1E3;
+  --pd-crema-2: #FFFCF5;
+  --pd-crema-3: #EFE7D6;
+
+  --pd-max: 1582px;
+  --pd-pad: 63px;
+  --pd-split-h: 960px;
+  --pd-frame-h: 700px;
+
+  font-family: var(--font-body, 'Inter', sans-serif);
+  color: var(--pd-green);
+  background: var(--pd-crema);
+  /* relative (sin overflow: hidden) para no recortar el ::before que estira el
+     color de la familia detrás del header. */
+  position: relative;
+}
+
+/* El color del panel de la galería se estira hacia ARRIBA, por detrás del
+   header transparente y sticky del tema, para que la barra quede sobre el
+   panel y no sobre una franja crema —igual que la portada con .hero::before—.
+   Solo la MITAD izquierda: la derecha ya es crema, la misma del body, así que
+   no hace falta pintarla. El alto es solo la franja del header (--nav-h, que
+   mide theme.js; el fallback vale cuando no hay portada que medir) más su gap,
+   así NO tapa el marquee de promos. Va en el ::before y no en el panel porque
+   .pdsplit__media lleva overflow: hidden para sostener la fila fija. */
+.pdpage::before {
+  content: '';
+  position: absolute;
+  bottom: 100%; /* justo pegado al borde de arriba de la página */
+  left: 0;
+  width: 50%;
+  height: calc(var(--nav-h, 58px) + var(--nav-gap, 14px));
+  background: var(--pd-fam, var(--pd-naranja));
+}
+
+.pdpage h1,
+.pdpage h2,
+.pdpage h3 {
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 700;
+  letter-spacing: -.035em;
+  line-height: .9;
+  margin: 0;
+}
+.pdpage p { text-wrap: pretty; }
+
+/* --------------------------------------------------------------------------
+   1. El split — fila de alto MÍNIMO 960px
+   La fila arranca en 960px y CRECE con el contenido: abrir los desplegables de
+   la derecha estira la columna, no scrollea adentro. Las dos columnas quedan
+   stretch para que el panel de color acompañe siempre a la más alta.
+   -------------------------------------------------------------------------- */
+.pdsplit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  min-height: var(--pd-split-h);
+}
+
+/* --- Panel de la galería ------------------------------------------------- */
+/* flex-start (no center/stretch): la galería conserva su tamaño y no se estira
+   con la columna cuando la derecha crece. Lo que la mantiene a la vista es el
+   sticky de .pdgal, no el alto. */
+.pdsplit__media {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 26px;
+  padding: 60px 44px;
+  background: var(--pd-fam, var(--pd-naranja));
+  box-sizing: border-box;
+}
+
+/* La galería entera —miniaturas + marco— es UNA sola pieza: el sticky va acá y
+   no en cada parte, así viajan en conjunto y nunca se descuelgan entre sí.
+   Las miniaturas quedan centradas contra el marco (align-items: center).
+
+   El top centra la pieza en la PANTALLA: la mitad del viewport menos la mitad
+   de su alto, que es el del marco (el más alto de los dos). Con un top en px
+   la foto se pegaría arriba; así queda a media pantalla todo el recorrido. Es
+   sticky puro, sin transform, para que el borde de abajo de la banda de color
+   la siga frenando donde corresponde. */
+.pdgal {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  min-width: 0;
+  position: sticky;
+  top: calc(50svh - var(--pd-frame-h) / 2);
+}
+
+/* Tira vertical de miniaturas. */
+.pdthumbs {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pdthumb {
+  width: 92px;
+  height: 92px;
+  padding: 0;
+  border: 3px solid transparent;
+  border-radius: 20px;
+  background: rgba(247, 241, 227, .9);
+  overflow: hidden;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.pdthumb.is-active { border-color: var(--pd-crema); }
+.pdthumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* El marco: la foto NUNCA va suelta sobre el color. El marco crema le da piso
+   tanto a la bolsa recortada como a una foto de estudio con su propio fondo. */
+/* Alto FIJO: el marco mide lo mismo con los desplegables abiertos y cerrados.
+   De acá sale el alto de .pdgal, y por eso su centrado se calcula con
+   --pd-frame-h. Quien acompaña el scroll es .pdgal, no el marco solo. */
+.pdframe {
+  flex: 1;
+  max-width: 520px;
+  height: var(--pd-frame-h);
+  border: 3px solid var(--pd-green);
+  border-radius: 32px;
+  background: var(--pd-crema);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+/* Dos tratamientos: recortada respira dentro del marco; con fondo propio va a
+   sangre. El JS mueve is-cover al cambiar de miniatura. */
+.pdframe__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 46px;
+  box-sizing: border-box;
+}
+.pdframe__img.is-cover {
+  object-fit: cover;
+  padding: 0;
+}
+
+/* El lote se queda abajo a la izquierda del panel. z-index: 1 porque .pdgal,
+   al ser sticky, se pinta por encima del contenido normal y lo taparía al
+   llegar al final de la banda. */
+.pdsplit__lote {
+  position: absolute;
+  left: 44px;
+  bottom: 30px;
+  z-index: 1;
+  margin: 0;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(247, 241, 227, .85);
+}
+
+/* --- Panel de compra ----------------------------------------------------- */
+.pdsplit__buy {
+  display: flex;
+  flex-direction: column;
+  padding: 40px 56px 52px;
+  background: var(--pd-crema);
+  box-sizing: border-box;
+}
+
+.pdbuy__eyebrow {
+  margin: 0 0 16px;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--pd-fam, var(--pd-naranja));
+}
+.pdbuy__title { font-size: 76px; }
+.pdbuy__lead {
+  margin: 20px 0 0;
+  max-width: 520px;
+  font-size: 19px;
+  line-height: 1.6;
+  color: rgba(1, 60, 62, .82);
+}
+
+/* Tira de cifras, separadas por reglas verticales de 2px. */
+.pdstats {
+  display: flex;
+  align-items: flex-start;
+  margin: 26px 0 0;
+}
+.pdstat {
+  padding-right: 30px;
+  margin-right: 30px;
+  border-right: 2px solid rgba(1, 60, 62, .16);
+}
+.pdstat:last-child { padding-right: 0; margin-right: 0; border-right: 0; }
+.pdstat__value {
+  margin: 0;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -.035em;
+  color: var(--pd-fam, var(--pd-naranja));
+}
+.pdstat__label {
+  margin: 6px 0 0;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 14px;
+  color: rgba(1, 60, 62, .75);
+}
+
+/* --- Selectores ---------------------------------------------------------- */
+.pdform { margin: 0; }
+.pdopts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 26px;
+}
+.pdopt__label {
+  display: block;
+  margin-bottom: 10px;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(1, 60, 62, .7);
+}
+.pdopt__pills { display: flex; gap: 10px; }
+.pdpill {
+  flex: 1;
+  padding: 12px 0;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--pd-green);
+  background: transparent;
+  border: 2px solid var(--pd-green);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.pdpill.is-selected { background: var(--pd-green); color: var(--pd-crema); }
+
+/* Presentación única: el contenido es un dato, no una opción. Se lee como una
+   pastilla apagada para que nadie intente hacerle clic. */
+.pdgram {
+  margin: 0;
+  padding: 12px 24px;
+  display: inline-block;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--pd-green);
+  border: 2px dashed rgba(1, 60, 62, .35);
+  border-radius: 999px;
+}
+
+/* --- Fila de compra ------------------------------------------------------ */
+.pdbuyrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 26px;
+}
+.pdstepper {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 3px solid var(--pd-green);
+  border-radius: 999px;
+}
+.pdstepper__btn {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--pd-green);
+  cursor: pointer;
+}
+.pdstepper__val {
+  min-width: 26px;
+  text-align: center;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 700;
+  font-size: 17px;
+}
+/* El CTA ocupa todo lo que sobra de la fila. */
+.pdcta {
+  flex: 1;
+  padding: 17px 24px;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--pd-crema);
+  background: var(--pd-green);
+  border: 3px solid var(--pd-green);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--pd-fam, var(--pd-naranja));
+}
+.pdcta[disabled] { opacity: .5; cursor: not-allowed; }
+.pdnote {
+  margin: 14px 0 0;
+  font-size: 15px;
+  color: rgba(1, 60, 62, .72);
+}
+
+/* --- Acordeón ------------------------------------------------------------
+   Bloque normal en el flujo: sin alto propio ni scroll interno. Abrir una
+   entrada estira la columna y con ella toda la fila (por eso el split es
+   min-height y no height), que es justo lo que se quiere: nada de barras de
+   scroll adentro de la página. */
+.pdacc {
+  margin-top: 26px;
+  border-top: 2px solid rgba(1, 60, 62, .14);
+}
+.pdacc__item + .pdacc__item { border-top: 2px solid rgba(1, 60, 62, .14); }
+.pdacc__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 0;
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--pd-green);
+}
+.pdacc__head::-webkit-details-marker { display: none; }
+/* Signo + / − dibujado con dos barras; al abrir, la vertical desaparece. */
+.pdacc__sign {
+  position: relative;
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+.pdacc__sign::before,
+.pdacc__sign::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  background: var(--pd-fam, var(--pd-naranja));
+}
+.pdacc__sign::before { width: 16px; height: 3px; }
+.pdacc__sign::after  { width: 3px; height: 16px; transition: transform .2s ease; }
+.pdacc__item[open] .pdacc__sign::after { transform: scaleY(0); }
+.pdacc__body {
+  padding-bottom: 18px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(1, 60, 62, .82);
+}
+.pdacc__body p { margin: 0 0 10px; }
+.pdacc__body p:last-child { margin-bottom: 0; }
+
+/* Análisis garantizado: filas etiqueta/valor con guía de puntos, como en la
+   tabla de la bolsa. */
+.pdanalisis { margin: 14px 0 0; }
+.pdanalisis__row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 0;
+  border-top: 1px solid rgba(1, 60, 62, .12);
+}
+.pdanalisis__row dt {
+  font-size: 14px;
+  color: rgba(1, 60, 62, .7);
+}
+.pdanalisis__row dd {
+  margin: 0 0 0 auto;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--pd-green);
+}
+
+/* --------------------------------------------------------------------------
+   2. Cinturón de beneficios
+   -------------------------------------------------------------------------- */
+.pdbelt {
+  background: var(--pd-green);
+  padding: 40px var(--pd-pad);
+}
+.pdbelt__grid {
+  max-width: var(--pd-max);
+  margin-inline: auto;
+  display: grid;
+  /* Cuatro columnas cuando hay cuatro beneficios (el caso del diseño), pero los
+     beneficios salen del producto y algunos traen cinco: auto-fit reparte los
+     que haya sin dejar un huérfano en un segundo renglón. */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 40px;
+}
+.pdbelt__title {
+  font-size: 21px;
+  color: var(--pd-mango);
+}
+.pdbelt__text {
+  margin: 10px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(247, 241, 227, .85);
+}
+
+/* --------------------------------------------------------------------------
+   3. Opiniones de los clientes
+   Bloque de ancho completo dentro de la tarjeta, sin scroll propio: crece con
+   las opiniones que se vayan mostrando. El inner se centra igual que el de la
+   venta cruzada para que las dos secciones compartan el mismo eje.
+   -------------------------------------------------------------------------- */
+.pdops {
+  background: var(--pd-crema);
+  padding: 52px var(--pd-pad) 56px;
+  border-top: 2px solid rgba(1, 60, 62, .12);
+}
+.pdops__inner {
+  max-width: var(--pd-max);
+  margin-inline: auto;
+}
+
+/* Encabezado: título + promedio a la izquierda, botón a la derecha. */
+.pdops__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+}
+/* min-width: 0 para que el título largo parta renglón en vez de empujar al
+   botón fuera de la fila. */
+.pdops__intro { min-width: 0; }
+.pdops__title {
+  font-size: 30px;
+  line-height: 1.1;
+  /* Menos apretado que el resto de los títulos de la PDP (-.035em): a 30px y
+     con mayúscula inicial, ese tracking junta demasiado las letras. */
+  letter-spacing: -.015em;
+}
+.pdops__score {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+.pdops__stars {
+  display: flex;
+  gap: 4px;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--pd-mango);
+}
+/* Las estrellas del estado vacío SON botones: se les quita la piel de botón
+   pero conservan el tamaño de la fila. */
+.pdops__star {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: 1;
+}
+.pdops__star--pick { cursor: pointer; }
+.pdops__avg {
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+}
+.pdops__sub {
+  margin: 10px 0 0;
+  font-size: 16px;
+  color: rgba(1, 60, 62, .55);
+}
+.pdops__cta {
+  flex: none;
+  padding: 14px 26px;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--pd-crema);
+  background: var(--pd-green);
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* --- Lista ---------------------------------------------------------------
+   Vacía no se dibuja: así el estado vacío no arrastra la regla de arriba.
+   La lista existe igual en el HTML porque es donde el JS mete la primera. */
+.pdops__list {
+  margin-top: 32px;
+  border-top: 2px solid rgba(1, 60, 62, .12);
+}
+.pdops__list:empty { display: none; }
+.pdops__item {
+  padding: 18px 0;
+  border-bottom: 2px solid rgba(1, 60, 62, .1);
+}
+.pdops__item[hidden] { display: none; }
+.pdops__istars {
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 2px;
+  color: var(--pd-mango);
+}
+.pdops__text {
+  margin: 10px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: rgba(1, 60, 62, .82);
+}
+.pdops__meta {
+  margin: 8px 0 0;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 14px;
+  color: rgba(1, 60, 62, .55);
+}
+/* Los dos botones de la lista, uno al lado del otro. Cuando "ver menos" está
+   oculto el flex no deja hueco, así que "ver más" no se mueve al aparecer. */
+.pdops__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+.pdops__more,
+.pdops__less {
+  padding: 12px 22px;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--pd-green);
+  background: transparent;
+  border: 2px solid rgba(1, 60, 62, .3);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.pdops__more[hidden],
+.pdops__less[hidden] { display: none; }
+
+/* --- Popup ---------------------------------------------------------------
+   Velo fijo a la ventana: el cuadro queda centrado aunque la página esté
+   scrolleada. Funciona porque ningún ancestro de .pdops lleva transform (el
+   sticky de .pdgal no cuenta y además no es ancestro); si algún día alguien le
+   pone uno a .pdpage, el fixed pasa a ser relativo a la sección y esto se
+   rompe. z-index 120: por encima del header (60), del panel de nav (70) y del
+   popup de base.css (90). */
+.pdops__veil {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(1, 60, 62, .55);
+}
+.pdops__veil[hidden] { display: none; }
+.pdops__modal {
+  width: 620px;
+  max-width: 100%;
+  /* En pantallas bajas el cuadro scrollea adentro y no se le corta el botón de
+     publicar. La que nunca scrollea es la sección, no el popup. */
+  max-height: calc(100svh - 48px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 38px 40px 36px;
+  background: var(--pd-crema);
+  border: 3px solid var(--pd-green);
+  border-radius: 20px;
+  box-shadow: 0 30px 80px rgba(1, 60, 62, .35);
+}
+.pdops__mhead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.pdops__mtitle {
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -.015em;
+}
+.pdops__mprod {
+  margin: 8px 0 0;
+  font-size: 16px;
+  color: rgba(1, 60, 62, .55);
+}
+.pdops__x {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--pd-green);
+  background: transparent;
+  border: 2px solid rgba(1, 60, 62, .25);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.pdops__form { margin: 0; }
+.pdops__flabel {
+  display: block;
+  margin: 28px 0 10px;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--pd-green);
+}
+.pdops__pick {
+  display: flex;
+  gap: 8px;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--pd-mango);
+}
+.pdops__field {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px 16px;
+  box-sizing: border-box;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--pd-green);
+  background: #fff;
+  border: 2px solid rgba(1, 60, 62, .25);
+  border-radius: 12px;
+}
+.pdops__field--text {
+  min-height: 128px;
+  resize: vertical;
+}
+/* Lo que falta para publicar se marca con el naranja de la marca, sin texto de
+   error: el campo vacío ya dice qué le falta. */
+.pdops__field.is-error,
+.pdops__pick.is-error { outline: 2px solid var(--pd-naranja); outline-offset: 4px; }
+.pdops__foot {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 24px;
+}
+.pdops__submit {
+  flex: 1;
+  padding: 14px 26px;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--pd-crema);
+  background: var(--pd-green);
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.pdops__cancel {
+  flex: none;
+  padding: 0;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 16px;
+  color: rgba(1, 60, 62, .55);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   4. Venta cruzada — última sección antes del footer.
+   -------------------------------------------------------------------------- */
+.pdcross {
+  background: var(--pd-crema);
+  padding-block: 72px 88px;
+}
+.pdcross__inner {
+  max-width: var(--pd-max);
+  margin-inline: auto;
+  padding-inline: var(--pd-pad);
+}
+.pdcross__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+}
+.pdcross__title { font-size: 40px; }
+.pdcross__link {
+  flex: none;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--pd-green);
+  text-decoration: none;
+  border-bottom: 3px solid var(--pd-fam, var(--pd-naranja));
+  padding-bottom: 3px;
+}
+.pdcross__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 34px;
+}
+/* Las tarjetas son las del catálogo (banda-card + .cardset en base.css). Acá
+   solo se ajusta lo que cambia de contexto: en el catálogo van en un carrusel
+   horizontal de ancho fijo, y aquí llenan las columnas de la rejilla. */
+.pdcross__grid .card {
+  flex: none;
+  width: auto;
+}
+
+/* --------------------------------------------------------------------------
+   prefers-reduced-motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .pdacc__sign::after { transition: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   Los 960px mínimos de fila, el marco de 700px y el H1 de 76px son de
+   escritorio y se mantienen hasta 1240px. Abajo de eso se escala, y abajo de
+   1000px el split se desarma en una columna (ahí la galería y la compra van
+   una arriba de la otra, así que no hay banda de color que recorrer y el
+   sticky se apaga).
+   -------------------------------------------------------------------------- */
+@media (max-width: 1240px) {
+  .pdpage {
+    --pd-pad: 40px;
+    --pd-split-h: 900px;
+    --pd-frame-h: 620px;
+  }
+  .pdsplit__media { padding: 48px 32px; gap: 20px; }
+  .pdsplit__buy { padding: 32px 40px 40px; }
+  .pdbuy__title { font-size: 58px; }
+  .pdsplit__lote { left: 32px; }
+}
+
+@media (max-width: 1000px) {
+  .pdpage { --pd-pad: 22px; --pd-frame-h: auto; }
+  /* En una columna la galería ocupa todo el ancho, así que el color de arriba
+     también. */
+  .pdpage::before { width: 100%; }
+  .pdsplit {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .pdsplit__media {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 28px 22px 32px;
+  }
+  /* La galería se apila igual que el resto y deja el sticky: acá la banda de
+     color mide lo mismo que ella, no hay nada que recorrer. */
+  .pdgal {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    position: static;
+  }
+  /* Las miniaturas y el lote salen del absoluto: en una columna no hay esquinas
+     que ocupar. */
+  .pdthumbs { flex-direction: row; order: 1; }
+  .pdframe { order: 2; max-width: none; height: auto; aspect-ratio: 1; }
+  .pdsplit__lote { position: static; order: 3; }
+  .pdbuy__title { font-size: clamp(2.75rem, 11vw, 4rem); }
+  .pdbelt__grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+  .pdops { padding: 40px var(--pd-pad) 44px; }
+  .pdcross__head { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .pdcross__title { font-size: clamp(2rem, 8vw, 2.5rem); }
+  .pdcross__grid { grid-template-columns: 1fr; gap: 24px; }
+}
+
+@media (max-width: 620px) {
+  .pdopts { grid-template-columns: 1fr; }
+  .pdbuyrow { flex-wrap: wrap; }
+  .pdcta { flex: 1 1 100%; }
+  .pdbelt__grid { grid-template-columns: 1fr; }
+  /* El botón de escribir baja debajo del título y se estira: al lado no le
+     queda ancho para el texto completo. */
+  .pdops__head { flex-direction: column; align-items: stretch; gap: 20px; }
+  .pdops__title { font-size: 26px; }
+  .pdops__modal { padding: 26px 22px 24px; }
+  .pdops__mtitle { font-size: 24px; }
+  .pdops__pick { font-size: 28px; }
+  .pdcross__grid .card__foot { flex-wrap: wrap; gap: 12px; }
+}

@@ -1,0 +1,91 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "BUNGOT 2026",
+    "theme_version": "1.0.0",
+    "theme_author": "BUNGOT",
+    "theme_documentation_url": "https://bungot.com",
+    "theme_support_url": "https://bungot.com"
+  },
+  {
+    "name": "Marca",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo",
+        "info": "Si lo dejás vacío se usa el nombre de la tienda con la tipografía bubble."
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon"
+      },
+      {
+        "type": "image_picker",
+        "id": "pup_illustration",
+        "label": "Ilustración del perrito (tarjetas)",
+        "info": "Se muestra en cada tarjeta de producto. Si está vacío se usa el perrito SVG que viene con el tema."
+      }
+    ]
+  },
+  {
+    "name": "Colores",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Estos son los pantones oficiales de la marca, muestreados de las hojas en /pantones. Cambiálos solo si el manual de marca cambia."
+      },
+      {
+        "type": "color",
+        "id": "color_brand",
+        "label": "Verde azulado — PANTONE 7716 C",
+        "default": "#00978E"
+      },
+      {
+        "type": "color",
+        "id": "color_dark",
+        "label": "Oscuro / texto — PANTONE 2217 C",
+        "default": "#163C69"
+      },
+      {
+        "type": "color",
+        "id": "color_yellow",
+        "label": "Amarillo — PANTONE 122 C",
+        "default": "#FED140"
+      },
+      {
+        "type": "color",
+        "id": "color_cream",
+        "label": "Crema (fondo de contenido)",
+        "default": "#F7F1E3",
+        "info": "Neutral de superficie. No sale de los pantones — no había un crema en las hojas."
+      }
+    ]
+  },
+  {
+    "name": "Tarjetas de producto",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Las tarjetas rotan por esta lista de colores. Todos salen de las 8 hojas de pantones. Para fijar el color de un producto puntual, usá el metafield custom.card_color con un hex."
+      },
+      {
+        "type": "text",
+        "id": "card_colors",
+        "label": "Rotación de colores",
+        "default": "#F6A762,#70C4E8,#FED140,#88CBC4,#EB5F7A,#8FC7E8,#F59C26,#E6BDDB,#E1CC00,#619AC5,#7FA8AC,#E94925",
+        "info": "Hex separados por coma. En orden: 714, 297, 122, 6141, 709, 2905, 1375, 516, 605, 2170, 5493, 172."
+      }
+    ]
+  },
+  {
+    "name": "Social",
+    "settings": [
+      { "type": "text", "id": "social_instagram", "label": "Instagram" },
+      { "type": "text", "id": "social_tiktok", "label": "TikTok" },
+      { "type": "text", "id": "social_facebook", "label": "Facebook" },
+      { "type": "text", "id": "social_whatsapp", "label": "WhatsApp" }
+    ]
+  }
+]

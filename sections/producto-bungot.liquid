@@ -1,0 +1,885 @@
+{%- comment -%}
+  BUNGOT — Página de producto (PDP). Estructura de split fijo 50/50:
+
+    1. El split — fila de ALTURA FIJA (960px): izquierda la galería sobre el
+       color de la familia, derecha todo lo de comprar sobre crema. La mitad
+       izquierda nunca cambia de alto.
+    2. Cinturón de beneficios — banda verde profundo a sangre.
+    3. Opiniones de los clientes — con popup para escribir una.
+    4. Venta cruzada — última sección antes del footer.
+
+  La foto NO va suelta sobre el color: va dentro de un marco crema con borde,
+  así se ven bien tanto la bolsa recortada como las fotos de estudio que traen
+  su propio fondo (el marco cambia object-fit y padding según el caso).
+
+  El header y el footer son los GLOBALES del tema (header-group / footer-group):
+  esta sección no dibuja nav propio. El contador que se actualiza al agregar es
+  el [data-cart-count] del header de la landing.
+
+  Todo se llena con el producto real; los section.settings son overrides
+  opcionales para el customizer.
+{%- endcomment -%}
+
+{{ 'producto.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  # --- Color de la familia (fondo del panel izquierdo) ---
+  # 1) override del customizer · 2) card-color.liquid (única fuente de verdad
+  # del color de un producto: respeta el metafield custom.card_color) ·
+  # 3) naranja del diseño, para cuando no hay producto (preview del editor).
+  assign fam = section.settings.family_color
+  if fam == blank and product != blank
+    # El índice va por product.id para que el color no cambie entre visitas;
+    # en cuanto el producto tenga custom.card_color, ese gana y el índice sobra.
+    capture fam_from_card
+      render 'card-color', product: product, index: product.id
+    endcapture
+    assign fam = fam_from_card | strip
+  endif
+  if fam == blank
+    assign fam = '#E24E2E'
+  endif
+
+  # --- Datos de la etiqueta (metafields custom.*) ---
+  # Vienen del archivo de etiquetas cargado en Shopify. Son la fuente de verdad;
+  # los section.settings solo mandan si el metafield está vacío.
+  assign mf = product.metafields.custom
+  assign gramaje = mf.gramaje.value
+
+  # --- Textos de la columna derecha (override → producto → default) ---
+  # El antetítulo es el beneficio principal de la etiqueta ("Masa muscular",
+  # "Salud dental"): dice más que un genérico y ya está cargado por producto.
+  assign eyebrow = section.settings.eyebrow
+  if eyebrow == blank
+    assign eyebrow = mf.beneficio_principal.value | default: product.type
+  endif
+
+  assign title = section.settings.title | default: product.title
+  if title == blank
+    assign title = 'onboarding.product_title' | t
+  endif
+
+  assign lead = section.settings.lead
+  if lead == blank
+    # Corto a propósito: la columna tiene alto fijo, y un párrafo largo se come
+    # el espacio del acordeón hasta dejarlo en su mínimo.
+    assign lead = product.description | strip_html | truncatewords: 26
+  endif
+
+  # --- Cifras ---
+  # Salen del análisis garantizado de la etiqueta, no de un texto fijo:
+  #   1. la proteína cruda real del producto,
+  #   2. cuántos ingredientes tiene — la etiqueta dice "UNICO INGREDIENTE"
+  #      cuando es uno solo; si no, se cuentan los separados por coma,
+  #   3. conservadores: siempre cero, es la promesa de la marca.
+  assign stat1_value = section.settings.stat1_value
+  assign stat1_label = section.settings.stat1_label
+  if stat1_value == blank and mf.proteina_cruda.value != blank
+    assign stat1_value = mf.proteina_cruda.value | times: 1 | round | append: '%'
+  endif
+
+  assign stat2_value = section.settings.stat2_value
+  assign stat2_label = section.settings.stat2_label
+  if stat2_value == blank and mf.ingredientes.value != blank
+    assign ing_txt = mf.ingredientes.value | upcase
+    if ing_txt contains 'UNICO INGREDIENTE'
+      assign ing_count = 1
+    else
+      assign ing_parts = mf.ingredientes.value | split: ','
+      assign ing_count = ing_parts.size
+    endif
+    assign stat2_value = ing_count
+    if stat2_label == blank
+      if ing_count == 1
+        assign stat2_label = 'sections.producto.ingredient_one' | t
+      else
+        assign stat2_label = 'sections.producto.ingredient_other' | t
+      endif
+    endif
+  endif
+
+  assign stat3_value = section.settings.stat3_value
+  assign stat3_label = section.settings.stat3_label
+
+  # --- Galería ---
+  # Assets de respaldo en el orden del diseño: bolsa, premio suelto, perro
+  # comiendo, producción. El "fit" va declarado por foto porque el marco crema
+  # trata distinto una imagen recortada (contain + padding) que una con fondo
+  # propio (cover a sangre).
+  assign fallback_shots = 'bungot-pulmon.webp,bungot-premio.webp,bungot-equipo-perro.webp,bungot-equipo-producto.webp' | split: ','
+  assign fallback_fits = 'contain,contain,cover,cover' | split: ','
+  assign shot_keys = 'bag,treat,dog,prod' | split: ','
+
+  # Foto grande de arranque: la del producto, o el primer asset de respaldo.
+  # El src queda resuelto por Liquid en el HTML — nada de plantillas que el
+  # navegador tenga que pedir sin resolver.
+  assign bag = section.settings.bag_image | default: product.featured_image
+  if bag != blank
+    assign bag_src = bag | image_url: width: 1200
+    assign bag_alt = bag.alt | default: title
+    assign bag_fit = 'contain'
+  else
+    assign bag_src = fallback_shots[0] | asset_url
+    assign bag_alt = 'sections.producto.shot_bag' | t
+    assign bag_fit = fallback_fits[0]
+  endif
+
+  # --- Selectores ---
+  # Solo si el producto tiene variantes de verdad (ej. Pulmón de res: 60 g y
+  # 190 g). Los productos de una sola presentación NO llevan selector: su
+  # contenido se muestra como dato, porque en BUNGOT cada proteína y cada
+  # gramaje es un producto aparte, no una opción.
+  assign use_real_options = false
+  if product != blank and product.has_only_default_variant == false
+    assign use_real_options = true
+  endif
+
+  assign cur_variant = product.selected_or_first_available_variant
+-%}
+
+<section class="pdpage" data-pdp style="--pd-fam: {{ fam }};">
+
+  {%- comment -%} ---------- 1. El split (fila de 960px mínimo) ---------- {%- endcomment -%}
+  <div class="pdsplit">
+
+    {%- comment -%}
+      Panel de la galería. La fila arranca en 960px y crece con los desplegables
+      de la derecha; las miniaturas y el marco viven juntos dentro de .pdgal,
+      que es UNA sola pieza sticky: se mueven en conjunto y quedan centrados en
+      la pantalla mientras dura la banda de color (ver el CSS de .pdgal).
+    {%- endcomment -%}
+    <div class="pdsplit__media">
+      <div class="pdgal">
+        <div class="pdthumbs" role="group" aria-label="{{ 'sections.producto.thumbs' | t }}">
+          {%- for key in shot_keys -%}
+            {%- liquid
+              assign shot = product.images[forloop.index0]
+              if shot != blank
+                assign thumb_src = shot | image_url: width: 200
+                assign full_src = shot | image_url: width: 1200
+                assign shot_alt = shot.alt | default: title
+                # De una foto de la tienda no se sabe si viene recortada, así que
+                # contain: peor un margen de más que recortarle la cabeza al perro.
+                assign shot_fit = 'contain'
+              else
+                assign asset_name = fallback_shots[forloop.index0]
+                assign thumb_src = asset_name | asset_url
+                assign full_src = asset_name | asset_url
+                assign alt_key = 'sections.producto.shot_' | append: key
+                assign shot_alt = alt_key | t
+                assign shot_fit = fallback_fits[forloop.index0]
+              endif
+            -%}
+            <button
+              type="button"
+              class="pdthumb{% if forloop.first %} is-active{% endif %}"
+              data-pd-thumb
+              data-full="{{ full_src }}"
+              data-full-alt="{{ shot_alt | escape }}"
+              data-fit="{{ shot_fit }}"
+              aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+            >
+              <img src="{{ thumb_src }}" alt="{{ shot_alt | escape }}" width="92" height="92" loading="lazy">
+            </button>
+          {%- endfor -%}
+        </div>
+
+        <div class="pdframe">
+          <img
+            class="pdframe__img{% if bag_fit == 'cover' %} is-cover{% endif %}"
+            src="{{ bag_src }}"
+            alt="{{ bag_alt | escape }}"
+            width="1200"
+            height="1200"
+            data-pd-main
+            fetchpriority="high"
+          >
+        </div>
+      </div>
+
+      {%- if section.settings.lote != blank -%}
+        <p class="pdsplit__lote">{{ section.settings.lote }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Panel de compra. ---------- {%- endcomment -%}
+    <div class="pdsplit__buy">
+      {%- if eyebrow != blank -%}
+        <p class="pdbuy__eyebrow">{{ eyebrow }}</p>
+      {%- endif -%}
+
+      <h1 class="pdbuy__title">{{ title }}</h1>
+
+      {%- if lead != blank -%}
+        <p class="pdbuy__lead">{{ lead }}</p>
+      {%- endif -%}
+
+      {%- comment -%} Tira de tres cifras, separadas por reglas verticales. {%- endcomment -%}
+      <dl class="pdstats">
+        {%- if stat1_value != blank -%}
+          <div class="pdstat">
+            <dt class="pdstat__value">{{ stat1_value }}</dt>
+            <dd class="pdstat__label">{{ stat1_label }}</dd>
+          </div>
+        {%- endif -%}
+        {%- if stat2_value != blank -%}
+          <div class="pdstat">
+            <dt class="pdstat__value">{{ stat2_value }}</dt>
+            <dd class="pdstat__label">{{ stat2_label }}</dd>
+          </div>
+        {%- endif -%}
+        {%- if stat3_value != blank -%}
+          <div class="pdstat">
+            <dt class="pdstat__value">{{ stat3_value }}</dt>
+            <dd class="pdstat__label">{{ stat3_label }}</dd>
+          </div>
+        {%- endif -%}
+      </dl>
+
+      <form class="pdform" data-pd-form>
+        <div class="pdopts">
+          {%- if use_real_options -%}
+            {%- for opt in product.options_with_values -%}
+              <div class="pdopt">
+                <span class="pdopt__label">{{ opt.name }}</span>
+                <div class="pdopt__pills" data-pd-group="{{ opt.position }}">
+                  {%- for val in opt.values -%}
+                    {%- assign is_sel = false -%}
+                    {%- if opt.selected_value == val -%}{%- assign is_sel = true -%}{%- endif -%}
+                    <button
+                      type="button"
+                      class="pdpill{% if is_sel %} is-selected{% endif %}"
+                      data-pd-opt
+                      data-pd-val="{{ val | escape }}"
+                      aria-pressed="{% if is_sel %}true{% else %}false{% endif %}"
+                    >{{ val }}</button>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- elsif gramaje != blank -%}
+            {%- comment -%}
+              Presentación única: el contenido va como dato, no como opción.
+            {%- endcomment -%}
+            <div class="pdopt">
+              <span class="pdopt__label">{{ 'sections.producto.content' | t }}</span>
+              <p class="pdgram">{{ gramaje }}</p>
+            </div>
+          {%- endif -%}
+        </div>
+
+        <div class="pdbuyrow">
+          <div class="pdstepper" data-pd-stepper>
+            <button type="button" class="pdstepper__btn" data-pd-step="-1" aria-label="{{ 'sections.producto.qty_less' | t }}">−</button>
+            <span class="pdstepper__val" data-pd-qty aria-live="polite">1</span>
+            <button type="button" class="pdstepper__btn" data-pd-step="1" aria-label="{{ 'sections.producto.qty_more' | t }}">+</button>
+          </div>
+
+          {%- comment -%}
+            La etiqueta viva del CTA la arma el JS: prefijo + lo que esté elegido.
+            El data-prefix es lo único que se configura.
+          {%- endcomment -%}
+          <button
+            type="submit"
+            class="pdcta"
+            data-pd-add
+            data-prefix="{{ section.settings.cta_prefix | escape }}"
+            data-label-added="{{ 'sections.producto.added' | t }}"
+            data-label-soldout="{{ 'products.card.sold_out' | t }}"
+            data-label-unavailable="{{ 'sections.producto.unavailable' | t }}"
+          >{{ section.settings.cta_prefix }}</button>
+        </div>
+
+        <input type="hidden" name="id" value="{{ cur_variant.id }}" data-pd-variant>
+        <input type="hidden" name="quantity" value="1" data-pd-qty-input>
+
+        {%- if section.settings.note != blank -%}
+          <p class="pdnote">{{ section.settings.note }}</p>
+        {%- endif -%}
+      </form>
+
+      {%- comment -%}
+        Acordeón. El wrapper toma el alto que sobra y scrollea SOLO adentro:
+        abrir una entrada no mueve ni el CTA ni la galería (ver producto.css).
+      {%- endcomment -%}
+      {%- assign acc_blocks = section.blocks | where: 'type', 'acordeon' -%}
+      {%- if acc_blocks.size > 0 -%}
+        <div class="pdacc">
+          {%- for block in acc_blocks -%}
+            {%- liquid
+              # Cada entrada dice de qué metafield se llena. Si ese metafield
+              # está vacío (producto sin etiqueta cargada), cae al texto del
+              # bloque; si tampoco hay, la entrada no se dibuja.
+              assign src = block.settings.source
+              assign acc_body = blank
+              if src == 'ingredientes'
+                assign acc_body = mf.ingredientes.value
+              elsif src == 'recomendacion'
+                assign acc_body = mf.recomendacion.value
+              elsif src == 'instrucciones'
+                assign acc_body = mf.instrucciones.value
+              endif
+
+              # La tabla del análisis garantizado solo acompaña a ingredientes.
+              assign show_analisis = false
+              if src == 'ingredientes' and mf.proteina_cruda.value != blank
+                assign show_analisis = true
+              endif
+            -%}
+            {%- if acc_body != blank or block.settings.body != blank -%}
+              {%- comment -%} Todos los acordeones arrancan cerrados: la ficha se lee de un vistazo y el usuario abre lo que le interese. {%- endcomment -%}
+              <details class="pdacc__item" {{ block.shopify_attributes }}>
+                <summary class="pdacc__head">
+                  {{ block.settings.title }}
+                  <span class="pdacc__sign" aria-hidden="true"></span>
+                </summary>
+                <div class="pdacc__body">
+                  {%- if acc_body != blank -%}
+                    <p>{{ acc_body | newline_to_br }}</p>
+                  {%- else -%}
+                    {{ block.settings.body }}
+                  {%- endif -%}
+
+                  {%- if show_analisis -%}
+                    <dl class="pdanalisis">
+                      {%- comment -%}
+                        Claves y etiquetas van en dos listas paralelas: una
+                        clave de traducción armada al vuelo no la puede
+                        verificar `shopify theme check`.
+                      {%- endcomment -%}
+                      {%- assign an_keys = 'proteina_cruda,grasa_cruda,fibra_cruda,humedad,cenizas,eln' | split: ',' -%}
+                      {%- assign an_labels = 'sections.producto.analysis_labels' | t | split: ',' -%}
+                      {%- for k in an_keys -%}
+                        {%- liquid
+                          assign raw = mf[k].value
+                          if raw != blank
+                            # 72.0 se ve mal en una etiqueta: si el número es
+                            # entero se muestra entero, y si no, con decimales.
+                            assign num = raw | times: 1
+                            assign whole = num | round
+                            if num == whole
+                              assign num_txt = whole
+                            else
+                              assign num_txt = num | round: 2
+                            endif
+                          endif
+                        -%}
+                        {%- if raw != blank -%}
+                          <div class="pdanalisis__row">
+                            <dt>{{ an_labels[forloop.index0] }}</dt>
+                            <dd>{{ num_txt }}%</dd>
+                          </div>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </dl>
+                  {%- endif -%}
+                </div>
+              </details>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%}
+    ---------- 2. Cinturón de beneficios ----------
+    Los beneficios cambian por producto, así que mandan los del metafield
+    custom.beneficios (lista de metaobjetos "Beneficio", reutilizables entre
+    productos). Si el producto todavía no tiene ninguno cargado, caen los
+    bloques de la sección: ninguna página se queda sin cinturón.
+  {%- endcomment -%}
+  {%- liquid
+    assign product_benefits = product.metafields.custom.beneficios.value
+    assign belt_blocks = section.blocks | where: 'type', 'beneficio'
+  -%}
+
+  {%- if product_benefits != blank and product_benefits.size > 0 -%}
+    <div class="pdbelt">
+      <div class="pdbelt__grid">
+        {%- for benefit in product_benefits -%}
+          <article class="pdbelt__item">
+            <h2 class="pdbelt__title">{{ benefit.titulo.value }}</h2>
+            {%- if benefit.texto.value != blank -%}
+              <p class="pdbelt__text">{{ benefit.texto.value }}</p>
+            {%- endif -%}
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- elsif belt_blocks.size > 0 -%}
+    <div class="pdbelt">
+      <div class="pdbelt__grid">
+        {%- for block in belt_blocks -%}
+          <article class="pdbelt__item" {{ block.shopify_attributes }}>
+            <h2 class="pdbelt__title">{{ block.settings.title }}</h2>
+            {%- if block.settings.text != blank -%}
+              <p class="pdbelt__text">{{ block.settings.text }}</p>
+            {%- endif -%}
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%}
+    ---------- 3. Opiniones de los clientes ----------
+    La tienda no tiene app de reviews, así que las opiniones ya cargadas viven
+    como bloques del customizer (mismo criterio que las tarjetas de respaldo de
+    la venta cruzada). Sin ningún bloque la sección se dibuja en su estado
+    vacío: las estrellas de contorno pasan a ser el selector que abre el popup.
+
+    Lo que se publica desde el popup es de la sesión —entra a la lista, al
+    promedio y al contador—, pero no se guarda en Shopify: sin backend de
+    reviews no hay dónde.
+  {%- endcomment -%}
+  {%- liquid
+    assign op_blocks = section.blocks | where: 'type', 'opinion'
+    assign op_count = op_blocks.size
+
+    # Promedio con aritmética entera: `round: 1` devuelve un float y un
+    # promedio exacto de 4 se imprimiría "4", sin el decimal que pide el
+    # diseño. op_tenths es el promedio ×10 ya redondeado (44 → "4.4"); de ahí
+    # salen tanto el número como las estrellas llenas del encabezado, así que
+    # los dos siempre concuerdan. El JS repite esta misma cuenta al publicar.
+    assign op_sum = 0
+    for op in op_blocks
+      assign op_sum = op_sum | plus: op.settings.rating
+    endfor
+    if op_count > 0
+      assign op_tenths = op_sum | times: 100 | divided_by: op_count | plus: 5 | divided_by: 10
+      assign op_whole = op_tenths | divided_by: 10
+      assign op_dec = op_tenths | modulo: 10
+      assign op_avg = op_whole | append: '.' | append: op_dec
+      assign op_full = op_tenths | plus: 5 | divided_by: 10
+    endif
+
+    # De entrada se ven tres; el botón de abajo suma de cinco en cinco (JS).
+    # En el customizer se dibujan todas: si no, una opinión recién agregada
+    # nacería oculta y el cliente no vería lo que acaba de escribir.
+    assign op_shown = 3
+    if request.design_mode
+      assign op_shown = op_count
+    endif
+  -%}
+
+  <div class="pdops" data-pd-reviews>
+    <div class="pdops__inner">
+      <div class="pdops__head">
+        <div class="pdops__intro">
+          <h2 class="pdops__title">{{ section.settings.reviews_title }}</h2>
+
+          {%- comment -%}
+            El bloque de estrellas + promedio lo vuelve a dibujar el JS cuando
+            se publica una opinión (de selector a promedio), así que este
+            markup es el mismo que arma renderScore() en producto.js.
+          {%- endcomment -%}
+          <div class="pdops__score" data-pd-rev-score>
+            {%- if op_count > 0 -%}
+              {%- comment -%} Se lee el promedio exacto ("4.4 de 5"), no el redondeo de las estrellas — igual que renderScore(). {%- endcomment -%}
+              <div class="pdops__stars" role="img" aria-label="{{ 'sections.producto.reviews_of_five' | t: count: op_avg }}">
+                {%- for i in (1..5) -%}
+                  <span class="pdops__star">{% if i <= op_full %}★{% else %}☆{% endif %}</span>
+                {%- endfor -%}
+              </div>
+              <span class="pdops__avg">{{ op_avg }}</span>
+            {%- else -%}
+              <div class="pdops__stars" role="group" aria-label="{{ 'sections.producto.reviews_pick' | t }}">
+                {%- for i in (1..5) -%}
+                  {%- liquid
+                    if i == 1
+                      assign star_aria = 'sections.producto.reviews_star_one' | t
+                    else
+                      assign star_aria = 'sections.producto.reviews_star_many' | t: count: i
+                    endif
+                  -%}
+                  <button type="button" class="pdops__star pdops__star--pick" data-pd-rev-pick="{{ i }}" aria-label="{{ star_aria }}">☆</button>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+
+          <p class="pdops__sub" data-pd-rev-sub>
+            {%- if op_count == 0 -%}
+              {{- 'sections.producto.reviews_first' | t -}}
+            {%- elsif op_count == 1 -%}
+              {{- 'sections.producto.reviews_one' | t -}}
+            {%- else -%}
+              {{- 'sections.producto.reviews_many' | t: count: op_count -}}
+            {%- endif -%}
+          </p>
+        </div>
+
+        <button type="button" class="pdops__cta" data-pd-rev-open>{{ 'sections.producto.reviews_write' | t }}</button>
+      </div>
+
+      {%- comment -%}
+        La lista se dibuja siempre, aunque esté vacía: es donde el JS mete la
+        primera opinión publicada. Vacía no se ve (`:empty` en producto.css),
+        así que el estado vacío no muestra la regla de arriba.
+      {%- endcomment -%}
+      <div class="pdops__list" data-pd-rev-list>
+        {%- for op in op_blocks -%}
+          {%- assign op_r = op.settings.rating | times: 1 -%}
+          <article
+            class="pdops__item"
+            data-pd-rev-item
+            data-rating="{{ op_r }}"
+            {% if forloop.index > op_shown %}hidden{% endif %}
+            {{ op.shopify_attributes }}
+          >
+            <div class="pdops__istars" role="img" aria-label="{{ 'sections.producto.reviews_of_five' | t: count: op_r }}">
+              {%- for i in (1..5) -%}{% if i <= op_r %}★{% else %}☆{% endif %}{%- endfor -%}
+            </div>
+            <p class="pdops__text">{{ op.settings.text }}</p>
+            {%- if op.settings.autor != blank -%}
+              <p class="pdops__meta">{{ op.settings.autor }}</p>
+            {%- endif -%}
+          </article>
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%}
+        "Ver menos" arranca siempre oculto: recién aparece cuando se abrió la
+        lista con "ver más", y se va cuando vuelve a lo que se veía de entrada.
+        Lo prende y lo apaga el JS, su texto nunca cambia.
+      {%- endcomment -%}
+      {%- assign op_rest = op_count | minus: op_shown -%}
+      <div class="pdops__actions">
+        <button type="button" class="pdops__more" data-pd-rev-more {% if op_rest < 1 %}hidden{% endif %}>
+          {%- if op_rest == 1 -%}
+            {{- 'sections.producto.reviews_more_one' | t -}}
+          {%- else -%}
+            {{- 'sections.producto.reviews_more_many' | t: count: op_rest -}}
+          {%- endif -%}
+        </button>
+        <button type="button" class="pdops__less" data-pd-rev-less hidden>
+          {{- 'sections.producto.reviews_less' | t -}}
+        </button>
+      </div>
+    </div>
+
+    {%- comment -%}
+      Popup. El velo es `position: fixed`, así que queda centrado en la ventana
+      sin importar dónde esté el scroll: nada arriba de él lleva transform (ver
+      producto.css). Arranca con [hidden] y el JS lo prende.
+    {%- endcomment -%}
+    <div class="pdops__veil" data-pd-rev-veil hidden>
+      <div class="pdops__modal" role="dialog" aria-modal="true" aria-labelledby="pdops-modal-title">
+        <div class="pdops__mhead">
+          <div>
+            <h2 class="pdops__mtitle" id="pdops-modal-title">{{ 'sections.producto.reviews_write' | t }}</h2>
+            <p class="pdops__mprod">
+              {{- title -}}
+              {%- if gramaje != blank %} · {{ gramaje }}{% endif -%}
+            </p>
+          </div>
+          <button type="button" class="pdops__x" data-pd-rev-close aria-label="{{ 'general.close' | t }}">×</button>
+        </div>
+
+        <form class="pdops__form" data-pd-rev-form>
+          <span class="pdops__flabel">{{ 'sections.producto.reviews_pick' | t }}</span>
+          <div class="pdops__pick" role="group" aria-label="{{ 'sections.producto.reviews_pick' | t }}" data-pd-rev-picker>
+            {%- for i in (1..5) -%}
+              {%- liquid
+                if i == 1
+                  assign star_aria = 'sections.producto.reviews_star_one' | t
+                else
+                  assign star_aria = 'sections.producto.reviews_star_many' | t: count: i
+                endif
+              -%}
+              <button type="button" class="pdops__star pdops__star--pick" data-pd-rev-pick="{{ i }}" aria-label="{{ star_aria }}" aria-pressed="false">☆</button>
+            {%- endfor -%}
+          </div>
+
+          <label class="visually-hidden" for="pdops-text">{{ 'sections.producto.reviews_placeholder' | t }}</label>
+          <textarea
+            class="pdops__field pdops__field--text"
+            id="pdops-text"
+            data-pd-rev-text
+            placeholder="{{ 'sections.producto.reviews_placeholder' | t }}"
+          ></textarea>
+
+          <label class="visually-hidden" for="pdops-name">{{ 'sections.producto.reviews_name' | t }}</label>
+          <input
+            class="pdops__field"
+            id="pdops-name"
+            type="text"
+            data-pd-rev-name
+            placeholder="{{ 'sections.producto.reviews_name' | t }}"
+          >
+
+          <div class="pdops__foot">
+            <button type="submit" class="pdops__submit">{{ 'sections.producto.reviews_submit' | t }}</button>
+            <button type="button" class="pdops__cancel" data-pd-rev-close>{{ 'sections.producto.reviews_cancel' | t }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {%- comment -%}
+      Textos que arma el JS (contador, botón de "ver más", firma por defecto).
+      Van como JSON —igual que las variantes de más abajo— y no hardcodeados en
+      producto.js: el copy vive en locales/es.default.json. El '%s' es el hueco
+      donde el JS mete el número.
+    {%- endcomment -%}
+    <script type="application/json" data-pd-rev-i18n>
+      {
+        "first": {{ 'sections.producto.reviews_first' | t | json }},
+        "one": {{ 'sections.producto.reviews_one' | t | json }},
+        "many": {{ 'sections.producto.reviews_many' | t: count: '%s' | json }},
+        "more_one": {{ 'sections.producto.reviews_more_one' | t | json }},
+        "more_many": {{ 'sections.producto.reviews_more_many' | t: count: '%s' | json }},
+        "of_five": {{ 'sections.producto.reviews_of_five' | t: count: '%s' | json }},
+        "pick": {{ 'sections.producto.reviews_pick' | t | json }},
+        "star_one": {{ 'sections.producto.reviews_star_one' | t | json }},
+        "star_many": {{ 'sections.producto.reviews_star_many' | t: count: '%s' | json }},
+        "anon": {{ 'sections.producto.reviews_anon' | t | json }}
+      }
+    </script>
+  </div>
+
+  {%- comment -%} ---------- 4. Venta cruzada ---------- {%- endcomment -%}
+  <div class="pdcross">
+    <div class="pdcross__inner">
+      <div class="pdcross__head">
+        <h2 class="pdcross__title">{{ section.settings.cross_title }}</h2>
+        {%- if section.settings.cross_link_label != blank -%}
+          <a class="pdcross__link" href="{{ section.settings.cross_link_url | default: routes.all_products_collection_url }}">
+            {{- section.settings.cross_link_label -}}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} .cardset: activa los estilos de la tarjeta (base.css). {%- endcomment -%}
+      <div class="pdcross__grid cardset">
+        {%- liquid
+          # Collection-driven con fallback. Si el customizer no eligió colección,
+          # se usa la del propio producto (productos-perros / productos-gatos):
+          # así un snack de perro se cruza con perros y uno de gato con gatos, y
+          # cualquier producto nuevo entra solo sin tocar la plantilla.
+          assign xcoll = section.settings.cross_collection
+          if xcoll == blank
+            for c in product.collections
+              if c.handle contains 'productos-'
+                assign xcoll = c
+                break
+              endif
+            endfor
+          endif
+          assign cross_blocks = section.blocks | where: 'type', 'cruzada'
+          # Assets de respaldo, en el orden de las tarjetas del diseño.
+          assign fallback_cards = 'bungot-higado.webp,bungot-patas.webp,bungot-sticker-manada.webp' | split: ','
+          # Cuenta aparte del forloop: hay que saltarse el producto que se está
+          # viendo, así que el límite no puede ir en el for.
+          assign shown = 0
+        -%}
+
+        {%- comment -%}
+          Es la MISMA tarjeta del catálogo: snippets/banda-card.liquid, estilos
+          en base.css bajo .cardset. Nada de una tarjeta propia de la PDP — si
+          cambia la del catálogo, cambia esta sola.
+        {%- endcomment -%}
+        {%- if xcoll != blank and xcoll.products.size > 1 -%}
+          {%- for xp in xcoll.products -%}
+            {%- if xp.id == product.id -%}{%- continue -%}{%- endif -%}
+            {%- if shown >= 3 -%}{%- break -%}{%- endif -%}
+            {%- assign shown = shown | plus: 1 -%}
+            {%- liquid
+              capture xcolor
+                render 'card-color', product: xp, index: forloop.index0
+              endcapture
+
+              # El antetítulo se arma con los datos de la etiqueta, en el mismo
+              # formato que el catálogo: "Sistema inmune · 80 g".
+              assign xp_ey = xp.metafields.custom.beneficio_principal.value
+              assign xp_gr = xp.metafields.custom.gramaje.value
+              if xp_ey != blank and xp_gr != blank
+                assign xp_eyebrow = xp_ey | append: ' · ' | append: xp_gr
+              else
+                assign xp_eyebrow = xp_ey | default: xp_gr | default: xp.type
+              endif
+
+              assign xp_price = blank
+              if xp.price > 0
+                assign xp_price = xp.price | money
+              endif
+            -%}
+            {%- render 'banda-card',
+              media_color: xcolor,
+              image: xp.featured_image,
+              title: xp.title,
+              eyebrow: xp_eyebrow,
+              price_html: xp_price,
+              url: xp.url,
+              variant_id: xp.selected_or_first_available_variant.id,
+              cta: section.settings.cta_prefix
+            -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- comment -%} Respaldo: tarjetas manuales, sin link ni carrito. {%- endcomment -%}
+          {%- for block in cross_blocks -%}
+            {%- liquid
+              assign card_img = block.settings.image
+              if card_img == blank
+                assign card_asset = fallback_cards[forloop.index0]
+              else
+                assign card_asset = blank
+              endif
+            -%}
+            {%- render 'banda-card',
+              media_color: block.settings.color,
+              image: card_img,
+              fallback_asset: card_asset,
+              title: block.settings.title,
+              eyebrow: block.settings.detail,
+              price_html: block.settings.price,
+              url: block.settings.url,
+              cta: section.settings.cta_prefix
+            -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Variantes reales para el JS (precio/id/disponibilidad). {%- endcomment -%}
+  {%- if use_real_options -%}
+    <script type="application/json" data-pd-variants>
+      [{% for v in product.variants %}{% unless forloop.first %},{% endunless %}{"id":{{ v.id }},"options":{{ v.options | json }},"available":{{ v.available }}}{% endfor %}]
+    </script>
+  {%- endif -%}
+</section>
+
+<script src="{{ 'producto.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Producto BUNGOT",
+  "tag": "section",
+  "max_blocks": 50,
+  "settings": [
+    { "type": "paragraph", "content": "Split fijo 50/50: galería a la izquierda, compra a la derecha. Los campos vacíos se llenan con los datos del producto." },
+
+    { "type": "header", "content": "Panel de la galería" },
+    { "type": "color", "id": "family_color", "label": "Color de la familia", "info": "Vacío = el color del producto (metafield custom.card_color o la rotación de la paleta)." },
+    { "type": "image_picker", "id": "bag_image", "label": "Foto principal", "info": "Vacío = la foto principal del producto." },
+    { "type": "text", "id": "lote", "label": "Línea de lote", "default": "Lote 04 · Guadalajara" },
+
+    { "type": "header", "content": "Compra" },
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Premios deshidratados" },
+    { "type": "text", "id": "title", "label": "Título", "info": "Vacío = el nombre del producto." },
+    { "type": "textarea", "id": "lead", "label": "Párrafo", "info": "Vacío = la descripción del producto." },
+    { "type": "text", "id": "cta_prefix", "label": "Texto del botón", "default": "Agregar", "info": "Al lado se agrega solo lo que esté elegido." },
+    { "type": "text", "id": "note", "label": "Línea debajo del botón", "default": "Precio por confirmar · envío gratis desde $500" },
+
+    { "type": "header", "content": "Cifras" },
+    { "type": "text", "id": "stat1_value", "label": "Cifra 1", "default": "62%" },
+    { "type": "text", "id": "stat1_label", "label": "Etiqueta 1", "default": "Proteína" },
+    { "type": "text", "id": "stat2_value", "label": "Cifra 2", "default": "1" },
+    { "type": "text", "id": "stat2_label", "label": "Etiqueta 2", "default": "Ingrediente" },
+    { "type": "text", "id": "stat3_value", "label": "Cifra 3", "default": "0" },
+    { "type": "text", "id": "stat3_label", "label": "Etiqueta 3", "default": "Conservadores" },
+
+    { "type": "header", "content": "Opiniones" },
+    { "type": "text", "id": "reviews_title", "label": "Título", "default": "Opiniones de los clientes", "info": "Las opiniones se cargan como bloques \"Opinión\". Sin ninguno, la sección invita a dejar la primera." },
+
+    { "type": "header", "content": "Venta cruzada" },
+    { "type": "text", "id": "cross_title", "label": "Título", "default": "La manada también se lleva" },
+    { "type": "text", "id": "cross_link_label", "label": "Link", "default": "Ver todos los productos" },
+    { "type": "url", "id": "cross_link_url", "label": "Destino del link", "info": "Vacío = todos los productos." },
+    { "type": "collection", "id": "cross_collection", "label": "Colección", "info": "Vacío = se usan las tarjetas de abajo." }
+  ],
+  "blocks": [
+    {
+      "type": "acordeon",
+      "name": "Acordeón",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Título", "default": "Ingredientes y análisis" },
+        {
+          "type": "select",
+          "id": "source",
+          "label": "De dónde sale el contenido",
+          "default": "ingredientes",
+          "info": "Si el producto no tiene ese dato cargado, se usa el texto de abajo.",
+          "options": [
+            { "value": "ingredientes", "label": "Ingredientes + análisis del producto" },
+            { "value": "recomendacion", "label": "Recomendación diaria del producto" },
+            { "value": "instrucciones", "label": "Conservación del producto" },
+            { "value": "manual", "label": "Texto fijo (el de abajo)" }
+          ]
+        },
+        { "type": "richtext", "id": "body", "label": "Texto fijo / respaldo", "default": "<p>Un solo ingrediente, deshidratado a baja temperatura.</p>" }
+      ]
+    },
+    {
+      "type": "beneficio",
+      "name": "Beneficio",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Título", "default": "Un solo ingrediente" },
+        { "type": "textarea", "id": "text", "label": "Texto", "default": "Nada más. Ni conservadores, ni colorantes, ni rellenos." }
+      ]
+    },
+    {
+      "type": "opinion",
+      "name": "Opinión",
+      "settings": [
+        {
+          "type": "select",
+          "id": "rating",
+          "label": "Calificación",
+          "default": "5",
+          "options": [
+            { "value": "5", "label": "★★★★★" },
+            { "value": "4", "label": "★★★★" },
+            { "value": "3", "label": "★★★" },
+            { "value": "2", "label": "★★" },
+            { "value": "1", "label": "★" }
+          ]
+        },
+        { "type": "textarea", "id": "text", "label": "Opinión", "default": "A mi perro le encantó desde la primera vez." },
+        { "type": "text", "id": "autor", "label": "Firma", "default": "Ana · Frida", "info": "Nombre de la persona y el de su perro." }
+      ]
+    },
+    {
+      "type": "cruzada",
+      "name": "Tarjeta de venta cruzada",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Nombre", "default": "Hígado deshidratado" },
+        { "type": "text", "id": "detail", "label": "Detalle", "default": "cerdo y res · 80 g" },
+        { "type": "text", "id": "price", "label": "Precio", "default": "$70.00" },
+        { "type": "image_picker", "id": "image", "label": "Foto" },
+        { "type": "url", "id": "url", "label": "Link" },
+        { "type": "color", "id": "color", "label": "Color del cuadro", "default": "#85CCC6" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Producto BUNGOT",
+      "blocks": [
+        { "type": "acordeon", "settings": { "title": "Ingredientes y análisis", "source": "ingredientes", "body": "<p>Un solo ingrediente, deshidratado a baja temperatura. Sin conservadores, químicos ni colorantes.</p>" } },
+        { "type": "acordeon", "settings": { "title": "Cómo se lo doy", "source": "recomendacion", "body": "<p>Como premio, en el entrenamiento o partido encima de su comida. Deja siempre agua fresca cerca.</p>" } },
+        { "type": "acordeon", "settings": { "title": "Cómo se guarda", "source": "instrucciones", "body": "<p>En un lugar fresco y seco. No necesita refrigeración.</p>" } },
+        { "type": "acordeon", "settings": { "title": "Envíos y devoluciones", "source": "manual", "body": "<p>Enviamos a todo México en 2 a 4 días hábiles. Envío gratis en pedidos desde $500. Si algo llegó mal, escríbenos dentro de los 15 días y lo resolvemos.</p>" } },
+        { "type": "beneficio", "settings": { "title": "Un solo ingrediente", "text": "Pulmón de cerdo y nada más. Sin conservadores, químicos ni colorantes." } },
+        { "type": "beneficio", "settings": { "title": "Vitaminas del grupo B", "text": "Aporta B12 y hierro, de los que ayudan a que ande con energía." } },
+        { "type": "beneficio", "settings": { "title": "Fácil de digerir", "text": "Ligero y bajo en grasa: cae bien hasta en panzas delicadas." } },
+        { "type": "beneficio", "settings": { "title": "Hecho en México", "text": "Deshidratado en lotes chicos con proteína de aquí." } },
+        { "type": "opinion", "settings": { "rating": "5", "text": "Se lo doy en el parque y hace caso a la primera. Antes ni volteaba.", "autor": "Ana · Frida" } },
+        { "type": "opinion", "settings": { "rating": "5", "text": "Huele fuerte pero eso es justo lo que le gusta. Se acaba la bolsa en una semana.", "autor": "Rodrigo · Nube" } },
+        { "type": "opinion", "settings": { "rating": "4", "text": "Buen tamaño para partirlo. Mi perra es chiquita y le rinde un montón.", "autor": "Mariana · Chispa" } },
+        { "type": "opinion", "settings": { "rating": "5", "text": "Un solo ingrediente y se nota. Mi perro es alérgico y con esto no le pasa nada.", "autor": "Diego · Otto" } },
+        { "type": "opinion", "settings": { "rating": "5", "text": "Llegó rapidísimo y bien sellado. Ya es el premio oficial de la casa.", "autor": "Paulina · Rocco" } },
+        { "type": "opinion", "settings": { "rating": "4", "text": "Me gustaría que la bolsa viniera más grande, se nos acaba muy pronto.", "autor": "Iván · Lupe" } },
+        { "type": "opinion", "settings": { "rating": "3", "text": "A la mía le costó agarrarle el gusto, pero a la semana ya lo pedía.", "autor": "Sofía · Kira" } },
+        { "type": "opinion", "settings": { "rating": "5", "text": "Lo usamos para el entrenamiento y funciona increíble. Cero desperdicio.", "autor": "Carlos · Bruno" } },
+        { "type": "opinion", "settings": { "rating": "4", "text": "Se ve que es producto de verdad, no relleno. Vale lo que cuesta.", "autor": "Renata · Pecas" } },
+        { "type": "cruzada", "settings": { "title": "Hígado deshidratado", "detail": "cerdo y res · 80 g", "price": "$70.00", "color": "#85CCC6" } },
+        { "type": "cruzada", "settings": { "title": "Patas de pollo", "detail": "colágeno · 14 piezas", "price": "$95.00", "color": "#F59E28" } },
+        { "type": "cruzada", "settings": { "title": "Caja de la manada", "detail": "cuatro premios surtidos", "price": "$260.00", "color": "#6CC2EA" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

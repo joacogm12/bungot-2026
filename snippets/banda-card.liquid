@@ -1,0 +1,90 @@
+{%- comment -%}
+  Tarjeta de una banda del catálogo. Una sola tarjeta para todo, sin excepciones.
+
+  Sirve para dos orígenes:
+    · Producto real de Shopify → se pasa url + variant_id: la media y el título
+      linkean al producto y "Agregar" es un add-to-cart de verdad.
+    · Tarjeta manual (bloque) → sin url ni variant_id: botón inerte, como antes.
+
+  El contenedor que las agrupa tiene que llevar la clase .cardset: ahí viven
+  los estilos (base.css). La usan el catálogo y la venta cruzada de la PDP.
+
+  Params:
+    media_color (hex, requerido)  · color del bloque de arriba
+    image        (obj, opcional)  · imagen del producto/tarjeta
+    fallback_asset (str, opc.)    · nombre de asset del tema si no hay image
+    title        (str)
+    eyebrow      (str, opcional)
+    price_html   (str, opcional)  · vacío → "Precio por confirmar"
+    url          (str, opcional)  · si viene, media + título son links
+    variant_id   (id,  opcional)  · si viene, "Agregar" agrega al carrito
+    cta          (str)            · texto del botón
+{%- endcomment -%}
+
+{%- assign has_link = false -%}
+{%- if url != blank -%}{%- assign has_link = true -%}{%- endif -%}
+
+<article class="card" style="--card-media: {{ media_color }};">
+  {%- if has_link -%}
+    <a class="card__media" href="{{ url }}">
+  {%- else -%}
+    <div class="card__media">
+  {%- endif -%}
+    {%- if image != blank -%}
+      <img
+        src="{{ image | image_url: width: 600 }}"
+        srcset="{{ image | image_url: width: 320 }} 320w,
+                {{ image | image_url: width: 600 }} 600w,
+                {{ image | image_url: width: 900 }} 900w"
+        sizes="304px"
+        alt="{{ image.alt | default: title | escape }}"
+        width="{{ image.width }}"
+        height="{{ image.height }}"
+        loading="lazy"
+      >
+    {%- elsif fallback_asset != blank -%}
+      {%- comment -%} Foto del tema para tarjetas manuales sin imagen cargada. {%- endcomment -%}
+      <img
+        src="{{ fallback_asset | asset_url }}"
+        alt="{{ title | escape }}"
+        width="600"
+        height="600"
+        loading="lazy"
+      >
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'card__ph' }}
+    {%- endif -%}
+  {%- if has_link -%}</a>{%- else -%}</div>{%- endif -%}
+
+  <div class="card__body">
+    {%- if eyebrow != blank -%}
+      <span class="card__eyebrow">{{ eyebrow }}</span>
+    {%- endif -%}
+
+    {%- if has_link -%}
+      <a class="card__title-link" href="{{ url }}"><h3 class="card__title">{{ title }}</h3></a>
+    {%- else -%}
+      <h3 class="card__title">{{ title }}</h3>
+    {%- endif -%}
+
+    <div class="card__foot">
+      <span class="card__price">
+        {%- if price_html != blank -%}
+          {{ price_html }}
+        {%- else -%}
+          {{ 'sections.collection_bandas.price_tbd' | t }}
+        {%- endif -%}
+      </span>
+
+      {%- if variant_id != blank -%}
+        <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="card__addform">
+          <input type="hidden" name="id" value="{{ variant_id }}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="card__add">{{ cta }}</button>
+        </form>
+      {%- else -%}
+        <button type="button" class="card__add">{{ cta }}</button>
+      {%- endif -%}
+    </div>
+  </div>
+</article>

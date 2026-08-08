@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  body { margin: 0; background: #E9E2D3; }
+  a { color: #163C69; text-decoration: none; }
+  a:hover { color: #E94925; }
+  @keyframes bungot-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+</style>
+</helmet>
+
+<section style="padding: 60px; font-family: Inter, system-ui, sans-serif;">
+  <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 28px;">
+    <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 28px; color: #163C69;">Portada v3 — la primera, en verde 7716</span>
+    <span style="font-size: 15px; color: rgba(22,60,105,.6);">Misma idea del split original, con assets reales y la costura de <a href="#2a">2a</a>: <a href="#3a">3a</a></span>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 80px; align-items: flex-start;">
+    <div id="3a" style="width: 1440px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 20px; background: #FED140; color: #163C69; padding: 6px 16px; border-radius: 999px; border: 2px solid #163C69;">3a</span>
+        <span style="font-family: Inter; font-size: 16px; font-weight: 500; color: rgba(22,60,105,.7);">Split verde · datos duros y la manada asomada sobre la barra de Favoritos (se esconde al bajar)</span>
+      </div>
+      <div style="background: #F7F1E3; border-radius: 20px; overflow: hidden; box-shadow: 0 18px 50px rgba(22,60,105,.14);">
+        <div style="background: #163C69; overflow: hidden; white-space: nowrap; padding: 11px 0;">
+          <div style="display: inline-block; animation: bungot-marquee 26s linear infinite; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 15px; letter-spacing: .04em; color: #FED140;">
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+          </div>
+        </div>
+
+        <div style="background: #00978E; padding: 26px 44px 0; position: relative; min-height: calc(100vh - 105px); box-sizing: border-box; display: flex; flex-direction: column;">
+          <div style="display: flex; align-items: center; gap: 24px;">
+            <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 30px; color: #F7F1E3;">BUNGOT</span>
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 6px; background: rgba(247,241,227,.16); border: 2px solid rgba(247,241,227,.4); padding: 7px; border-radius: 999px;">
+              <span style="font-family: Fredoka, sans-serif; font-size: 16px; font-weight: 600; background: #FED140; color: #163C69; padding: 10px 20px; border-radius: 999px;">Inicio</span>
+              <span style="font-size: 16px; font-weight: 500; color: #F7F1E3; padding: 10px 18px;">Productos</span>
+              <span style="font-size: 16px; font-weight: 500; color: #F7F1E3; padding: 10px 18px;">Conócenos</span>
+              <span style="font-size: 16px; font-weight: 500; color: #F7F1E3; padding: 10px 18px;">Contacto</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="width: 46px; height: 46px; border-radius: 50%; border: 2px solid rgba(247,241,227,.4); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #F7F1E3;">Yo</span>
+              <span style="display: flex; align-items: center; height: 46px; padding: 0 20px; border-radius: 999px; background: #F7F1E3; color: #163C69; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 15px;">Carrito · 0</span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1.05fr .95fr; gap: 44px; align-items: center; padding: 26px 16px 0; flex: 1; min-height: 0;">
+            <div style="align-self: start; padding-top: 18px;">
+              <span style="display: inline-block; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 16px; background: rgba(254,209,64,.16); border: 2px solid rgba(254,209,64,.55); color: #FED140; padding: 10px 22px; border-radius: 999px;">Ingredientes reales, cero relleno</span>
+              <h1 style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 96px; line-height: .86; letter-spacing: -.035em; text-transform: uppercase; color: #F7F1E3; margin: 26px 0 0;">Snacks que<br>les vuelan<br><span style="color: #FED140;">la cabeza</span></h1>
+            </div>
+            <div style="position: relative;">
+              <div style="aspect-ratio: 4/4.6; border-radius: 260px 260px 32px 32px; overflow: hidden; background: #88CBC4;">
+                <img src="assets/bungot-equipo-perro.webp" alt="Faride con su perro" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+              </div>
+              <img src="assets/bungot-sticker-logo.webp" alt="Sticker BUNGOT" style="position: absolute; top: 34px; left: -42px; width: 150px; rotate: -10deg; filter: drop-shadow(0 8px 16px rgba(22,60,105,.35));">
+              
+            </div>
+          </div>
+
+          <div data-pup-row="1" style="position: relative; z-index: 3; clip-path: inset(-800px 0 0 0); margin: 0 -44px; height: 300px; flex: none;">
+            <div data-pup-inner="1" style="position: absolute; left: 0; right: 0; bottom: 0; height: 660px; display: flex; align-items: flex-end; justify-content: center; padding: 0; transition: transform .6s cubic-bezier(.34,1.4,.64,1); transform: {{ pupTransform }};">
+              
+              
+              
+              <img src="assets/pup-guion-trim.png" alt="" style="height: 372px; margin: 0 -46px; position: relative; z-index: 1; filter: drop-shadow(0 18px 26px rgba(22,60,105,.24)); width: 304px">
+              <img src="assets/pup-greta-trim.png" alt="" style="height: 712px; margin: 0 -46px; position: relative; z-index: 2; filter: drop-shadow(0 18px 26px rgba(22,60,105,.24)); width: 241px; margin-right: -30px">
+              <img src="assets/pup-manolo-trim.png" alt="" style="height: 573px; margin: 0 -46px; position: relative; z-index: 3; filter: drop-shadow(0 18px 26px rgba(22,60,105,.24)); width: 378px; margin-left: -45px; margin-right: -120px"><img src="assets/pup-ramona-trim.png" alt="" style="height: 725px; margin: 0 -46px; position: relative; z-index: 4; filter: drop-shadow(0 18px 26px rgba(22,60,105,.24)); width: 293px"><img src="assets/pup-pecas-trim.png" alt="" style="height: 508px; margin: 0 -46px; position: relative; z-index: 3; filter: drop-shadow(0 18px 26px rgba(22,60,105,.24)); width: 264px"><img src="assets/pup-mac-trim.png" alt="" style="height: 470px; margin: 0 -46px; position: relative; z-index: 2; filter: drop-shadow(0 18px 26px rgba(22,60,105,.24))">
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #F7F1E3; padding: 0 44px 48px;">
+          <div style="background: #163C69; border-radius: 26px 26px 0 0; padding: 17px; text-align: center; position: relative; z-index: 4; margin-top: -38px;">
+            <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: .06em; color: #FED140;">LOS FAVORITOS DE LA MANADA</span>
+          </div>
+          <div style="background: #00978E; border-radius: 0 0 26px 26px; padding: 44px 48px; display: grid; grid-template-columns: .8fr 1fr .9fr; gap: 24px; align-items: center;">
+            <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 44px; line-height: .95; color: #F7F1E3;">100%<br>NATURAL</div>
+            <div style="display: flex; justify-content: center;"><img src="assets/bungot-pulmon.webp" alt="Proteína de pulmón de cerdo" style="width: 86%; filter: drop-shadow(0 14px 24px rgba(22,60,105,.3));"></div>
+            <div style="text-align: right;">
+              <span style="display: inline-block; font-size: 13px; font-weight: 600; letter-spacing: .06em; color: #163C69; background: rgba(247,241,227,.8); padding: 7px 14px; border-radius: 999px;">PARA PERROS · MASA MUSCULAR</span>
+              <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 44px; line-height: .95; color: #F7F1E3; margin-top: 12px;">PULMÓN<br>DE CERDO</div>
+              <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 30px; color: #F7F1E3; margin-top: 16px;">$ 70.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding: 60px; font-family: Inter, system-ui, sans-serif;">
+  <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 28px;">
+    <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 28px; color: #163C69;">Portada v2 — transición a "Favoritos de la manada"</span>
+    <span style="font-size: 15px; color: rgba(22,60,105,.6);">Paleta de <a href="#1b">1b</a>. Cada opción muestra la portada + el arranque de la sección siguiente: <a href="#2a">2a</a> · <a href="#2b">2b</a> · <a href="#2c">2c</a></span>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 80px; align-items: flex-start;">
+
+    <div id="2a" style="width: 1440px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 20px; background: #FED140; color: #163C69; padding: 6px 16px; border-radius: 999px; border: 2px solid #163C69;">2a</span>
+        <span style="font-family: Inter; font-size: 16px; font-weight: 500; color: rgba(22,60,105,.7);">Coral a sangre · las bolsas cruzan la banda navy y amarran las dos secciones</span>
+      </div>
+      <div style="background: #F7F1E3; border-radius: 20px; overflow: hidden; box-shadow: 0 18px 50px rgba(22,60,105,.14);">
+        <div style="background: #163C69; overflow: hidden; white-space: nowrap; padding: 11px 0;">
+          <div style="display: inline-block; animation: bungot-marquee 26s linear infinite; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 15px; letter-spacing: .04em; color: #FED140;">
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+          </div>
+        </div>
+        <div style="background: #E94925; padding: 26px 44px 0; position: relative;">
+          <div style="display: flex; align-items: center; gap: 24px;">
+            <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 30px; color: #F7F1E3;">BUNGOT</span>
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 6px; background: rgba(247,241,227,.16); border: 2px solid rgba(247,241,227,.4); padding: 7px; border-radius: 999px; backdrop-filter: blur(6px);">
+              <span style="font-family: Fredoka, sans-serif; font-size: 16px; font-weight: 600; background: #FED140; color: #163C69; padding: 10px 20px; border-radius: 999px;">Inicio</span>
+              <span style="font-size: 16px; font-weight: 500; color: #F7F1E3; padding: 10px 18px;">Productos</span>
+              <span style="font-size: 16px; font-weight: 500; color: #F7F1E3; padding: 10px 18px;">Conócenos</span>
+              <span style="font-size: 16px; font-weight: 500; color: #F7F1E3; padding: 10px 18px;">Contacto</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="width: 46px; height: 46px; border-radius: 50%; border: 2px solid rgba(247,241,227,.4); background: rgba(247,241,227,.16); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #F7F1E3;">Yo</span>
+              <span style="display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 20px; border-radius: 999px; background: #F7F1E3; color: #163C69; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 15px;">Carrito · 0</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #E94925; padding: 52px 60px 0; position: relative; z-index: 2;">
+          <div style="display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: start;">
+            <div>
+              <span style="display: inline-block; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 16px; background: #FED140; color: #163C69; border: 2.5px solid #163C69; padding: 10px 22px; border-radius: 999px; box-shadow: 3px 3px 0 #163C69;">Deshidratados en México, en lotes chicos</span>
+              <h1 style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 104px; line-height: .85; letter-spacing: -.035em; text-transform: uppercase; color: #F7F1E3; margin: 26px 0 0; text-shadow: 6px 6px 0 rgba(22,60,105,.4);">Comida<br>de verdad,<br><span style="color: #FED140;">no relleno</span></h1>
+              <p style="font-size: 20px; line-height: 1.6; color: rgba(247,241,227,.94); margin: 26px 0 0; max-width: 440px; text-wrap: pretty;">Premios de un solo ingrediente: pulmón, hígado y patas. Sin conservadores, sin azúcares, sin letra chica.</p>
+              <div style="display: flex; gap: 16px; margin: 34px 0 0;">
+                <button style="font-family: Fredoka, sans-serif; font-size: 17px; font-weight: 600; background: #FED140; color: #163C69; border: 3px solid #163C69; padding: 16px 34px; border-radius: 999px; cursor: pointer; box-shadow: 4px 4px 0 #163C69;" style-hover="translate: 2px 2px; box-shadow: 2px 2px 0 #163C69;">Comprar ahora</button>
+                <button style="font-family: Fredoka, sans-serif; font-size: 17px; font-weight: 600; background: transparent; color: #F7F1E3; border: 3px solid #F7F1E3; padding: 16px 34px; border-radius: 999px; cursor: pointer;" style-hover="background: #F7F1E3; color: #E94925;">Nuestra historia</button>
+              </div>
+            </div>
+            <div style="position: relative; padding-top: 8px;">
+              <div style="aspect-ratio: 1/1.05; border-radius: 26px; overflow: hidden; background: #88CBC4;">
+                <img src="assets/bungot-equipo-perro.webp" alt="Faride con su perro" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+              </div>
+              <img src="assets/bungot-sticker-logo.webp" alt="Sticker BUNGOT" style="position: absolute; bottom: -34px; left: -34px; width: 158px; z-index: 3; rotate: -8deg; filter: drop-shadow(0 8px 16px rgba(22,60,105,.35));">
+            </div>
+          </div>
+
+          <div style="position: relative; margin: 40px 0 0; padding-bottom: 4px;">
+            <div style="display: flex; justify-content: center; align-items: flex-end; position: relative; z-index: 3; margin-bottom: -96px;">
+              <img src="assets/bungot-higado.webp" alt="Hígado de cerdo deshidratado" style="width: 226px; rotate: -7deg; translate: 22px 10px; filter: drop-shadow(0 14px 22px rgba(22,60,105,.28));">
+              <img src="assets/bungot-patas.webp" alt="Patas de pollo deshidratadas" style="width: 306px; position: relative; z-index: 2; filter: drop-shadow(0 20px 32px rgba(22,60,105,.34));">
+              <img src="assets/bungot-pulmon.webp" alt="Proteína de pulmón de cerdo" style="width: 226px; rotate: 7deg; translate: -22px 10px; filter: drop-shadow(0 14px 22px rgba(22,60,105,.28));">
+            </div>
+            <img src="assets/pup-manolo-trim.png" alt="" style="position: absolute; right: 104px; bottom: -104px; height: 214px; z-index: 4; filter: drop-shadow(0 12px 18px rgba(22,60,105,.26));">
+            <img src="assets/pup-ramona-trim.png" alt="" style="position: absolute; left: 104px; bottom: -104px; height: 252px; z-index: 4; filter: drop-shadow(0 12px 18px rgba(22,60,105,.26));">
+          </div>
+        </div>
+
+        <div style="background: #F7F1E3; padding: 116px 44px 48px;">
+          <div style="background: #163C69; border-radius: 26px 26px 0 0; padding: 17px; text-align: center;">
+            <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: .06em; color: #FED140;">LOS FAVORITOS DE LA MANADA</span>
+          </div>
+          <div style="background: #00978E; border-radius: 0 0 26px 26px; padding: 44px 48px; display: grid; grid-template-columns: .8fr 1fr .9fr; gap: 24px; align-items: center;">
+            <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 44px; line-height: .95; color: #F7F1E3;">100%<br>NATURAL</div>
+            <div style="display: flex; justify-content: center;"><img src="assets/bungot-pulmon.webp" alt="Proteína de pulmón de cerdo" style="width: 86%; filter: drop-shadow(0 14px 24px rgba(22,60,105,.3));"></div>
+            <div style="text-align: right;">
+              <span style="display: inline-block; font-size: 13px; font-weight: 600; letter-spacing: .06em; color: #163C69; background: rgba(247,241,227,.8); padding: 7px 14px; border-radius: 999px;">PARA PERROS · MASA MUSCULAR</span>
+              <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 44px; line-height: .95; color: #F7F1E3; margin-top: 12px;">PULMÓN<br>DE CERDO</div>
+              <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 30px; color: #F7F1E3; margin-top: 16px;">$ 70.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="2b" style="width: 1440px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 20px; background: #FED140; color: #163C69; padding: 6px 16px; border-radius: 999px; border: 2px solid #163C69;">2b</span>
+        <span style="font-family: Inter; font-size: 16px; font-weight: 500; color: rgba(22,60,105,.7);">Bloques verticales · la foto se encima al empalme y el navy continúa</span>
+      </div>
+      <div style="background: #F7F1E3; border-radius: 20px; overflow: hidden; box-shadow: 0 18px 50px rgba(22,60,105,.14);">
+        <div style="background: #163C69; overflow: hidden; white-space: nowrap; padding: 11px 0;">
+          <div style="display: inline-block; animation: bungot-marquee 26s linear infinite; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 15px; letter-spacing: .04em; color: #FED140;">
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+          </div>
+        </div>
+        <div style="background: #00978E; padding: 20px 44px; display: flex; align-items: center; gap: 44px;">
+          <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 27px; color: #F7F1E3;">BUNGOT</span>
+          <div style="display: flex; gap: 30px; font-size: 16px; font-weight: 500; color: #F7F1E3;">
+            <span style="border-bottom: 3px solid #FED140; padding-bottom: 3px;">Inicio</span>
+            <span>Productos</span>
+            <span>Conócenos</span>
+            <span>Contacto</span>
+          </div>
+          <div style="margin-left: auto; display: flex; gap: 20px; color: #F7F1E3; font-size: 16px;">
+            <span>Cuenta</span>
+            <span>Carrito (0)</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr;">
+          <div style="background: #E94925; padding: 78px 48px 80px;">
+            <span style="display: inline-block; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 15px; background: #FED140; color: #163C69; border: 2.5px solid #163C69; padding: 9px 20px; border-radius: 999px; box-shadow: 3px 3px 0 #163C69;">100% natural, 0% vueltas</span>
+            <h1 style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 92px; line-height: .85; letter-spacing: -.035em; text-transform: uppercase; color: #F7F1E3; margin: 26px 0 0; text-shadow: 5px 5px 0 rgba(22,60,105,.4);">Un solo<br>ingrediente.<br><span style="color: #FED140;">Cero</span> peros.</h1>
+            <p style="font-size: 19px; line-height: 1.6; color: rgba(247,241,227,.94); margin: 24px 0 0; max-width: 400px; text-wrap: pretty;">Proteína real deshidratada en lotes chicos. Nada que no le darías a tu propio perro.</p>
+            <div style="display: flex; gap: 14px; margin: 32px 0 0; flex-wrap: wrap;">
+              <button style="font-family: Fredoka, sans-serif; font-size: 17px; font-weight: 600; background: #FED140; color: #163C69; border: 3px solid #163C69; padding: 16px 32px; border-radius: 999px; cursor: pointer; box-shadow: 4px 4px 0 #163C69;" style-hover="translate: 2px 2px; box-shadow: 2px 2px 0 #163C69;">Comprar ahora</button>
+              <button style="font-family: Fredoka, sans-serif; font-size: 17px; font-weight: 600; background: transparent; color: #F7F1E3; border: 3px solid #F7F1E3; padding: 16px 32px; border-radius: 999px; cursor: pointer;" style-hover="background: #F7F1E3; color: #E94925;">Ver catálogo</button>
+            </div>
+          </div>
+          <div style="background: #FED140; padding: 40px 48px 80px; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 100%; max-width: 420px; aspect-ratio: 1/1.1; border-radius: 26px; background: #88CBC4; background-image: repeating-linear-gradient(135deg, rgba(22,60,105,.1) 0 10px, transparent 10px 20px); display: flex; align-items: flex-start; justify-content: flex-end; padding: 16px; box-shadow: 8px 8px 0 #163C69;">
+              <span style="font-family: ui-monospace, monospace; font-size: 12px; color: #163C69; background: rgba(247,241,227,.92); padding: 7px 12px; border-radius: 6px;">fotos_faride / perro + premio</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #F7F1E3; padding: 0 44px 48px; position: relative;">
+          <div style="display: flex; align-items: center; justify-content: center; margin-top: -30px; position: relative; z-index: 3;">
+            <div style="background: #FED140; border: 3px solid #163C69; border-radius: 999px; padding: 16px 30px; font-family: Fredoka, sans-serif; font-weight: 700; font-size: 19px; color: #163C69; box-shadow: 4px 4px 0 #163C69; rotate: -2deg;">Y ahora, lo que ya piden a gritos ↓</div>
+          </div>
+          <div style="background: #163C69; border-radius: 26px 26px 0 0; padding: 17px; text-align: center; margin-top: 40px;">
+            <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: .06em; color: #FED140;">LOS FAVORITOS DE LA MANADA</span>
+          </div>
+          <div style="background: #00978E; border-radius: 0 0 26px 26px; padding: 44px 48px; display: grid; grid-template-columns: .8fr 1fr .9fr; gap: 24px; align-items: center;">
+            <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 44px; line-height: .95; color: #F7F1E3;">100%<br>NATURAL</div>
+            <div style="aspect-ratio: 1/1; border-radius: 18px; background: #F6A762; background-image: repeating-linear-gradient(135deg, rgba(22,60,105,.12) 0 9px, transparent 9px 18px); display: flex; align-items: flex-start; padding: 12px;"><span style="font-family: ui-monospace, monospace; font-size: 11px; color: #163C69; background: rgba(247,241,227,.9); padding: 5px 8px; border-radius: 5px;">bolsa + producto</span></div>
+            <div style="text-align: right;">
+              <span style="display: inline-block; font-size: 13px; font-weight: 600; letter-spacing: .06em; color: #163C69; background: rgba(247,241,227,.8); padding: 7px 14px; border-radius: 999px;">PARA PERROS · MASA MUSCULAR</span>
+              <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 44px; line-height: .95; color: #F7F1E3; margin-top: 12px;">PULMÓN<br>DE CERDO</div>
+              <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 30px; color: #F7F1E3; margin-top: 16px;">$ 70.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="2c" style="width: 1440px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 20px; background: #FED140; color: #163C69; padding: 6px 16px; border-radius: 999px; border: 2px solid #163C69;">2c</span>
+        <span style="font-family: Inter; font-size: 16px; font-weight: 500; color: rgba(22,60,105,.7);">Marquee de ingredientes como costura · el navy de la portada ES la banda de la sección</span>
+      </div>
+      <div style="background: #F7F1E3; border-radius: 20px; overflow: hidden; box-shadow: 0 18px 50px rgba(22,60,105,.14);">
+        <div style="background: #163C69; overflow: hidden; white-space: nowrap; padding: 11px 0;">
+          <div style="display: inline-block; animation: bungot-marquee 26s linear infinite; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 15px; letter-spacing: .04em; color: #FED140;">
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+          </div>
+        </div>
+        <div style="background: #00978E; padding: 20px 44px; display: flex; align-items: center; gap: 44px;">
+          <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 27px; color: #F7F1E3;">BUNGOT</span>
+          <div style="display: flex; gap: 30px; font-size: 16px; font-weight: 500; color: #F7F1E3;">
+            <span style="border-bottom: 3px solid #FED140; padding-bottom: 3px;">Inicio</span>
+            <span>Productos</span>
+            <span>Conócenos</span>
+            <span>Contacto</span>
+          </div>
+          <div style="margin-left: auto; display: flex; gap: 20px; color: #F7F1E3; font-size: 16px;">
+            <span>Cuenta</span>
+            <span>Carrito (0)</span>
+          </div>
+        </div>
+
+        <div style="background: #E94925; padding: 70px 60px 0; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: 40px; right: -90px; width: 460px; height: 460px; border-radius: 50%; background: rgba(254,209,64,.22);"></div>
+          <div style="position: relative; display: grid; grid-template-columns: 1.06fr .94fr; gap: 44px; align-items: center;">
+            <div>
+              <h1 style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 100px; line-height: .84; letter-spacing: -.035em; text-transform: uppercase; color: #FED140; margin: 0; text-shadow: 6px 6px 0 rgba(22,60,105,.45);">Se lo<br>merece<br><span style="color: #F7F1E3;">todo</span></h1>
+              <p style="font-size: 20px; line-height: 1.6; color: rgba(247,241,227,.94); margin: 26px 0 0; max-width: 430px; text-wrap: pretty;">Premios deshidratados de un solo ingrediente, hechos en México en lotes chicos. Sin conservadores ni rellenos.</p>
+              <div style="display: flex; gap: 16px; margin: 34px 0 0;">
+                <button style="font-family: Fredoka, sans-serif; font-size: 17px; font-weight: 600; background: #FED140; color: #163C69; border: 3px solid #163C69; padding: 16px 34px; border-radius: 999px; cursor: pointer; box-shadow: 4px 4px 0 #163C69;" style-hover="translate: 2px 2px; box-shadow: 2px 2px 0 #163C69;">Comprar ahora</button>
+                <button style="font-family: Fredoka, sans-serif; font-size: 17px; font-weight: 600; background: transparent; color: #F7F1E3; border: 3px solid #F7F1E3; padding: 16px 34px; border-radius: 999px; cursor: pointer;" style-hover="background: #F7F1E3; color: #E94925;">Suscríbete −20%</button>
+              </div>
+              <div style="display: flex; gap: 26px; margin: 44px 0 0; padding-top: 24px; border-top: 2px solid rgba(247,241,227,.3);">
+                <div><div style="font-family: Fredoka; font-weight: 700; font-size: 26px; color: #FED140;">1</div><div style="font-size: 14px; color: rgba(247,241,227,.85);">ingrediente</div></div>
+                <div><div style="font-family: Fredoka; font-weight: 700; font-size: 26px; color: #FED140;">0</div><div style="font-size: 14px; color: rgba(247,241,227,.85);">conservadores</div></div>
+                <div><div style="font-family: Fredoka; font-weight: 700; font-size: 26px; color: #FED140;">2–4 días</div><div style="font-size: 14px; color: rgba(247,241,227,.85);">de envío</div></div>
+              </div>
+            </div>
+            <div style="position: relative; padding-bottom: 56px;">
+              <div style="aspect-ratio: 1/1.16; border-radius: 26px 26px 120px 26px; background: #88CBC4; background-image: repeating-linear-gradient(135deg, rgba(22,60,105,.1) 0 10px, transparent 10px 20px); display: flex; align-items: flex-start; justify-content: flex-end; padding: 16px;">
+                <span style="font-family: ui-monospace, monospace; font-size: 12px; color: #163C69; background: rgba(247,241,227,.92); padding: 7px 12px; border-radius: 6px;">fotos_faride / retrato del perro</span>
+              </div>
+              <div style="position: absolute; bottom: 22px; left: -30px; background: #F7F1E3; border: 2.5px solid #163C69; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 15px; color: #163C69; padding: 11px 18px; border-radius: 999px; box-shadow: 3px 3px 0 #163C69; rotate: -4deg;">Aprobado por la manada</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #163C69; overflow: hidden; white-space: nowrap; padding: 18px 0;">
+          <div style="display: inline-block; animation: bungot-marquee 20s linear infinite; font-family: Fredoka, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: .04em; color: #FED140;">
+            <span>PULMÓN DE CERDO ★ PATAS DE POLLO ★ HÍGADO DE CERDO ★ HUESOS ★ PULMÓN DE CERDO ★ PATAS DE POLLO ★ HÍGADO DE CERDO ★ HUESOS ★ </span>
+            <span>PULMÓN DE CERDO ★ PATAS DE POLLO ★ HÍGADO DE CERDO ★ HUESOS ★ PULMÓN DE CERDO ★ PATAS DE POLLO ★ HÍGADO DE CERDO ★ HUESOS ★ </span>
+          </div>
+        </div>
+
+        <div style="background: #F7F1E3; padding: 44px 44px 48px;">
+          <div style="background: #163C69; border-radius: 26px 26px 0 0; padding: 17px; text-align: center;">
+            <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: .06em; color: #FED140;">LOS FAVORITOS DE LA MANADA</span>
+          </div>
+          <div style="background: #00978E; border-radius: 0 0 26px 26px; padding: 44px 48px; display: grid; grid-template-columns: .8fr 1fr .9fr; gap: 24px; align-items: center;">
+            <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 44px; line-height: .95; color: #F7F1E3;">100%<br>NATURAL</div>
+            <div style="aspect-ratio: 1/1; border-radius: 18px; background: #F6A762; background-image: repeating-linear-gradient(135deg, rgba(22,60,105,.12) 0 9px, transparent 9px 18px); display: flex; align-items: flex-start; padding: 12px;"><span style="font-family: ui-monospace, monospace; font-size: 11px; color: #163C69; background: rgba(247,241,227,.9); padding: 5px 8px; border-radius: 5px;">bolsa + producto</span></div>
+            <div style="text-align: right;">
+              <span style="display: inline-block; font-size: 13px; font-weight: 600; letter-spacing: .06em; color: #163C69; background: rgba(247,241,227,.8); padding: 7px 14px; border-radius: 999px;">PARA PERROS · MASA MUSCULAR</span>
+              <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 44px; line-height: .95; color: #F7F1E3; margin-top: 12px;">PULMÓN<br>DE CERDO</div>
+              <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 30px; color: #F7F1E3; margin-top: 16px;">$ 70.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding: 60px; font-family: Inter, system-ui, sans-serif;">
+  <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 28px;">
+    <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 28px; color: #163C69;">Portada v1 — 3 propuestas</span>
+    <span style="font-size: 15px; color: rgba(22,60,105,.6);">Mismo sistema que el resto de la landing. Referencias: <a href="#1a">1a</a> · <a href="#1b">1b</a> · <a href="#1c">1c</a></span>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 80px; align-items: flex-start;">
+
+    <div id="1a" style="width: 1440px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 20px; background: #FED140; color: #163C69; padding: 6px 16px; border-radius: 999px; border: 2px solid #163C69;">1a</span>
+        <span style="font-family: Inter; font-size: 16px; font-weight: 500; color: rgba(22,60,105,.7);">Split editorial · foto real + stickers</span>
+      </div>
+      <div style="background: #F7F1E3; border-radius: 20px; overflow: hidden; box-shadow: 0 18px 50px rgba(22,60,105,.14);">
+        <div style="background: #163C69; overflow: hidden; white-space: nowrap; padding: 11px 0;">
+          <div style="display: inline-block; animation: bungot-marquee 26s linear infinite; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 15px; letter-spacing: .04em; color: #FED140;">
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+          </div>
+        </div>
+        <div style="background: #00978E; padding: 20px 44px; display: flex; align-items: center; gap: 44px;">
+          <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 27px; color: #F7F1E3; letter-spacing: .01em;">BUNGOT</span>
+          <div style="display: flex; gap: 30px; font-size: 16px; font-weight: 500; color: #F7F1E3;">
+            <span style="border-bottom: 3px solid #FED140; padding-bottom: 3px;">Inicio</span>
+            <span>Productos</span>
+            <span>Conócenos</span>
+            <span>Contacto</span>
+          </div>
+          <div style="margin-left: auto; display: flex; gap: 20px; color: #F7F1E3; font-size: 16px;">
+            <span>Cuenta</span>
+            <span>Carrito (0)</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.02fr .98fr; gap: 40px; padding: 72px 60px 0; align-items: center;">
+          <div>
+            <span style="display: inline-block; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 16px; background: #FED140; color: #163C69; border: 2.5px solid #163C69; padding: 10px 22px; border-radius: 999px; box-shadow: 3px 3px 0 #163C69;">100% natural, 0% vueltas</span>
+            <h1 style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 92px; line-height: .88; letter-spacing: -.03em; text-transform: uppercase; color: #163C69; margin: 26px 0 0;">Premios que<br>te piden <span style="color: #E94925; text-shadow: 4px 4px 0 #F7F1E3;">otra</span><br>vez</h1>
+            <p style="font-size: 19px; line-height: 1.6; color: rgba(22,60,105,.8); margin: 24px 0 0; max-width: 430px; text-wrap: pretty;">Snacks deshidratados de un solo ingrediente. Sin conservadores, sin rellenos, sin letra chica. Tu perro ya lo sabe.</p>
+            <div style="display: flex; gap: 16px; margin: 34px 0 0;">
+              <button style="font-family: Fredoka, sans-serif; font-size: 17px; font-weight: 600; background: #FED140; color: #163C69; border: 3px solid #163C69; padding: 16px 34px; border-radius: 999px; cursor: pointer; box-shadow: 4px 4px 0 #163C69;" style-hover="translate: 2px 2px; box-shadow: 2px 2px 0 #163C69;">Comprar ahora</button>
+              <button style="font-family: Fredoka, sans-serif; font-size: 17px; font-weight: 600; background: transparent; color: #163C69; border: 3px solid #163C69; padding: 16px 34px; border-radius: 999px; cursor: pointer;" style-hover="background: #163C69; color: #F7F1E3;">Nuestra historia</button>
+            </div>
+            <div style="display: flex; gap: 12px; margin: 38px 0 0; flex-wrap: wrap;">
+              <span style="font-size: 14px; font-weight: 600; color: #163C69; background: rgba(0,151,142,.16); padding: 9px 16px; border-radius: 999px;">Un solo ingrediente</span>
+              <span style="font-size: 14px; font-weight: 600; color: #163C69; background: rgba(0,151,142,.16); padding: 9px 16px; border-radius: 999px;">Hecho en México</span>
+              <span style="font-size: 14px; font-weight: 600; color: #163C69; background: rgba(0,151,142,.16); padding: 9px 16px; border-radius: 999px;">Lotes chicos</span>
+            </div>
+          </div>
+          <div style="position: relative; padding: 10px 0 40px;">
+            <div style="position: absolute; inset: 30px -20px 60px 30px; background: #00978E; border-radius: 50% 50% 46% 46%; opacity: .35;"></div>
+            <div style="position: relative; aspect-ratio: 4/4.4; border-radius: 28px; overflow: hidden; background: #88CBC4; background-image: repeating-linear-gradient(135deg, rgba(22,60,105,.08) 0 10px, transparent 10px 20px); display: flex; align-items: flex-start; justify-content: flex-end; padding: 18px;">
+              <span style="font-family: ui-monospace, monospace; font-size: 12px; color: #163C69; background: rgba(247,241,227,.9); padding: 7px 12px; border-radius: 6px;">fotos_faride / perro brincando por el premio</span>
+            </div>
+            <div style="position: absolute; bottom: 6px; left: -26px; width: 168px; height: 168px; border-radius: 50%; background: #FED140; border: 3px solid #163C69; display: flex; align-items: center; justify-content: center; text-align: center; box-shadow: 5px 5px 0 rgba(22,60,105,.3); rotate: -7deg;">
+              <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 15px; line-height: 1.2; color: #00978E;">STICKER<br>BUNGOT<br><span style="font-size: 11px; color: #163C69;">@BUNGOT_MX</span></span>
+            </div>
+            <div style="position: absolute; top: 56px; right: -14px; background: #F7F1E3; border: 2.5px solid #163C69; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 15px; color: #163C69; padding: 11px 18px; border-radius: 999px; box-shadow: 3px 3px 0 #163C69; rotate: 4deg; z-index: 6;">Hecho en lotes chicos</div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 24px 60px 60px;">
+          <div style="background: #00978E; border-radius: 22px; padding: 24px 26px; color: #F7F1E3;">
+            <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 22px;">Proteína real</div>
+            <div style="font-size: 15px; line-height: 1.45; color: rgba(247,241,227,.85); margin-top: 6px;">Pulmón, hígado y patas deshidratados. Nada más.</div>
+          </div>
+          <div style="background: #E94925; border-radius: 22px; padding: 24px 26px; color: #F7F1E3;">
+            <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 22px;">Sin letra chica</div>
+            <div style="font-size: 15px; line-height: 1.45; color: rgba(247,241,227,.88); margin-top: 6px;">Lo que dice la bolsa es lo que hay dentro.</div>
+          </div>
+          <div style="background: #FED140; border-radius: 22px; padding: 24px 26px; color: #163C69;">
+            <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 22px;">Hecho en familia</div>
+            <div style="font-size: 15px; line-height: 1.45; color: rgba(22,60,105,.78); margin-top: 6px;">Lotes chicos, en México, con nuestra manada.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="1b" style="width: 1440px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 20px; background: #FED140; color: #163C69; padding: 6px 16px; border-radius: 999px; border: 2px solid #163C69;">1b</span>
+        <span style="font-family: Inter; font-size: 16px; font-weight: 500; color: rgba(22,60,105,.7);">Bloque de color · producto protagonista (rima con "Favoritos de la manada")</span>
+      </div>
+      <div style="background: #F7F1E3; border-radius: 20px; overflow: hidden; box-shadow: 0 18px 50px rgba(22,60,105,.14);">
+        <div style="background: #163C69; overflow: hidden; white-space: nowrap; padding: 11px 0;">
+          <div style="display: inline-block; animation: bungot-marquee 26s linear infinite; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 15px; letter-spacing: .04em; color: #FED140;">
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+          </div>
+        </div>
+        <div style="background: #00978E; padding: 20px 44px; display: flex; align-items: center; gap: 44px;">
+          <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 27px; color: #F7F1E3;">BUNGOT</span>
+          <div style="display: flex; gap: 30px; font-size: 16px; font-weight: 500; color: #F7F1E3;">
+            <span style="border-bottom: 3px solid #FED140; padding-bottom: 3px;">Inicio</span>
+            <span>Productos</span>
+            <span>Conócenos</span>
+            <span>Contacto</span>
+          </div>
+          <div style="margin-left: auto; display: flex; gap: 20px; color: #F7F1E3; font-size: 16px;">
+            <span>Cuenta</span>
+            <span>Carrito (0)</span>
+          </div>
+        </div>
+
+        <div style="padding: 44px 44px 56px;">
+          <div style="background: #163C69; border-radius: 26px 26px 0 0; padding: 16px; text-align: center;">
+            <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: .06em; color: #FED140;">PREMIOS DESHIDRATADOS, HECHOS EN MÉXICO</span>
+          </div>
+          <div style="background: #E94925; border-radius: 0 0 26px 26px; padding: 56px 56px 0; position: relative; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1fr .95fr; gap: 30px; align-items: center;">
+              <div>
+                <h1 style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 96px; line-height: .86; letter-spacing: -.03em; text-transform: uppercase; color: #F7F1E3; margin: 0; text-shadow: 5px 5px 0 rgba(22,60,105,.35);">Para<br>chuparse<br>las patas</h1>
+                <p style="font-size: 19px; line-height: 1.6; color: rgba(247,241,227,.92); margin: 26px 0 0; max-width: 420px; text-wrap: pretty;">Proteína real, deshidratada en lotes chicos. Un solo ingrediente y nada más.</p>
+                <div style="display: flex; gap: 14px; margin: 32px 0 0;">
+                  <button style="font-family: Fredoka, sans-serif; font-size: 17px; font-weight: 600; background: #FED140; color: #163C69; border: 3px solid #163C69; padding: 16px 34px; border-radius: 999px; cursor: pointer; box-shadow: 4px 4px 0 #163C69;" style-hover="translate: 2px 2px; box-shadow: 2px 2px 0 #163C69;">Comprar ahora</button>
+                  <button style="font-family: Fredoka, sans-serif; font-size: 17px; font-weight: 600; background: transparent; color: #F7F1E3; border: 3px solid #F7F1E3; padding: 16px 34px; border-radius: 999px; cursor: pointer;" style-hover="background: #F7F1E3; color: #E94925;">Ver el catálogo</button>
+                </div>
+                <div style="display: flex; gap: 10px; margin: 34px 0 0; flex-wrap: wrap;">
+                  <span style="font-size: 14px; font-weight: 600; color: #163C69; background: #F7F1E3; padding: 9px 16px; border-radius: 999px;">Alta proteína</span>
+                  <span style="font-size: 14px; font-weight: 600; color: #163C69; background: #F7F1E3; padding: 9px 16px; border-radius: 999px;">Salud articular</span>
+                  <span style="font-size: 14px; font-weight: 600; color: #163C69; background: #F7F1E3; padding: 9px 16px; border-radius: 999px;">Sistema inmune</span>
+                </div>
+                <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 96px; color: rgba(247,241,227,.16); line-height: 1; margin: 18px 0 0;">01</div>
+              </div>
+              <div style="position: relative;">
+                <div style="aspect-ratio: 1/1.15; border-radius: 24px 24px 0 0; background: #F6A762; background-image: repeating-linear-gradient(135deg, rgba(22,60,105,.1) 0 10px, transparent 10px 20px); display: flex; align-items: flex-end; justify-content: center; padding: 18px;">
+                  <span style="font-family: ui-monospace, monospace; font-size: 12px; color: #163C69; background: rgba(247,241,227,.9); padding: 7px 12px; border-radius: 6px;">fotos_colores / bolsa + producto recortado</span>
+                </div>
+                <div style="position: absolute; top: 24px; left: -34px; background: #FED140; border: 2.5px solid #163C69; font-family: Fredoka, sans-serif; font-weight: 700; font-size: 15px; color: #163C69; padding: 11px 18px; border-radius: 14px; box-shadow: 3px 3px 0 #163C69; rotate: -8deg;">$70 · 40 g</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="1c" style="width: 1440px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 20px; background: #FED140; color: #163C69; padding: 6px 16px; border-radius: 999px; border: 2px solid #163C69;">1c</span>
+        <span style="font-family: Inter; font-size: 16px; font-weight: 500; color: rgba(22,60,105,.7);">Tipografía a pantalla completa + ola navy (usa los stickers de perros)</span>
+      </div>
+      <div style="background: #F7F1E3; border-radius: 20px; overflow: hidden; box-shadow: 0 18px 50px rgba(22,60,105,.14);">
+        <div style="background: #163C69; overflow: hidden; white-space: nowrap; padding: 11px 0;">
+          <div style="display: inline-block; animation: bungot-marquee 26s linear infinite; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 15px; letter-spacing: .04em; color: #FED140;">
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+            <span>ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; ENVÍO GRATIS EN COMPRAS SUPERIORES A $500 · CÓDIGO BUNGOT10 &nbsp;&nbsp;&nbsp; </span>
+          </div>
+        </div>
+        <div style="background: #00978E; padding: 20px 44px; display: flex; align-items: center; gap: 44px;">
+          <span style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 27px; color: #F7F1E3;">BUNGOT</span>
+          <div style="display: flex; gap: 30px; font-size: 16px; font-weight: 500; color: #F7F1E3;">
+            <span style="border-bottom: 3px solid #FED140; padding-bottom: 3px;">Inicio</span>
+            <span>Productos</span>
+            <span>Conócenos</span>
+            <span>Contacto</span>
+          </div>
+          <div style="margin-left: auto; display: flex; gap: 20px; color: #F7F1E3; font-size: 16px;">
+            <span>Cuenta</span>
+            <span>Carrito (0)</span>
+          </div>
+        </div>
+
+        <div style="padding: 66px 60px 0; text-align: center; position: relative;">
+          <span style="display: inline-block; font-family: Fredoka, sans-serif; font-weight: 600; font-size: 16px; background: #00978E; color: #F7F1E3; padding: 10px 22px; border-radius: 999px;">Premios y snacks 100% naturales</span>
+          <h1 style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 118px; line-height: .84; letter-spacing: -.035em; text-transform: uppercase; color: #163C69; margin: 24px 0 0;">Lo olfatean.<br>Lo mordisquean.<br><span style="color: #E94925; text-shadow: 6px 6px 0 #F7F1E3;">Lo devoran.</span></h1>
+          <p style="font-size: 20px; line-height: 1.55; color: rgba(22,60,105,.78); margin: 26px auto 0; max-width: 560px; text-wrap: pretty;">Un solo ingrediente, deshidratado en lotes chicos en México. Nada que no le darías a tu propio perro.</p>
+          <div style="display: flex; gap: 16px; justify-content: center; margin: 32px 0 0;">
+            <button style="font-family: Fredoka, sans-serif; font-size: 17px; font-weight: 600; background: #E94925; color: #F7F1E3; border: 3px solid #163C69; padding: 16px 36px; border-radius: 999px; cursor: pointer; box-shadow: 4px 4px 0 #163C69;" style-hover="translate: 2px 2px; box-shadow: 2px 2px 0 #163C69;">Comprar ahora</button>
+            <button style="font-family: Fredoka, sans-serif; font-size: 17px; font-weight: 600; background: #FED140; color: #163C69; border: 3px solid #163C69; padding: 16px 36px; border-radius: 999px; cursor: pointer; box-shadow: 4px 4px 0 #163C69;" style-hover="translate: 2px 2px; box-shadow: 2px 2px 0 #163C69;">Suscríbete −20%</button>
+          </div>
+          <div style="display: flex; justify-content: center; gap: 22px; margin: 44px 0 -20px; align-items: flex-end;">
+            <div style="width: 150px; height: 200px; border-radius: 18px; background: #88CBC4; background-image: repeating-linear-gradient(135deg, rgba(22,60,105,.1) 0 9px, transparent 9px 18px); display: flex; align-items: flex-end; padding: 10px;"><span style="font-family: ui-monospace, monospace; font-size: 10px; color: #163C69; background: rgba(247,241,227,.9); padding: 4px 7px; border-radius: 5px;">sticker perro</span></div>
+            <div style="width: 320px; height: 260px; border-radius: 22px; background: #F6A762; background-image: repeating-linear-gradient(135deg, rgba(22,60,105,.1) 0 9px, transparent 9px 18px); display: flex; align-items: flex-end; padding: 12px;"><span style="font-family: ui-monospace, monospace; font-size: 11px; color: #163C69; background: rgba(247,241,227,.9); padding: 5px 9px; border-radius: 5px;">fotos_colores / bolsas</span></div>
+            <div style="width: 150px; height: 200px; border-radius: 18px; background: #88CBC4; background-image: repeating-linear-gradient(135deg, rgba(22,60,105,.1) 0 9px, transparent 9px 18px); display: flex; align-items: flex-end; padding: 10px;"><span style="font-family: ui-monospace, monospace; font-size: 10px; color: #163C69; background: rgba(247,241,227,.9); padding: 4px 7px; border-radius: 5px;">sticker gato</span></div>
+          </div>
+        </div>
+        <div style="height: 90px; background: #163C69; border-radius: 50% 50% 0 0 / 100% 100% 0 0; margin-top: -30px;"></div>
+        <div style="background: #163C69; padding: 10px 60px 54px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+          <div style="text-align: center; color: #F7F1E3;">
+            <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 30px; color: #FED140;">1 ingrediente</div>
+            <div style="font-size: 15px; color: rgba(247,241,227,.75); margin-top: 4px;">Nada de rellenos ni conservadores</div>
+          </div>
+          <div style="text-align: center; color: #F7F1E3;">
+            <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 30px; color: #FED140;">Lotes chicos</div>
+            <div style="font-size: 15px; color: rgba(247,241,227,.75); margin-top: 4px;">Deshidratado fresco cada semana</div>
+          </div>
+          <div style="text-align: center; color: #F7F1E3;">
+            <div style="font-family: Fredoka, sans-serif; font-weight: 700; font-size: 30px; color: #FED140;">Envío 2–4 días</div>
+            <div style="font-size: 15px; color: rgba(247,241,227,.75); margin-top: 4px;">Gratis desde $500 con BUNGOT10</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { pupsHidden: false };
+
+  componentDidMount() {
+    // se agachan detrás de la barra cuando la fila sube más allá del 45% de la pantalla
+    this.check = () => {
+      const row = document.querySelector('[data-pup-row]');
+      if (!row) return;
+      const hidden = row.getBoundingClientRect().top < window.innerHeight * 0.45;
+      if (hidden !== this.state.pupsHidden) this.setState({ pupsHidden: hidden });
+    };
+    window.addEventListener('scroll', this.check, { passive: true, capture: true });
+    document.addEventListener('scroll', this.check, { passive: true, capture: true });
+    window.addEventListener('resize', this.check, { passive: true });
+    const tick = () => { this.check(); this.raf = requestAnimationFrame(tick); };
+    this.raf = requestAnimationFrame(tick);
+    this.check();
+  }
+
+  componentWillUnmount() {
+    if (this.raf) cancelAnimationFrame(this.raf);
+    window.removeEventListener('scroll', this.check, { capture: true });
+    document.removeEventListener('scroll', this.check, { capture: true });
+    window.removeEventListener('resize', this.check);
+  }
+
+  renderVals() {
+    return { pupTransform: this.state.pupsHidden ? 'translateY(101%)' : 'translateY(0)' };
+  }
+}
+</script>
+</body>
+</html>

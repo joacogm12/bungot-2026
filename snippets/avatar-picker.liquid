@@ -1,0 +1,47 @@
+{%- comment -%}
+  Selector de cara del perro — las 12 del handoff, rejilla de 6 columnas.
+
+  El orden es el del README (Bruno, Cleo, Greta, Manolo, Ramona, Bache,
+  Chuleta, Felipe, Guión, Mac, Pecas, Sansa), no alfabético: así lo entregó
+  diseño y así quedan repartidas las caras claras y oscuras.
+
+  Sin JS no se puede elegir, pero las 12 caras igual se ven y el resto del
+  formulario funciona: la ficha entera es opcional (ver el README del handoff).
+
+  Cada celda pinta SU cara, no la elegida — de ahí el `fixed: true` al renderizar
+  dog-avatar, que le dice a cuenta.js que no la pise con la del localStorage.
+{%- endcomment -%}
+
+{%- liquid
+  assign picker_ids = 'bruno,cleo,greta,manolo,ramona,bache,chuleta,felipe,guion,mac,pecas,sansa' | split: ','
+  assign picker_names = 'Bruno,Cleo,Greta,Manolo,Ramona,Bache,Chuleta,Felipe,Guión,Mac,Pecas,Sansa' | split: ','
+-%}
+
+<div class="apick" data-avatar-picker role="radiogroup" aria-label="{{ 'cuenta.perro.avatar_label' | t }}">
+  {%- for pid in picker_ids -%}
+    {%- assign pname = picker_names[forloop.index0] -%}
+    <button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="{{ pid }}"
+      data-avatar-name="{{ pname | escape }}"
+      title="{{ pname | escape }}"
+    >
+      {%- render 'dog-avatar', id: pid, size: 86, class: 'apick__img', fixed: true, alt: pname -%}
+      <span class="visually-hidden">{{ pname }}</span>
+    </button>
+  {%- endfor -%}
+</div>
+
+{%- comment -%}
+  El valor real que se guarda. Va acá y no dentro del loop para que haya un
+  solo campo, no doce. Sin `name`: no viaja a ningún servidor — lo lee el JS
+  para guardarlo en la ficha local.
+{%- endcomment -%}
+<input
+  type="hidden"
+  value=""
+  data-avatar-value
+>

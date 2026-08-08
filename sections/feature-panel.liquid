@@ -1,0 +1,259 @@
+{%- comment -%}
+  Feature panel — panel de color a sangre con cantos redondeados, titular
+  enorme centrado, píldora oscura y una fila de columnas cortas abajo.
+  Estructura tomada del bloque "keep the feels flowing" de gethapply.com.
+
+  OJO CON EL COPY. Hoy este panel arma un pitch de suscripción con números
+  PLACEHOLDER (20% off, envío gratis). Verificado contra la Admin API:
+  `sellingPlanGroups` está vacío y los 13 productos tienen
+  `sellingPlanGroupsCount: 0` — la tienda NO vende suscripciones.
+
+  O sea: el diseño está para verlo, pero esos números hoy son mentira y el
+  botón no puede suscribir a nadie. Antes de publicar hay que (a) montar los
+  selling plans en Shopify y (b) reemplazar los números por los reales.
+
+  Los defaults del schema, en cambio, van con contenido de marca verificable.
+{%- endcomment -%}
+
+<section class="fpanel">
+  <div
+    class="fpanel__box"
+    style="--fp-bg: {{ section.settings.bg }}; --fp-fg: {{ section.settings.fg }};"
+  >
+    <div class="fpanel__lead">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="fpanel__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+
+
+      {%- if section.settings.title != blank -%}
+        <h2 class="fpanel__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.text != blank -%}
+        <p class="fpanel__text">{{ section.settings.text }}</p>
+      {%- endif -%}
+
+      {%- comment -%}
+        Los chips son informativos, NO un selector: no hay planes que elegir
+        (sellingPlanGroups está vacío). Van como <li>, no como <button>, para
+        que nadie los clickee esperando que hagan algo.
+      {%- endcomment -%}
+      {%- assign chips = section.settings.chips | split: ',' -%}
+      {%- if chips.size > 0 -%}
+        <ul class="fpanel__chips">
+          {%- for chip in chips -%}
+            {%- assign c = chip | strip -%}
+            {%- if c != blank -%}
+              <li class="fpanel__chip">{{ c }}</li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.cta_label != blank -%}
+        <a
+          class="fpanel__cta"
+          style="--fp-cta-bg: {{ section.settings.cta_bg }}; --fp-cta-fg: {{ section.settings.cta_fg }};"
+          href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}"
+        >{{ section.settings.cta_label }}</a>
+      {%- endif -%}
+
+      {%- if section.settings.note != blank -%}
+        <p class="fpanel__note">{{ section.settings.note }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_art -%}
+      {%- comment -%}
+        Gráfico decorativo: aria-hidden y sin texto alternativo. Lo que dice el
+        badge (-20%) ya está en la bajada, así que para un lector de pantalla no
+        aporta nada y repetirlo sería ruido.
+      {%- endcomment -%}
+      <div class="fpanel__art" aria-hidden="true" style="--fp-art: {{ section.settings.art_bg }};">
+        <div class="fpanel__art-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <rect x="2.5" y="8.5" width="19" height="12.5" rx="2.2"/>
+            <path d="M2.5 13h19"/>
+            <path d="M12 8.5V21"/>
+            <path d="M12 8.5S9.6 8.5 8.2 7.1 8.2 3.4 9.6 3.4 12 8.5 12 8.5z"/>
+            <path d="M12 8.5s2.4 0 3.8-1.4S15.8 3.4 14.4 3.4 12 8.5 12 8.5z"/>
+          </svg>
+        </div>
+        {%- if section.settings.badge != blank -%}
+          <span class="fpanel__badge">{{ section.settings.badge }}</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <ul class="fpanel__items">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign photo = ''
+            if block.settings.image != blank
+              assign photo = block.settings.image | image_url: width: 560
+            elsif block.settings.image_asset != blank
+              assign photo = block.settings.image_asset | asset_url
+            endif
+          -%}
+          <li class="fpanel__item" {{ block.shopify_attributes }}>
+            {%- comment -%} La foto manda; el emoji es el fallback. {%- endcomment -%}
+            {%- if photo != blank -%}
+              <img
+                class="fpanel__photo"
+                src="{{ photo }}"
+                alt="{{ block.settings.image_alt | escape }}"
+                width="560"
+                height="700"
+                loading="lazy"
+              >
+            {%- elsif block.settings.icon != blank -%}
+              <span class="fpanel__icon" aria-hidden="true">{{ block.settings.icon }}</span>
+            {%- endif -%}
+
+            {%- if block.settings.title != blank -%}
+              <h3 class="fpanel__item-title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="fpanel__item-text">{{ block.settings.text }}</p>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Panel destacado",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "⚠️ Si este panel promete descuentos, envíos gratis o suscripciones, verificá que existan de verdad en la tienda antes de publicar. Hoy BUNGOT no tiene planes de suscripción cargados en Shopify."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Etiqueta chica",
+      "info": "Va arriba del titular, en pastilla. Es lo que dice de un vistazo de qué se trata el bloque."
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Titular",
+      "default": "Un solo ingrediente",
+      "info": "Va enorme y centrado. Cuanto más corto, más pega."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Texto",
+      "default": "Nada más. Sin conservadores, sin colorantes y sin rellenos — lo que dice la etiqueta es lo que hay adentro."
+    },
+    {
+      "type": "text",
+      "id": "chips",
+      "label": "Opciones",
+      "info": "Separadas por coma. Se muestran como pastillas informativas — NO son un selector, no se pueden clickear."
+    },
+    { "type": "text", "id": "cta_label", "label": "Botón", "default": "Ver los productos" },
+    { "type": "url", "id": "cta_url", "label": "Link del botón" },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Letra chica",
+      "info": "Debajo del botón. Para la tranquilidad del que duda (permanencia, cancelación)."
+    },
+    { "type": "header", "content": "Colores" },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Fondo del panel",
+      "default": "#EB5F7A",
+      "info": "PANTONE 709 C"
+    },
+    { "type": "color", "id": "fg", "label": "Texto del panel", "default": "#FFFFFF" },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Fondo del botón",
+      "default": "#FED140",
+      "info": "PANTONE 122 C"
+    },
+    { "type": "color", "id": "cta_fg", "label": "Texto del botón", "default": "#163C69" },
+    { "type": "header", "content": "Gráfico" },
+    { "type": "checkbox", "id": "show_art", "label": "Mostrar el regalo a la derecha", "default": true },
+    {
+      "type": "color",
+      "id": "art_bg",
+      "label": "Color del gráfico",
+      "default": "#FED140",
+      "info": "PANTONE 122 C"
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Globito del gráfico",
+      "info": "Va sobre la esquina del regalo. Es decorativo: lo que diga tiene que estar también en la bajada, porque un lector de pantalla no lo lee."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Columna",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Foto (subida a Shopify)",
+          "info": "Si hay foto, reemplaza al emoji."
+        },
+        {
+          "type": "text",
+          "id": "image_asset",
+          "label": "Foto (asset del tema)",
+          "info": "Nombre de archivo dentro de assets/. Es lo que se usa hoy."
+        },
+        { "type": "text", "id": "image_alt", "label": "Texto alternativo de la foto" },
+        { "type": "text", "id": "icon", "label": "Emoji", "info": "Solo se usa si no hay foto." },
+        { "type": "text", "id": "title", "label": "Título" },
+        { "type": "textarea", "id": "text", "label": "Texto" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Panel destacado",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "icon": "🔥",
+            "title": "Lotes chicos",
+            "text": "Deshidratado de a poco, como corresponde. Nada de producción en masa."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "🚫",
+            "title": "Sin aditivos",
+            "text": "Cero conservadores, colorantes y rellenos raros. Cero."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "🐕",
+            "title": "Aprobado por perros",
+            "text": "Probado por los más exigentes: los que no saben mentir."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

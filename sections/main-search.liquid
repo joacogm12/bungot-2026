@@ -1,0 +1,54 @@
+<section class="collection">
+  <div class="wrap">
+    <div class="collection__head">
+      <h1 class="collection__title">{{ 'search.title' | t }}</h1>
+      {%- if search.performed -%}
+        <span class="collection__count">
+          {{- search.results_count }} {{ 'search.results' | t -}}
+        </span>
+      {%- endif -%}
+    </div>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="newsletter__form" style="justify-content:flex-start;margin-bottom:1.8rem;">
+      <label class="visually-hidden" for="q">{{ 'search.title' | t }}</label>
+      <input
+        class="newsletter__input"
+        id="q"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="{{ 'search.placeholder' | t }}"
+      >
+      <button class="btn" type="submit">{{ 'search.submit' | t }}</button>
+    </form>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by 24 -%}
+        <div class="product-grid">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {% render 'product-card', product: item, index: forloop.index0 %}
+            {%- endif -%}
+          {%- else -%}
+            <p class="collection__empty">{{ 'search.empty' | t }}</p>
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" aria-label="{{ 'accessibility.pagination' | t }}">
+            {%- if paginate.previous -%}
+              <a class="chip" href="{{ paginate.previous.url }}">← {{ 'general.previous' | t }}</a>
+            {%- endif -%}
+            {%- if paginate.next -%}
+              <a class="chip" href="{{ paginate.next.url }}">{{ 'general.next' | t }} →</a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Búsqueda" }
+{% endschema %}

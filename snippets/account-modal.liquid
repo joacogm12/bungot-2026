@@ -1,0 +1,99 @@
+{%- comment -%}
+  1a — Ventana de entrar sobre la tienda.
+
+  BUNGOT NO captura credenciales (handoff 8): quien da de alta y autentica es
+  Shopify en su pantalla hospedada. La ventana solo explica el salto y navega —
+  dos enlaces reales, cero <input>. Por eso tampoco hay validación, ni spinner,
+  ni estados de error: abre, cierra (X, velo, Esc) y navega, y todo funciona
+  igual con el JS apagado.
+
+  La tienda usa las cuentas NUEVAS de Shopify: NO existe la contraseña (se
+  entra con correo + código de seis dígitos) y esa pantalla no se puede
+  reemplazar desde el tema. El pie lo dice con esas palabras — código, no
+  contraseña — aunque el handoff traiga la versión con contraseña.
+
+  Por qué modal y no página: entrar no debe sacar al usuario de la compra. El
+  velo, el desenfoque del fondo y el carrito intacto detrás son justamente eso.
+
+  Se renderiza desde header.liquid, así que sale en TODAS las plantillas sin
+  agregarla a ningún templates/*.json.
+
+  Params:
+    en_pagina (bool) true = la misma caja pero en flujo, sin velo ni cerrar
+                     (la renderiza cuenta-login para /account/login).
+{%- endcomment -%}
+
+{%- liquid
+  # Volver exactamente a donde estaba. request.path no trae el querystring, que
+  # es justo lo que queremos: no arrastramos parámetros de campaña ni de filtro
+  # a la vuelta del login. El JS lo pisa con /checkout cuando la ventana se
+  # abrió desde el paso previo al pago.
+  assign volver = request.path | default: routes.root_url | url_encode
+  assign login_url = routes.account_login_url | append: '?return_url=' | append: volver
+-%}
+
+<div
+  class="clog{% if en_pagina %} clog--page{% endif %}"
+  {% unless en_pagina %}data-login-modal data-open="false" aria-hidden="true"{% endunless %}
+>
+  {%- unless en_pagina -%}
+    {%- comment -%}
+      El velo cierra al hacer clic. Va como <button> y no como <div> para que
+      exista para el teclado y los lectores de pantalla; el aria-label lo nombra.
+    {%- endcomment -%}
+    <button
+      class="clog__veil"
+      type="button"
+      data-login-close
+      aria-label="{{ 'cuenta.login.close' | t }}"
+      tabindex="-1"
+    ></button>
+  {%- endunless -%}
+
+  <div class="clog__box" role="dialog" aria-modal="true" aria-labelledby="clog-title">
+    {%- unless en_pagina -%}
+      <button class="clog__x" type="button" data-login-close aria-label="{{ 'cuenta.login.close' | t }}">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <path d="M3 3l10 10M13 3L3 13"/>
+        </svg>
+      </button>
+    {%- endunless -%}
+
+    <aside class="clog__aside">
+      <p class="clog__eyebrow">{{ 'cuenta.login.eyebrow' | t }}</p>
+      <h2 class="clog__title" id="clog-title">{{ 'cuenta.login.title' | t }}</h2>
+      <p class="clog__intro">{{ 'cuenta.login.intro' | t }}</p>
+      {%- comment -%}
+        Guión, la ilustración del panel. Decorativa. En flujo y no absoluta:
+        la caja ahora es más baja y anclada se encimaba con el texto.
+      {%- endcomment -%}
+      <img
+        class="clog__ilus"
+        src="{{ 'bungot-ilus-guion.png' | asset_url }}"
+        alt=""
+        aria-hidden="true"
+        width="190"
+        height="190"
+        loading="lazy"
+        decoding="async"
+      >
+    </aside>
+
+    <div class="clog__main">
+      <h3 class="clog__h3">{{ 'cuenta.login.heading' | t }}</h3>
+
+      <p class="clog__lead">{{ 'cuenta.login.lead' | t }}</p>
+
+      <a class="clog__cta" href="{{ login_url }}" data-login-entrar>{{ 'cuenta.login.cta_entrar' | t }}</a>
+
+      <a class="clog__alt" href="{{ routes.account_register_url }}">{{ 'cuenta.login.cta_crear' | t }}</a>
+
+      <hr class="clog__dash" aria-hidden="true">
+
+      <p class="clog__foot">
+        <a href="{{ routes.account_recover_url }}">{{ 'cuenta.login.foot_link' | t }}</a>
+        {{ 'cuenta.login.foot_note' | t }}
+      </p>
+    </div>
+  </div>
+</div>

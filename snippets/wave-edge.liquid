@@ -1,0 +1,46 @@
+{%- comment -%}
+  Borde de arriba en ola, para cualquier sección que quiera subir sobre la
+  anterior con una cresta en vez de una línea recta.
+
+  Cómo funciona: el SVG se posiciona en `bottom: 100%` de la sección, o sea
+  justo arriba de su borde superior, y el path pinta del color de la sección.
+  Lo de arriba de la cresta queda transparente y deja ver lo que hay atrás.
+
+  Cómo se usa: la sección tiene que ser `position: relative` y declarar de qué
+  color se pinta la ola:
+
+    <section class="mi-seccion">           .mi-seccion {
+      {%- render 'wave-edge' -%}             position: relative;
+      ...                                    --wave-edge-color: var(--mi-bg);
+    </section>                             }
+
+  Es la ÚNICA fuente de verdad de la ola: la usan `sections/wave.liquid` y
+  `sections/reviews-pin.liquid`. Si hace falta otra, renderiza este snippet —
+  no copies el path, porque la animación (@keyframes wave-swell en base.css)
+  depende de que todos los pasos compartan la misma secuencia de comandos.
+
+  preserveAspectRatio="none" para que la ola se estire a lo ancho de cualquier
+  pantalla sin cambiar de alto.
+
+  Este `d` es el paso 0% del ciclo, y es también lo que se ve sin animación
+  (navegadores viejos o prefers-reduced-motion).
+
+  Los pasos del ciclo tienen que compartir la MISMA secuencia de comandos
+  (M L C C C C C C C C L Z) o el navegador no interpola y la ola salta. Y las
+  anclas (0/300/640/1090/1440) y los vértices (150/470/865/1265) tienen que
+  quedar fijos, o la ola se corre de lado.
+{%- endcomment -%}
+
+<svg
+  class="wave-edge"
+  viewBox="0 0 1440 160"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path
+    class="wave-edge__path"
+    fill="currentColor"
+    d="M0,260 L0,80 C50,57.0 100,36.0 150,36.0 C200,36.0 250,55.6 300,80 C357,107.7 413,135.8 470,135.8 C527,135.8 583,103.9 640,80 C715,48.4 790,33.2 865,33.2 C940,33.2 1015,70.7 1090,80 C1148,87.2 1207,88.0 1265,88.0 C1323,88.0 1382,84.2 1440,80 L1440,260 Z"
+  />
+</svg>

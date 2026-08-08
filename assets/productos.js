@@ -1,0 +1,123 @@
+/* ==========================================================================
+   BUNGOT 2026 — productos.js
+   Lógica de la página de productos por bandas: flechas del carrusel y filtros
+   que reordenan las bandas sin recargar. Se auto-inicializa solo si el markup
+   está presente, igual que el resto del tema.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var STEP = 368; // 344 de tarjeta + 24 de gap
+
+  function init() {
+    var roots = document.querySelectorAll('[data-productos]');
+    if (!roots.length) return;
+    for (var i = 0; i < roots.length; i++) setup(roots[i]);
+  }
+
+  function setup(root) {
+    var bandas = root.querySelectorAll('[data-banda]');
+    for (var i = 0; i < bandas.length; i++) setupRail(bandas[i]);
+    setupFilters(root, bandas);
+  }
+
+  /* --- Carrusel por banda -------------------------------------------------- */
+  function setupRail(banda) {
+    var rail = banda.querySelector('[data-rail]');
+    if (!rail) return;
+
+    var prev = banda.querySelector('[data-prev]');
+    var next = banda.querySelector('[data-next]');
+    var arrows = banda.querySelector('[data-arrows]');
+
+    if (prev) prev.addEventListener('click', function () {
+      rail.scrollBy({ left: -STEP, behavior: 'smooth' });
+    });
+    if (next) next.addEventListener('click', function () {
+      rail.scrollBy({ left: STEP, behavior: 'smooth' });
+    });
+
+    // Ocultar las flechas cuando todo cabe en la fila (nada que desplazar).
+    function measure() {
+      if (!arrows) return;
+      var fits = rail.scrollWidth <= rail.clientWidth + 1;
+      arrows.style.visibility = fits ? 'hidden' : '';
+    }
+
+    measure();
+    window.addEventListener('resize', measure);
+    // Guardado para re-medir tras un cambio de filtro (una banda oculta pasa a
+    // clientWidth 0 y hay que recalcular cuando vuelve a mostrarse).
+    banda._pgMeasure = measure;
+  }
+
+  function remeasure(root) {
+    var bandas = root.querySelectorAll('[data-banda]');
+    for (var i = 0; i < bandas.length; i++) {
+      if (bandas[i]._pgMeasure) bandas[i]._pgMeasure();
+    }
+  }
+
+  /* --- Filtros: reordenan las bandas, no recargan -------------------------- */
+  function setupFilters(root, bandas) {
+    var buttons = root.querySelectorAll('[data-filter]');
+    if (!buttons.length) return;
+
+    // Vuelve al orden original: cada banda a su order y todas visibles.
+    function reset() {
+      for (var i = 0; i < bandas.length; i++) {
+        bandas[i].style.order = bandas[i].getAttribute('data-order');
+        bandas[i].style.display = '';
+      }
+    }
+
+    function clearActive() {
+      for (var i = 0; i < buttons.length; i++) buttons[i].classList.remove('pfilter--active');
+    }
+
+    function raise(key) {
+      var el = root.querySelector('[data-banda="' + key + '"]');
+      if (el) el.style.order = '0';
+    }
+
+    function hide(key) {
+      var el = root.querySelector('[data-banda="' + key + '"]');
+      if (el) el.style.display = 'none';
+    }
+
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener('click', function (e) {
+        var btn = e.currentTarget;
+        var wasActive = btn.classList.contains('pfilter--active');
+        var isAll = btn.getAttribute('data-filter') === 'all';
+
+        clearActive();
+        reset();
+
+        // Clic en el activo o en "Todos": queda el orden original.
+        if (wasActive || isAll) {
+          var all = root.querySelector('[data-filter="all"]');
+          if (all) all.classList.add('pfilter--active');
+          remeasure(root);
+          return;
+        }
+
+        btn.classList.add('pfilter--active');
+
+        var target = btn.getAttribute('data-target');
+        if (target) raise(target);
+
+        var toHide = btn.getAttribute('data-hide');
+        if (toHide) hide(toHide);
+
+        remeasure(root);
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

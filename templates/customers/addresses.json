@@ -1,0 +1,6 @@
+{
+  "sections": {
+    "main": { "type": "cuenta-direcciones" }
+  },
+  "order": ["main"]
+}

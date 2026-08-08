@@ -1,0 +1,20 @@
+{%- comment -%}
+  Página de inicio de sesión — la caja de 1a en flujo, sin velo.
+
+  Existe por templates/customers/login: con las cuentas nuevas de Shopify esa
+  ruta redirige al acceso hospedado y esto nunca se ve, pero si Shopify llegara
+  a renderizarla, muestra la misma caja del modal — que ya no monta ningún
+  formulario propio (handoff 8): solo los dos enlaces al acceso de Shopify.
+{%- endcomment -%}
+
+<div class="cuenta cuenta--login">
+  {%- render 'account-modal', en_pagina: true -%}
+</div>
+
+{% schema %}
+{
+  "name": "Entrar",
+  "settings": [],
+  "presets": [{ "name": "Entrar" }]
+}
+{% endschema %}

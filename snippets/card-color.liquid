@@ -1,0 +1,34 @@
+{%- comment -%}
+  Devuelve (echo) el color de un producto. Única fuente de verdad para el color
+  de marca de un producto: la usan el grid y la sección Favoritos.
+
+  Prioridad:
+    1. metafield custom.card_color  — el color canónico del producto
+    2. rotación de la paleta por posición
+
+  Ojo: hoy el metafield NO existe en la tienda, así que en la práctica siempre
+  cae en la rotación. Mientras sea así, un mismo producto puede tener distinto
+  color en el grid y en Favoritos (la posición manda). Creando el metafield y
+  cargándole un hex a cada producto, el color pasa a ser único en todo el sitio
+  sin tocar una línea de este tema.
+
+  Params: product (obj), index (int)
+{%- endcomment -%}
+
+{%- liquid
+  assign palette = settings.card_colors | split: ','
+  if palette.size == 0
+    assign palette = '#F6A762,#70C4E8,#FED140,#88CBC4' | split: ','
+  endif
+
+  assign i = index | default: 0
+  assign slot = i | modulo: palette.size
+  assign c = palette[slot] | strip
+
+  assign override = product.metafields.custom.card_color.value
+  if override != blank
+    assign c = override
+  endif
+
+  echo c
+-%}

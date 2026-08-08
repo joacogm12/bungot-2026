@@ -1,0 +1,78 @@
+{%- comment -%}
+  Tarjeta de producto BUNGOT.
+  La firma visual: fondo de color sólido que rota por producto, foto del snack,
+  ilustración del perrito, y franja oscura abajo con nombre + precio.
+
+  Params:
+    product (obj, requerido)
+    index   (int) — posición en el grid; define qué color le toca.
+
+  El color se puede fijar por producto con el metafield custom.card_color (hex).
+{%- endcomment -%}
+
+{%- capture card_bg %}{% render 'card-color', product: product, index: index %}{% endcapture -%}
+
+{%- liquid
+  comment
+    Tokens para los chips de filtro. En esta tienda las categorías no viven en
+    un solo campo: Perros/Gatos son colecciones y Huesos/Juguetes son
+    product type — y se solapan (un hueso es Perros Y Huesos). Así que emitimos
+    las tres fuentes juntas y que el chip elija cuál matchear.
+  endcomment
+  assign tokens = ''
+  if product.tags.size > 0
+    assign tokens = product.tags | join: '|'
+  endif
+  if product.type != blank
+    assign tokens = tokens | append: '|' | append: product.type
+  endif
+  for c in product.collections
+    assign tokens = tokens | append: '|' | append: c.handle
+  endfor
+  assign tag_list = tokens | downcase
+-%}
+
+<a
+  class="card"
+  href="{{ product.url }}"
+  style="--card-bg: {{ card_bg }};"
+  data-tags="{{ tag_list | escape }}"
+>
+  <div class="card__media">
+    {%- if product.compare_at_price > product.price -%}
+      <span class="card__tag">{{ 'products.card.on_sale' | t }}</span>
+    {%- elsif product.available == false -%}
+      <span class="card__tag">{{ 'products.card.sold_out' | t }}</span>
+    {%- endif -%}
+
+    {%- if product.featured_image -%}
+      <img
+        class="card__img"
+        src="{{ product.featured_image | image_url: width: 600 }}"
+        srcset="
+          {{ product.featured_image | image_url: width: 300 }} 300w,
+          {{ product.featured_image | image_url: width: 600 }} 600w,
+          {{ product.featured_image | image_url: width: 900 }} 900w"
+        sizes="(max-width: 640px) 45vw, 260px"
+        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+        width="600"
+        height="600"
+        loading="lazy"
+      >
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'card__img' }}
+    {%- endif -%}
+
+    {% render 'pup-illustration' %}
+  </div>
+
+  <div class="card__foot">
+    <h3 class="card__name">{{ product.title }}</h3>
+    <span class="card__price">
+      {%- if product.compare_at_price > product.price -%}
+        <s>{{ product.compare_at_price | money }}</s>
+      {%- endif -%}
+      {{ product.price | money }}
+    </span>
+  </div>
+</a>

@@ -1,0 +1,28 @@
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "preloader": {
+      "type": "preloader",
+      "settings": {
+        "enabled": true,
+        "messages": "eligiendo el mejor corte..., deshidratando a fuego lento..., sumando una pata de más..., ¡premio listo!",
+        "duration": 2.5
+      }
+    },
+    "marquee": {
+      "type": "announcement-marquee",
+      "settings": {
+        "message": "Sin conservadores, químicos ni colorantes · Marca 100% mexicana",
+        "speed": 26
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu"
+      }
+    }
+  },
+  "order": ["preloader", "marquee", "header"]
+}

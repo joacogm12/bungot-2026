@@ -1,0 +1,50 @@
+{%- liquid
+  assign palette = settings.card_colors | split: ','
+-%}
+
+<section class="collection">
+  <div class="wrap">
+    <div class="collection__head">
+      <h1 class="collection__title">{{ blog.title }}</h1>
+    </div>
+
+    {%- paginate blog.articles by 12 -%}
+      <div class="product-grid">
+        {%- for article in blog.articles -%}
+          {%- assign slot = forloop.index0 | modulo: palette.size -%}
+          <a class="card" href="{{ article.url }}" style="--card-bg: {{ palette[slot] | strip }};">
+            <div class="card__media">
+              {%- if article.image -%}
+                <img
+                  class="card__img"
+                  src="{{ article.image | image_url: width: 600 }}"
+                  alt="{{ article.image.alt | default: article.title | escape }}"
+                  width="600"
+                  height="600"
+                  loading="lazy"
+                >
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'card__img' }}
+              {%- endif -%}
+            </div>
+            <div class="card__foot">
+              <h2 class="card__name">{{ article.title }}</h2>
+              <span class="card__price">{{ article.published_at | date: '%d/%m' }}</span>
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination" aria-label="{{ 'accessibility.pagination' | t }}">
+          {%- if paginate.previous -%}
+            <a class="chip" href="{{ paginate.previous.url }}">← {{ 'general.previous' | t }}</a>
+          {%- endif -%}
+          {%- if paginate.next -%}
+            <a class="chip" href="{{ paginate.next.url }}">{{ 'general.next' | t }} →</a>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>

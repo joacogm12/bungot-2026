@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_brand }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+
+    {%- comment -%}
+      Fuentes self-hosted desde el CDN de Shopify en vez de Google Fonts: evita
+      una conexión extra a otro dominio antes de pintar el texto. Son variables
+      (un archivo cubre todos los pesos) y están subseteadas a latin/latin-ext.
+      Fredoka e Inter son OFL. Para actualizarlas, volver a bajar los .woff2.
+    {%- endcomment -%}
+    {%- comment -%}
+      crossorigin es obligatorio acá: sin él el navegador descarta el preload y
+      baja la fuente dos veces.
+    {%- endcomment -%}
+    {{ 'fredoka-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {{ 'inter-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- comment -%}
+      Brookline va en TODAS las plantillas, no solo en la portada: es la fuente
+      del logotipo y el logotipo está en el header y en el footer, que salen en
+      cada página. Además su @font-face usa font-display: block, así que sin
+      preload el nombre de la marca se quedaría en blanco un momento.
+    {%- endcomment -%}
+    {{ 'brookline-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- comment -%}
+      Anton solo en la portada: ahí la usa la bajada del hero, que está en la
+      primera pantalla. En el resto de las plantillas no aparece, así que no se
+      precarga y no se paga.
+    {%- endcomment -%}
+    {%- if template.name == 'index' -%}
+      {{ 'anton-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- endif -%}
+
+    {% render 'font-face' %}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    <style>
+      :root {
+        --brand: {{ settings.color_brand }};
+        --brand-dark: {{ settings.color_dark }};
+        --brand-yellow: {{ settings.color_yellow }};
+        --cream: {{ settings.color_cream }};
+        --ink: {{ settings.color_dark }};
+      }
+    </style>
+
+    {%- comment -%}
+      Quién tiene la sesión, para que la ficha del perro se guarde POR USUARIO
+      (theme.js arma la clave del localStorage con este id). Inline y antes de
+      theme.js: los scripts con defer corren después de este.
+    {%- endcomment -%}
+    <script>
+      window.BUNGOT = window.BUNGOT || {};
+      window.BUNGOT.usuario = {{ customer.id | json }};
+    </script>
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ template.name | handle }}">
+    <a class="skip-link" href="#main">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="main" role="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+  </body>
+</html>

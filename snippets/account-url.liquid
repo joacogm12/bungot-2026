@@ -1,0 +1,26 @@
+{%- comment -%}
+  URL de una pantalla de cuenta — ÚNICA fuente de verdad de esos destinos.
+
+  El flujo vive en plantillas de página (page.crear-cuenta, page.mis-pedidos,
+  page.mis-direcciones) que necesitan una página con ese handle en el admin.
+  Mientras esas páginas no existan, la MISMA plantilla se sirve sobre la
+  página `mi-perro` (que sí existe) con el parámetro ?view= — es el mecanismo
+  estándar de vistas alternas de Shopify, no un truco.
+
+  Por eso este snippet decide solo: si la página con el handle ya está creada
+  usa su URL bonita, y si no, cae a la ruta que funciona hoy. El día que las
+  páginas se creen en el admin, todos los enlaces del tema se actualizan
+  SOLOS, sin tocar código.
+
+  Params:
+    destino (string) 'crear-cuenta' | 'mis-pedidos' | 'mis-direcciones' | 'mi-perro'
+{%- endcomment -%}
+
+{%- liquid
+  assign au_page = pages[destino]
+  if au_page.url != blank
+    echo au_page.url
+  else
+    echo routes.root_url | append: 'pages/mi-perro?view=' | append: destino
+  endif
+-%}

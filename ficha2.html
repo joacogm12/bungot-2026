@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#00978E">
+    <link rel="canonical" href="https://bungot.com/pages/mi-perro"><title>
+      Mi Perro
+ &ndash; BUNGOT</title><meta property="og:site_name" content="BUNGOT">
+<meta property="og:url" content="https://bungot.com/pages/mi-perro">
+<meta property="og:title" content="Mi Perro">
+<meta property="og:type" content="website">
+<meta property="og:description" content="BUNGOT"><meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Mi Perro">
+<meta name="twitter:description" content="BUNGOT">
+
+<link href="/cdn/shop/t/5/assets/fredoka-latin.woff2?v=64995534788828452641784101189" as="font" type="font/woff2" crossorigin="anonymous" rel="preload">
+    <link href="/cdn/shop/t/5/assets/inter-latin.woff2?v=5808579388252114031784101189" as="font" type="font/woff2" crossorigin="anonymous" rel="preload">
+<link href="/cdn/shop/t/5/assets/brookline-latin.woff2?v=17124940607566164941785511106" as="font" type="font/woff2" crossorigin="anonymous" rel="preload">
+<style>
+  /* Fredoka — variable 400..700 — display/títulos */
+  @font-face {
+    font-family: 'Fredoka';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url(/cdn/shop/t/5/assets/fredoka-latin.woff2?v=64995534788828452641784101189) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: 'Fredoka';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url(/cdn/shop/t/5/assets/fredoka-latin-ext.woff2?v=29662289018121183271784101188) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+
+  /* BROOKLINE Condensed — 400 — la tipografía DEL LOGOTIPO.
+     font-display: block y no swap como las demás, a propósito: acá no se está
+     pintando texto cualquiera sino el nombre de la marca. Preferimos que tarde
+     un instante en aparecer a que se vea un segundo con las letras equivocadas
+     y después salte. Como se precarga, ese instante es mínimo. */
+  @font-face {
+    font-family: 'Brookline';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url(/cdn/shop/t/5/assets/brookline-latin.woff2?v=17124940607566164941785511106) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: 'Brookline';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url(/cdn/shop/t/5/assets/brookline-latin-ext.woff2?v=169259495877333522541785511107) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+
+  /* Anton — 400 (peso único) — la bajada de la portada ("¡PARA CHUPARSE LAS
+     PATAS!"). El logotipo ya no la usa (pasó a Brookline), pero esta sí.
+     Self-hosted como las demás: el tema no pide fuentes a Google en runtime.
+     Anton es OFL, así que servirla desde el CDN de la tienda está permitido. */
+  @font-face {
+    font-family: 'Anton';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/cdn/shop/t/5/assets/anton-latin.woff2?v=173173155083448161181785510253) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: 'Anton';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/cdn/shop/t/5/assets/anton-latin-ext.woff2?v=17958151139291239911785510253) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+
+  /* Inter — variable 400..600 — body copy */
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url(/cdn/shop/t/5/assets/inter-latin.woff2?v=5808579388252114031784101189) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url(/cdn/shop/t/5/assets/inter-latin-ext.woff2?v=99687434248205654791784101189) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+</style>
+
+
+    <link href="/cdn/shop/t/5/assets/base.css?v=166218440738730930111786127013" rel="stylesheet" type="text/css" media="all" />
+
+    <style>
+      :root {
+        --brand: #00978E;
+        --brand-dark: #163C69;
+        --brand-yellow: #FED140;
+        --cream: #F7F1E3;
+        --ink: #163C69;
+      }
+    </style>
+
+    <script src="/cdn/shop/t/5/assets/theme.js?v=144451603570688135661786126987" defer></script>
+    <script>window.performance && window.performance.mark && window.performance.mark('shopify.content_for_header.start');</script><meta id="shopify-digital-wallet" name="shopify-digital-wallet" content="/65742569646/digital_wallets/dialog">
+<meta name="shopify-checkout-api-token" content="a47bf6f3e45f5bc321efd1c77b51c992">
+<meta id="in-context-paypal-metadata" data-shop-id="65742569646" data-venmo-supported="false" data-environment="production" data-locale="es_ES" data-paypal-v4="true" data-currency="MXN">
+<script async="async" src="/checkouts/internal/preloads.js?locale=es-MX"></script>
+<link rel="preconnect" href="https://shop.app" crossorigin="anonymous">
+<script async="async" src="https://shop.app/checkouts/internal/preloads.js?locale=es-MX&shop_id=65742569646" crossorigin="anonymous"></script>
+<script id="apple-pay-shop-capabilities" type="application/json">{"shopId":65742569646,"countryCode":"MX","currencyCode":"MXN","merchantCapabilities":["supports3DS"],"merchantId":"gid:\/\/shopify\/Shop\/65742569646","merchantName":"BUNGOT","requiredBillingContactFields":["postalAddress","email"],"requiredShippingContactFields":["postalAddress","email"],"shippingType":"shipping","supportedNetworks":["visa","masterCard"],"total":{"type":"pending","label":"BUNGOT","amount":"1.00"},"shopifyPaymentsEnabled":true,"supportsSubscriptions":true}</script>
+<script id="shopify-features" type="application/json">{"accessToken":"a47bf6f3e45f5bc321efd1c77b51c992","betas":["rich-media-storefront-analytics"],"domain":"e30306-22.myshopify.com","predictiveSearch":true,"shopId":65742569646,"locale":"es"}</script>
+<script>var Shopify = Shopify || {};
+Shopify.shop = "e30306-22.myshopify.com";
+Shopify.locale = "es";
+Shopify.currency = {"active":"MXN","rate":"1.0"};
+Shopify.country = "MX";
+Shopify.theme = {"name":"Development (d791d7-joaco)","id":153489670318,"schema_name":"BUNGOT 2026","schema_version":"1.0.0","theme_store_id":null,"role":"development"};
+Shopify.theme.handle = "null";
+Shopify.theme.style = {"id":null,"handle":null};
+Shopify.cdnHost = "e30306-22.myshopify.com/cdn";
+Shopify.routes = Shopify.routes || {};
+Shopify.routes.root = "/";
+Shopify.previewMode = true;
+Shopify.shopJsCdnBaseUrl = "https://cdn.shopify.com/shopifycloud/shop-js";
+Shopify.SignInWithShop = Shopify.SignInWithShop || {};
+Shopify.SignInWithShop.User = Shopify.SignInWithShop.User || {};
+Shopify.SignInWithShop.User.recognized = false;</script>
+<script type="module">!function(o){(o.Shopify=o.Shopify||{}).modules=!0}(window);</script>
+<script>!function(o){function n(){var o=[];function n(){o.push(Array.prototype.slice.apply(arguments))}return n.q=o,n}var t=o.Shopify=o.Shopify||{};t.loadFeatures=n(),t.autoloadFeatures=n()}(window);</script>
+<script>
+  window.ShopifyPay = window.ShopifyPay || {};
+  window.ShopifyPay.apiHost = "shop.app\/pay";
+  window.ShopifyPay.redirectState = "true";
+</script>
+<script>
+  window.Shopify = window.Shopify || {};
+  window.Shopify.SignInWithShop = window.Shopify.SignInWithShop || {};
+  window.Shopify.SignInWithShop.assetMetrics = { sampleRate: 0.25 };
+  window.Shopify.SignInWithShop.eligible = true;
+</script>
+<script id="shop-js-analytics" type="application/json">{"pageType":"page"}</script>
+<script defer="defer" async type="module" src="/cdn/shopifycloud/shop-js/modules/v2/loader.init-shop-cart-sync.es.esm.js"></script>
+<script type="module">
+  await import("/cdn/shopifycloud/shop-js/modules/v2/loader.init-shop-cart-sync.es.esm.js");
+
+  window.Shopify.SignInWithShop?.initShopCartSync?.({"fedCMEnabled":true,"windoidEnabled":true});
+
+</script>
+<script>
+  window.Shopify = window.Shopify || {};
+  if (!window.Shopify.featureAssets) window.Shopify.featureAssets = {};
+  window.Shopify.featureAssets['shop-js'] = {"shop-toast-manager":["modules/v2/loader.shop-toast-manager.es.esm.js"],"init-shop-user-recognition":["modules/v2/loader.init-shop-user-recognition.es.esm.js"],"listener":["modules/v2/loader.listener.es.esm.js"],"init-fed-cm":["modules/v2/loader.init-fed-cm.es.esm.js"],"init-windoid":["modules/v2/loader.init-windoid.es.esm.js"],"shop-cash-offers":["modules/v2/loader.shop-cash-offers.es.esm.js"],"init-shop-email-lookup-coordinator":["modules/v2/loader.init-shop-email-lookup-coordinator.es.esm.js"],"shop-button":["modules/v2/loader.shop-button.es.esm.js"],"init-shop-cart-sync":["modules/v2/loader.init-shop-cart-sync.es.esm.js"],"avatar":["modules/v2/loader.avatar.es.esm.js"],"shop-user-recognition":["modules/v2/loader.shop-user-recognition.es.esm.js"],"shop-login-button":["modules/v2/loader.shop-login-button.es.esm.js"],"init-shop-for-new-customer-accounts":["modules/v2/loader.init-shop-for-new-customer-accounts.es.esm.js"],"shop-cart-sync":["modules/v2/loader.shop-cart-sync.es.esm.js"],"shop-login":["modules/v2/loader.shop-login.es.esm.js"],"init-customer-accounts-sign-up":["modules/v2/loader.init-customer-accounts-sign-up.es.esm.js"],"pay-button":["modules/v2/loader.pay-button.es.esm.js"],"init-customer-accounts":["modules/v2/loader.init-customer-accounts.es.esm.js"],"checkout-modal":["modules/v2/loader.checkout-modal.es.esm.js"],"shop-follow-button":["modules/v2/loader.shop-follow-button.es.esm.js"],"lead-capture":["modules/v2/loader.lead-capture.es.esm.js"],"payment-terms":["modules/v2/loader.payment-terms.es.esm.js"]};
+</script>
+<script id="hot-reload-client" src="/cdn/shopifycloud/theme-hot-reload/theme-hot-reload.js" defer crossorigin></script>
+<script id="__st">var __st={"a":65742569646,"offset":-21600,"reqid":"2729f63a-6277-49a5-816e-c86cc1492e66-1786128329","pageurl":"e30306-22.myshopify.com\/pages\/mi-perro?_fd=0\u0026pb=0","s":"pages-118468739246","u":"84f39c176865","p":"page","rtyp":"page","rid":118468739246};</script>
+<script>window.ShopifyPaypalV4VisibilityTracking = true;</script>
+<script id="captcha-bootstrap">!function(){'use strict';const t='contact',e='account',n='new_comment',o=[[t,t],['blogs',n],['comments',n],[t,'customer']],c=[[e,'customer_login'],[e,'guest_login'],[e,'recover_customer_password'],[e,'create_customer']],r=t=>t.map((([t,e])=>`form[action*='/${t}']:not([data-nocaptcha='true']) input[name='form_type'][value='${e}']`)).join(','),a=t=>()=>t?[...document.querySelectorAll(t)].map((t=>t.form)):[];function s(){const t=[...o],e=r(t);return a(e)}const i='password',u='form_key',d=['recaptcha-v3-token','g-recaptcha-response','h-captcha-response',i],f=()=>{try{return window.sessionStorage}catch{return}},m='__shopify_v',_=t=>t.elements[u];function p(t,e,n=!1){try{const o=window.sessionStorage,c=JSON.parse(o.getItem(e)),{data:r}=function(t){const{data:e,action:n}=t;return t[m]||n?{data:e,action:n}:{data:t,action:n}}(c);for(const[e,n]of Object.entries(r))t.elements[e]&&(t.elements[e].value=n);n&&o.removeItem(e)}catch(o){console.error('form repopulation failed',{error:o})}}const l='form_type',E='cptcha';function T(t){t.dataset[E]=!0}const w=window,h=w.document,L='Shopify',v='ce_forms',y='captcha';let A=!1;((t,e)=>{const n=(g='f06e6c50-85a8-45c8-87d0-21a2b65856fe',I='https://cdn.shopify.com/shopifycloud/storefront-forms-hcaptcha/ce_storefront_forms_captcha_hcaptcha.v1.5.2.iife.js',D={infoText:'Protegido por hCaptcha',privacyText:'Privacidad',termsText:'Términos'},(t,e,n)=>{const o=w[L][v],c=o.bindForm;if(c)return c(t,g,e,D).then(n);var r;o.q.push([[t,g,e,D],n]),r=I,A||(h.body.append(Object.assign(h.createElement('script'),{id:'captcha-provider',async:!0,src:r})),A=!0)});var g,I,D;w[L]=w[L]||{},w[L][v]=w[L][v]||{},w[L][v].q=[],w[L][y]=w[L][y]||{},w[L][y].protect=function(t,e){n(t,void 0,e),T(t)},Object.freeze(w[L][y]),function(t,e,n,w,h,L){const[v,y,A,g]=function(t,e,n){const i=e?o:[],u=t?c:[],d=[...i,...u],f=r(d),m=r(i),_=r(d.filter((([t,e])=>n.includes(e))));return[a(f),a(m),a(_),s()]}(w,h,L),I=t=>{const e=t.target;return e instanceof HTMLFormElement?e:e&&e.form},D=t=>v().includes(t);t.addEventListener('submit',(t=>{const e=I(t);if(!e)return;const n=D(e)&&!e.dataset.hcaptchaBound&&!e.dataset.recaptchaBound,o=_(e),c=g().includes(e)&&(!o||!o.value);(n||c)&&t.preventDefault(),c&&!n&&(function(t){try{if(!f())return;!function(t){const e=f();if(!e)return;const n=_(t);if(!n)return;const o=n.value;o&&e.removeItem(o)}(t);const e=Array.from(Array(32),(()=>Math.random().toString(36)[2])).join('');!function(t,e){_(t)||t.append(Object.assign(document.createElement('input'),{type:'hidden',name:u})),t.elements[u].value=e}(t,e),function(t,e){const n=f();if(!n)return;const o=[...t.querySelectorAll(`input[type='${i}']`)].map((({name:t})=>t)),c=[...d,...o],r={};for(const[a,s]of new FormData(t).entries())c.includes(a)||(r[a]=s);n.setItem(e,JSON.stringify({[m]:1,action:t.action,data:r}))}(t,e)}catch(e){console.error('failed to persist form',e)}}(e),e.submit())}));const S=(t,e)=>{t&&!t.dataset[E]&&(n(t,e.some((e=>e===t))),T(t))};for(const o of['focusin','change'])t.addEventListener(o,(t=>{const e=I(t);D(e)&&S(e,y())}));const B=e.get('form_key'),M=e.get(l),P=B&&M;t.addEventListener('DOMContentLoaded',(()=>{const t=y();if(P)for(const e of t)e.elements[l].value===M&&p(e,B);[...new Set([...A(),...v().filter((t=>'true'===t.dataset.shopifyCaptcha))])].forEach((e=>S(e,t)))}))}(h,new URLSearchParams(w.location.search),n,t,e,['guest_login'])})(!0,!0)}();</script>
+<script integrity="sha256-JjoPp5ZfB1sSAs5SQaol1x1GgvveM+BgmRzyDexInEQ=" data-source-attribution="shopify.loadfeatures" defer="defer" src="/cdn/shopifycloud/storefront/assets/storefront/load_feature-1bd60354.js" crossorigin="anonymous"></script>
+<script>(function () {var userAgent = navigator.userAgent;var platform = navigator.platform;var maxTouchPoints = navigator.maxTouchPoints || 0;var isIOS = /iPad|iPhone|iPod/.test(platform) || (platform === 'MacIntel' && maxTouchPoints > 1);var isMacSafari = platform.indexOf('Mac') === 0 && /Safari/.test(userAgent) && !/Chrome|Chromium|CriOS|FxiOS|Edg|OPR|Android/.test(userAgent);var isAppleSafari = isIOS || isMacSafari;if (isAppleSafari) {fetch('/sf_private_access_tokens' + location.search).catch(function () {});}function browserMajorVersion(pattern) {var match = userAgent.match(pattern);return match ? parseInt(match[1], 10) : null;}function shouldLoadAutosizesPolyfill() {if (!window.PerformanceObserver?.supportedEntryTypes?.includes('paint')) {return false;}var chromeVersion = browserMajorVersion(/Chrome\/(\d+)/);if (chromeVersion !== null) {return chromeVersion < 126;}var firefoxVersion = browserMajorVersion(/Firefox\/(\d+)/);if (firefoxVersion !== null) {return firefoxVersion < 150;}var safariVersion = isAppleSafari ? browserMajorVersion(/Version\/(\d+).*Safari\//) : null;if (safariVersion !== null) {return safariVersion < 27;}return true;}if (shouldLoadAutosizesPolyfill()) {var autosizesScript = document.createElement('script');autosizesScript.async = true;autosizesScript.crossOrigin = 'anonymous';autosizesScript.src = "/cdn/shopifycloud/storefront/assets/storefront/autosizes-84416378.js";(document.head || document.documentElement).appendChild(autosizesScript);}window.ShopifyAnalytics = window.ShopifyAnalytics || {};window.ShopifyAnalytics.performance = window.ShopifyAnalytics.performance || {};(function () {var LONG_FRAME_THRESHOLD = 50;var longAnimationFrames = [];var activeRafId = null;function collectLongFrames() {var previousTime = null;function rafMonitor(now) {if (activeRafId === null) {return;}var delta = now - previousTime;if (delta > LONG_FRAME_THRESHOLD) {longAnimationFrames.push({startTime: previousTime,endTime: now,});}previousTime = now;activeRafId = requestAnimationFrame(rafMonitor);}previousTime = performance.now();activeRafId = requestAnimationFrame(rafMonitor);}if (!window.PerformanceObserver?.supportedEntryTypes?.includes('long-animation-frame')) {collectLongFrames();var timeoutId = setTimeout(function () {cancelAnimationFrame(activeRafId);}, 10000);window.ShopifyAnalytics.performance.getLongAnimationFrames = function (stopCollection) {if (stopCollection === undefined) {stopCollection = false;}if (stopCollection) {clearTimeout(timeoutId);cancelAnimationFrame(activeRafId);}return longAnimationFrames;};}})();})();</script><script crossorigin="anonymous" defer="defer" src="/cdn/shopifycloud/storefront/assets/shopify_pay/storefront-bf1cdb70.js?v=20250812"></script>
+<script id="shopify-origin-trials" async="async" integrity="sha256-mqQjA+yhr1DtPsW5MhDIq3zDu+LghfjNT49r/ttG3eY=" src="//cdn.shopify.com/shopifycloud/storefront/assets/storefront/origin_trials-5059b83f.js" crossorigin="anonymous" onload="window.__shopifyOriginTrialsDone = true" onerror="window.__shopifyOriginTrialsDone = true"></script>
+<script>
+  window.Shopify = window.Shopify || {};
+  window.Shopify.MCP = window.Shopify.MCP || {};
+  window.Shopify.MCP.enabled = true;
+  window.Shopify.MCP.shop = "e30306-22.myshopify.com";
+  window.Shopify.MCP.mcpEndpoint = "https:\/\/e30306-22.myshopify.com\/api\/mcp";
+  window.Shopify.MCP.tools = [{"name":"search_shop_policies_and_faqs","description":"Used to get facts about the stores policies, products, or services.\nSome examples of questions you can ask are:\n  - What is your return policy?\n  - What is your shipping policy?\n  - What is your phone number?\n  - What are your hours of operation?\"\n","inputSchema":{"$schema":"https:\/\/json-schema.org\/draft\/2020-12\/schema","type":"object","properties":{"query":{"type":"string","description":"A natural language query."},"context":{"type":"string","description":"Additional information about the request such as user demographics, mood, location, or other relevant details that could help in tailoring the response appropriately."}},"required":["query"]}}];
+</script>
+<script>(()=>{var d="shopify:webmcp_adapter_loaded",n=Symbol.for("shopify.webmcp_adapter_loading");function s(c,a,{win:r=window,doc:o=document}={}){function p(){try{return r.localStorage.getItem(d)==="true"}catch{return!1}}function l(){try{r.localStorage.setItem(d,"true")}catch{}}function u(){return typeof(o.modelContext||r.navigator?.modelContext)?.registerTool=="function"}function f(){if(r[n]||!u())return;let t=o.head||o.getElementsByTagName("head")[0];if(!t)return;let e=o.createElement("script");e.type="module",e.crossOrigin="anonymous",a&&(e.integrity=a),e.src=c,e.addEventListener("load",l,{once:!0}),e.addEventListener("error",()=>{r[n]=!1},{once:!0}),t.appendChild(e),r[n]=!0}function _(t){let e=o.getElementById("shopify-origin-trials");if(!e||r.__shopifyOriginTrialsDone){t();return}e.addEventListener("load",t,{once:!0}),e.addEventListener("error",t,{once:!0})}function i(){_(()=>r.setTimeout(f,0))}function m(){o.addEventListener("DOMContentLoaded",i,{once:!0})}p()?i():m()}s("https:\/\/cdn.shopify.com\/storefront\/webmcp\/webmcp-0.1.0.js","");})();
+</script>
+<script data-source-attribution="shopify.dynamic_checkout.dynamic.init">var Shopify=Shopify||{};Shopify.PaymentButton=Shopify.PaymentButton||{isStorefrontPortableWallets:!0,init:function(){window.Shopify.PaymentButton.init=function(){};var t=document.createElement("script");t.src="/cdn/shopifycloud/portable-wallets/latest/portable-wallets.es.js",t.type="module",document.head.appendChild(t)}};
+</script>
+<script data-source-attribution="shopify.dynamic_checkout.buyer_consent">
+  function portableWalletsHideBuyerConsent(e){var t=document.getElementById("shopify-buyer-consent"),n=document.getElementById("shopify-subscription-policy-button");t&&n&&(t.classList.add("hidden"),t.setAttribute("aria-hidden","true"),n.removeEventListener("click",e))}function portableWalletsShowBuyerConsent(e){var t=document.getElementById("shopify-buyer-consent"),n=document.getElementById("shopify-subscription-policy-button");t&&n&&(t.classList.remove("hidden"),t.removeAttribute("aria-hidden"),n.addEventListener("click",e))}window.Shopify?.PaymentButton&&(window.Shopify.PaymentButton.hideBuyerConsent=portableWalletsHideBuyerConsent,window.Shopify.PaymentButton.showBuyerConsent=portableWalletsShowBuyerConsent);
+</script>
+<script data-source-attribution="shopify.dynamic_checkout.cart.bootstrap">document.addEventListener("DOMContentLoaded",(function(){function t(){return document.querySelector("shopify-accelerated-checkout-cart, shopify-accelerated-checkout")}if(t())Shopify.PaymentButton.init();else{new MutationObserver((function(e,n){t()&&(Shopify.PaymentButton.init(),n.disconnect())})).observe(document.body,{childList:!0,subtree:!0})}}));
+</script>
+<link id="shopify-accelerated-checkout-styles" rel="stylesheet" media="screen" href="/cdn/shopifycloud/portable-wallets/latest/accelerated-checkout-backwards-compat.css" crossorigin="anonymous">
+<style id="shopify-accelerated-checkout-cart">
+        #shopify-buyer-consent {
+  margin-top: 1em;
+  display: inline-block;
+  width: 100%;
+}
+
+#shopify-buyer-consent.hidden {
+  display: none;
+}
+
+#shopify-subscription-policy-button {
+  background: none;
+  border: none;
+  padding: 0;
+  text-decoration: underline;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+#shopify-subscription-policy-button::before {
+  box-shadow: none;
+}
+
+      </style>
+
+<script id="shopify-cfh-end">window.performance && window.performance.mark && window.performance.mark('shopify.content_for_header.end');</script>
+  <link href="https://monorail-edge.shopifysvc.com" rel="dns-prefetch">
+<script>(function(){if ("sendBeacon" in navigator && "performance" in window) {try {var session_token_from_headers = performance.getEntriesByType('navigation')[0].serverTiming.find(x => x.name == '_s').description;} catch {var session_token_from_headers = undefined;}var session_cookie_matches = document.cookie.match(/_shopify_s=([^;]*)/);var session_token_from_cookie = session_cookie_matches && session_cookie_matches.length === 2 ? session_cookie_matches[1] : "";var session_token = session_token_from_headers || session_token_from_cookie || "";function handle_abandonment_event(e) {var entries = performance.getEntries().filter(function(entry) {return /monorail-edge.shopifysvc.com/.test(entry.name);});if (!window.abandonment_tracked && entries.length === 0) {window.abandonment_tracked = true;var currentMs = Date.now();var navigation_start = performance.timing.navigationStart;var payload = {shop_id: 65742569646,url: window.location.href,navigation_start,duration: currentMs - navigation_start,session_token,page_type: "page"};window.navigator.sendBeacon("https://monorail-edge.shopifysvc.com/v1/produce", JSON.stringify({schema_id: "online_store_buyer_site_abandonment/1.1",payload: payload,metadata: {event_created_at_ms: currentMs,event_sent_at_ms: currentMs}}));}}window.addEventListener('pagehide', handle_abandonment_event);}}());</script>
+<script>
+  window.__TREKKIE_SHIM_QUEUE = window.__TREKKIE_SHIM_QUEUE || [];
+</script>
+<script>(function(){var wpmLoader=function(){"use strict";var e=/Googlebot|Storebot-Google|bingbot|Baiduspider|YandexBot|DuckDuckBot|Slurp|facebookexternalhit|Twitterbot|LinkedInBot|Applebot|AdsBot-Google|Mediapartners-Google|APIs-Google|PetalBot|SemrushBot|AhrefsBot|MJ12bot|DotBot|Acunetix|PerplexityBot|Perplexity-User/i,r=/bytedance/i;function o(){try{var e=document.cookie;if(!e||"string"!=typeof e)return;for(var r=0,o=e.split(";");r<o.length;r++){var d=o[r],t=d.indexOf("=");if(-1!==t){var n=d.slice(0,t).trim();if(n){var i=void 0;try{i=decodeURIComponent(n)}catch(e){i=n}if("_shopify_s"===i){var a=d.slice(t+1).trim();try{return decodeURIComponent(a)}catch(e){return a}}}}}return}catch(e){return}}function d(e){try{"undefined"!=typeof console&&"function"==typeof console.warn&&console.warn(e)}catch(e){}}return function(t,n,i,a){var s,c,u,l,f=arguments.length>4&&void 0!==arguments[4]?arguments[4]:{},p=(c=(s={modern:/Edge?\/(1{2}[4-9]|1[2-9]\d|[2-9]\d{2}|\d{4,})\.\d+(\.\d+|)|Firefox\/(1{2}[4-9]|1[2-9]\d|[2-9]\d{2}|\d{4,})\.\d+(\.\d+|)|Chrom(ium|e)\/(9{2}|\d{3,})\.\d+(\.\d+|)|(Maci|X1{2}).+ Version\/(15\.\d+|(1[6-9]|[2-9]\d|\d{3,})\.\d+)([,.]\d+|)( \(\w+\)|)( Mobile\/\w+|) Safari\/|Chrome.+OPR\/(9{2}|\d{3,})\.\d+\.\d+|(CPU[ +]OS|iPhone[ +]OS|CPU[ +]iPhone|CPU IPhone OS|CPU iPad OS)[ +]+(15[._]\d+|(1[6-9]|[2-9]\d|\d{3,})[._]\d+)([._]\d+|)|Android:?[ /-](14[89]|1[5-9]\d|[2-9]\d{2}|\d{4,})(\.\d+|)(\.\d+|)|Android.+Firefox\/(15\d|1[6-9]\d|[2-9]\d{2}|\d{4,})\.\d+(\.\d+|)|Android.+Chrom(ium|e)\/(14[89]|1[5-9]\d|[2-9]\d{2}|\d{4,})\.\d+(\.\d+|)|SamsungBrowser\/([2-9]\d|\d{3,})\.\d+/,legacy:/Edge?\/(1[6-9]|[2-9]\d|\d{3,})\.\d+(\.\d+|)|Firefox\/(5[4-9]|[6-9]\d|\d{3,})\.\d+(\.\d+|)|Chrom(ium|e)\/(5[1-9]|[6-9]\d|\d{3,})\.\d+(\.\d+|)([\d.]+$|.*Safari\/(?![\d.]+ Edge\/[\d.]+$))|(Maci|X1{2}).+ Version\/(10\.\d+|(1[1-9]|[2-9]\d|\d{3,})\.\d+)([,.]\d+|)( \(\w+\)|)( Mobile\/\w+|) Safari\/|Chrome.+OPR\/(3[89]|[4-9]\d|\d{3,})\.\d+\.\d+|(CPU[ +]OS|iPhone[ +]OS|CPU[ +]iPhone|CPU IPhone OS|CPU iPad OS)[ +]+(10[._]\d+|(1[1-9]|[2-9]\d|\d{3,})[._]\d+)([._]\d+|)|Android:?[ /-](14[89]|1[5-9]\d|[2-9]\d{2}|\d{4,})(\.\d+|)(\.\d+|)|Mobile Safari.+OPR\/([89]\d|\d{3,})\.\d+\.\d+|Android.+Firefox\/(15\d|1[6-9]\d|[2-9]\d{2}|\d{4,})\.\d+(\.\d+|)|Android.+Chrom(ium|e)\/(14[89]|1[5-9]\d|[2-9]\d{2}|\d{4,})\.\d+(\.\d+|)|Android.+(UC? ?Browser|UCWEB|U3)[ /]?(15\.([5-9]|\d{2,})|(1[6-9]|[2-9]\d|\d{3,})\.\d+)\.\d+|SamsungBrowser\/(5\.\d+|([6-9]|\d{2,})\.\d+)|Android.+MQ{2}Browser\/(14(\.(9|\d{2,})|)|(1[5-9]|[2-9]\d|\d{3,})(\.\d+|))(\.\d+|)|K[Aa][Ii]OS\/(3\.\d+|([4-9]|\d{2,})\.\d+)(\.\d+|)/}).modern,u=s.legacy,(l=navigator.userAgent).match(e)?"bot":l.match(c)?"modern":l.match(u)?"legacy":l.match(r)?"bot":"unknown"),h=function(e){var r=e.version,t=e.browserTarget,n=e.surface,i=e.shopId,a=e.monorailEndpoint,s=window.location.href;return{emit:function(e){var c,u=e.status,l=e.errorMsg;if(!a)return d("[Web Pixels Manager] No Monorail endpoint provided, skipping logging."),!1;try{var f=(new Date).getTime();c=JSON.stringify({metadata:{event_sent_at_ms:f},events:[{schema_id:"web_pixels_manager_load/3.2",payload:{version:r,bundle_target:t,page_url:s,status:u,surface:n,error_msg:l,shop_id:i,visit_token:o()},metadata:{event_created_at_ms:f}}]})}catch(e){return!1}var p,h=!1;try{"function"==typeof window.navigator.sendBeacon&&-1===(p=window.navigator.userAgent).indexOf("iPhone; CPU iPhone OS 12_")&&-1===p.indexOf("iPad; CPU OS 12_")&&-1===p.indexOf("iPod touch; CPU iPhone OS 12_")&&(h=window.navigator.sendBeacon.bind(window.navigator)(a,c))}catch(e){h=!1}if(h)return!0;try{var m=new XMLHttpRequest;return m.open("POST",a,!0),m.setRequestHeader("Content-Type","text/plain"),m.send(c),!0}catch(e){return d("[Web Pixels Manager] Got an unhandled error while logging to Monorail."),!1}}}}({version:i,browserTarget:p,surface:t.surface,shopId:t.shopId,monorailEndpoint:t.monorailEndpoint});if(Boolean(null==(y=null==(m=window.Shopify)?void 0:m.analytics)?void 0:y.replayQueue))h.emit({status:"setup-skipped",errorMsg:"replay queue already initialized."});else{var m,y;h.emit({status:"setup-started"}),window.Shopify=window.Shopify||{};var g=window.Shopify;g.analytics=g.analytics||{};var v=g.analytics;v.replayQueue=[],v.publish=function(e,r,o){return v.replayQueue.push([e,r,o]),!0};try{self.performance.mark("wpm:start")}catch(e){}var w,b="modern"===p?"modern":"legacy",P=(null!=a?a:{modern:"",legacy:""})[b],S=[(w={baseUrl:n,hashVersion:i,buildTarget:b}).baseUrl,"/wpm","/b",w.hashVersion,"modern"===w.buildTarget?"m":"l",".js"].join("");try{f.browserTarget=p,O(function(){try{O(_)}catch(e){h.emit({status:"failed",errorMsg:U(e)})}}),h.emit({status:"loading"})}catch(e){h.emit({status:"failed",errorMsg:U(e)})}}function C(){if(!function(){var e,r;return Boolean(null==(r=null==(e=window.Shopify)?void 0:e.analytics)?void 0:r.initialized)}()){var e=window.webPixelsManager.init(t)||void 0;if(e){var r=window.Shopify.analytics;r.replayQueue.forEach(function(r){var o=r[0],d=r[1],t=r[2];e.publishCustomEvent(o,d,t)}),r.replayQueue=[],r.publish=e.publishCustomEvent,r.visitor=e.visitor,r.initialized=!0}}}function _(){return h.emit({status:"failed",errorMsg:"".concat(S," has failed to load")})}function O(e){var r;!function(e){var r=e.src,o=e.async,d=void 0===o||o,t=e.onload,n=e.onerror,i=e.sri,a=e.scriptDataAttributes,s=void 0===a?{}:a,c=document.createElement("script"),u=document.querySelector("head"),l=document.querySelector("body");if(c.async=d,c.src=r,i&&(c.integrity=i,c.crossOrigin="anonymous"),s)for(var f in s)if(Object.prototype.hasOwnProperty.call(s,f))try{c.dataset[f]=s[f]}catch(e){}if(t&&c.addEventListener("load",t),n&&c.addEventListener("error",n),u)u.appendChild(c);else{if(!l)throw new Error("Did not find a head or body element to append the script");l.appendChild(c)}}({src:S,async:!0,onload:C,onerror:e,sri:(r=P,"string"==typeof r&&/^sha384-[A-Za-z0-9+/=]+$/.test(r)?P:""),scriptDataAttributes:f})}function U(e){return e instanceof Error?e.message:"Unknown error"}}}();wpmLoader({shopId: 65742569646,storefrontBaseUrl: "https://bungot.com",extensionsBaseUrl: "https://extensions.shopifycdn.com/cdn/shopifycloud/web-pixels-manager",monorailEndpoint: "https://e30306-22.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",surface: "storefront-renderer",enabledBetaFlags: ["d5bdd5d0","656605ce"],webPixelsConfigList: [{"id":"shopify-app-pixel","configuration":"{}","eventPayloadVersion":"v1","runtimeContext":"STRICT","scriptVersion":"0501","apiClientId":"shopify-pixel","type":"APP","privacyPurposes":["ANALYTICS","MARKETING"]},{"id":"shopify-custom-pixel","eventPayloadVersion":"v1","runtimeContext":"LAX","scriptVersion":"0501","apiClientId":"shopify-pixel","type":"CUSTOM","privacyPurposes":["ANALYTICS","MARKETING"]}],isMerchantRequest: true,initData: {"shop":{"name":"BUNGOT","paymentSettings":{"currencyCode":"MXN"},"myshopifyDomain":"e30306-22.myshopify.com","countryCode":"MX","storefrontUrl":"https:\/\/bungot.com"},"customer":null,"cart":null,"checkout":null,"productVariants":[],"products":[],"purchasingCompany":null},},"https://e30306-22.myshopify.com/cdn","6a7f902aw1a6c5e30pd99dad77m1d894e3b",{"modern":"","legacy":""},{"trekkieShim":true,"agentContext":true,"apiClientId":"580111","facebookCapiEnabled":"false","themeId":"153489670318","themePublished":"false","eventMetadataId":"c429af1d-a105-4893-9ab2-905f525f8d69","pageType":"page","resourceId":"118468739246","shopId":"65742569646","storefrontBaseUrl":"https:\/\/bungot.com","extensionBaseUrl":"https:\/\/extensions.shopifycdn.com\/cdn\/shopifycloud\/web-pixels-manager","surface":"storefront-renderer","enabledBetaFlags":"[\"d5bdd5d0\", \"656605ce\"]","isMerchantRequest":"true","hashVersion":"6a7f902aw1a6c5e30pd99dad77m1d894e3b","publish":"custom","events":"[[\"page_viewed\",{}]]"});})();</script><script>
+  window.ShopifyAnalytics = window.ShopifyAnalytics || {};
+  window.ShopifyAnalytics.meta = window.ShopifyAnalytics.meta || {};
+  window.ShopifyAnalytics.meta.currency = 'MXN';
+  var meta = {"page":{"pageType":"page","resourceType":"page","resourceId":118468739246,"requestId":"2729f63a-6277-49a5-816e-c86cc1492e66-1786128329"}};
+  for (var attr in meta) {
+    window.ShopifyAnalytics.meta[attr] = meta[attr];
+  }
+</script>
+<script class="analytics">
+  (function () {
+    var customDocumentWrite = function(content) {
+      var jquery = null;
+
+      if (window.jQuery) {
+        jquery = window.jQuery;
+      } else if (window.Checkout && window.Checkout.$) {
+        jquery = window.Checkout.$;
+      }
+
+      if (jquery) {
+        jquery('body').append(content);
+      }
+    };
+
+    var hasLoggedConversion = function(token) {
+      if (token) {
+        return document.cookie.indexOf('loggedConversion=' + token) !== -1;
+      }
+      return false;
+    }
+
+    var setCookieIfConversion = function(token) {
+      if (token) {
+        var twoMonthsFromNow = new Date(Date.now());
+        twoMonthsFromNow.setMonth(twoMonthsFromNow.getMonth() + 2);
+
+        document.cookie = 'loggedConversion=' + token + '; expires=' + twoMonthsFromNow;
+      }
+    }
+
+    var trekkie = window.ShopifyAnalytics.lib = window.trekkie = window.trekkie || [];
+    window.ShopifyAnalytics.lib.trekkie = window.trekkie;
+    if (trekkie.integrations) {
+      return;
+    }
+    trekkie.methods = [
+      'identify',
+      'page',
+      'ready',
+      'track',
+      'trackForm',
+      'trackLink'
+    ];
+    trekkie.factory = function(method) {
+      return function() {
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift(method);
+        trekkie.push(args);
+        if (window.__TREKKIE_SHIM_QUEUE && (method == 'track' || method == 'page')) {
+          try {
+            window.__TREKKIE_SHIM_QUEUE.push({
+              from: 'trekkie-stub',
+              method: method,
+              args: args.slice(1)
+            });
+          } catch (e) {
+            // no-op
+          }
+        }
+        return trekkie;
+      };
+    };
+    for (var i = 0; i < trekkie.methods.length; i++) {
+      var key = trekkie.methods[i];
+      trekkie[key] = trekkie.factory(key);
+    }
+    trekkie.load = function(config) {
+      trekkie.config = config || {};
+      trekkie.config.initialDocumentCookie = document.cookie;
+      var first = document.getElementsByTagName('script')[0];
+var script = document.createElement('script');
+script.type = 'text/javascript';
+script.onerror = function(e) {
+  var scriptFallback = document.createElement('script');
+  scriptFallback.type = 'text/javascript';
+  scriptFallback.onerror = function(error) {
+          var Monorail = {
+      produce: function produce(monorailDomain, schemaId, payload) {
+        var currentMs = new Date().getTime();
+        var event = {
+          schema_id: schemaId,
+          payload: payload,
+          metadata: {
+            event_created_at_ms: currentMs,
+            event_sent_at_ms: currentMs
+          }
+        };
+        return Monorail.sendRequest("https://" + monorailDomain + "/v1/produce", JSON.stringify(event));
+      },
+      sendRequest: function sendRequest(endpointUrl, payload) {
+        // Try the sendBeacon API
+        if (window && window.navigator && typeof window.navigator.sendBeacon === 'function' && typeof window.Blob === 'function' && !Monorail.isIos12()) {
+          var blobData = new window.Blob([payload], {
+            type: 'text/plain'
+          });
+
+          if (window.navigator.sendBeacon(endpointUrl, blobData)) {
+            return true;
+          } // sendBeacon was not successful
+
+        } // XHR beacon
+
+        var xhr = new XMLHttpRequest();
+
+        try {
+          xhr.open('POST', endpointUrl);
+          xhr.setRequestHeader('Content-Type', 'text/plain');
+          xhr.send(payload);
+        } catch (e) {
+          console.log(e);
+        }
+
+        return false;
+      },
+      isIos12: function isIos12() {
+        return window.navigator.userAgent.lastIndexOf('iPhone; CPU iPhone OS 12_') !== -1 || window.navigator.userAgent.lastIndexOf('iPad; CPU OS 12_') !== -1;
+      }
+    };
+    Monorail.produce('monorail-edge.shopifysvc.com',
+      'trekkie_storefront_load_errors/1.1',
+      {shop_id: 65742569646,
+      theme_id: 153489670318,
+      app_name: "storefront",
+      context_url: window.location.href,
+      source_url: "/cdn/s/trekkie.storefront.e7b71ba068afc0dc4626d4e9e5a20e081a7249e5.min.js"});
+
+  };
+  scriptFallback.async = true;
+  scriptFallback.src = '/cdn/s/trekkie.storefront.e7b71ba068afc0dc4626d4e9e5a20e081a7249e5.min.js';
+  first.parentNode.insertBefore(scriptFallback, first);
+};
+script.async = true;
+script.src = '/cdn/s/trekkie.storefront.e7b71ba068afc0dc4626d4e9e5a20e081a7249e5.min.js';
+first.parentNode.insertBefore(script, first);
+
+    };
+    trekkie.load(
+      {"Trekkie":{"appName":"storefront","development":false,"defaultAttributes":{"shopId":65742569646,"isMerchantRequest":null,"themeId":153489670318,"themeCityHash":"3454086995114390393","contentLanguage":"es","currency":"MXN","eventMetadataId":"c429af1d-a105-4893-9ab2-905f525f8d69"},"isServerSideCookieWritingEnabled":true,"monorailRegion":"shop_domain","enabledBetaFlags":["b5387b81","d5bdd5d0"]},"Session Attribution":{},"S2S":{"facebookCapiEnabled":false,"source":"trekkie-storefront-renderer","apiClientId":580111}}
+    );
+
+    var loaded = false;
+    trekkie.ready(function() {
+      if (loaded) return;
+      loaded = true;
+
+      window.ShopifyAnalytics.lib = window.trekkie;
+
+      var originalDocumentWrite = document.write;
+      document.write = customDocumentWrite;
+      try { window.ShopifyAnalytics.merchantGoogleAnalytics.call(this); } catch(error) {};
+      document.write = originalDocumentWrite;
+
+      var match = window.location.pathname.match(/checkouts\/(.+)\/(thank_you|post_purchase)/)
+      var token = match? match[1]: undefined;
+      if (!hasLoggedConversion(token)) {
+        setCookieIfConversion(token);
+        
+      }
+    });
+
+    window.ShopifyAnalytics.lib.page(null,{"pageType":"page","resourceType":"page","resourceId":118468739246,"requestId":"2729f63a-6277-49a5-816e-c86cc1492e66-1786128329","shopifyEmitted":true});
+
+    var eventsListenerScript = document.createElement('script');
+    eventsListenerScript.async = true;
+    eventsListenerScript.src = "/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js";
+    document.getElementsByTagName('head')[0].appendChild(eventsListenerScript);
+})();</script>
+<script
+  defer
+  src="/cdn/shopifycloud/perf-kit/shopify-perf-kit-3.7.0.min.js"
+  data-application="storefront-renderer"
+  data-shop-id="65742569646"
+  data-render-region="gcp-us-east1"
+  data-page-type="page"
+  data-theme-instance-id="153489670318"
+  data-theme-name="BUNGOT 2026"
+  data-theme-version="1.0.0"
+  data-monorail-region="shop_domain"
+  data-resource-timing-sampling-rate="10"
+  data-shs="true"
+  data-shs-beacon="true"
+  data-shs-export-with-fetch="true"
+  data-shs-logs-sample-rate="1"
+  data-shs-beacon-endpoint="/api/collect"
+></script>
+<meta name="shopify-y" content="a395fcbc-54f4-489b-812e-d4d7d234ee96"></head>
+
+  <body class="template-page">
+    <a class="skip-link" href="#main">Ir al contenido</a>
+
+    <!-- BEGIN sections: header-group -->
+<div id="shopify-section-sections--21175560274094__preloader" class="shopify-section shopify-section-group-header-group"><div
+    class="preloader"
+    data-preloader
+    data-duration="2500.0"
+    data-messages='["eligiendo el mejor corte..."," deshidratando a fuego lento..."," sumando una pata de más..."," ¡premio listo!"]'
+    style="--preloader-duration: 2.5s;"
+    role="status"
+    aria-live="polite"
+  >
+    <div>
+      <div class="preloader__stack">
+        <span class="preloader__bit">🦴</span>
+        <span class="preloader__bit">🐾</span>
+        <span class="preloader__bit">🥩</span>
+        <span class="preloader__bit">🐕</span>
+      </div>
+
+      <p class="preloader__msg" data-preloader-msg>eligiendo el mejor corte...</p>
+
+      <div class="preloader__bar">
+        <div class="preloader__fill"></div>
+      </div>
+    </div>
+  </div>
+</div><div id="shopify-section-sections--21175560274094__marquee" class="shopify-section shopify-section-group-header-group"><div class="marquee" style="--marquee-speed: 26s;"><div class="marquee__track">
+    <div class="marquee__item"><span>Sin conservadores, químicos ni colorantes · Marca 100% mexicana</span><span>Sin conservadores, químicos ni colorantes · Marca 100% mexicana</span><span>Sin conservadores, químicos ni colorantes · Marca 100% mexicana</span><span>Sin conservadores, químicos ni colorantes · Marca 100% mexicana</span><span>Sin conservadores, químicos ni colorantes · Marca 100% mexicana</span><span>Sin conservadores, químicos ni colorantes · Marca 100% mexicana</span></div>
+    <div class="marquee__item" aria-hidden="true"><span>Sin conservadores, químicos ni colorantes · Marca 100% mexicana</span><span>Sin conservadores, químicos ni colorantes · Marca 100% mexicana</span><span>Sin conservadores, químicos ni colorantes · Marca 100% mexicana</span><span>Sin conservadores, químicos ni colorantes · Marca 100% mexicana</span><span>Sin conservadores, químicos ni colorantes · Marca 100% mexicana</span><span>Sin conservadores, químicos ni colorantes · Marca 100% mexicana</span></div>
+  </div>
+</div>
+
+
+</div><div id="shopify-section-sections--21175560274094__header" class="shopify-section shopify-section-group-header-group"><header class="header">
+  <div class="wrap header__inner">
+    <a class="header__logo" href="/">BUNGOT
+</a><nav class="header__nav" data-nav data-open="false" aria-label="Navegación principal"><a
+            href="/collections/all"
+            
+          >Productos</a><a
+            href="/pages/conocenos"
+            
+          >Conócenos</a><a
+            href="/pages/contact"
+            
+          >Contacto</a><a
+            href="/pages/mi-perro"
+            aria-current="page"
+          >Mi Perro</a></nav>
+
+    <div class="header__actions"><a
+        class="header__me"
+        href="/account"
+        aria-label="Mi cuenta"
+        data-me
+        data-perro="false"
+        data-avatar-src="/cdn/shop/t/5/assets/bungot-face-__ID__.png?v=163150717147177610851786126664"
+      ><img
+  data-dog-avatar
+  class="dog-avatar "
+  src="/cdn/shop/t/5/assets/bungot-face-ramona.png?v=163150717147177610851786126664"
+  alt=""
+  width="32"
+  height="32"
+  loading="lazy"
+  decoding="async"
+>
+<span class="header__me-initial" aria-hidden="true">Yo</span>
+        <span class="header__me-name" data-me-name></span>
+      </a>
+
+      <a class="header__cart" href="/cart">
+        Carrito ·
+        <span data-cart-count>0</span>
+      </a>
+
+      <button
+        class="header__burger"
+        type="button"
+        data-burger
+        aria-expanded="false"
+        aria-label="Menú"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+
+</div>
+<!-- END sections: header-group -->
+
+    <main id="main" role="main">
+      <div id="shopify-section-template--21361705025710__ficha" class="shopify-section"><link href="/cdn/shop/t/5/assets/cuenta.css?v=61162991174656732611786127001" rel="stylesheet" type="text/css" media="all" />
+<section class="cuenta">
+  <div class="cuenta__body"><aside class="cuenta__aside"><p class="cuenta__eyebrow">La manada</p><h1 class="cuenta__title">La ficha de tu perro</h1><p class="cuenta__intro">Con esto te recomendamos el tamaño correcto y te avisamos en su cumpleaños.</p><ul class="cuenta__list"><li >
+              <span class="cuenta__num" aria-hidden="true">1</span>
+              Te sugerimos el tamaño que le queda
+            </li><li >
+              <span class="cuenta__num" aria-hidden="true">2</span>
+              Le ponemos cara a tu manada
+            </li><li >
+              <span class="cuenta__num" aria-hidden="true">3</span>
+              Un regalo en el cumpleaños
+            </li></ul><img
+        class="cuenta__ilus"
+        src="/cdn/shop/t/5/assets/bungot-ilus-ramona.png?v=123997330617021397641786126665"
+        alt=""
+        aria-hidden="true"
+        width="215"
+        height="215"
+        loading="lazy"
+        decoding="async"
+      >
+    </aside>
+
+    <div class="cuenta__main">
+      <div class="cuenta__head">
+        <h2 class="cuenta__h2">Tu perro</h2>
+        <p class="cuenta__note">todo es opcional — nos sirve para recomendarte tamaños</p>
+      </div>
+
+      <form
+        class="cuenta__form"
+        data-ficha-perro
+        data-msg-guardado="¡Listo! Ya guardamos la ficha."
+        novalidate
+      >
+        <div class="cuenta__block">
+          <div class="cuenta__row">
+            <label class="cuenta__field">
+              Cómo se llama
+              <input
+                type="text"
+                data-campo="nombre"
+                name="dog_name"
+                placeholder="Ramona"
+                autocomplete="off"
+              >
+            </label>
+
+            <label class="cuenta__field">
+              Tamaño
+              <select data-campo="tamano" name="dog_size">
+                <option value="">Elige uno</option>
+                <option value="chico">Chico</option>
+                <option value="mediano">Mediano</option>
+                <option value="grande">Grande</option>
+              </select>
+            </label>
+
+            <label class="cuenta__field">
+              Cumpleaños
+              <input type="date" data-campo="cumple" name="dog_birthday">
+            </label>
+          </div>
+
+          <div class="cuenta__pick"><span
+              class="cuenta__pick-label"
+              data-avatar-label
+              data-base="Escoge su cara"
+              data-fallback="tu perro"
+            >Escoge su cara</span><div class="apick" data-avatar-picker role="radiogroup" aria-label="Escoge su cara"><button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="bruno"
+      data-avatar-name="Bruno"
+      title="Bruno"
+    ><img
+  
+  class="dog-avatar apick__img"
+  src="/cdn/shop/t/5/assets/bungot-face-bruno.png?v=65374463446428603161786126664"
+  alt="Bruno"
+  width="86"
+  height="86"
+  loading="lazy"
+  decoding="async"
+>
+<span class="visually-hidden">Bruno</span>
+    </button><button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="cleo"
+      data-avatar-name="Cleo"
+      title="Cleo"
+    ><img
+  
+  class="dog-avatar apick__img"
+  src="/cdn/shop/t/5/assets/bungot-face-cleo.png?v=99129800145882736891786126664"
+  alt="Cleo"
+  width="86"
+  height="86"
+  loading="lazy"
+  decoding="async"
+>
+<span class="visually-hidden">Cleo</span>
+    </button><button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="greta"
+      data-avatar-name="Greta"
+      title="Greta"
+    ><img
+  
+  class="dog-avatar apick__img"
+  src="/cdn/shop/t/5/assets/bungot-face-greta.png?v=107900311757678195101786126664"
+  alt="Greta"
+  width="86"
+  height="86"
+  loading="lazy"
+  decoding="async"
+>
+<span class="visually-hidden">Greta</span>
+    </button><button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="manolo"
+      data-avatar-name="Manolo"
+      title="Manolo"
+    ><img
+  
+  class="dog-avatar apick__img"
+  src="/cdn/shop/t/5/assets/bungot-face-manolo.png?v=127651288902880596711786126664"
+  alt="Manolo"
+  width="86"
+  height="86"
+  loading="lazy"
+  decoding="async"
+>
+<span class="visually-hidden">Manolo</span>
+    </button><button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="ramona"
+      data-avatar-name="Ramona"
+      title="Ramona"
+    ><img
+  
+  class="dog-avatar apick__img"
+  src="/cdn/shop/t/5/assets/bungot-face-ramona.png?v=163150717147177610851786126664"
+  alt="Ramona"
+  width="86"
+  height="86"
+  loading="lazy"
+  decoding="async"
+>
+<span class="visually-hidden">Ramona</span>
+    </button><button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="bache"
+      data-avatar-name="Bache"
+      title="Bache"
+    ><img
+  
+  class="dog-avatar apick__img"
+  src="/cdn/shop/t/5/assets/bungot-face-bache.png?v=71697661606244253461786126664"
+  alt="Bache"
+  width="86"
+  height="86"
+  loading="lazy"
+  decoding="async"
+>
+<span class="visually-hidden">Bache</span>
+    </button><button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="chuleta"
+      data-avatar-name="Chuleta"
+      title="Chuleta"
+    ><img
+  
+  class="dog-avatar apick__img"
+  src="/cdn/shop/t/5/assets/bungot-face-chuleta.png?v=63234708158258304531786126664"
+  alt="Chuleta"
+  width="86"
+  height="86"
+  loading="lazy"
+  decoding="async"
+>
+<span class="visually-hidden">Chuleta</span>
+    </button><button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="felipe"
+      data-avatar-name="Felipe"
+      title="Felipe"
+    ><img
+  
+  class="dog-avatar apick__img"
+  src="/cdn/shop/t/5/assets/bungot-face-felipe.png?v=106038091782637423881786126664"
+  alt="Felipe"
+  width="86"
+  height="86"
+  loading="lazy"
+  decoding="async"
+>
+<span class="visually-hidden">Felipe</span>
+    </button><button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="guion"
+      data-avatar-name="Guión"
+      title="Guión"
+    ><img
+  
+  class="dog-avatar apick__img"
+  src="/cdn/shop/t/5/assets/bungot-face-guion.png?v=115540562507084908171786126664"
+  alt="Guión"
+  width="86"
+  height="86"
+  loading="lazy"
+  decoding="async"
+>
+<span class="visually-hidden">Guión</span>
+    </button><button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="mac"
+      data-avatar-name="Mac"
+      title="Mac"
+    ><img
+  
+  class="dog-avatar apick__img"
+  src="/cdn/shop/t/5/assets/bungot-face-mac.png?v=34667495489622617191786126664"
+  alt="Mac"
+  width="86"
+  height="86"
+  loading="lazy"
+  decoding="async"
+>
+<span class="visually-hidden">Mac</span>
+    </button><button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="pecas"
+      data-avatar-name="Pecas"
+      title="Pecas"
+    ><img
+  
+  class="dog-avatar apick__img"
+  src="/cdn/shop/t/5/assets/bungot-face-pecas.png?v=82413143340302800031786126664"
+  alt="Pecas"
+  width="86"
+  height="86"
+  loading="lazy"
+  decoding="async"
+>
+<span class="visually-hidden">Pecas</span>
+    </button><button
+      class="apick__cell"
+      type="button"
+      role="radio"
+      aria-checked="false"
+      data-avatar-option="sansa"
+      data-avatar-name="Sansa"
+      title="Sansa"
+    ><img
+  
+  class="dog-avatar apick__img"
+  src="/cdn/shop/t/5/assets/bungot-face-sansa.png?v=139194017725366449871786126665"
+  alt="Sansa"
+  width="86"
+  height="86"
+  loading="lazy"
+  decoding="async"
+>
+<span class="visually-hidden">Sansa</span>
+    </button></div><input type="hidden" name="dog_avatar" value="" data-avatar-value>
+</div>
+        </div>
+
+        <div class="cuenta__foot">
+          <button class="cuenta__save" type="submit">Guardar la ficha</button>
+          <p class="cuenta__flash" data-flash data-on="false" role="status"></p>
+          <p class="cuenta__legal">Esto se guarda solo en este dispositivo. Nada de esto es obligatorio ni bloquea tu compra.</p>
+          <button
+            class="cuenta__clear"
+            type="button"
+            data-borrar
+            data-msg="Borrar la ficha"
+          >Borrar la ficha</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script src="/cdn/shop/t/5/assets/cuenta.js?v=22697779514423734581786126886" defer></script>
+
+
+</div>
+    </main>
+
+    <!-- BEGIN sections: footer-group -->
+<div id="shopify-section-sections--21175560241326__footer" class="shopify-section shopify-section-group-footer-group"><footer
+  class="footer"
+  style="--ft-bg: #E94925; --ft-fg: #F7F1E3; --ft-btn-bg: #163C69; --ft-btn-fg: #F7F1E3;"
+>
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__lead"><h2 class="footer__tagline">La porción justa<br />
+de bueno</h2><p class="footer__signup-label">Únete a BUNGOT y llévate 10% en tu primer pedido</p><form method="post" action="/contact#contact_form" id="contact_form" accept-charset="UTF-8" class="footer__signup"><input type="hidden" name="form_type" value="customer" /><input type="hidden" name="utf8" value="✓" /><input type="hidden" name="contact[tags]" value="newsletter">
+          <input
+            type="email"
+            name="contact[email]"
+            class="footer__signup-input"
+            placeholder="tu@email.com"
+            aria-label="Email"
+            required
+          >
+          <button type="submit" class="footer__signup-btn">Suscribirme</button></form></div>
+
+      <nav class="footer__nav" aria-label="Enlaces del pie"><div class="footer__col" >
+            <h3 class="footer__heading">Tienda</h3>
+            <ul class="footer__links"><li><a href="/">Inicio</a></li><li><a href="/collections/all">Productos</a></li><li><a href="/pages/conocenos">Conócenos</a></li><li><a href="/pages/contact">Contacto</a></li><li><a href="/pages/mi-perro">Mi Perro</a></li></ul>
+          </div><div class="footer__col" >
+            <h3 class="footer__heading">Ayuda</h3>
+            <ul class="footer__links"><li><a href="/search">Búsqueda</a></li></ul>
+          </div><div class="footer__col">
+            <h3 class="footer__heading">Redes</h3>
+            <ul class="footer__links"><li><a href="https://instagram.com/bungot" rel="noopener" target="_blank">Instagram</a></li></ul>
+          </div></nav>
+    </div>
+  </div><div class="footer__wordmark" aria-hidden="true">BUNGOT</div>
+
+  <div class="wrap">
+    <div class="footer__bottom">
+      <span>Todos los derechos reservados. · &copy; 2026 BUNGOT</span></div>
+  </div><div class="footer__disclaimer">
+      <div class="wrap footer__disclaimer-inner">
+        <span class="footer__disclaimer-label">Disclaimer</span>
+        <p class="footer__disclaimer-text">Los snacks son un complemento, no reemplazan una dieta balanceada. Consulta a tu veterinario ante cualquier duda.</p>
+      </div>
+    </div></footer>
+
+
+</div>
+<!-- END sections: footer-group -->
+  <script src="https://cdn.shopify.com/storefront/standard-actions.js" type="module" data-source-attribution="shopify.standard_actions"></script>
+</body>
+</html>

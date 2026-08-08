@@ -1,0 +1,65 @@
+{%- comment -%}
+  Bloque "TU PERRO": los tres campos más el selector de 12 caras.
+
+  Lo comparten la página de la ficha (cuenta-perro) y la de crear cuenta
+  (cuenta-registro). Vive en un snippet para que el copy, el orden y las
+  medidas no se separen entre las dos pantallas.
+
+  NADA de esto es obligatorio: sin asterisco, sin required, sin validación que
+  frene. Y desde el handoff 8 aquí no hay ningún campo de credenciales — el
+  correo y el código los pide Shopify en su pantalla.
+
+  Params:
+    encabezado (bool) false = sin el encabezado interno "Tu perro" (lo usa
+                      crear-cuenta, donde toda la pantalla ya es del perro).
+{%- endcomment -%}
+
+<div class="cuenta__block{% if encabezado == false %} cuenta__block--solo{% endif %}">
+  {%- unless encabezado == false -%}
+    <div class="cuenta__block-head">
+      <h3 class="cuenta__h3">{{ 'cuenta.perro.form_title' | t }}</h3>
+      <span class="cuenta__hint">{{ 'cuenta.perro.form_note' | t }}</span>
+    </div>
+  {%- endunless -%}
+
+  <div class="cuenta__row">
+    <label class="cuenta__field">
+      {{ 'cuenta.perro.name_label' | t }}
+      <input
+        type="text"
+        data-campo="nombre"
+        placeholder="{{ 'cuenta.perro.name_placeholder' | t | escape }}"
+        autocomplete="off"
+      >
+    </label>
+
+    <label class="cuenta__field">
+      {{ 'cuenta.perro.size_label' | t }}
+      <select data-campo="tamano">
+        <option value="">{{ 'cuenta.perro.size_none' | t }}</option>
+        <option value="chico">{{ 'cuenta.perro.size_small' | t }}</option>
+        <option value="mediano">{{ 'cuenta.perro.size_medium' | t }}</option>
+        <option value="grande">{{ 'cuenta.perro.size_large' | t }}</option>
+      </select>
+    </label>
+
+    <label class="cuenta__field">
+      {{ 'cuenta.perro.birthday_label' | t }}
+      <input
+        type="date"
+        data-campo="cumple"
+      >
+    </label>
+  </div>
+
+  <div class="cuenta__pick">
+    <span
+      class="cuenta__pick-label"
+      data-avatar-label
+      data-base="{{ 'cuenta.perro.avatar_label' | t | escape }}"
+      data-fallback="{{ 'cuenta.perro.default_name' | t | escape }}"
+    >{{ 'cuenta.perro.avatar_label' | t }}</span>
+
+    {%- render 'avatar-picker' -%}
+  </div>
+</div>

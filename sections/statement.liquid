@@ -1,0 +1,259 @@
+{%- comment -%}
+  Statement — bloque editorial de marca, con la estructura del hero de
+  cravburgers.shop: tipografía enorme con contorno a la izquierda y foto grande
+  sangrando a la derecha, con un sticker doblándose en la esquina.
+
+  El titular por defecto ("Para chuparse las patas") no es copy inventado: es el
+  claim que BUNGOT ya usa en su propio packaging.
+
+  Fotos y stickers salen de assets/. Los image_picker tienen prioridad, para
+  cuando se suban a Shopify.
+
+  Los .webp de sticker están padeados a cuadrado a propósito: el reflejo del
+  doblez (ver .sticker__flap en base.css) solo es exacto en una caja cuadrada.
+{%- endcomment -%}
+
+<section
+  class="statement"
+  style="--st-bg: {{ section.settings.bg }}; --st-accent: {{ section.settings.accent }}; --st-img-h: {{ section.settings.image_height }}svh; --st-sticker-w: {{ section.settings.sticker_size }}%; --st-sticker-b: {{ section.settings.sticker_bottom }}%; --st-peel: {{ section.settings.sticker_peel }}%; --st-peel-from: {{ section.settings.peel_start }}%; --st-peel-to: {{ section.settings.peel_end }}%; --st-outline: {{ section.settings.outline }}; --st-cta-bg: {{ section.settings.cta_bg }}; --st-cta-fg: {{ section.settings.cta_fg }};"
+>
+  <div class="wrap statement__inner">
+    <div class="statement__copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="statement__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+
+      {%- if section.settings.title != blank -%}
+        <h2 class="statement__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.text != blank -%}
+        <p class="statement__text">{{ section.settings.text }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.cta_label != blank -%}
+        <a
+          class="statement__cta"
+          href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}"
+        >{{ section.settings.cta_label }}</a>
+      {%- endif -%}
+
+    </div>
+
+    <div class="statement__media">
+      {%- if section.settings.image != blank -%}
+        <img
+          class="statement__img"
+          src="{{ section.settings.image | image_url: width: 1100 }}"
+          srcset="
+            {{ section.settings.image | image_url: width: 550 }} 550w,
+            {{ section.settings.image | image_url: width: 1100 }} 1100w,
+            {{ section.settings.image | image_url: width: 1600 }} 1600w"
+          sizes="(max-width: 900px) 92vw, 48vw"
+          alt="{{ section.settings.image.alt | escape }}"
+          width="{{ section.settings.image.width }}"
+          height="{{ section.settings.image.height }}"
+          loading="lazy"
+        >
+      {%- elsif section.settings.image_asset != blank -%}
+        <img
+          class="statement__img"
+          src="{{ section.settings.image_asset | asset_url }}"
+          alt="{{ section.settings.image_alt | escape }}"
+          width="1100"
+          height="1650"
+          loading="lazy"
+        >
+      {%- else -%}
+        {{ 'lifestyle-2' | placeholder_svg_tag: 'statement__img' }}
+      {%- endif -%}
+
+      {%- liquid
+        assign sticker_url = ''
+        if section.settings.sticker != blank
+          assign sticker_url = section.settings.sticker | image_url: width: 520
+        elsif section.settings.sticker_asset != blank
+          assign sticker_url = section.settings.sticker_asset | asset_url
+        endif
+      -%}
+
+      {%- if section.settings.show_sticker and sticker_url != blank -%}
+        {%- comment -%}
+          Decorativo: alt vacío + aria-hidden. Lo que dice el sticker ya está en
+          el titular, no aporta nada a un lector de pantalla.
+
+          La misma URL va dos veces: como <img> (la impresión) y como máscara de
+          la capa gris (el papel), así el gris toma exactamente la silueta del
+          sticker y no se sale del círculo.
+        {%- endcomment -%}
+        <span class="sticker" style="--sticker-src: url({{ sticker_url }});">
+          <img
+            class="sticker__print"
+            src="{{ sticker_url }}"
+            alt=""
+            aria-hidden="true"
+            width="581"
+            height="581"
+            loading="lazy"
+          >
+          <span class="sticker__flap" aria-hidden="true"></span>
+        </span>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Statement",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Etiqueta chica", "default": "Sentilo" },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Titular",
+      "default": "Para chuparse las patas",
+      "info": "Va enorme y con contorno. Cuanto más corto, más pega."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Texto",
+      "default": "Proteína real, deshidratada en lotes chicos. Un solo ingrediente y nada más — sin conservadores, sin rellenos, sin letra chica."
+    },
+    { "type": "text", "id": "cta_label", "label": "Botón", "default": "Comprar ahora" },
+    { "type": "url", "id": "cta_url", "label": "Link del botón" },
+    { "type": "header", "content": "Foto" },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Foto (subida a Shopify)",
+      "info": "Tiene prioridad sobre el asset del tema."
+    },
+    {
+      "type": "text",
+      "id": "image_asset",
+      "label": "Foto (asset del tema)",
+      "info": "Nombre de archivo dentro de assets/. Es lo que se usa hoy.",
+      "default": "bungot-premio.webp"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Texto alternativo de la foto",
+      "default": "Un perro se para en dos patas para alcanzar un premio BUNGOT"
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "label": "Alto de la foto",
+      "min": 45,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 80,
+      "info": "Porcentaje del alto de la pantalla. En celular no aplica: ahí la foto va apaisada."
+    },
+    { "type": "header", "content": "Sticker" },
+    {
+      "type": "checkbox",
+      "id": "show_sticker",
+      "label": "Mostrar el sticker",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "sticker",
+      "label": "Sticker (subido a Shopify)",
+      "info": "Tiene prioridad sobre el asset del tema. Tiene que tener fondo transparente."
+    },
+    {
+      "type": "text",
+      "id": "sticker_asset",
+      "label": "Sticker (asset del tema)",
+      "default": "bungot-sticker-logo.webp",
+      "info": "Recortados y listos: bungot-sticker-logo.webp, bungot-sticker-buldog.webp, bungot-sticker-manada.webp"
+    },
+    {
+      "type": "range",
+      "id": "sticker_size",
+      "label": "Tamaño del sticker",
+      "min": 15,
+      "max": 65,
+      "step": 5,
+      "unit": "%",
+      "default": 50,
+      "info": "Respecto del ancho de la foto. Tope de 400px para que no se desmadre en monitores grandes."
+    },
+    {
+      "type": "range",
+      "id": "sticker_bottom",
+      "label": "Altura del sticker",
+      "min": -20,
+      "max": 25,
+      "step": 1,
+      "unit": "%",
+      "default": -6,
+      "info": "Distancia al borde de abajo de la foto. En negativo cuelga por fuera; pasando de -8% empieza a meterse en la sección de abajo."
+    },
+    {
+      "type": "range",
+      "id": "sticker_peel",
+      "label": "Esquina doblada que queda al final",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "%",
+      "default": 30,
+      "info": "Dónde queda el pliegue al terminar. Como el sticker es redondo, abajo de ~36% el pliegue cae fuera del círculo y el sticker termina entero, sin solapa. De 46% para arriba empieza a verse la esquina doblada."
+    },
+    {
+      "type": "range",
+      "id": "peel_start",
+      "label": "Cuándo arranca el despegado",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 55,
+      "info": "Cuánto tiene que asomar el sticker en pantalla antes de que empiece a pegarse. Más bajo = empieza apenas aparece; 100% = recién cuando entró entero."
+    },
+    {
+      "type": "range",
+      "id": "peel_end",
+      "label": "Cuánto scroll dura el despegado",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 10,
+      "info": "Hasta dónde se estira una vez que el sticker ya entró entero en pantalla. 10% = termina justo al entrar, con la sección bien a la vista. Más alto = sigue despegándose mientras seguís bajando."
+    },
+    { "type": "header", "content": "Colores" },
+    { "type": "color", "id": "bg", "label": "Fondo", "default": "#F7F1E3" },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Relleno del titular",
+      "default": "#88CBC4",
+      "info": "PANTONE 6141 C"
+    },
+    {
+      "type": "color",
+      "id": "outline",
+      "label": "Contorno del titular",
+      "default": "#163C69",
+      "info": "Si el relleno es claro, el contorno es lo único que define la letra contra el fondo — tiene que ir oscuro."
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Fondo del botón",
+      "default": "#163C69",
+      "info": "PANTONE 2217 C"
+    },
+    { "type": "color", "id": "cta_fg", "label": "Texto del botón", "default": "#FFFFFF" }
+  ],
+  "presets": [{ "name": "Statement" }]
+}
+{% endschema %}

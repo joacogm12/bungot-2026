@@ -1,0 +1,230 @@
+{%- comment -%}
+  2c — Mis direcciones. Solo direcciones: la columna de PAGOS del prototipo
+  quedó fuera del alcance a propósito (no es legible desde Liquid).
+
+  Todo es el CRUD nativo de {% form 'customer_address' %}: crear, editar,
+  borrar y hacer predeterminada, sin app y sin backend. Los formularios de
+  editar y el de agregar viven ocultos y se despliegan en línea (el handoff no
+  dibujó pantalla de captura; el patrón del tema es desplegar, no navegar).
+
+  Dos reglas de Shopify que el diseño no sabía:
+  - La dirección predeterminada NO se puede borrar si hay otras: su "Borrar"
+    primero hace predeterminada a la siguiente (fetch) y luego borra. Si es la
+    única, el botón no aparece: borrar la única dirección de la cuenta es
+    hacerle un hueco al checkout para nada.
+  - El país sale de country_option_tags; el JS preselecciona el guardado.
+{%- endcomment -%}
+
+<section class="cpage" data-direcciones>
+  {%- render 'account-nav', active: 'direcciones' -%}
+
+  <div class="cdir">
+    {%- if customer -%}
+      <div class="cped__head">
+        <h1 class="cped__h1">{{ 'cuenta.direcciones.title' | t }}</h1>
+        {%- if customer.addresses_count > 0 -%}
+          <p class="cped__meta">
+            {%- if customer.addresses_count == 1 -%}
+              {{ 'cuenta.direcciones.count_one' | t }}
+            {%- else -%}
+              {{ 'cuenta.direcciones.count' | t: count: customer.addresses_count }}
+            {%- endif -%}
+          </p>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%}
+        Sin direcciones no hay tarjeta de vacío: quedan solo el botón dashed
+        de agregar y el aviso verde, que ya dice para qué sirve guardar una.
+        Un segundo mensaje sería repetir lo mismo dos renglones más arriba.
+      {%- endcomment -%}
+      <div class="cdir__list">
+        {%- paginate customer.addresses by 10 -%}
+          {%- for address in customer.addresses -%}
+            {%- liquid
+              assign es_def = false
+              if address.id == customer.default_address.id
+                assign es_def = true
+              endif
+              assign edit_id = 'editar-' | append: address.id
+            -%}
+
+            <article class="cadr {% if es_def %}cadr--def{% endif %}">
+              <div class="cadr__top">
+                <span class="cadr__name">{{ address.first_name }} {{ address.last_name }}</span>
+                {%- if es_def -%}
+                  <span class="cbadge cbadge--sun cbadge--xs">{{ 'cuenta.direcciones.default' | t }}</span>
+                {%- endif -%}
+              </div>
+
+              <p class="cadr__text">
+                {{ address.address1 }}{% if address.address2 != blank %}, {{ address.address2 }}{% endif %}<br>
+                {{ address.city }}{% if address.province_code %}, {{ address.province_code }}{% endif %}<br>
+                {{ address.zip }}{% if address.phone != blank %} · {{ address.phone }}{% endif %}
+              </p>
+
+              <div class="cadr__btns">
+                <button class="cbtn cbtn--sec" type="button" data-adr-toggle="editar-{{ address.id }}">
+                  {{ 'cuenta.direcciones.edit' | t }}
+                </button>
+
+                {%- if es_def -%}
+                  {%- comment -%}
+                    Borrar la predeterminada: JS promueve otra primero. Solo si
+                    HAY otra; con una sola dirección el botón no existe.
+                  {%- endcomment -%}
+                  {%- if customer.addresses_count > 1 -%}
+                    <button
+                      class="cbtn cbtn--danger"
+                      type="button"
+                      data-adr-delete="{{ address.id }}"
+                      data-default
+                      data-confirm="{{ 'cuenta.direcciones.confirm_delete' | t | escape }}"
+                    >{{ 'cuenta.direcciones.delete' | t }}</button>
+                  {%- endif -%}
+                {%- else -%}
+                  <form method="post" action="{{ routes.account_addresses_url }}/{{ address.id }}" data-mk-default>
+                    <input type="hidden" name="_method" value="put">
+                    <input type="hidden" name="return_to" value="{% render 'account-url', destino: 'mis-direcciones' %}">
+                    {%- comment -%}
+                      El update reemplaza el registro entero: van TODOS los
+                      campos actuales, no solo el default, o se vacían.
+                    {%- endcomment -%}
+                    <input type="hidden" name="address[first_name]" value="{{ address.first_name | escape }}">
+                    <input type="hidden" name="address[last_name]" value="{{ address.last_name | escape }}">
+                    <input type="hidden" name="address[company]" value="{{ address.company | escape }}">
+                    <input type="hidden" name="address[address1]" value="{{ address.address1 | escape }}">
+                    <input type="hidden" name="address[address2]" value="{{ address.address2 | escape }}">
+                    <input type="hidden" name="address[city]" value="{{ address.city | escape }}">
+                    <input type="hidden" name="address[province]" value="{{ address.province | escape }}">
+                    <input type="hidden" name="address[zip]" value="{{ address.zip | escape }}">
+                    <input type="hidden" name="address[country]" value="{{ address.country | escape }}">
+                    <input type="hidden" name="address[phone]" value="{{ address.phone | escape }}">
+                    <input type="hidden" name="address[default]" value="1">
+                    <button class="cbtn cbtn--teal" type="submit">{{ 'cuenta.direcciones.make_default' | t }}</button>
+                  </form>
+
+                  <button
+                    class="cbtn cbtn--danger"
+                    type="button"
+                    data-adr-delete="{{ address.id }}"
+                    data-confirm="{{ 'cuenta.direcciones.confirm_delete' | t | escape }}"
+                  >{{ 'cuenta.direcciones.delete' | t }}</button>
+                {%- endif -%}
+              </div>
+
+              {%- comment -%} Borrado real: un form normal que el JS confirma y envía. {%- endcomment -%}
+              <form method="post" action="{{ routes.account_addresses_url }}/{{ address.id }}" data-adr-delete-form="{{ address.id }}" hidden>
+                <input type="hidden" name="_method" value="delete">
+                <input type="hidden" name="return_to" value="{% render 'account-url', destino: 'mis-direcciones' %}">
+              </form>
+
+              {%- comment -%} --- Editar, desplegado en línea --- {%- endcomment -%}
+              {%- form 'customer_address', address, class: 'cadr__form', id: edit_id -%}
+                <input type="hidden" name="return_to" value="{% render 'account-url', destino: 'mis-direcciones' %}">
+                <label class="cuenta__field">{{ 'cuenta.direcciones.f_first_name' | t }}
+                  <input type="text" name="address[first_name]" value="{{ form.first_name }}" autocomplete="given-name">
+                </label>
+                <label class="cuenta__field">{{ 'cuenta.direcciones.f_last_name' | t }}
+                  <input type="text" name="address[last_name]" value="{{ form.last_name }}" autocomplete="family-name">
+                </label>
+                <label class="cuenta__field cadr__wide">{{ 'cuenta.direcciones.f_address1' | t }}
+                  <input type="text" name="address[address1]" value="{{ form.address1 }}" autocomplete="address-line1">
+                </label>
+                <label class="cuenta__field cadr__wide">{{ 'cuenta.direcciones.f_address2' | t }}
+                  <input type="text" name="address[address2]" value="{{ form.address2 }}" autocomplete="address-line2">
+                </label>
+                <label class="cuenta__field">{{ 'cuenta.direcciones.f_city' | t }}
+                  <input type="text" name="address[city]" value="{{ form.city }}" autocomplete="address-level2">
+                </label>
+                <label class="cuenta__field">{{ 'cuenta.direcciones.f_zip' | t }}
+                  <input type="text" name="address[zip]" value="{{ form.zip }}" autocomplete="postal-code">
+                </label>
+                <label class="cuenta__field">{{ 'cuenta.direcciones.f_country' | t }}
+                  <select name="address[country]" data-country data-default="{{ form.country }}">{{ country_option_tags }}</select>
+                </label>
+                <label class="cuenta__field">{{ 'cuenta.direcciones.f_province' | t }}
+                  <input type="text" name="address[province]" value="{{ form.province }}" autocomplete="address-level1">
+                </label>
+                <label class="cuenta__field">{{ 'cuenta.direcciones.f_phone' | t }}
+                  <input type="tel" name="address[phone]" value="{{ form.phone }}" autocomplete="tel">
+                </label>
+                <label class="clog__check cadr__wide">
+                  <input type="checkbox" name="address[default]" value="1" {% if es_def %}checked{% endif %}>
+                  {{ 'cuenta.direcciones.set_default' | t }}
+                </label>
+                <div class="cadr__btns cadr__wide">
+                  <button class="cbtn cbtn--pri" type="submit">{{ 'cuenta.direcciones.save' | t }}</button>
+                  <button class="cbtn cbtn--sec" type="button" data-adr-toggle="editar-{{ address.id }}">{{ 'cuenta.direcciones.cancel' | t }}</button>
+                </div>
+              {%- endform -%}
+            </article>
+          {%- endfor -%}
+        {%- endpaginate -%}
+
+        <button class="cdir__add" type="button" data-adr-toggle="nueva-direccion">
+          {{ 'cuenta.direcciones.add' | t }}
+        </button>
+
+        {%- comment -%} --- Agregar, mismo formulario en línea --- {%- endcomment -%}
+        {%- form 'customer_address', customer.new_address, class: 'cadr__form cadr__form--new', id: 'nueva-direccion' -%}
+          <input type="hidden" name="return_to" value="{% render 'account-url', destino: 'mis-direcciones' %}">
+          <label class="cuenta__field">{{ 'cuenta.direcciones.f_first_name' | t }}
+            <input type="text" name="address[first_name]" value="{{ customer.first_name }}" autocomplete="given-name">
+          </label>
+          <label class="cuenta__field">{{ 'cuenta.direcciones.f_last_name' | t }}
+            <input type="text" name="address[last_name]" value="{{ customer.last_name }}" autocomplete="family-name">
+          </label>
+          <label class="cuenta__field cadr__wide">{{ 'cuenta.direcciones.f_address1' | t }}
+            <input type="text" name="address[address1]" autocomplete="address-line1">
+          </label>
+          <label class="cuenta__field cadr__wide">{{ 'cuenta.direcciones.f_address2' | t }}
+            <input type="text" name="address[address2]" autocomplete="address-line2">
+          </label>
+          <label class="cuenta__field">{{ 'cuenta.direcciones.f_city' | t }}
+            <input type="text" name="address[city]" autocomplete="address-level2">
+          </label>
+          <label class="cuenta__field">{{ 'cuenta.direcciones.f_zip' | t }}
+            <input type="text" name="address[zip]" autocomplete="postal-code">
+          </label>
+          <label class="cuenta__field">{{ 'cuenta.direcciones.f_country' | t }}
+            <select name="address[country]" data-country data-default="Mexico">{{ country_option_tags }}</select>
+          </label>
+          <label class="cuenta__field">{{ 'cuenta.direcciones.f_province' | t }}
+            <input type="text" name="address[province]" autocomplete="address-level1">
+          </label>
+          <label class="cuenta__field">{{ 'cuenta.direcciones.f_phone' | t }}
+            <input type="tel" name="address[phone]" autocomplete="tel">
+          </label>
+          <label class="clog__check cadr__wide">
+            <input type="checkbox" name="address[default]" value="1">
+            {{ 'cuenta.direcciones.set_default' | t }}
+          </label>
+          <div class="cadr__btns cadr__wide">
+            <button class="cbtn cbtn--pri" type="submit">{{ 'cuenta.direcciones.save' | t }}</button>
+            <button class="cbtn cbtn--sec" type="button" data-adr-toggle="nueva-direccion">{{ 'cuenta.direcciones.cancel' | t }}</button>
+          </div>
+        {%- endform -%}
+
+        <div class="cdir__note">
+          <p class="cdir__note-title">{{ 'cuenta.direcciones.note_title' | t }}</p>
+          <p class="cdir__note-text">{{ 'cuenta.direcciones.note_text' | t }}</p>
+        </div>
+      </div>
+    {%- else -%}
+      <div class="cempty">
+        <p class="cempty__title">{{ 'cuenta.signed_out.title' | t }}</p>
+        <p class="cempty__text">{{ 'cuenta.signed_out.text' | t }}</p>
+        <a class="cbtn cbtn--pri" href="{{ routes.account_login_url }}" data-login-open>{{ 'cuenta.signed_out.cta' | t }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Mis direcciones",
+  "settings": [],
+  "presets": [{ "name": "Mis direcciones" }]
+}
+{% endschema %}

@@ -1,0 +1,14 @@
+# Fotos fuente sin procesar (84 MB): no son asset del tema — los .webp/.png
+# procesados ya viven en assets/. GitHub no es el lugar para los originales.
+fotos/
+
+# Material de trabajo pesado que no es código del tema.
+*.zip
+Informacion de etiquetas.xlsx
+
+# Metadatos locales del Shopify CLI y del editor.
+.shopify/
+.vscode/
+.claude/settings.local.json
+Thumbs.db
+.DS_Store

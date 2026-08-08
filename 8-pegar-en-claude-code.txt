@@ -1,0 +1,78 @@
+Edita el tema de Shopify que está en esta carpeta. Haz estos cambios ahora, archivo por archivo, y dime qué modificaste.
+
+CONTEXTO: BUNGOT ya no captura credenciales. Shopify autentica en /account/login y /account/register. Nuestras pantallas solo llevan ahí y guardan la ficha del perro.
+
+--- ARCHIVO 1: snippets/account-modal.liquid ---
+
+BORRA del modal:
+- el bloque {% form 'customer_login' %} completo (inputs de correo y contraseña incluidos)
+- el checkbox "Mantener la sesión"
+- los botones de Google y Apple
+- el separador "o con tu correo"
+
+DEJA en la columna derecha, en este orden, con gap 18px:
+1. h3 "Entra a tu cuenta" — Fredoka 700, 30px, uppercase, color #013C3E
+2. p de 16px color rgba(1,60,62,.75), max-width 34ch:
+   "Te llevamos a la pantalla segura de acceso. Tu carrito se queda justo como está."
+3. <a> "Entrar" — min-height 54px, border-radius 999px, background #EA4A27, color #F7F1E3, Fredoka 700 17px, hover background #013C3E.
+   href="{{ routes.account_login_url }}?return_to={{ request.path | url_encode }}"
+4. <a> "Crear cuenta" — min-height 54px, border-radius 999px, background #FFFFFF, border 2px solid #013C3E, color #013C3E, Fredoka 700 17px, hover background #D8EFEC.
+   href="{{ routes.account_register_url }}"
+5. separador: border-top 2px dashed rgba(1,60,62,.18)
+6. pie de 14px: <a> "¿Se te olvidó tu contraseña?" → {{ routes.account_recover_url }}, y debajo el texto
+   "El correo y la contraseña los pide Shopify en su pantalla de acceso — aquí no se capturan."
+
+EN EL PANEL VERDE del modal:
+- cambia el párrafo a "Entra y termina el pedido donde lo dejaste."
+- la imagen ilus-guion.png deja de ser position:absolute. Ponla en el flujo:
+  position: relative; width: 190px; margin: auto auto -34px;
+  (así ya no se encima con el texto ahora que la caja es más baja)
+
+Quita también la validación, el spinner y los estados de error del JS del modal (assets/cuenta.js): ya no hay formulario. El modal solo abre, cierra (X, clic en el velo, Esc, foco de regreso al botón "Yo") y navega.
+
+--- ARCHIVO 2: templates/customers/login.liquid ---
+
+No montes un formulario propio. Deja la pantalla de acceso nativa de Shopify.
+
+--- ARCHIVO 3: sections/cuenta-registro.liquid ---
+
+Esta página deja de crear la cuenta. Ahora es el paso siguiente al alta: el cliente ya volvió de Shopify con su cuenta hecha y aquí llena la ficha de su perro.
+
+BORRA:
+- el bloque {% form 'create_customer' %} completo
+- la fila de campos "Tu nombre" / "Correo" / "Contraseña"
+- los botones de Google y Apple
+- el separador "o con tu correo"
+- el encabezado interno "Tu perro" y su nota "opcional"
+
+DEJA:
+- h3 "Cuéntanos de tu perro" — Fredoka 700, 38px, uppercase
+- a su derecha, 14px: "Tu cuenta ya quedó." + <a> "Saltar por ahora" → {{ routes.account_url }}
+- p de 16px color rgba(1,60,62,.75), max-width 46ch:
+  "Con esto te recomendamos el tamaño correcto y le ponemos cara a tu cuenta. Lo puedes cambiar cuando quieras."
+- los campos del perro como están: "Cómo se llama", "Tamaño" (Chico/Mediano/Grande), "Cumpleaños"
+  en grid 1.2fr 1fr 1fr, gap 12px, inputs de 52px y border-radius 14px
+- el selector de cara: grid de 6 columnas, botones de 86px, border-radius 20px, border 3px;
+  el seleccionado con border #013C3E y background #FFE7B8; la etiqueta muestra el nombre del avatar elegido
+- botón "Guardar su ficha" — min-height 56px, background #EA4A27, hover #013C3E
+- junto al botón, nota de 13px: "Nada de esto es obligatorio: guarda lo que quieras y sigue comprando."
+
+Nunca escribas la palabra "opcional" como marca de campo.
+
+Guarda los datos en metafields del cliente: custom.perro_nombre, custom.perro_tamano, custom.perro_cumple, custom.perro_avatar. Al guardar, redirige a {{ routes.account_url }}.
+
+Si no hay `customer`, la página redirige a {{ routes.account_login_url }}?return_to={{ request.path | url_encode }}
+
+--- ARCHIVO 4: templates/customers/register.liquid ---
+
+Redirige a pages/crear-cuenta SOLO cuando ya hay `customer`. Si no, manda a la pantalla de registro de Shopify.
+
+--- VERIFICA ANTES DE TERMINAR ---
+
+- Ni el modal ni la página tienen un solo <input> de correo o contraseña
+- No queda ningún botón de Google o Apple en el flujo de cuenta
+- El texto no se encima con la ilustración en el panel verde del modal
+- Los dos CTA del modal navegan a URLs reales y funcionan con el JS desactivado
+- Corre `shopify theme check`
+
+No cambies colores, tipografía, radios ni el resto del layout. Solo lo que dice aquí.

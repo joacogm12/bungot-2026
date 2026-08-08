@@ -1,0 +1,6 @@
+{
+  "sections": {
+    "main": { "type": "cuenta-registro" }
+  },
+  "order": ["main"]
+}

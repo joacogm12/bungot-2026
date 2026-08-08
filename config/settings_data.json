@@ -1,0 +1,22 @@
+{
+  "current": {
+    "color_brand": "#00978E",
+    "color_dark": "#163C69",
+    "color_yellow": "#FED140",
+    "color_cream": "#F7F1E3",
+    "card_colors": "#F6A762,#70C4E8,#FED140,#88CBC4,#EB5F7A,#8FC7E8,#F59C26,#E6BDDB,#E1CC00,#619AC5,#7FA8AC,#E94925",
+    "social_instagram": "https://instagram.com/bungot",
+    "social_tiktok": "",
+    "social_facebook": "",
+    "social_whatsapp": ""
+  },
+  "presets": {
+    "BUNGOT 2026": {
+      "color_brand": "#00978E",
+      "color_dark": "#163C69",
+      "color_yellow": "#FED140",
+      "color_cream": "#F7F1E3",
+      "card_colors": "#F6A762,#70C4E8,#FED140,#88CBC4,#EB5F7A,#8FC7E8,#F59C26,#E6BDDB,#E1CC00,#619AC5,#7FA8AC,#E94925"
+    }
+  }
+}

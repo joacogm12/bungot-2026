@@ -1,0 +1,83 @@
+{%- comment -%}
+  BUNGOT — La ficha del perro (del handoff 1b, mitad derecha).
+
+  El diseño original metía esto DENTRO de la página de registro. No se puede:
+  la tienda usa las cuentas nuevas de Shopify, así que el registro lo hospeda
+  Shopify y el tema no lo toca. La ficha se separó a su propia página, que es
+  justo la parte que Shopify no ofrece de ninguna forma.
+
+  Comparte el layout de barra lateral (.cpage + account-nav) con Mis pedidos
+  y Mis direcciones: las tres pantallas de cuenta son la misma casa con
+  cuartos distintos. El panel verde con la ilustración que traía el handoff
+  se quitó a pedido — el marco ahora lo pone la barra.
+
+  Todo acá es opcional a propósito: ni un campo obligatorio, ni un asterisco
+  naranja, ni una validación que frene. El asterisco del handoff está reservado
+  para correo y contraseña, que ahora viven en el flujo de Shopify.
+
+  El header y el footer son los GLOBALES (header-group / footer-group): esta
+  sección no dibuja nav ni pie propios.
+
+  Sin JS se ve todo, se lee todo y no se puede guardar: es una ficha opcional,
+  no un checkout.
+{%- endcomment -%}
+
+{%- comment -%}
+  cuenta.css y cuenta.js NO se cargan acá: los carga el header, porque la
+  ventana de inicio de sesión va en todas las páginas.
+{%- endcomment -%}
+
+<section class="cpage">
+  {%- render 'account-nav', active: 'perro' -%}
+
+  <div class="cper">
+    <div class="cped__head">
+      <h1 class="cped__h1">{{ section.settings.title | default: 'La ficha de tu perro' }}</h1>
+      {%- comment -%}
+        Sin bajada acá: el "todo es opcional" ya lo dice el propio bloque de
+        campos (ficha-campos) y repetirlo era decir lo mismo dos renglones
+        seguidos.
+      {%- endcomment -%}
+    </div>
+
+    <form
+      class="cuenta__form"
+      data-ficha-perro
+      data-msg-guardado="{{ 'cuenta.perro.saved' | t | escape }}"
+      novalidate
+    >
+      {%- render 'ficha-campos' -%}
+
+      <div class="cuenta__foot">
+        <button class="cuenta__save" type="submit">{{ 'cuenta.perro.save' | t }}</button>
+        <p class="cuenta__flash" data-flash data-on="false" role="status"></p>
+        <p class="cuenta__legal">{{ 'cuenta.perro.legal' | t }}</p>
+        <button
+          class="cuenta__clear"
+          type="button"
+          data-borrar
+          data-msg="{{ 'cuenta.perro.clear' | t | escape }}"
+        >{{ 'cuenta.perro.clear' | t }}</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Ficha del perro",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "La ficha de tu perro"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ficha del perro"
+    }
+  ]
+}
+{% endschema %}
