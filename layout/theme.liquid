@@ -67,12 +67,29 @@
 
     {%- comment -%}
       Quién tiene la sesión, para que la ficha del perro se guarde POR USUARIO
-      (theme.js arma la clave del localStorage con este id). Inline y antes de
-      theme.js: los scripts con defer corren después de este.
+      (theme.js arma la clave del localStorage con este id). Y si la cuenta ya
+      trae la ficha en metafields (la escribió el workflow de Flow con un
+      pedido anterior), se inyecta para que theme.js la adopte en un
+      dispositivo nuevo. Inline y antes de theme.js: los scripts con defer
+      corren después de este.
     {%- endcomment -%}
+    {%- liquid
+      assign mf_nombre = customer.metafields.custom.perro_nombre.value
+      assign mf_tamano = customer.metafields.custom.perro_tamano.value
+      assign mf_cumple = customer.metafields.custom.perro_cumple.value
+      assign mf_avatar = customer.metafields.custom.dog_avatar.value
+    -%}
     <script>
       window.BUNGOT = window.BUNGOT || {};
       window.BUNGOT.usuario = {{ customer.id | json }};
+      {%- if mf_nombre != blank or mf_tamano != blank or mf_cumple != blank or mf_avatar != blank %}
+      window.BUNGOT.fichaServidor = {
+        nombre: {{ mf_nombre | json }},
+        tamano: {{ mf_tamano | json }},
+        cumple: {{ mf_cumple | json }},
+        avatar: {{ mf_avatar | json }}
+      };
+      {%- endif %}
     </script>
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
     {{ content_for_header }}

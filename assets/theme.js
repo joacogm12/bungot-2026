@@ -67,10 +67,15 @@
      carga en la ficha.
 
      Por qué localStorage: la tienda usa las cuentas NUEVAS de Shopify, donde
-     el storefront no puede escribir metafields del cliente sin una app. Esto
-     es lo único que se puede guardar hoy sin backend.
+     el storefront no puede escribir metafields del cliente sin una app. Pero
+     la ficha SÍ viaja a la cuenta por el único canal que el tema tiene hacia
+     el servidor: los atributos del carrito (_perro_*), que se pegan al pedido
+     al comprar y un workflow de Shopify Flow los copia a los metafields del
+     cliente (custom.perro_* y custom.dog_avatar). A la vuelta, theme.liquid
+     inyecta esos metafields como window.BUNGOT.fichaServidor y acá se adoptan
+     en dispositivos nuevos: el perro sigue al usuario entre aparatos, con la
+     compra como correo.
 
-     PARA MIGRAR A METAFIELDS: cambiar el cuerpo de read() y write(), nada más.
      Todo el tema pasa por acá — el header, el selector y la ficha—, así que
      ningún otro archivo sabe dónde están guardados los datos. La lectura
      server-side equivalente vive en snippets/dog-avatar.liquid, que ya tiene
@@ -97,6 +102,32 @@
     } catch (e) { /* no-op: sin storage, la ficha es opcional igual */ }
   }
 
+  // La ficha, copiada como atributos del carrito para que viaje en el pedido.
+  // Guion bajo en las claves: la convención de atributo "privado" que los
+  // temas no pintan en el carrito ni en el checkout. Fire-and-forget: si el
+  // POST falla, la ficha local sigue intacta y el próximo cambio (o la
+  // próxima sesión) lo reintenta. La firma en sessionStorage evita repetir
+  // el POST en cada carga con el carrito ya al día.
+  function sincronizarCarrito(ficha) {
+    var attrs = {
+      _perro_nombre: ficha.nombre || '',
+      _perro_tamano: ficha.tamano || '',
+      _perro_cumple: ficha.cumple || '',
+      _perro_avatar: ficha.avatar || ''
+    };
+    var firma = JSON.stringify(attrs);
+    try {
+      if (sessionStorage.getItem('bungot:perro-carrito') === firma) return;
+    } catch (e) { /* sin sessionStorage, se manda igual */ }
+    fetch('/cart/update.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ attributes: attrs })
+    }).then(function () {
+      try { sessionStorage.setItem('bungot:perro-carrito', firma); } catch (e) { /* no-op */ }
+    }).catch(function () { /* no-op */ });
+  }
+
   var Perro = {
     read: function () {
       try {
@@ -121,6 +152,7 @@
       // Avisamos en la misma pestaña: el evento nativo `storage` solo llega a
       // las OTRAS, y el header tiene que refrescarse en esta.
       document.dispatchEvent(new CustomEvent('bungot:perro', { detail: actual }));
+      sincronizarCarrito(actual);
       return actual;
     },
 
@@ -131,11 +163,36 @@
         /* no-op */
       }
       document.dispatchEvent(new CustomEvent('bungot:perro', { detail: {} }));
+      sincronizarCarrito({});
     }
   };
 
   window.BUNGOT = window.BUNGOT || {};
   window.BUNGOT.perro = Perro;
+
+  // La vuelta del viaje: dispositivo nuevo, cuenta con ficha en metafields
+  // (la escribió Flow con un pedido anterior, la inyecta theme.liquid). Solo
+  // si acá no hay nada — lo local es más fresco que lo del último pedido.
+  var DEL_SERVIDOR = window.BUNGOT.fichaServidor;
+  if (USUARIO && DEL_SERVIDOR) {
+    var yaLocal = Perro.read();
+    if (!yaLocal.nombre && !yaLocal.tamano && !yaLocal.cumple && !yaLocal.avatar) {
+      var limpia = {};
+      for (var sk in DEL_SERVIDOR) {
+        if (DEL_SERVIDOR[sk]) limpia[sk] = DEL_SERVIDOR[sk];
+      }
+      Perro.write(limpia);
+    }
+  }
+
+  // El carrito de HOY arranca con la ficha puesta: los atributos mueren con
+  // cada pedido (el carrito siguiente nace vacío), así que al cargar se
+  // vuelven a poner para el próximo. La firma de arriba evita el POST si el
+  // carrito ya los trae de esta misma sesión.
+  var fichaArranque = Perro.read();
+  if (fichaArranque.nombre || fichaArranque.tamano || fichaArranque.cumple || fichaArranque.avatar) {
+    sincronizarCarrito(fichaArranque);
+  }
 
   /* --- El avatar del perro en el header --------------------------------
      Pinta la cara elegida sobre el botón de cuenta. Sin ficha guardada el
