@@ -92,12 +92,16 @@
 
   // Al entrar, la cuenta ADOPTA la ficha que se llenó sin sesión (la persona
   // es la misma). La anónima se borra al adoptarla: si quedara, la siguiente
-  // cuenta que entrara en este dispositivo heredaría un perro ajeno.
+  // cuenta que entrara en este dispositivo heredaría un perro ajeno. La
+  // bandera evita que, más abajo, la cuenta pise esta ficha recién llenada —
+  // en este caso lo recién adoptado es lo más fresco y viaja hacia ARRIBA.
+  var ADOPTADA_ANON = false;
   if (USUARIO) {
     try {
       if (!localStorage.getItem(CLAVE_PERRO) && localStorage.getItem(CLAVE_ANON)) {
         localStorage.setItem(CLAVE_PERRO, localStorage.getItem(CLAVE_ANON));
         localStorage.removeItem(CLAVE_ANON);
+        ADOPTADA_ANON = true;
       }
     } catch (e) { /* no-op: sin storage, la ficha es opcional igual */ }
   }
@@ -204,19 +208,21 @@
   window.BUNGOT = window.BUNGOT || {};
   window.BUNGOT.perro = Perro;
 
-  // La vuelta del viaje: dispositivo nuevo, cuenta con ficha en metafields
-  // (la escribió Flow con un pedido anterior, la inyecta theme.liquid). Solo
-  // si acá no hay nada — lo local es más fresco que lo del último pedido.
+  // La vuelta del viaje: con sesión, la CUENTA es la fuente de verdad y pisa
+  // lo local — el worker la escribe en cada guardado, así que trae el último
+  // guardado hecho desde CUALQUIER dispositivo; lo local solo sabe de este.
+  // Se escriben las cuatro claves (vacías incluidas) para que también borre
+  // lo local viejo que en la cuenta ya no está. Si el POST del worker falló
+  // en el último guardado, este pisotón puede regresar una versión anterior
+  // al recargar — raro, y el siguiente guardado lo vuelve a subir.
   var DEL_SERVIDOR = window.BUNGOT.fichaServidor;
-  if (USUARIO && DEL_SERVIDOR) {
-    var yaLocal = Perro.read();
-    if (!yaLocal.nombre && !yaLocal.tamano && !yaLocal.cumple && !yaLocal.avatar) {
-      var limpia = {};
-      for (var sk in DEL_SERVIDOR) {
-        if (DEL_SERVIDOR[sk]) limpia[sk] = DEL_SERVIDOR[sk];
-      }
-      Perro.write(limpia);
-    }
+  if (USUARIO && DEL_SERVIDOR && !ADOPTADA_ANON) {
+    Perro.write({
+      nombre: DEL_SERVIDOR.nombre || '',
+      tamano: DEL_SERVIDOR.tamano || '',
+      cumple: DEL_SERVIDOR.cumple || '',
+      avatar: DEL_SERVIDOR.avatar || ''
+    });
   }
 
   // El carrito de HOY arranca con la ficha puesta: los atributos mueren con
@@ -226,6 +232,10 @@
   var fichaArranque = Perro.read();
   if (fichaArranque.nombre || fichaArranque.tamano || fichaArranque.cumple || fichaArranque.avatar) {
     sincronizarCarrito(fichaArranque);
+    // Se sube al arranque cuando la cuenta va atrás: está vacía (la ficha se
+    // llenó cuando el worker no existía, o aquel POST falló) o acaba de
+    // adoptar la ficha anónima recién llenada. Sanación de arranque.
+    if (USUARIO && (!DEL_SERVIDOR || ADOPTADA_ANON)) sincronizarCuenta(fichaArranque);
   }
 
   /* --- El avatar del perro en el header --------------------------------
