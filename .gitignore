@@ -6,8 +6,9 @@ fotos/
 *.zip
 Informacion de etiquetas.xlsx
 
-# Metadatos locales del Shopify CLI y del editor.
+# Metadatos locales del Shopify CLI, wrangler y el editor.
 .shopify/
+.wrangler/
 .vscode/
 .claude/settings.local.json
 Thumbs.db
