@@ -180,6 +180,17 @@
           links[i].textContent = tpl.replace('__NOMBRE__', f.nombre);
         }
       }
+
+      // La carita de la barra lateral (y cualquier otra fuera del selector,
+      // que va con fixed y no trae el data-attribute). Mismo truco que el
+      // header: se cambia solo el nombre del archivo DENTRO del src real que
+      // pintó dog-avatar.liquid — acá no se arma ninguna ruta desde cero.
+      // Sin cara elegida se regresa al default del snippet (Ramona).
+      var cara = /^[a-z]+$/.test(f.avatar || '') ? f.avatar : 'ramona';
+      var caras = document.querySelectorAll('img[data-dog-avatar]');
+      for (i = 0; i < caras.length; i++) {
+        caras[i].src = caras[i].src.replace(/bungot-face-[a-z]+\.png/, 'bungot-face-' + cara + '.png');
+      }
     }
 
     pintar(store.read());
