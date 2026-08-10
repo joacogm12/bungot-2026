@@ -505,6 +505,18 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   color: var(--cta-ink);
 }
 .cuenta__field select { padding: 0 14px; }
+/* El cumpleaños bloqueado: se escribe una vez (con esa fecha va el regalo). */
+.cuenta__field input:disabled {
+  background: var(--cta-muted);
+  color: var(--cta-soft);
+  cursor: not-allowed;
+}
+.cuenta__lock {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--cta-soft);
+}
 .cuenta__field input:focus-visible,
 .cuenta__field select:focus-visible {
   outline: 3px solid var(--cta-brand);

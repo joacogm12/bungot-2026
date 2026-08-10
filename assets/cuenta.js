@@ -219,6 +219,17 @@
     var etiqueta = root.querySelector('[data-avatar-label]');
     var flash = root.querySelector('[data-flash]');
     var borrar = root.querySelector('[data-borrar]');
+    var candadoCumple = root.querySelector('[data-cumple-lock]');
+
+    // El cumpleaños se escribe UNA vez: con esa fecha va el regalo del
+    // cumpleaños, así que ya guardado se bloquea (pedido del cliente; para
+    // corregirlo, escriben y se cambia desde el admin). El candado de verdad
+    // lo aplica el worker del lado del servidor — esto es solo la ventana.
+    function bloquearCumple() {
+      if (!campos.cumple) return;
+      campos.cumple.disabled = true;
+      if (candadoCumple) candadoCumple.hidden = false;
+    }
 
     var etiquetaBase = etiqueta ? etiqueta.getAttribute('data-base') : '';
     var sinNombre = etiqueta ? etiqueta.getAttribute('data-fallback') : '';
@@ -244,7 +255,10 @@
     var ficha = store.read();
     if (campos.nombre && ficha.nombre) campos.nombre.value = ficha.nombre;
     if (campos.tamano && ficha.tamano) campos.tamano.value = ficha.tamano;
-    if (campos.cumple && ficha.cumple) campos.cumple.value = ficha.cumple;
+    if (campos.cumple && ficha.cumple) {
+      campos.cumple.value = ficha.cumple;
+      bloquearCumple();
+    }
     if (ficha.avatar) marcar(ficha.avatar);
     refrescarEtiqueta();
 
@@ -278,7 +292,9 @@
       return {
         nombre: campos.nombre ? campos.nombre.value.trim() : '',
         tamano: campos.tamano ? campos.tamano.value : '',
-        cumple: campos.cumple ? campos.cumple.value : '',
+        // Con el campo bloqueado manda lo GUARDADO, no lo que diga el input:
+        // un value manipulado desde la consola no debe viajar.
+        cumple: campos.cumple && !campos.cumple.disabled ? campos.cumple.value : (store.read().cumple || ''),
         avatar: valorAvatar ? valorAvatar.value : ''
       };
     }
@@ -297,7 +313,11 @@
     form.addEventListener('submit', function (e) {
       // No hay servidor al que mandar esto: el submit siempre se frena.
       e.preventDefault();
-      store.write(recolectar());
+      var datos = recolectar();
+      store.write(datos);
+      // El primer guardado con fecha cierra el candado al momento, sin
+      // esperar a recargar.
+      if (datos.cumple) bloquearCumple();
       if (irA) {
         window.location.assign(irA);
         return;
@@ -307,10 +327,14 @@
 
     if (borrar) {
       borrar.addEventListener('click', function () {
+        // Borrar la ficha respeta el cumpleaños: el regalo depende de esa
+        // fecha, así que sobrevive al borrón (y el campo sigue bloqueado).
+        var cumpleGuardado = store.read().cumple || '';
         store.clear();
+        if (cumpleGuardado) store.write({ cumple: cumpleGuardado });
         if (campos.nombre) campos.nombre.value = '';
         if (campos.tamano) campos.tamano.value = '';
-        if (campos.cumple) campos.cumple.value = '';
+        if (campos.cumple && !campos.cumple.disabled) campos.cumple.value = '';
         marcar('');
         avisar(borrar.getAttribute('data-msg'));
       });

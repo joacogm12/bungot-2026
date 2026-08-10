@@ -49,6 +49,15 @@
         type="date"
         data-campo="cumple"
       >
+      {%- comment -%}
+        El candado del cumpleaños: se escribe UNA vez y ya no se edita desde
+        la tienda — con esa fecha va el regalo de cumpleaños, y si se pudiera
+        cambiar cada semana sería cumpleaños. Para corregirla, el cliente
+        escribe y se cambia desde el admin (el candado no aplica ahí). Esta
+        nota la muestra el JS cuando ya hay fecha guardada; el worker aplica
+        el mismo candado del lado del servidor.
+      {%- endcomment -%}
+      <span class="cuenta__lock" data-cumple-lock hidden>{{ 'cuenta.perro.birthday_locked' | t }}</span>
     </label>
   </div>
 

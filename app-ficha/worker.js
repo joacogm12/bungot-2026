@@ -129,11 +129,25 @@ export default {
     const ficha = limpiar(cuerpo.ficha);
     const dueno = `gid://shopify/Customer/${id}`;
 
+    // EL CANDADO DEL CUMPLEAÑOS: se escribe UNA vez. Con esa fecha va el
+    // regalo de cumpleaños del cliente, así que un cumpleaños ya guardado ni
+    // se pisa ni se borra desde la tienda — aunque el navegador mande otra
+    // cosa. Para corregirlo, el cliente escribe y se cambia en el admin (los
+    // metafields del admin no pasan por aquí).
+    const actual = await shopify(
+      env,
+      `query CumpleGuardado($id: ID!) { customer(id: $id) { metafield(namespace: "custom", key: "perro_cumple") { value } } }`,
+      { id: dueno }
+    );
+    const cumpleGuardado = actual.data?.customer?.metafield?.value;
+
     // Lo que tiene valor se escribe; lo vacío se BORRA (así "Borrar la ficha"
-    // en el tema también limpia la cuenta, no deja fantasmas).
+    // en el tema también limpia la cuenta, no deja fantasmas). El cumpleaños
+    // ya guardado se salta completo: ni set ni delete.
     const poner = [];
     const quitar = [];
     for (const campo in CAMPOS) {
+      if (campo === 'cumple' && cumpleGuardado) continue;
       const key = CAMPOS[campo];
       if (ficha[campo]) {
         poner.push({ ownerId: dueno, namespace: 'custom', key, type: 'single_line_text_field', value: ficha[campo] });
