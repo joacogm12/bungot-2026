@@ -23,11 +23,12 @@ shopify theme check    # linter de Liquid/tema (córrelo antes de dar por hecho 
 shopify theme push     # subir a la tienda (solo si el tema NO está conectado a GitHub)
 ```
 
-Este proyecto **sí** es un repo git (rama `main`). El plan es conectarlo a GitHub con la
-integración de Shopify (sync de ida y vuelta): una vez conectado, **no uses `theme push`
-contra el tema conectado** — el deploy es commit → push a GitHub, y los cambios del
-customizer regresan como commits del bot de Shopify, así que haz `git pull` antes de
-trabajar. Nada de force-push a la rama conectada.
+Este proyecto **sí** es un repo git (rama `main`, remoto `joacogm12/bungot-2026`) y está
+**conectado a Shopify** con la integración de GitHub: el tema **"bungot-2026/main"** se
+actualiza solo con cada push, y los cambios del customizer regresan como commits del bot
+de Shopify — haz `git pull` antes de trabajar. **No uses `theme push` contra el tema
+conectado** ni force-push a `main`. El tema "BUNGOT 2026 (prueba)" quedó como respaldo
+congelado de antes de la conexión.
 
 ## Estructura
 
