@@ -79,9 +79,9 @@
       assign mf_cumple = customer.metafields.custom.perro_cumple.value
       assign mf_avatar = customer.metafields.custom.dog_avatar.value
 
-      # El worker que guarda la ficha en la cuenta AL MOMENTO (app-ficha/).
-      # Vacío = apagado y el tema cae solo al camino de respaldo (atributos de
-      # carrito + Flow). Es la URL que dio `wrangler deploy`.
+      # El worker que guarda la ficha en la cuenta AL MOMENTO (app-ficha/),
+      # desplegado en Cloudflare con la cuenta de BUNGOT. Vacío = apagado y el
+      # tema cae solo al camino de respaldo (atributos de carrito + Flow).
       assign ficha_api_url = 'https://bungot-ficha.app-ficha.workers.dev'
     -%}
     <script>
