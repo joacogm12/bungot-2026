@@ -1,0 +1,59 @@
+{
+  "sections": {
+    "paseo": {
+      "type": "conocenos-paseo",
+      "blocks": {
+        "casita": {
+          "type": "parada",
+          "settings": {
+            "etiqueta": "TODO EMPEZÓ CON ELLOS",
+            "texto": "Greta y Bache fueron nuestra inspiración desde el día uno.",
+            "color": "coral"
+          }
+        },
+        "bote": {
+          "type": "parada",
+          "settings": {
+            "etiqueta": "NADA NOS CONVENCÍA",
+            "texto": "Buscábamos algo bueno para ellos y solo encontrábamos etiquetas larguísimas llenas de cosas impronunciables. Así que dejamos de buscar y nos pusimos manos a la obra. Así nació BUNGOT.",
+            "color": "azul"
+          }
+        },
+        "pruebas": {
+          "type": "parada",
+          "settings": {
+            "etiqueta": "PRUEBAS, PRUEBAS Y MÁS PRUEBAS",
+            "texto": "Un ingrediente. Nada más. Nos tomó años, y todas las etiquetas pegadas a mano.",
+            "color": "mango"
+          }
+        },
+        "hidrante": {
+          "type": "parada",
+          "settings": {
+            "etiqueta": "SE CORRIÓ LA VOZ",
+            "texto": "Empezamos con dos clientes muy exigentes. En el barrio las noticias vuelan.",
+            "color": "verde"
+          }
+        },
+        "camara": {
+          "type": "parada",
+          "settings": {
+            "etiqueta": "LA MANADA CRECE",
+            "texto": "De dos peludos a cientos: cada foto nueva es un peludo más en la familia.",
+            "color": "azul"
+          }
+        },
+        "cierre": {
+          "type": "parada",
+          "settings": {
+            "etiqueta": "Y AQUÍ SEGUIMOS",
+            "texto": "Todo lo que hacemos sigue pasando primero por ellos.",
+            "color": "verde"
+          }
+        }
+      },
+      "block_order": ["casita", "bote", "pruebas", "hidrante", "camara", "cierre"]
+    }
+  },
+  "order": ["paseo"]
+}

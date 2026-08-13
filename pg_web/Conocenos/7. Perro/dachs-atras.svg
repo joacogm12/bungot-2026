@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 340" width="380" height="340">
+  <!-- Trasero del salchicha: anca redonda, patita y cola de látigo hacia
+       arriba-izquierda (el cuerpo continúa hacia la derecha del lienzo). -->
+  <g stroke="#011670" stroke-width="9" stroke-linejoin="round" stroke-linecap="round">
+    <!-- cola: larga, con curva y punta redonda -->
+    <path fill="#1B7F96" d="M148 150
+      C 110 132, 66 106, 40 66
+      C 28 48, 34 26, 52 24
+      C 68 22, 82 34, 96 52
+      C 120 82, 152 116, 172 136
+      C 182 146, 162 156, 148 150 Z"/>
+    <!-- anca -->
+    <path fill="#1B7F96" d="M330 136
+      C 366 158, 372 228, 340 268
+      C 306 310, 226 320, 172 300
+      C 118 280, 96 220, 122 176
+      C 148 132, 202 116, 258 120
+      C 286 122, 312 126, 330 136 Z"/>
+    <!-- muslo: media luna que insinúa la pierna sin taparlo todo -->
+    <path fill="#0E5163" stroke-width="8" d="M180 190
+      C 166 214, 168 244, 186 266
+      C 156 258, 138 228, 146 198
+      C 152 176, 168 164, 190 162
+      C 184 170, 182 180, 180 190 Z"/>
+    <!-- patita trasera -->
+    <path fill="#EFE7D6" stroke-width="8" d="M208 288
+      C 208 304, 222 314, 244 314
+      C 264 314, 276 306, 276 294
+      C 276 284, 262 280, 242 282
+      C 228 282, 216 284, 208 288 Z"/>
+  </g>
+  <!-- rayitas de meneo arriba-derecha de la cola, sin cruzarla -->
+  <path d="M118 26 C 126 36, 130 48, 130 60" fill="none" stroke="#011670" stroke-width="7" stroke-linecap="round"/>
+  <path d="M148 56 C 154 64, 158 74, 158 86" fill="none" stroke="#011670" stroke-width="7" stroke-linecap="round"/>
+</svg>

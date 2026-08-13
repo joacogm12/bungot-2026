@@ -1,0 +1,260 @@
+/* ==========================================================================
+   BUNGOT 2026 — conocenos.css  (la historia como un paseo)
+
+   El escenario es un lienzo fijo de 1582×5470 con todo en absoluto. En
+   pantallas angostas NO se recorta ni reflowea: .paseo__mundo se escala
+   completo con `zoom` (k = min(1, ancho/1582)). Tiene que ser `zoom` y no
+   transform: scale() — un transform en el ancestro rompe el position:sticky
+   de la ventana (lo fija contra el lienzo en vez de contra la pantalla).
+
+   Modos, decididos entre CSS y JS:
+   · paseo animado    → JS pone .paseo--activo (pista visible, lista oculta)
+   · animar apagado   → además .paseo--estatico (sin sticky, estado final)
+   · sin JS, reduced-motion o <900px → lista vertical (el estado por defecto
+     del markup; las media queries de abajo lo fuerzan aunque JS haya
+     activado el paseo)
+   ========================================================================== */
+
+.paseo {
+  overflow: clip; /* nada del lienzo debe asomar fuera de la sección */
+}
+
+/* --- Encabezado antes del paseo ----------------------------------------- */
+
+.paseo__intro {
+  padding: 96px 24px 40px;
+  text-align: center;
+}
+
+.paseo__titulo {
+  margin: 0;
+  font-family: 'Anton', Impact, sans-serif;
+  font-size: 128px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: #00968F;
+}
+
+.paseo__bajada {
+  margin: 18px 0 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 21px;
+  color: var(--ink, #163C69);
+}
+
+/* --- Las tres capas del escenario --------------------------------------- */
+
+.paseo__pista {
+  /* Solo existe para dar scroll: su alto ES la duración del paseo. */
+  position: relative;
+  height: 11070px;
+  display: none; /* hasta que JS confirme que el paseo puede correr */
+}
+
+.paseo--activo .paseo__pista { display: block; }
+.paseo--activo .paseo__lista { display: none; }
+
+.paseo__ventana {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;
+}
+
+.paseo__lienzo {
+  /* La cámara: JS lo mueve en Y con translate3d. */
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 5470px;
+  will-change: transform;
+}
+
+.paseo__mundo {
+  position: relative;
+  width: 1582px;
+  height: 5470px;
+  margin: 0 auto; /* con k=1 y ventana más ancha que el lienzo, centrado */
+}
+
+/* Modo edición (animar apagado): sin sticky ni scroll secuestrado, el
+   recorrido pintado en su estado final a lo largo de la página. */
+.paseo--estatico .paseo__pista { height: auto; }
+.paseo--estatico .paseo__ventana { position: static; height: auto; overflow: visible; }
+.paseo--estatico .paseo__lienzo { position: static; height: auto; will-change: auto; }
+
+/* --- Camino y perro ------------------------------------------------------ */
+
+.paseo__svg {
+  position: absolute;
+  inset: 0;
+  width: 1582px;
+  height: 5470px;
+}
+
+.paseo__camino {
+  fill: none;
+  stroke: var(--paseo-camino, #E3CE9E);
+  stroke-width: 26;
+  stroke-linecap: round;
+}
+
+.paseo__cuerpo {
+  /* Geometría de referencia para JS: existe, pero no se pinta. */
+  fill: none;
+  stroke: none;
+}
+
+.paseo__lomo {
+  fill: none;
+  stroke: var(--paseo-perro, #011670);
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.paseo__comic {
+  /* Las dos líneas de historieta que deja la pelota en la parada 1. */
+  fill: none;
+  stroke: #011670;
+  stroke-width: 5;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+
+.paseo__prop,
+.paseo__dachs {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: auto;
+  /* JS coloca (left/top/width) y anima (transform) cada pieza. */
+}
+
+.paseo__dachs { will-change: transform; }
+.paseo__lomo { will-change: d; }
+
+/* --- Tarjetas ------------------------------------------------------------ */
+
+.parada-card {
+  position: absolute;
+  width: 560px;
+  /* Nace del objeto que la produce: JS anima transform desde el origen. */
+}
+
+.parada-card__pill {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin: 0 0 -14px 26px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  rotate: -3deg;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: 0.04em;
+  color: var(--cream, #F7F1E3);
+  background: #E24E2E;
+  border: 3px solid #013C3E;
+}
+
+/* La píldora alterna la inclinación para que no se vean troqueladas igual. */
+.parada-card:nth-child(2n) .parada-card__pill { rotate: 3deg; }
+
+.parada-card--coral .parada-card__pill { background: #E24E2E; }
+.parada-card--azul  .parada-card__pill { background: #6CC2EA; }
+.parada-card--mango .parada-card__pill { background: #F59E28; }
+.parada-card--verde .parada-card__pill { background: #00968F; }
+
+.parada-card__marco {
+  height: 360px;
+  border: 3px solid #013C3E;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #EFE7D6; /* la reserva crema mientras no haya foto */
+}
+
+.parada-card__foto {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.parada-card__texto {
+  margin: 16px 4px 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.35;
+  color: #013C3E;
+}
+
+/* --- Parada 6: cierre estático ------------------------------------------ */
+
+.paseo__cierre {
+  text-align: center;
+}
+
+.paseo__cierre .parada-card__pill { margin-left: 0; }
+
+.paseo__bolsa {
+  display: block;
+  width: 340px;
+  height: auto;
+  margin: 6px auto 0;
+}
+
+.paseo__remate {
+  margin: 10px 4px 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.25;
+  color: #00968F;
+}
+
+.paseo__btn {
+  display: inline-block;
+  margin-top: 22px;
+  padding: 16px 34px;
+  border-radius: 999px;
+  border: 3px solid #013C3E;
+  background: #00968F;
+  color: var(--cream, #F7F1E3);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+  text-decoration: none;
+}
+
+.paseo__btn:hover { background: #013C3E; }
+
+/* --- Respaldo estático: la lista vertical -------------------------------- */
+
+.paseo__lista {
+  display: grid;
+  gap: 72px;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 24px 24px 96px;
+}
+
+.paseo__lista .parada-card {
+  position: static;
+  width: 100%;
+}
+
+/* Reduced motion o pantallas angostas: siempre la lista, decida lo que
+   decida JS. El contenido es el mismo; la historia se lee igual. */
+@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+  .paseo__pista { display: none !important; }
+  .paseo__lista { display: grid !important; }
+}
+
+@media (max-width: 899px) {
+  .paseo__titulo { font-size: clamp(56px, 14vw, 128px); }
+}

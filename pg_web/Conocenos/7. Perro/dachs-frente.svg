@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 456 400" width="456" height="400">
+  <!-- Cabeza de perro salchicha, perfil hacia la derecha.
+       Paleta: cuerpo #1B7F96, sombra #0E5163, contorno #011670, crema #EFE7D6. -->
+  <g stroke="#011670" stroke-width="9" stroke-linejoin="round" stroke-linecap="round">
+    <!-- oreja trasera (asoma detrás del cráneo) -->
+    <path fill="#0E5163" d="M112 100
+      C 80 114, 60 172, 64 234
+      C 66 272, 82 298, 102 302
+      C 122 306, 136 282, 138 244
+      C 140 198, 136 130, 124 104 Z"/>
+    <!-- cráneo + hocico, con la papada integrada -->
+    <path fill="#1B7F96" d="M84 150
+      C 88 96, 136 58, 194 60
+      C 240 62, 268 84, 286 112
+      C 322 116, 388 124, 416 134
+      C 434 140, 438 158, 424 166
+      C 398 181, 340 189, 300 190
+      C 296 214, 280 234, 252 243
+      C 200 259, 118 248, 94 214
+      C 82 198, 82 174, 84 150 Z"/>
+    <!-- mandíbula crema, pegada bajo el hocico -->
+    <path fill="#EFE7D6" stroke-width="8" d="M300 190
+      C 298 208, 286 222, 268 229
+      C 246 237, 224 233, 214 222
+      C 220 210, 232 200, 250 196
+      C 266 192, 284 190, 300 190 Z"/>
+    <!-- nariz -->
+    <path fill="#011670" stroke-width="7" d="M400 128
+      C 424 128, 440 140, 438 154
+      C 436 168, 418 172, 402 166
+      C 390 160, 388 138, 400 128 Z"/>
+    <!-- oreja delantera, cae sobre la cara -->
+    <path fill="#0E5163" d="M150 88
+      C 118 104, 100 170, 104 240
+      C 106 286, 124 318, 150 320
+      C 176 322, 192 292, 194 244
+      C 196 188, 188 116, 172 92
+      C 166 84, 158 84, 150 88 Z"/>
+  </g>
+  <!-- ceja + ojo -->
+  <path d="M224 94 C 238 86, 256 86, 268 94" fill="none" stroke="#011670" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="248" cy="128" rx="25" ry="27" fill="#EFE7D6" stroke="#011670" stroke-width="7"/>
+  <circle cx="254" cy="132" r="12" fill="#011670"/>
+  <circle cx="249" cy="126" r="4.5" fill="#EFE7D6"/>
+</svg>

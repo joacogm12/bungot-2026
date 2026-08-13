@@ -1,0 +1,283 @@
+{%- comment -%}
+  BUNGOT — Conócenos: la historia contada como un paseo.
+
+  Un perro salchicha larguísimo (cabeza y cola en PNG, cuerpo dibujado como
+  resorte sobre un <path>) recorre un camino en zigzag por un lienzo fijo de
+  1582×5470. Al pasar junto a cada objeto lo tira / abre / dispara y de ese
+  golpe nace la tarjeta de la parada. Toda la mecánica vive en conocenos.js;
+  aquí solo va el markup y el estado inicial.
+
+  Tres capas: .paseo__pista (11070px, solo da scroll) → .paseo__ventana
+  (sticky, 100svh) → .paseo__lienzo (la cámara: JS lo mueve con translate3d).
+  Dentro del lienzo, .paseo__mundo se escala completo con `zoom` — NO con
+  transform: scale(), porque un transform en el ancestro rompería el sticky
+  de la ventana (la fijaría contra el lienzo y no contra la pantalla).
+
+  Respaldo: la misma historia como lista vertical (.paseo__lista). Es lo que
+  se ve sin JS, con prefers-reduced-motion y por debajo de 900px; el paseo es
+  una capa encima, nunca el único camino al contenido.
+
+  El header y el footer son los globales del tema: esta sección no dibuja nav
+  ni footer propios.
+{%- endcomment -%}
+
+{{ 'conocenos.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  # Copy de reserva por parada (el real viene de los bloques; esto solo cubre
+  # una sección recién agregada sin bloques). Mismo orden que el recorrido.
+  assign defs_etiqueta = 'TODO EMPEZÓ CON ELLOS|NADA NOS CONVENCÍA|PRUEBAS, PRUEBAS Y MÁS PRUEBAS|SE CORRIÓ LA VOZ|LA MANADA CRECE|Y AQUÍ SEGUIMOS' | split: '|'
+  assign defs_texto = 'Greta y Bache fueron nuestra inspiración desde el día uno.|Buscábamos algo bueno para ellos y solo encontrábamos etiquetas larguísimas llenas de cosas impronunciables. Así que dejamos de buscar y nos pusimos manos a la obra. Así nació BUNGOT.|Un ingrediente. Nada más. Nos tomó años, y todas las etiquetas pegadas a mano.|Empezamos con dos clientes muy exigentes. En el barrio las noticias vuelan.|De dos peludos a cientos: cada foto nueva es un peludo más en la familia.|Todo lo que hacemos sigue pasando primero por ellos.' | split: '|'
+  assign defs_color = 'coral|azul|mango|verde|azul|verde' | split: '|'
+
+  assign boton_url = section.settings.boton_url | default: routes.all_products_collection_url
+-%}
+
+<div
+  class="paseo"
+  data-paseo
+  {% unless section.settings.animar %}data-sin-animar{% endunless %}
+  style="--paseo-camino: {{ section.settings.color_camino }}; --paseo-perro: {{ section.settings.color_perro }};"
+>
+  <header class="paseo__intro">
+    <h1 class="paseo__titulo">{{ section.settings.titulo }}</h1>
+    <p class="paseo__bajada">{{ section.settings.bajada }}</p>
+  </header>
+
+  <div class="paseo__pista" data-pista>
+    <div class="paseo__ventana" data-ventana>
+      <div class="paseo__lienzo" data-lienzo>
+        <div class="paseo__mundo" data-mundo>
+
+          <svg class="paseo__svg" viewBox="0 0 1582 5470" width="1582" height="5470" aria-hidden="true" focusable="false">
+            {%- comment -%}
+              El zigzag baja de y≈310 a y≈4725 en cinco vueltas en U. Dos
+              paths comparten la misma d: el visible del camino y la
+              referencia invisible que JS muestrea para toda la geometría.
+              El lomo arranca vacío: JS le escribe el resorte cada frame.
+            {%- endcomment -%}
+            {%- capture d_camino -%}M 170 310 C 480 330, 820 370, 1130 420 C 1330 452, 1442 540, 1442 700 C 1442 860, 1330 950, 1120 985 C 880 1025, 620 1060, 420 1105 C 250 1143, 140 1230, 140 1390 C 140 1550, 250 1640, 450 1672 C 700 1712, 950 1745, 1130 1790 C 1330 1840, 1442 1925, 1442 2085 C 1442 2245, 1330 2335, 1120 2368 C 880 2405, 620 2440, 420 2485 C 250 2523, 140 2610, 140 2770 C 140 2930, 250 3020, 450 3052 C 700 3092, 950 3125, 1130 3170 C 1330 3220, 1442 3305, 1442 3465 C 1442 3625, 1330 3715, 1120 3748 C 880 3785, 620 3820, 430 3865 C 262 3903, 152 3990, 152 4150 C 152 4310, 262 4400, 460 4432 C 660 4462, 750 4520, 780 4620 C 795 4668, 793 4695, 791 4725{%- endcapture -%}
+            <path class="paseo__camino" d="{{ d_camino }}"></path>
+            <path class="paseo__cuerpo" data-camino-ref d="{{ d_camino }}"></path>
+            <path class="paseo__comic" data-comic="1" d=""></path>
+            <path class="paseo__comic" data-comic="2" d=""></path>
+            <path class="paseo__lomo" data-lomo d=""></path>
+          </svg>
+
+          {%- comment -%} Utilería de cada parada. JS la coloca y la anima;
+              todo es decorativo, de ahí el alt vacío + aria-hidden. {%- endcomment -%}
+          <img class="paseo__prop" data-prop="casita" src="{{ 'casita-nueva.png' | asset_url }}" alt="" aria-hidden="true" width="768" height="726" loading="lazy">
+          <img class="paseo__prop" data-prop="pelota" src="{{ 'pelota-nueva.png' | asset_url }}" alt="" aria-hidden="true" width="203" height="200" loading="lazy">
+
+          <img class="paseo__prop" data-prop="bote" src="{{ 'bote-solido.png' | asset_url }}" alt="" aria-hidden="true" width="768" height="708" loading="lazy">
+          <img class="paseo__prop" data-prop="tapa" src="{{ 'bote-tapa-solida.png' | asset_url }}" alt="" aria-hidden="true" width="768" height="264" loading="lazy">
+          <img class="paseo__prop" data-prop="platano" src="{{ 'platano-solido.png' | asset_url }}" alt="" aria-hidden="true" width="768" height="706" loading="lazy">
+
+          <img class="paseo__prop" data-prop="mesa" src="{{ 'pruebas-anim1.png' | asset_url }}" alt="" aria-hidden="true" width="558" height="768" loading="lazy">
+          <img class="paseo__prop" data-prop="mesa2" src="{{ 'pruebas-anim2.png' | asset_url }}" alt="" aria-hidden="true" width="593" height="768" loading="lazy">
+          <img class="paseo__prop" data-prop="humo" src="{{ 'pruebas-humo.png' | asset_url }}" alt="" aria-hidden="true" width="625" height="768" loading="lazy">
+
+          <img class="paseo__prop" data-prop="hidrante" src="{{ 'hidrante-solido.png' | asset_url }}" alt="" aria-hidden="true" width="768" height="689" loading="lazy">
+          <img class="paseo__prop" data-prop="agua" src="{{ 'agua-nueva.png' | asset_url }}" alt="" aria-hidden="true" width="768" height="565" loading="lazy">
+
+          <img class="paseo__prop" data-prop="camara" src="{{ 'camara-rec.png' | asset_url }}" alt="" aria-hidden="true" width="768" height="500" loading="lazy">
+          <img class="paseo__prop" data-prop="flash" src="{{ 'flash-rec.png' | asset_url }}" alt="" aria-hidden="true" width="768" height="508" loading="lazy">
+
+          {%- comment -%} El perro: cola y cabeza en PNG, el cuerpo lo dibuja
+              JS en el path del lomo. Nunca se voltean, solo giran. {%- endcomment -%}
+          <img class="paseo__dachs" data-dachs-cola src="{{ 'dachs-atras.png' | asset_url }}" alt="" aria-hidden="true" width="380" height="340" loading="lazy">
+          <img class="paseo__dachs" data-dachs-cabeza src="{{ 'dachs-frente.png' | asset_url }}" alt="" aria-hidden="true" width="456" height="400" loading="lazy">
+
+          {%- comment -%} Tarjetas 1–5: nacen del objeto de su parada. {%- endcomment -%}
+          {%- for i in (0..4) -%}
+            {%- liquid
+              assign b = section.blocks[i]
+              assign etiqueta = b.settings.etiqueta | default: defs_etiqueta[i]
+              assign texto = b.settings.texto | default: defs_texto[i]
+              assign color = b.settings.color | default: defs_color[i]
+            -%}
+            <article class="parada-card parada-card--{{ color }}" data-card="{{ i }}" {% if b %}{{ b.shopify_attributes }}{% endif %}>
+              <span class="parada-card__pill">{{ etiqueta }}</span>
+              <div class="parada-card__marco">
+                {%- if b.settings.foto -%}
+                  {{ b.settings.foto | image_url: width: 1120 | image_tag: widths: '560, 1120', sizes: '560px', class: 'parada-card__foto', alt: etiqueta, loading: 'lazy' }}
+                {%- endif -%}
+              </div>
+              <p class="parada-card__texto">{{ texto }}</p>
+            </article>
+          {%- endfor -%}
+
+          {%- comment -%} Parada 6: cierre estático con la bolsa y el botón. {%- endcomment -%}
+          {%- liquid
+            assign b6 = section.blocks[5]
+            assign etiqueta6 = b6.settings.etiqueta | default: defs_etiqueta[5]
+            assign texto6 = b6.settings.texto | default: defs_texto[5]
+            assign color6 = b6.settings.color | default: defs_color[5]
+          -%}
+          <article class="parada-card parada-card--{{ color6 }} paseo__cierre" data-card="5" {% if b6 %}{{ b6.shopify_attributes }}{% endif %}>
+            <span class="parada-card__pill">{{ etiqueta6 }}</span>
+            {%- if b6.settings.foto -%}
+              {{ b6.settings.foto | image_url: width: 640 | image_tag: class: 'paseo__bolsa', alt: '', loading: 'lazy' }}
+            {%- else -%}
+              <img class="paseo__bolsa" src="{{ 'bungot-premio.webp' | asset_url }}" alt="" aria-hidden="true" width="640" height="640" loading="lazy">
+            {%- endif -%}
+            <p class="parada-card__texto">{{ texto6 }}</p>
+            <p class="paseo__remate">{{ section.settings.remate }}</p>
+            <a class="paseo__btn" href="{{ boton_url }}">{{ section.settings.boton_texto }}</a>
+          </article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Respaldo estático: la misma historia, en vertical. {%- endcomment -%}
+  <div class="paseo__lista">
+    {%- for i in (0..5) -%}
+      {%- liquid
+        assign b = section.blocks[i]
+        assign etiqueta = b.settings.etiqueta | default: defs_etiqueta[i]
+        assign texto = b.settings.texto | default: defs_texto[i]
+        assign color = b.settings.color | default: defs_color[i]
+      -%}
+      <article class="parada-card parada-card--{{ color }}">
+        <span class="parada-card__pill">{{ etiqueta }}</span>
+        {%- if i == 5 -%}
+          {%- if b.settings.foto -%}
+            {{ b.settings.foto | image_url: width: 640 | image_tag: class: 'paseo__bolsa', alt: '', loading: 'lazy' }}
+          {%- else -%}
+            <img class="paseo__bolsa" src="{{ 'bungot-premio.webp' | asset_url }}" alt="" aria-hidden="true" width="640" height="640" loading="lazy">
+          {%- endif -%}
+          <p class="parada-card__texto">{{ texto }}</p>
+          <p class="paseo__remate">{{ section.settings.remate }}</p>
+          <a class="paseo__btn" href="{{ boton_url }}">{{ section.settings.boton_texto }}</a>
+        {%- else -%}
+          <div class="parada-card__marco">
+            {%- if b.settings.foto -%}
+              {{ b.settings.foto | image_url: width: 1120 | image_tag: widths: '560, 1120', sizes: '(max-width: 620px) 100vw, 560px', class: 'parada-card__foto', alt: etiqueta, loading: 'lazy' }}
+            {%- endif -%}
+          </div>
+          <p class="parada-card__texto">{{ texto }}</p>
+        {%- endif -%}
+      </article>
+    {%- endfor -%}
+  </div>
+</div>
+
+<script src="{{ 'conocenos.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Conócenos — paseo",
+  "tag": "section",
+  "class": "seccion-conocenos",
+  "settings": [
+    {
+      "type": "text",
+      "id": "titulo",
+      "label": "Título",
+      "default": "Conócenos"
+    },
+    {
+      "type": "text",
+      "id": "bajada",
+      "label": "Bajada",
+      "default": "La historia completa cabe en un paseo. Baja."
+    },
+    {
+      "type": "text",
+      "id": "remate",
+      "label": "Remate del cierre",
+      "default": "Si a Greta y a Bache no les gusta, no sale."
+    },
+    {
+      "type": "text",
+      "id": "boton_texto",
+      "label": "Texto del botón",
+      "default": "Ver todos los productos"
+    },
+    {
+      "type": "url",
+      "id": "boton_url",
+      "label": "Enlace del botón",
+      "info": "Si se deja vacío, va a todos los productos."
+    },
+    {
+      "type": "header",
+      "content": "Camino y perro"
+    },
+    {
+      "type": "color",
+      "id": "color_camino",
+      "label": "Color del camino",
+      "default": "#E3CE9E"
+    },
+    {
+      "type": "color",
+      "id": "color_perro",
+      "label": "Color del perro",
+      "default": "#1B7F96",
+      "info": "Tiñe el cuerpo de resorte. La cabeza y la cola son PNG y no cambian de color."
+    },
+    {
+      "type": "checkbox",
+      "id": "animar",
+      "label": "Animar el recorrido",
+      "default": true,
+      "info": "Desactívalo para editar contenido: el paseo se pinta en su estado final y deja de responder al scroll."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "parada",
+      "name": "Parada",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "etiqueta",
+          "label": "Etiqueta",
+          "default": "Parada"
+        },
+        {
+          "type": "textarea",
+          "id": "texto",
+          "label": "Texto",
+          "default": "Una o dos líneas: nadie lee párrafos haciendo scroll."
+        },
+        {
+          "type": "select",
+          "id": "color",
+          "label": "Color de la etiqueta",
+          "options": [
+            { "value": "coral", "label": "Coral" },
+            { "value": "azul", "label": "Azul" },
+            { "value": "mango", "label": "Mango" },
+            { "value": "verde", "label": "Verde" }
+          ],
+          "default": "coral"
+        },
+        {
+          "type": "image_picker",
+          "id": "foto",
+          "label": "Foto",
+          "info": "Mientras no haya foto se ve el marco crema. El orden de los bloques es el orden de las paradas: casita, bote, pruebas, hidrante, cámara y cierre."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Conócenos — paseo",
+      "blocks": [
+        { "type": "parada", "settings": { "etiqueta": "TODO EMPEZÓ CON ELLOS", "texto": "Greta y Bache fueron nuestra inspiración desde el día uno.", "color": "coral" } },
+        { "type": "parada", "settings": { "etiqueta": "NADA NOS CONVENCÍA", "texto": "Buscábamos algo bueno para ellos y solo encontrábamos etiquetas larguísimas llenas de cosas impronunciables. Así que dejamos de buscar y nos pusimos manos a la obra. Así nació BUNGOT.", "color": "azul" } },
+        { "type": "parada", "settings": { "etiqueta": "PRUEBAS, PRUEBAS Y MÁS PRUEBAS", "texto": "Un ingrediente. Nada más. Nos tomó años, y todas las etiquetas pegadas a mano.", "color": "mango" } },
+        { "type": "parada", "settings": { "etiqueta": "SE CORRIÓ LA VOZ", "texto": "Empezamos con dos clientes muy exigentes. En el barrio las noticias vuelan.", "color": "verde" } },
+        { "type": "parada", "settings": { "etiqueta": "LA MANADA CRECE", "texto": "De dos peludos a cientos: cada foto nueva es un peludo más en la familia.", "color": "azul" } },
+        { "type": "parada", "settings": { "etiqueta": "Y AQUÍ SEGUIMOS", "texto": "Todo lo que hacemos sigue pasando primero por ellos.", "color": "verde" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
