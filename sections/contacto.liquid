@@ -1,0 +1,213 @@
+{%- comment -%}
+  BUNGOT — Contacto: portada con el titular gigante y la manada delante,
+  y abajo UN solo cuadro grande con el formulario y todos los datos.
+
+  La portada replica la mecánica de la manada del diseño de portada
+  ("BUNGOT Portada.dc.html"): una VENTANA con clip-path de inset negativo
+  arriba —deja salir los cuerpos hacia el titular pero recorta a los lados—
+  y adentro una FILA absoluta que se escala por tramos de media query para
+  que ningún perro se corte en el aire a ningún ancho.
+
+  El cuadro sube con margin-top negativo a propósito: tapa las patas de la
+  manada para que los perros salgan por encima de su contorno en vez de
+  posarse sobre él. En móvil ese traslape se anula.
+
+  Ningún dato de contacto va escrito aquí: WhatsApp sale del ajuste
+  whatsapp_numero, Instagram del social_instagram que ya usa el footer y el
+  correo de shop.email. Renglón sin ajuste = renglón que no existe.
+
+  El header y el footer son los globales del tema: esta sección no dibuja
+  nav ni footer propios.
+{%- endcomment -%}
+
+{{ 'contacto.css' | asset_url | stylesheet_tag }}
+
+<div class="ctpage" data-contacto>
+  <section class="ct-hero">
+    <h1 class="ct-hero__titulo">{{ 'contacto.hero.titulo' | t }}</h1>
+
+    {%- comment -%}
+      width/height son los píxeles reales de cada PNG (reservan layout);
+      el tamaño en pantalla lo fija el CSS. Decorativos: alt vacío.
+    {%- endcomment -%}
+    <div class="ct-hero__pups" data-r="pups">
+      <div class="ct-hero__fila" data-r="pups-inner">
+        <img class="ct-pup ct-pup--guion" src="{{ 'pup-guion-trim.png' | asset_url }}" alt="" aria-hidden="true" width="1398" height="1823" decoding="async">
+        <img class="ct-pup ct-pup--greta" src="{{ 'pup-greta-trim.png' | asset_url }}" alt="" aria-hidden="true" width="591" height="1766" decoding="async">
+        <img class="ct-pup ct-pup--manolo" src="{{ 'pup-manolo-trim.png' | asset_url }}" alt="" aria-hidden="true" width="764" height="1111" decoding="async">
+        <img class="ct-pup ct-pup--ramona" src="{{ 'pup-ramona-trim.png' | asset_url }}" alt="" aria-hidden="true" width="820" height="1914" decoding="async">
+        <img class="ct-pup ct-pup--pecas" src="{{ 'pup-pecas-trim.png' | asset_url }}" alt="" aria-hidden="true" width="924" height="1786" decoding="async">
+        <img class="ct-pup ct-pup--mac" src="{{ 'pup-mac-trim.png' | asset_url }}" alt="" aria-hidden="true" width="1364" height="1838" decoding="async">
+      </div>
+    </div>
+  </section>
+
+  <section class="ct-main">
+    <div class="ct-card" data-r="ct-card">
+      <h2 class="ct-card__titulo">{{ 'contacto.form.heading' | t }}</h2>
+      <p class="ct-card__bajada">{{ 'contacto.form.bajada' | t }}</p>
+      <p class="ct-card__nota">{{ 'contacto.form.nota' | t }}</p>
+
+      {%- liquid
+        assign asunto_pedido = 'contacto.form.asunto_pedido' | t
+        assign asunto_producto = 'contacto.form.asunto_producto' | t
+        assign asunto_mayoreo = 'contacto.form.asunto_mayoreo' | t
+        assign asunto_otro = 'contacto.form.asunto_otro' | t
+      -%}
+
+      {%- form 'contact', class: 'ct-form' -%}
+        {%- liquid
+          assign enviado = false
+          if form.posted_successfully?
+            assign enviado = true
+          endif
+          # Si Shopify devolvió el form con errores, respetamos la pastilla
+          # que el visitante ya había elegido; si no, arranca en "Mi pedido".
+          assign asunto_actual = asunto_pedido
+          if enviado == false and form['Asunto'] != blank
+            assign asunto_actual = form['Asunto']
+          endif
+        -%}
+
+        <div class="ct-form__fila">
+          <div class="ct-campo">
+            <label class="ct-label" for="ct-nombre">{{ 'contacto.form.nombre_label' | t }} <span aria-hidden="true">·</span></label>
+            <input
+              class="ct-input"
+              id="ct-nombre"
+              type="text"
+              name="contact[name]"
+              value="{% unless enviado %}{{ form.name }}{% endunless %}"
+              placeholder="{{ 'contacto.form.nombre_placeholder' | t }}"
+              autocomplete="name"
+              required
+            >
+          </div>
+          <div class="ct-campo">
+            <label class="ct-label" for="ct-correo">{{ 'contacto.form.correo_label' | t }} <span aria-hidden="true">·</span></label>
+            <input
+              class="ct-input"
+              id="ct-correo"
+              type="email"
+              name="contact[email]"
+              value="{% unless enviado %}{{ form.email }}{% endunless %}"
+              placeholder="{{ 'contacto.form.correo_placeholder' | t }}"
+              autocomplete="email"
+              autocapitalize="off"
+              spellcheck="false"
+              required
+            >
+            {%- if form.errors contains 'email' -%}
+              <p class="ct-error" role="alert">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <fieldset class="ct-asunto">
+          <legend class="ct-label">{{ 'contacto.form.asunto_label' | t }}</legend>
+          {%- comment -%}
+            Pastillas de opción única: botones de verdad (foco + teclado), el
+            valor viaja en el hidden como un campo más del correo de contacto.
+          {%- endcomment -%}
+          <input type="hidden" name="contact[Asunto]" value="{{ asunto_actual }}" data-ct-asunto>
+          <div class="ct-asunto__fila">
+            {%- assign asuntos = asunto_pedido | append: '|' | append: asunto_producto | append: '|' | append: asunto_mayoreo | append: '|' | append: asunto_otro | split: '|' -%}
+            {%- for asunto in asuntos -%}
+              <button class="ct-pill" type="button" data-ct-pill aria-pressed="{% if asunto == asunto_actual %}true{% else %}false{% endif %}">{{ asunto }}</button>
+            {%- endfor -%}
+          </div>
+        </fieldset>
+
+        <div class="ct-campo">
+          <label class="ct-label" for="ct-mensaje">{{ 'contacto.form.mensaje_label' | t }} <span aria-hidden="true">·</span></label>
+          <textarea
+            class="ct-input ct-input--area"
+            id="ct-mensaje"
+            name="contact[body]"
+            placeholder="{{ 'contacto.form.mensaje_placeholder' | t }}"
+            required
+          >{% unless enviado %}{{ form.body }}{% endunless %}</textarea>
+          {%- if form.errors contains 'body' -%}
+            <p class="ct-error" role="alert">{{ form.errors.translated_fields.body | capitalize }} {{ form.errors.messages.body }}</p>
+          {%- endif -%}
+        </div>
+
+        <div class="ct-form__pie">
+          <button class="ct-form__enviar" type="submit" data-ct-enviar {% if enviado %}data-ct-ok{% endif %}>
+            {%- if enviado -%}{{ 'contacto.form.enviado' | t }}{%- else -%}{{ 'contacto.form.enviar' | t }}{%- endif -%}
+          </button>
+          <p class="ct-form__aviso" {% if enviado %}role="status"{% endif %}>
+            {%- if enviado -%}
+              {%- if form.email != blank -%}
+                {{ 'contacto.form.aviso_enviado' | t: correo: form.email }}
+              {%- else -%}
+                {{ 'contacto.form.aviso_enviado_sin_correo' | t }}
+              {%- endif -%}
+            {%- else -%}
+              {{ 'contacto.form.aviso' | t }}
+            {%- endif -%}
+          </p>
+        </div>
+      {%- endform -%}
+
+      <div class="ct-datos">
+        {%- if settings.whatsapp_numero != blank -%}
+          {%- liquid
+            # Guardado sin signos (5214441234567). Para mostrarlo se parte en
+            # lada + 3-3-4 sobre los últimos diez dígitos; si viene más corto
+            # se enseña tal cual con el +.
+            assign wa = settings.whatsapp_numero | strip
+            assign wa_visible = '+' | append: wa
+            if wa.size > 10
+              assign corte = wa.size | minus: 10
+              assign corte_2 = corte | plus: 3
+              assign corte_3 = corte | plus: 6
+              assign wa_lada = wa | slice: 0, corte
+              assign wa_p1 = wa | slice: corte, 3
+              assign wa_p2 = wa | slice: corte_2, 3
+              assign wa_p3 = wa | slice: corte_3, 4
+              assign wa_visible = '+' | append: wa_lada | append: ' ' | append: wa_p1 | append: ' ' | append: wa_p2 | append: ' ' | append: wa_p3
+            endif
+          -%}
+          <div class="ct-dato">
+            <h3 class="ct-dato__nombre">{{ 'contacto.datos.whatsapp' | t }}</h3>
+            <a class="ct-dato__valor" href="https://wa.me/{{ wa }}" target="_blank" rel="noopener">{{ wa_visible }}</a>
+          </div>
+        {%- endif -%}
+
+        {%- if shop.email != blank -%}
+          <div class="ct-dato">
+            <h3 class="ct-dato__nombre">{{ 'contacto.datos.correo' | t }}</h3>
+            <a class="ct-dato__valor" href="mailto:{{ shop.email }}">{{ shop.email }}</a>
+          </div>
+        {%- endif -%}
+
+        {%- if settings.social_instagram != blank -%}
+          {%- assign ig_handle = settings.social_instagram | split: '?' | first | split: '/' | last | remove: '@' -%}
+          <div class="ct-dato">
+            <h3 class="ct-dato__nombre">{{ 'contacto.datos.instagram' | t }}</h3>
+            <a class="ct-dato__valor" href="{{ settings.social_instagram }}" target="_blank" rel="noopener">@{{ ig_handle }}</a>
+          </div>
+        {%- endif -%}
+
+        <div class="ct-dato">
+          <h3 class="ct-dato__nombre">{{ 'contacto.datos.horario' | t }}</h3>
+          <p class="ct-dato__valor">{{ 'contacto.datos.horario_texto' | t }}</p>
+        </div>
+      </div>
+
+      {%- if shop.email != blank -%}
+        {%- capture correo_html -%}<a class="ct-mayoreo__correo" href="mailto:{{ shop.email }}">{{ shop.email }}</a>{%- endcapture -%}
+        <p class="ct-mayoreo">{{ 'contacto.mayoreo_html' | t: correo: correo_html }}</p>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Contacto",
+  "settings": [],
+  "presets": [{ "name": "Contacto" }]
+}
+{% endschema %}

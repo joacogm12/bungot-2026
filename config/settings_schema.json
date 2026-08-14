@@ -85,7 +85,13 @@
       { "type": "text", "id": "social_instagram", "label": "Instagram" },
       { "type": "text", "id": "social_tiktok", "label": "TikTok" },
       { "type": "text", "id": "social_facebook", "label": "Facebook" },
-      { "type": "text", "id": "social_whatsapp", "label": "WhatsApp" }
+      { "type": "text", "id": "social_whatsapp", "label": "WhatsApp" },
+      {
+        "type": "text",
+        "id": "whatsapp_numero",
+        "label": "WhatsApp (número)",
+        "info": "Formato internacional sin signos, ej. 5214441234567. Con esto la página de contacto arma el enlace wa.me y muestra el número."
+      }
     ]
   }
 ]

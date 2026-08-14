@@ -250,5 +250,39 @@
   },
   "onboarding": {
     "product_title": "Nombre del producto"
+  },
+  "contacto": {
+    "hero": {
+      "titulo": "Contáctanos"
+    },
+    "form": {
+      "heading": "Cuéntanos qué necesitas",
+      "bajada": "Dudas del pedido, mayoreo, o nomás para presumirnos a tu perro. Contestamos en menos de 24 horas hábiles.",
+      "nota": "Los campos con · son los que sí necesitamos.",
+      "nombre_label": "Tu nombre",
+      "nombre_placeholder": "Faride",
+      "correo_label": "Tu correo",
+      "correo_placeholder": "tu@email.com",
+      "asunto_label": "¿De qué se trata?",
+      "asunto_pedido": "Mi pedido",
+      "asunto_producto": "Dudas del producto",
+      "asunto_mayoreo": "Mayoreo",
+      "asunto_otro": "Otra cosa",
+      "mensaje_label": "Tu mensaje",
+      "mensaje_placeholder": "¿En qué te ayudamos?",
+      "enviar": "Enviar mensaje",
+      "enviado": "¡Mensaje enviado!",
+      "aviso": "Contestamos en menos de 24 horas hábiles.",
+      "aviso_enviado": "Te contestamos a {{ correo }} en menos de 24 horas.",
+      "aviso_enviado_sin_correo": "Te contestamos en menos de 24 horas."
+    },
+    "datos": {
+      "whatsapp": "WhatsApp",
+      "correo": "Correo",
+      "instagram": "Instagram",
+      "horario": "Horario",
+      "horario_texto": "Lunes a viernes 9 a 18 h · Sábados 10 a 14 h · San Luis Potosí capital"
+    },
+    "mayoreo_html": "¿Vendes en tu tienda? Trabajamos con veterinarias, estéticas y tiendas de barrio: escríbenos a {{ correo }} y te mandamos la lista de mayoreo."
   }
 }

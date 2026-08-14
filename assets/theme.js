@@ -747,6 +747,46 @@
     });
   }
 
+  /* --- Contacto: pastillas de asunto + habilitar el envío --------------- */
+  function initContacto() {
+    var root = document.querySelector('[data-contacto]');
+    if (!root) return;
+
+    // Pastillas de opción única: son botones (foco y teclado gratis) y el
+    // valor elegido viaja como un campo más del correo en el hidden.
+    var pills = root.querySelectorAll('[data-ct-pill]');
+    var asunto = root.querySelector('[data-ct-asunto]');
+    for (var i = 0; i < pills.length; i++) {
+      pills[i].addEventListener('click', function () {
+        for (var j = 0; j < pills.length; j++) {
+          pills[j].setAttribute('aria-pressed', pills[j] === this ? 'true' : 'false');
+        }
+        if (asunto) asunto.value = this.textContent.trim();
+      });
+    }
+
+    // El botón solo se habilita con nombre, correo y mensaje llenos. Sin JS
+    // queda habilitado y valida el required nativo, así que no se pierde nada.
+    var boton = root.querySelector('[data-ct-enviar]');
+    var nombre = root.querySelector('#ct-nombre');
+    var correo = root.querySelector('#ct-correo');
+    var mensaje = root.querySelector('#ct-mensaje');
+    if (!boton || !nombre || !correo || !mensaje) return;
+
+    var campos = [nombre, correo, mensaje];
+    function revisa() {
+      var listo = true;
+      for (var k = 0; k < campos.length; k++) {
+        if (campos[k].value.trim() === '') listo = false;
+      }
+      boton.disabled = !listo;
+    }
+    for (var m = 0; m < campos.length; m++) {
+      campos[m].addEventListener('input', revisa);
+    }
+    revisa();
+  }
+
   function init() {
     initPreloader();
     initPortadaTop();
@@ -758,6 +798,7 @@
     initFavoritos();
     initPopup();
     initReviews();
+    initContacto();
     initFooterPushesNav();
   }
 
