@@ -19,6 +19,46 @@
     var bandas = root.querySelectorAll('[data-banda]');
     for (var i = 0; i < bandas.length; i++) setupRail(bandas[i]);
     setupFilters(root, bandas);
+    setupAddForms(root);
+  }
+
+  /* --- "Agregar" de cada tarjeta: sin navegar al carrito -------------------
+     El form de banda-card mandaría a /cart/add (y de ahí a la página del
+     carrito); acá se intercepta y el agregado va por fetch. La confirmación
+     es el vuelo de la bolita (window.BUNGOT.flyToCart, theme.js): el contador
+     del header sube al aterrizar, con el item_count real si el fetch ya
+     regresó. El botón solo se bloquea mientras dura el fetch. */
+  function setupAddForms(root) {
+    var forms = root.querySelectorAll('.card__addform');
+    for (var i = 0; i < forms.length; i++) wireAddForm(forms[i]);
+  }
+
+  function wireAddForm(form) {
+    form.addEventListener('submit', function (e) {
+      // Sin el helper (theme.js no cargó) que siga el submit clásico: agrega
+      // navegando, que es peor pero nunca deja de agregar.
+      if (!window.BUNGOT || !window.BUNGOT.flyToCart) return;
+      e.preventDefault();
+
+      var btn = form.querySelector('.card__add');
+      var vuelo = window.BUNGOT.flyToCart(btn, { cantidad: 1 });
+      if (btn) btn.disabled = true;
+      fetch('/cart/add.js', {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' }
+      })
+        .then(function () { return fetch('/cart.js', { headers: { Accept: 'application/json' } }); })
+        .then(function (r) { return r.json(); })
+        .then(function (cart) {
+          vuelo.ponTotal(cart.item_count);
+          if (btn) btn.disabled = false;
+        })
+        .catch(function () {
+          // Sin backend el contador ya subió al aterrizar; solo soltar el botón.
+          if (btn) btn.disabled = false;
+        });
+    });
   }
 
   /* --- Carrusel por banda -------------------------------------------------- */

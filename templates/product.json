@@ -55,29 +55,31 @@
         "ben-1": {
           "type": "beneficio",
           "settings": {
-            "title": "Un solo ingrediente",
-            "text": "Pulmón de cerdo y nada más. Sin conservadores, químicos ni colorantes."
+            "title": "Ayuda al desarrollo muscular"
           }
         },
         "ben-2": {
           "type": "beneficio",
           "settings": {
-            "title": "Vitaminas del grupo B",
-            "text": "Aporta B12 y hierro, de los que ayudan a que ande con energía."
+            "title": "Aumenta niveles de energía"
           }
         },
         "ben-3": {
           "type": "beneficio",
           "settings": {
-            "title": "Fácil de digerir",
-            "text": "Ligero y bajo en grasa: cae bien hasta en las panzas delicadas."
+            "title": "Refuerza sistema inmune"
           }
         },
         "ben-4": {
           "type": "beneficio",
           "settings": {
-            "title": "Hecho en México",
-            "text": "Deshidratado en lotes chicos, con proteína de productores de aquí."
+            "title": "Favorece la función cardiaca"
+          }
+        },
+        "ben-5": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Aporta vitamina B12"
           }
         },
         "op-1": {
@@ -182,7 +184,7 @@
       },
       "block_order": [
         "acc-1", "acc-2", "acc-3", "acc-4",
-        "ben-1", "ben-2", "ben-3", "ben-4",
+        "ben-1", "ben-2", "ben-3", "ben-4", "ben-5",
         "op-1", "op-2", "op-3", "op-4", "op-5", "op-6", "op-7", "op-8", "op-9",
         "xs-1", "xs-2", "xs-3"
       ]

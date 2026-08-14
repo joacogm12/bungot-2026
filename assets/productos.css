@@ -31,10 +31,9 @@
 }
 
 /* La crema de la sección se estira hacia ARRIBA, por detrás del header
-   transparente y sticky del tema, para que la barra tome el color de la sección
-   —igual que la portada con .hero::before—. La altura es solo la franja del
-   header (--nav-h, con fallback 58px) más su gap: así NO tapa el marquee de
-   promos. Full-bleed a lo ancho del viewport. */
+   transparente y sticky del tema, para que la barra tome el color de la
+   sección. La altura es la franja del header (72px fijos del navbar v2 más su
+   gap, hoy 0). Full-bleed a lo ancho del viewport. */
 .pgal::before {
   content: '';
   position: absolute;
@@ -42,7 +41,7 @@
   left: 50%;
   width: 100vw;
   margin-left: -50vw;
-  height: calc(var(--nav-h, 58px) + var(--nav-gap, 14px));
+  height: calc(var(--nav-h, 72px) + var(--nav-gap, 0px));
   background: var(--pg-crema);
 }
 
@@ -53,11 +52,6 @@
    el catálogo está presente, con texto verde. Va con hex literal porque
    .marquee vive fuera de .pgal y no ve las vars. */
 body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
-
-/* El "Carrito" del header (amarillo por defecto) quedaría bajo de contraste
-   sobre crema: en esta página va verde profundo con texto crema. Scopeado a
-   .pgal para no tocar otras páginas. */
-body:has(.pgal) .header__cart { background: #013C3E; color: #F7F1E3; }
 
 /* --- Encabezado ---------------------------------------------------------- */
 .pgal .phead {

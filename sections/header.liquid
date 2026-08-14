@@ -1,5 +1,24 @@
+{%- comment -%}
+  BUNGOT — Navbar: barra transparente con TRES pestañas corales que cuelgan
+  del borde de arriba de la ventana — logo, enlaces y carrito — separadas
+  entre sí, nunca una barra corrida. En TODAS las páginas. Fuera la pastilla
+  verde de enlaces, el círculo "Yo" y la pastilla amarilla del carrito.
+
+  · Las tres pestañas comparten anatomía (52px, esquinas de abajo redondeadas)
+    y en hover crecen hacia abajo — nunca se trasladan (ver base.css). La fila
+    va a 72px fijos con align-items: flex-start y sin padding a la derecha:
+    la pestaña del carrito se pega a su esquina.
+  · "Mi cuenta" es un enlace más del nav, igual que los otros: con sesión
+    navega directo a Mis pedidos (la casa de la cuenta — hubo un desplegable y
+    se quitó a pedido, no lo revivas); sin sesión abre la hoja de acceso de
+    Shopify (<shopify-account>) sin salir de la tienda.
+  · data-me / data-logged los lee cuenta.js para ofrecer iniciar sesión antes
+    del checkout: se quedan aunque ya no haya pastilla con avatar.
+  · En celu la pestaña se esconde y el carrito vive DENTRO del panel del
+    burger (.header__link--cart): sin eso quedaría inalcanzable.
+{%- endcomment -%}
 <header class="header">
-  <div class="wrap header__inner">
+  <div class="header__inner">
     <a class="header__logo" href="{{ routes.root_url }}">
       {%- if settings.logo != blank -%}
         <img
@@ -13,11 +32,6 @@
       {%- endif -%}
     </a>
 
-    {%- comment -%}
-      Nav en pastillas: el grupo entero es una cápsula translúcida y el link de
-      la página actual va en una pastilla amarilla. En celu la cápsula se
-      desarma y el nav vuelve al panel del burger (ver base.css).
-    {%- endcomment -%}
     <nav class="header__nav" data-nav data-open="false" aria-label="{{ 'accessibility.main_nav' | t }}">
       {%- for link in section.settings.menu.links -%}
         {%- comment -%}
@@ -27,83 +41,47 @@
         {%- endcomment -%}
         {%- unless link.url == routes.root_url -%}
           <a
+            class="header__link"
             href="{{ link.url }}"
             {% if link.current %}aria-current="page"{% endif %}
           >{{ link.title }}</a>
         {%- endunless -%}
       {%- endfor -%}
+
+      {%- if customer -%}
+        <a
+          class="header__link"
+          href="{% render 'account-url', destino: 'mis-pedidos' %}"
+          data-me
+          data-logged="true"
+        >{{ 'accessibility.account' | t }}</a>
+      {%- else -%}
+        <shopify-account menu="customer-account-main-menu">
+          <span slot="signed-out-avatar" class="header__link" data-me data-logged="false">
+            {{- 'accessibility.account' | t -}}
+          </span>
+        </shopify-account>
+      {%- endif -%}
+
+      <a
+        class="header__link header__link--cart"
+        href="{{ routes.cart_url }}"
+        {% if request.page_type == 'cart' %}aria-current="page"{% endif %}
+      >
+        {{- 'accessibility.cart' | t -}}&nbsp;·&nbsp;<span data-cart-count>{{ cart.item_count }}</span>
+      </a>
     </nav>
 
     <div class="header__actions">
       {%- comment -%}
-        Botón de cuenta. Un solo componente, no varios botones: sin sesión se
-        ve "Yo" SIEMPRE — aunque haya ficha local del perro, el botón no debe
-        aparentar una cuenta que no existe (pedido del cliente). Con sesión y
-        ficha guardada se estira a píldora con la cara del perro y el nombre
-        del cliente. Lo enciende initPerroNav() en theme.js poniendo
-        data-perro="true" (solo con data-logged="true"); el CSS hace el resto.
-
-        La cara NO se pinta desde Liquid porque hoy vive en localStorage (por
-        usuario, ver theme.js). Si algún día la ficha se muda a metafields,
-        dog-avatar.liquid ya la lee server-side y esto sale pintado de una.
+        Los &nbsp; evitan que el punto medio se quede solo al final de línea.
       {%- endcomment -%}
-      {%- liquid
-        # URL plantilla de las caras: se saca de un asset REAL y se le cambia el
-        # nombre del archivo por un hueco. Así el mapa id -> archivo sigue
-        # viviendo en dog-avatar.liquid y acá no se arma ninguna ruta a mano,
-        # ni se pierde el ?v= que rompe la caché al actualizar las imágenes.
-        assign face_real = 'bungot-face-ramona.png' | asset_url
-        assign face_tpl = face_real | replace: 'bungot-face-ramona.png', 'bungot-face-__ID__.png'
-      -%}
-      <div class="header__account">
-        {%- if customer -%}
-          {%- comment -%}
-            Con sesión el botón NAVEGA directo a Mis pedidos — la casa de la
-            cuenta, donde la barra lateral ya lleva a las demás pantallas. Va
-            ahí y no a routes.account_url porque este último saca de la tienda
-            al área hospedada de Shopify. Hubo un menú desplegable colgado de
-            este botón (1c del handoff): se quitó a pedido, no lo revivas.
-          {%- endcomment -%}
-          <a
-            class="header__me"
-            href="{% render 'account-url', destino: 'mis-pedidos' %}"
-            aria-label="{{ 'accessibility.account' | t }}"
-            data-me
-            data-perro="false"
-            data-logged="true"
-            data-avatar-src="{{ face_tpl }}"
-          >
-            {%- render 'dog-avatar', size: 32 -%}
-            <span class="header__me-initial" aria-hidden="true">
-              {{ customer.first_name | default: customer.email | slice: 0 | upcase }}
-            </span>
-            {%- comment -%}
-              El nombre es el del CLIENTE, pintado desde Liquid; la ficha del
-              perro solo aporta la cara.
-            {%- endcomment -%}
-            <span class="header__me-name">{{ customer.first_name }}</span>
-          </a>
-        {%- else -%}
-          {%- comment -%}
-            Sin sesión, el botón de cuenta es el componente <shopify-account>
-            de Shopify: al picarlo abre SU hoja de acceso — Shop (un tap),
-            Google, Facebook o correo — sin salir de la tienda, que es lo más
-            cómodo que permiten las cuentas nuevas. El slot pinta nuestro
-            círculo "Yo", así el navbar se ve igual que siempre; la hoja la
-            controla Shopify (solo se tiñe con sus CSS vars, ver base.css).
-            Al entrar, la página recarga con sesión y toma la rama de arriba.
-          {%- endcomment -%}
-          <shopify-account menu="customer-account-main-menu">
-            <span slot="signed-out-avatar" class="header__me" aria-hidden="true">
-              <span class="header__me-initial">Yo</span>
-            </span>
-          </shopify-account>
-        {%- endif -%}
-      </div>
-
-      <a class="header__cart" href="{{ routes.cart_url }}">
-        {{ 'accessibility.cart' | t }} ·
-        <span data-cart-count>{{ cart.item_count }}</span>
+      <a
+        class="header__cart"
+        href="{{ routes.cart_url }}"
+        {% if request.page_type == 'cart' %}aria-current="page"{% endif %}
+      >
+        {{- 'accessibility.cart' | t -}}&nbsp;·&nbsp;<span data-cart-count>{{ cart.item_count }}</span>
       </a>
 
       <button

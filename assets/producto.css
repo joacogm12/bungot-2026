@@ -34,19 +34,18 @@
 
 /* El color del panel de la galería se estira hacia ARRIBA, por detrás del
    header transparente y sticky del tema, para que la barra quede sobre el
-   panel y no sobre una franja crema —igual que la portada con .hero::before—.
-   Solo la MITAD izquierda: la derecha ya es crema, la misma del body, así que
-   no hace falta pintarla. El alto es solo la franja del header (--nav-h, que
-   mide theme.js; el fallback vale cuando no hay portada que medir) más su gap,
-   así NO tapa el marquee de promos. Va en el ::before y no en el panel porque
-   .pdsplit__media lleva overflow: hidden para sostener la fila fija. */
+   panel y no sobre una franja crema. Solo la MITAD izquierda: la derecha ya es
+   crema, la misma del body, así que no hace falta pintarla. El alto es solo la
+   franja del header (72px fijos del navbar v2 más su gap, hoy 0). Va en el
+   ::before y no en el panel porque .pdsplit__media lleva overflow: hidden
+   para sostener la fila fija. */
 .pdpage::before {
   content: '';
   position: absolute;
   bottom: 100%; /* justo pegado al borde de arriba de la página */
   left: 0;
   width: 50%;
-  height: calc(var(--nav-h, 58px) + var(--nav-gap, 14px));
+  height: calc(var(--nav-h, 72px) + var(--nav-gap, 0px));
   background: var(--pd-fam, var(--pd-naranja));
 }
 
@@ -331,7 +330,12 @@
   border-radius: 999px;
   cursor: pointer;
   box-shadow: 4px 4px 0 var(--pd-fam, var(--pd-naranja));
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
+/* Pulsado: se hunde hacia su sombra. La sombra de este botón es DIAGONAL
+   (4px 4px), no la 0-Npx-0 de los botones navy, así que el hundimiento va
+   en las dos direcciones para caer justo donde estaba pintada. */
+.pdcta:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--pd-fam, var(--pd-naranja)); }
 .pdcta[disabled] { opacity: .5; cursor: not-allowed; }
 .pdnote {
   margin: 14px 0 0;
@@ -417,27 +421,42 @@
    -------------------------------------------------------------------------- */
 .pdbelt {
   background: var(--pd-green);
-  padding: 40px var(--pd-pad);
+  padding: 52px var(--pd-pad);
 }
 .pdbelt__grid {
   max-width: var(--pd-max);
   margin-inline: auto;
   display: grid;
-  /* Cuatro columnas cuando hay cuatro beneficios (el caso del diseño), pero los
-     beneficios salen del producto y algunos traen cinco: auto-fit reparte los
-     que haya sin dejar un huérfano en un segundo renglón. */
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 40px;
+  /* Los beneficios salen del producto y no siempre son cinco: auto-fit reparte
+     los que haya sin dejar un huérfano en un segundo renglón. Con los cinco
+     completos, --cinco (la pone Liquid contando ítems) fija las columnas. */
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 32px;
+  align-items: start;
+}
+.pdbelt__grid--cinco {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.pdbelt__item {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+}
+.pdbelt__icon {
+  width: 72px;
+  height: auto;
+  object-fit: contain;
 }
 .pdbelt__title {
-  font-size: 21px;
+  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.25;
+  text-align: center;
+  text-wrap: balance;
+  max-width: 15ch;
   color: var(--pd-mango);
-}
-.pdbelt__text {
-  margin: 10px 0 0;
-  font-size: 15px;
-  line-height: 1.6;
-  color: rgba(247, 241, 227, .85);
+  margin: 0;
 }
 
 /* --------------------------------------------------------------------------
@@ -805,7 +824,6 @@
   .pdframe { order: 2; max-width: none; height: auto; aspect-ratio: 1; }
   .pdsplit__lote { position: static; order: 3; }
   .pdbuy__title { font-size: clamp(2.75rem, 11vw, 4rem); }
-  .pdbelt__grid { grid-template-columns: 1fr 1fr; gap: 28px; }
   .pdops { padding: 40px var(--pd-pad) 44px; }
   .pdcross__head { flex-direction: column; align-items: flex-start; gap: 14px; }
   .pdcross__title { font-size: clamp(2rem, 8vw, 2.5rem); }
@@ -816,7 +834,6 @@
   .pdopts { grid-template-columns: 1fr; }
   .pdbuyrow { flex-wrap: wrap; }
   .pdcta { flex: 1 1 100%; }
-  .pdbelt__grid { grid-template-columns: 1fr; }
   /* El botón de escribir baja debajo del título y se estira: al lado no le
      queda ancho para el texto completo. */
   .pdops__head { flex-direction: column; align-items: stretch; gap: 20px; }
@@ -825,4 +842,19 @@
   .pdops__mtitle { font-size: 24px; }
   .pdops__pick { font-size: 28px; }
   .pdcross__grid .card__foot { flex-wrap: wrap; gap: 12px; }
+}
+
+/* El cinturón tiene sus propios cortes (no los del split): la tira de cinco
+   baja a tres y luego a dos columnas, pero nunca a una — debe seguir leyéndose
+   como tira, no como lista. Van al final para ganarle a --cinco en cascada. */
+@media (max-width: 1100px) {
+  .pdbelt__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 34px; }
+}
+@media (max-width: 760px) {
+  .pdbelt__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pdbelt__icon { width: 60px; }
+  .pdbelt__title { font-size: 15px; }
+}
+@media (max-width: 460px) {
+  .pdbelt { padding: 36px var(--pd-pad); }
 }

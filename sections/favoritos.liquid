@@ -172,10 +172,17 @@
 
                 {%- form 'product', product, class: 'fav__form' -%}
                   <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  {%- comment -%}
+                    El submit lo intercepta initFavCart (theme.js): el agregado
+                    va por fetch y la confirmación es la bolita de flyToCart;
+                    sin JS, el form navega y agrega igual. data-label-added es
+                    el texto que el botón muestra al aterrizar la bolita.
+                  {%- endcomment -%}
                   <button
                     class="btn btn--brand fav__btn"
                     type="submit"
                     name="add"
+                    data-label-added="{{ 'favoritos.added' | t }}"
                     {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
                   >
                     {%- if product.selected_or_first_available_variant.available -%}

@@ -80,7 +80,13 @@
         <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="card__addform">
           <input type="hidden" name="id" value="{{ variant_id }}">
           <input type="hidden" name="quantity" value="1">
-          <button type="submit" class="card__add">{{ cta }}</button>
+          {%- comment -%}
+            El submit lo intercepta el JS (productos.js / producto.js) y el
+            agregado va por fetch, con la bolita de flyToCart; sin JS, el form
+            navega y agrega igual. data-label-added: el texto de confirmación
+            que el botón muestra un momento al aterrizar la bolita.
+          {%- endcomment -%}
+          <button type="submit" class="card__add" data-label-added="{{ 'products.card.added' | t }}">{{ cta }}</button>
         </form>
       {%- else -%}
         <button type="button" class="card__add">{{ cta }}</button>

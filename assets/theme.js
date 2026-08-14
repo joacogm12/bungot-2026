@@ -238,37 +238,171 @@
     if (USUARIO && (!DEL_SERVIDOR || ADOPTADA_ANON)) sincronizarCuenta(fichaArranque);
   }
 
-  /* --- El avatar del perro en el header --------------------------------
-     Pinta la cara elegida sobre el botón de cuenta. Sin ficha guardada el
-     botón se queda tal cual estaba ("Yo" o la inicial). SOLO con sesión: el
-     perro es del usuario, y sin sesión el botón no debe aparentar una cuenta
-     que no existe — se queda en "Yo" aunque haya ficha local (pedido del
-     cliente). */
-  function initPerroNav() {
-    var boton = document.querySelector('[data-me]');
-    if (!boton) return;
-    if (boton.getAttribute('data-logged') !== 'true') return;
+  /* --- Vuelo al carrito -------------------------------------------------
+     La confirmación de todo botón "Agregar", sin salir de la página: una
+     bolita vuela del botón a la pastilla del carrito, el contador sube al
+     aterrizar (no en el clic) y la pastilla rebota. Lo llaman producto.js
+     (CTA de la PDP y venta cruzada), productos.js (tarjetas del catálogo)
+     y los paneles de favoritos (initFavCart, acá abajo).
 
-    var img = boton.querySelector('[data-dog-avatar]');
-    if (!img) return;
+     opts.cantidad → cuánto sumarle al contador si nadie confirma el total.
+     opts.color    → el de la bolita; sin él, el coral de la pestaña
+                     (--nav-coral). La PDP manda su naranja propio.
 
-    // El mapa id -> archivo lo arma Liquid en el propio botón: acá no se
-    // reconstruyen nombres de assets a mano (ver snippets/dog-avatar.liquid).
-    var plantilla = boton.getAttribute('data-avatar-src');
-    if (!plantilla) return;
+     Devuelve { ponTotal(n) }: el caller lo llama con el item_count real de
+     /cart.js y ese número le gana a la suma a ciegas — si la bolita ya
+     aterrizó corrige al momento, si no queda listo para el aterrizaje. Así
+     la cifra cambia justo cuando llega la bolita, con el valor del backend
+     si el fetch fue más rápido que el vuelo. */
+  function flyToCart(btn, opts) {
+    opts = opts || {};
+    var cantidad = opts.cantidad || 1;
+    var total = null;      // item_count real, si el caller lo confirma
+    var aterrizado = false;
+    var bola = null;
 
-    function pintar(ficha) {
-      // La ficha SOLO cambia la cara. El nombre de la pastilla es el del
-      // CLIENTE y lo pinta Liquid con sesión; sin sesión no hay nombre — el
-      // botón lleva a iniciar sesión y no debe aparentar una sesión que no
-      // existe.
-      var tiene = !!(ficha && ficha.avatar);
-      boton.setAttribute('data-perro', String(tiene));
-      if (tiene) img.src = plantilla.replace('__ID__', ficha.avatar);
+    var pastilla = pastillaCarrito();
+    // Sin pastilla a la vista (celu con el burger cerrado, o el footer ya
+    // empujó la barra) no hay a dónde volar; y con reduced-motion no se
+    // vuela ni se rebota: el contador salta al valor nuevo y listo. La
+    // compra nunca depende de la animación.
+    var vuela = !!(btn && pastilla && !reduceMotion && document.body.animate);
+
+    function contadores() {
+      return document.querySelectorAll('[data-cart-count]');
     }
 
-    pintar(Perro.read());
-    document.addEventListener('bungot:perro', function (e) { pintar(e.detail); });
+    function subeContador() {
+      contadores().forEach(function (el) {
+        el.textContent = total !== null ? total : (parseInt(el.textContent, 10) || 0) + cantidad;
+      });
+    }
+
+    function rebota() {
+      if (!pastilla || reduceMotion) return;
+      // Reinicio a mano por si viene de un rebote a medias: apagarla,
+      // forzar el reflow leyendo offsetWidth y volverla a asignar.
+      pastilla.style.animation = 'none';
+      void pastilla.offsetWidth;
+      pastilla.style.animation = 'cart-pop .42s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    }
+
+    // TODO el cierre del ciclo vive acá y es idempotente: quitar la bolita,
+    // subir el contador, rebotar la pastilla. Corre una sola vez.
+    function aterriza() {
+      if (aterrizado) return;
+      aterrizado = true;
+      if (bola) bola.remove();
+      subeContador();
+      rebota();
+    }
+
+    // Confirmación en el botón. data-ocupado evita que dos clics seguidos
+    // pisen el texto guardado (el segundo restauraría "¡Listo!" en vez del
+    // rótulo real); la bolita, en cambio, sí sale en cada clic.
+    if (btn && !btn.hasAttribute('data-ocupado')) {
+      btn.setAttribute('data-ocupado', '');
+      var textoConfirmacion = btn.getAttribute('data-label-added');
+      var textoOriginal = btn.textContent;
+      var fondoOriginal = btn.style.background;
+      setTimeout(function () {
+        if (textoConfirmacion) btn.textContent = textoConfirmacion;
+        btn.style.background = '#EA4A27'; // el coral de la pestaña (--nav-coral)
+      }, vuela ? 380 : 0);
+      setTimeout(function () {
+        btn.textContent = textoOriginal;
+        btn.style.background = fondoOriginal;
+        btn.removeAttribute('data-ocupado');
+      }, 1800);
+    }
+
+    if (vuela) {
+      var rb = btn.getBoundingClientRect();
+      var rp = pastilla.getBoundingClientRect();
+      var dx = (rp.left + rp.width / 2) - (rb.left + rb.width / 2);
+      var dy = (rp.top + rp.height / 2) - (rb.top + rb.height / 2);
+
+      bola = document.createElement('span');
+      bola.className = 'bola-carrito';
+      bola.style.background = opts.color || '#EA4A27';
+      bola.style.left = (rb.left + rb.width / 2 - 9) + 'px';
+      bola.style.top = (rb.top + rb.height / 2 - 9) + 'px';
+      document.body.appendChild(bola);
+
+      var vuelo = bola.animate([
+        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+        // La panza de arriba a mitad de camino es lo que la hace sentir "lanzada".
+        { transform: 'translate(' + dx / 2 + 'px, ' + (dy / 2 - 70) + 'px) scale(1.25)', offset: 0.55 },
+        { transform: 'translate(' + dx + 'px, ' + dy + 'px) scale(0.35)', opacity: 0.9 }
+      ], { duration: 620, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' });
+
+      // El aterrizaje NO puede colgar solo del onfinish: con la pestaña del
+      // navegador en segundo plano la WAAPI no corre nunca y la bolita se
+      // quedaría pegada en el body con el contador sin subir (ya pasó). El
+      // respaldo son los 620ms de vuelo más margen.
+      vuelo.onfinish = aterriza;
+      setTimeout(aterriza, 700);
+    } else {
+      aterriza();
+    }
+
+    return {
+      ponTotal: function (n) {
+        total = n;
+        if (aterrizado) {
+          contadores().forEach(function (el) { el.textContent = n; });
+        }
+      }
+    };
+  }
+
+  // La pastilla del carrito que se VE: la de escritorio (.header__cart) o el
+  // link del panel en celu. "Visible" = con caja y dentro del viewport, lo
+  // que descarta la de escritorio en celu (display: none) y la del panel con
+  // el burger cerrado (el panel vive corrido fuera de la pantalla).
+  function pastillaCarrito() {
+    var candidatas = document.querySelectorAll('.header__cart, .header__link--cart');
+    for (var i = 0; i < candidatas.length; i++) {
+      var r = candidatas[i].getBoundingClientRect();
+      if (r.width > 0 && r.bottom > 0 && r.top < window.innerHeight &&
+          r.right > 0 && r.left < window.innerWidth) {
+        return candidatas[i];
+      }
+    }
+    return null;
+  }
+
+  window.BUNGOT.flyToCart = flyToCart;
+
+  /* --- Favoritos: "Agregar al carrito" sin salir de la página ------------ */
+  /* El form de cada panel es un {% form 'product' %} que navegaría al
+     carrito al enviarse; acá se intercepta: el agregado va por fetch y la
+     confirmación es el vuelo de la bolita. El botón solo se bloquea
+     mientras dura el fetch, nunca por la animación. */
+  function initFavCart() {
+    document.querySelectorAll('.fav__form').forEach(function (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var btn = form.querySelector('.fav__btn');
+        var vuelo = flyToCart(btn, { cantidad: 1 });
+        if (btn) btn.disabled = true;
+        fetch('/cart/add.js', {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' }
+        })
+          .then(function () { return fetch('/cart.js', { headers: { Accept: 'application/json' } }); })
+          .then(function (r) { return r.json(); })
+          .then(function (cart) {
+            vuelo.ponTotal(cart.item_count);
+            if (btn) btn.disabled = false;
+          })
+          .catch(function () {
+            // Sin backend el contador ya subió al aterrizar; solo soltar el botón.
+            if (btn) btn.disabled = false;
+          });
+      });
+    });
   }
 
   /* --- Menú mobile ----------------------------------------------------- */
@@ -513,107 +647,46 @@
     });
   }
 
-  /* --- Portada: alto de la primera pantalla y escala de la manada -------- */
-  /* Dos medidas que el CSS no puede calcular solo:
+  /* --- Portada: las patas calcan la caja del perro ----------------------- */
+  /* La figura del perro vive recortada en su ventana, pero las patas
+     delanteras tienen que asomar por el borde de abajo del hero SOBRE la
+     sección siguiente, así que van en una capa aparte (z-index 6) que no se
+     recorta. Acá se le calca la caja del perro con geometría de MAQUETA
+     (offsetLeft/offsetTop): nunca getBoundingClientRect(), porque el perro
+     está respirando y balanceándose, así que su bounding box va inflada y
+     ladeada y ese sesgo se copiaría a las patas. Con la caja calcada y la
+     misma animación que el cuerpo (ver base.css), las patas quedan soldadas
+     al pecho: su desplazamiento relativo es constante en todo el ciclo, como
+     si estuvieran pintadas dentro del PNG del cuerpo. */
+  function initHeroPerro() {
+    if (!document.querySelector('[data-hero-patas]')) return;
 
-     --top-h: lo que hay encima del hero (marquee + header). No se puede clavar
-     en CSS porque el marquee crece con la fuente. Se mide como la distancia del
-     hero al techo del documento, que es exactamente eso.
+    function place() {
+      // Se re-buscan las referencias por si el hot-reload de `shopify theme
+      // dev` re-renderizó la sección (mismo motivo que initFooterPushesNav).
+      var hero = document.querySelector('.hero');
+      var perro = hero && hero.querySelector('[data-hero-perro]');
+      var patas = hero && hero.querySelector('[data-hero-patas]');
+      if (!perro || !patas) return;
 
-     --pup-scale: el artboard del diseño es de 1440 x ~1085, o sea un hero de
-     unos 985px de alto. En una ventana más baja (un portátil de 900 deja ~820)
-     las mascotas a tamaño de diseño se comen el titular. Se achica la fila
-     entera por el mismo factor, que es la manera que el README del handoff
-     autoriza a reescalar. Tope en 1: este factor nunca AGRANDA respecto al
-     diseño; para eso está --pack-boost, que se elige en el customizer. */
-  var HERO_ARTBOARD = 985;
-  // Lo que la barra de "Favoritos" sube sobre el hero (--hero-seam en el CSS):
-  // el hero se estira otro tanto para dejarla fuera de la primera pantalla.
-  var HERO_SEAM = 38;
-  // Ancho de la fila de mascotas a tamaño de diseño (suma de anchos y traslapes
-  // de la tabla del handoff). Sirve para no dejar que se salga de la pantalla.
-  var PACK_WIDTH = 1312;
-
-  function initPortadaTop() {
-    var portada = document.querySelector('.hero');
-    if (!portada) return;
-    // El header, para saber cuánto bordó estirar detrás de la barra sin tapar el
-    // marquee de arriba (ver .hero::before). Puede no existir si se borró.
-    var header = document.querySelector('.header');
-
-    function measure() {
-      var top = portada.getBoundingClientRect().top + window.scrollY;
-      document.documentElement.style.setProperty('--top-h', Math.round(top) + 'px');
-      if (header) {
-        document.documentElement.style.setProperty('--nav-h', header.offsetHeight + 'px');
+      var x = 0;
+      var y = 0;
+      var el = perro;
+      while (el && el !== hero) {
+        x += el.offsetLeft;
+        y += el.offsetTop;
+        el = el.offsetParent;
       }
-
-      var cs = getComputedStyle(portada);
-      // El customizer elige cuánto agrandar la manada; acá se descuenta para
-      // que el tope de ancho aplique sobre el tamaño FINAL, no sobre el previo.
-      var boost = parseFloat(cs.getPropertyValue('--pack-boost')) || 1;
-
-      // El alto que tiene el hero para repartir se lee del CSS ya resuelto a px,
-      // en vez de rehacer la cuenta acá y desincronizarla.
-      // Desde que la portada es de alto FIJO (910px) su min-height quedó en 0,
-      // así que se cae a la altura de verdad. El orden importa: si algún día
-      // vuelve un min-height, sigue mandando ese como antes.
-      var libre = parseFloat(cs.minHeight);
-      if (!(libre > 0)) libre = parseFloat(cs.height);
-      // En celu el min-height es 0 y el hero crece con su contenido; ahí la
-      // escala no se usa igual (--pup-k queda en 1), pero no debe dar 0.
-      if (!(libre > 0)) libre = window.innerHeight - top + HERO_SEAM;
-      var escala = Math.min(
-        1,                                                    // nunca más que el diseño
-        libre / HERO_ARTBOARD,                                // que quepa a lo alto
-        (window.innerWidth * 0.98) / (PACK_WIDTH * boost)     // y a lo ancho: si no,
-      );                                                      // se cortan las caras
-      document.documentElement.style.setProperty('--pup-scale', escala.toFixed(3));
+      patas.style.width = perro.offsetWidth + 'px';
+      patas.style.height = perro.offsetHeight + 'px';
+      patas.style.left = x + 'px';
+      patas.style.top = y + 'px';
     }
 
-    measure();
-    window.addEventListener('resize', measure);
-    // Fredoka cambia el alto del marquee cuando entra: hay que volver a medir.
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
-  }
-
-  /* --- Portada: la manada se agacha detrás de la barra ------------------- */
-  /* Del handoff de diseño (hero-pups.js): cuando el borde superior de la fila
-     cruza cierta altura del viewport, las mascotas bajan y vuelven al subir.
-     Cuanto MÁS CHICO el umbral, más tarde se agachan: la fila tiene que trepar
-     más antes de cruzarlo. El diseño traía 45%; el valor sale del customizer.
-     Solo se anima el transform del contenedor interno: la altura de la fila
-     NUNCA cambia, para que la sección de arriba no se mueva. */
-  function initPortadaPups() {
-    var row = document.querySelector('[data-pup-row]');
-    var inner = document.querySelector('[data-pup-inner]');
-    if (!row || !inner || reduceMotion) return;
-
-    var umbral = parseFloat(row.getAttribute('data-duck-at'));
-    if (!(umbral > 0)) umbral = 45;
-
-    var hidden = false;
-    function render() {
-      var next = row.getBoundingClientRect().top < window.innerHeight * (umbral / 100);
-      if (next === hidden) return;
-      hidden = next;
-      if (hidden) inner.setAttribute('data-hidden', '');
-      else inner.removeAttribute('data-hidden');
-    }
-
-    var ticking = false;
-    function onScroll() {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () {
-        ticking = false;
-        render();
-      });
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    render();
+    place();
+    window.addEventListener('resize', place);
+    // Anton entra tarde y puede recolocar el layout: se vuelve a medir.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
   }
 
   /* --- El footer empuja al nav fuera de la pantalla --------------------- */
@@ -789,13 +862,12 @@
 
   function init() {
     initPreloader();
-    initPortadaTop();
-    initPortadaPups();
-    initPerroNav();
+    initHeroPerro();
     initNav();
     initFilters();
     initCarousels();
     initFavoritos();
+    initFavCart();
     initPopup();
     initReviews();
     initContacto();

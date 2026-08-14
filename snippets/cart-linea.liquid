@@ -1,0 +1,65 @@
+{%- comment -%}
+  Una línea del recibo del carrito. La renderiza cart-recibo.liquid, una vez
+  por item.
+
+  Los data-* llevan el estado que carrito.js necesita para recalcular sin
+  volver a pedir el carrito: la key de la línea (para /cart/change.js) y el
+  precio unitario en centavos. Las cifras las pinta Liquid para el primer
+  render, pero carrito.js las reformatea al cargar con toLocaleString('es-MX')
+  para que servidor y cliente nunca muestren dos formatos distintos.
+
+  Params:
+    item (line_item) el item del carrito
+{%- endcomment -%}
+
+{%- liquid
+  # El mismo antetítulo que usa la PDP: el beneficio principal de la etiqueta
+  # dice más que un genérico, y el type es el respaldo cuando no hay metafield.
+  assign linea_eyebrow = item.product.metafields.custom.beneficio_principal.value | default: item.product.type
+-%}
+
+<li
+  class="rlinea"
+  data-rc-linea
+  data-key="{{ item.key }}"
+  data-price="{{ item.final_price }}"
+  data-qty="{{ item.quantity }}"
+>
+  <a class="rlinea__mini" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+    {%- if item.image -%}
+      <img
+        src="{{ item.image | image_url: width: 184 }}"
+        srcset="{{ item.image | image_url: width: 92 }} 92w, {{ item.image | image_url: width: 184 }} 184w"
+        sizes="92px"
+        alt="{{ item.image.alt | default: item.product.title | escape }}"
+        width="92"
+        height="92"
+        loading="lazy"
+      >
+    {%- else -%}
+      {%- comment -%} Sin foto: contorno de "etiqueta" al 70% del hueco. {%- endcomment -%}
+      <svg class="rlinea__ph" viewBox="0 0 72 72" fill="none" stroke="rgba(1, 60, 62, 0.22)" stroke-width="4" aria-hidden="true">
+        <rect x="8" y="12" width="56" height="48"/>
+        <path d="M8 24h56"/>
+      </svg>
+    {%- endif -%}
+  </a>
+
+  <div class="rlinea__datos">
+    <a class="rlinea__nombre" href="{{ item.url }}">{{ item.product.title }}</a>
+    <p class="rlinea__meta">
+      {%- if linea_eyebrow != blank -%}{{ linea_eyebrow }} · {% endif -%}
+      <span data-rc-unit>{{ item.final_price | money }}</span> {{ 'cart.unit_suffix' | t }}
+    </p>
+  </div>
+
+  <div class="rlinea__ctrl">
+    <div class="rlinea__stepper" role="group" aria-label="{{ 'cart.quantity' | t }}">
+      <button class="rlinea__step" type="button" data-rc-step="-1" aria-label="{{ 'cart.qty_less' | t }}">&minus;</button>
+      <span class="rlinea__qty" data-rc-qty>{{ item.quantity }}</span>
+      <button class="rlinea__step" type="button" data-rc-step="1" aria-label="{{ 'cart.qty_add' | t }}">+</button>
+    </div>
+    <strong class="rlinea__importe" data-rc-importe>{{ item.final_line_price | money }}</strong>
+    <button class="rlinea__x" type="button" data-rc-remove aria-label="{{ 'cart.remove' | t }}">&#10005;</button>
+  </div>
+</li>

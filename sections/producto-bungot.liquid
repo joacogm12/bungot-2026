@@ -392,30 +392,49 @@
   {%- liquid
     assign product_benefits = product.metafields.custom.beneficios.value
     assign belt_blocks = section.blocks | where: 'type', 'beneficio'
+
+    # Con los cinco beneficios completos la tira va a cinco columnas parejas;
+    # con menos, auto-fit reparte los que haya sin dejar huérfanos (la clase
+    # decide en CSS — contar aquí evita depender de :has()).
+    if product_benefits != blank and product_benefits.size > 0
+      assign belt_count = product_benefits.size
+    else
+      assign belt_count = belt_blocks.size
+    endif
+    assign belt_grid_class = 'pdbelt__grid'
+    if belt_count >= 5
+      assign belt_grid_class = 'pdbelt__grid pdbelt__grid--cinco'
+    endif
   -%}
 
+  {%- comment -%}
+    Cada beneficio es ícono arriba + afirmación corta, nada de párrafo: el
+    cinturón se lee de un vistazo. El campo de texto largo sigue existiendo en
+    el metaobjeto y en el bloque (para no perder lo ya cargado) pero no se
+    pinta. Sin ícono, el ítem se dibuja solo con su texto — sin hueco reservado.
+  {%- endcomment -%}
   {%- if product_benefits != blank and product_benefits.size > 0 -%}
     <div class="pdbelt">
-      <div class="pdbelt__grid">
+      <div class="{{ belt_grid_class }}">
         {%- for benefit in product_benefits -%}
           <article class="pdbelt__item">
-            <h2 class="pdbelt__title">{{ benefit.titulo.value }}</h2>
-            {%- if benefit.texto.value != blank -%}
-              <p class="pdbelt__text">{{ benefit.texto.value }}</p>
+            {%- if benefit.icono.value != blank -%}
+              <img class="pdbelt__icon" src="{{ benefit.icono.value | image_url: width: 192 }}" alt="" aria-hidden="true" width="96" height="96" loading="lazy">
             {%- endif -%}
+            <h3 class="pdbelt__title">{{ benefit.titulo.value }}</h3>
           </article>
         {%- endfor -%}
       </div>
     </div>
   {%- elsif belt_blocks.size > 0 -%}
     <div class="pdbelt">
-      <div class="pdbelt__grid">
+      <div class="{{ belt_grid_class }}">
         {%- for block in belt_blocks -%}
           <article class="pdbelt__item" {{ block.shopify_attributes }}>
-            <h2 class="pdbelt__title">{{ block.settings.title }}</h2>
-            {%- if block.settings.text != blank -%}
-              <p class="pdbelt__text">{{ block.settings.text }}</p>
+            {%- if block.settings.icon != blank -%}
+              <img class="pdbelt__icon" src="{{ block.settings.icon | image_url: width: 192 }}" alt="" aria-hidden="true" width="96" height="96" loading="lazy">
             {%- endif -%}
+            <h3 class="pdbelt__title">{{ block.settings.title }}</h3>
           </article>
         {%- endfor -%}
       </div>
@@ -816,8 +835,9 @@
       "type": "beneficio",
       "name": "Beneficio",
       "settings": [
+        { "type": "image_picker", "id": "icon", "label": "Ícono" },
         { "type": "text", "id": "title", "label": "Título", "default": "Un solo ingrediente" },
-        { "type": "textarea", "id": "text", "label": "Texto", "default": "Nada más. Ni conservadores, ni colorantes, ni rellenos." }
+        { "type": "textarea", "id": "text", "label": "Texto", "info": "Ya no se muestra en la página; se conserva para no perder lo cargado." }
       ]
     },
     {
@@ -862,10 +882,11 @@
         { "type": "acordeon", "settings": { "title": "Porción diaria", "source": "recomendacion", "body": "<p>Como premio, en el entrenamiento o partido encima de su comida. Deja siempre agua fresca cerca.</p>" } },
         { "type": "acordeon", "settings": { "title": "Cuidados y conservación", "source": "instrucciones", "body": "<p>En un lugar fresco y seco. No necesita refrigeración.</p>" } },
         { "type": "acordeon", "settings": { "title": "Envíos y devoluciones", "source": "manual", "body": "<p>Enviamos a todo México en 2 a 4 días hábiles. Envío gratis en pedidos desde $500. Si algo llegó mal, escríbenos dentro de los primeros 15 días y te lo reponemos sin vueltas.</p>" } },
-        { "type": "beneficio", "settings": { "title": "Un solo ingrediente", "text": "Pulmón de cerdo y nada más. Sin conservadores, químicos ni colorantes." } },
-        { "type": "beneficio", "settings": { "title": "Vitaminas del grupo B", "text": "Aporta B12 y hierro, de los que ayudan a que ande con energía." } },
-        { "type": "beneficio", "settings": { "title": "Fácil de digerir", "text": "Ligero y bajo en grasa: cae bien hasta en panzas delicadas." } },
-        { "type": "beneficio", "settings": { "title": "Hecho en México", "text": "Deshidratado en lotes chicos con proteína de aquí." } },
+        { "type": "beneficio", "settings": { "title": "Ayuda al desarrollo muscular" } },
+        { "type": "beneficio", "settings": { "title": "Aumenta niveles de energía" } },
+        { "type": "beneficio", "settings": { "title": "Refuerza sistema inmune" } },
+        { "type": "beneficio", "settings": { "title": "Favorece la función cardiaca" } },
+        { "type": "beneficio", "settings": { "title": "Aporta vitamina B12" } },
         { "type": "opinion", "settings": { "rating": "5", "text": "Se lo doy en el parque y hace caso a la primera. Antes ni volteaba.", "autor": "Ana · Frida" } },
         { "type": "opinion", "settings": { "rating": "5", "text": "Huele fuerte pero eso es justo lo que le gusta. Se acaba la bolsa en una semana.", "autor": "Rodrigo · Nube" } },
         { "type": "opinion", "settings": { "rating": "4", "text": "Buen tamaño para partirlo. Mi perra es chiquita y le rinde un montón.", "autor": "Mariana · Chispa" } },

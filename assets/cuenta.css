@@ -14,7 +14,7 @@
    no son pantones van marcados.
    ========================================================================== */
 
-:where(.cuenta, .cpage, .clog, .ctoast, .header__account) {
+:where(.cuenta, .cpage, .clog, .ctoast) {
   /* --- Mapeo del handoff a la paleta del tema --- */
   /* #013C3E del handoff = PANTONE 2217 C. Ojo: NO es --ink (que es el marino
      654): el paquete de cuenta usa el petróleo como tinta. */
@@ -326,16 +326,6 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
 }
 
 /* ==========================================================================
-   El botón de cuenta del header
-   (El menú desplegable 1c que colgaba de él se quitó a pedido: el botón
-   ahora navega directo y la barra lateral de .cpage hace de menú.)
-   ========================================================================== */
-.header__account {
-  display: flex;
-  align-items: center;
-}
-
-/* ==========================================================================
    1b — panel verde + formulario (registro; la ficha ahora vive en .cpage)
    ========================================================================== */
 .cuenta { background: var(--cta-cream); color: var(--cta-ink); }
@@ -620,11 +610,11 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   background: var(--cta-cream);
   color: var(--cta-ink);
   /* Pantalla completa: la sección llena lo que queda del viewport debajo del
-     header sticky (--nav-h la mide theme.js; --nav-gap es su despegue). Así
-     Mi perro, Mis pedidos y Mis direcciones ocupan toda la pantalla y el
+     header sticky (72px fijos del navbar v2; --nav-gap es su despegue, hoy 0).
+     Así Mi perro, Mis pedidos y Mis direcciones ocupan toda la pantalla y el
      footer arranca fuera de la vista. svh y no vh: en celu la barra del
      navegador se come la diferencia. */
-  min-height: calc(100svh - var(--nav-h, 58px) - var(--nav-gap, 14px));
+  min-height: calc(100svh - var(--nav-h, 72px) - var(--nav-gap, 0px));
 }
 
 /* --- Barra lateral --- */

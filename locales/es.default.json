@@ -28,14 +28,23 @@
     "back": "← Volver a productos",
     "card": {
       "buy": "Agregar al carrito",
+      "added": "¡Listo!",
       "on_sale": "Oferta",
       "sold_out": "Agotado"
     }
   },
   "favoritos": {
-    "label": "Favorito"
+    "label": "Favorito",
+    "added": "¡Va en el carrito!"
   },
   "sections": {
+    "hero": {
+      "claim_top": "Para\nchuparse",
+      "claim_bottom": "Las\npatas",
+      "dog_alt": "El perro de BUNGOT",
+      "instagram": "Instagram de BUNGOT",
+      "contact": "Escríbenos"
+    },
     "collection_bandas": {
       "aria": "Catálogo BUNGOT",
       "nav": "Navegación",
@@ -53,7 +62,7 @@
       "shot_prod": "El premio en producción",
       "qty_less": "Quitar uno",
       "qty_more": "Agregar uno",
-      "added": "¡Agregado!",
+      "added": "¡Va en el carrito!",
       "unavailable": "No disponible",
       "content": "Contenido",
       "ingredient_one": "Ingrediente",
@@ -82,15 +91,38 @@
     "next": "Siguiente"
   },
   "cart": {
-    "title": "Tu carrito",
-    "empty": "Está vacío. Tu perro te está mirando.",
-    "keep_shopping": "Ver productos",
+    "eyebrow": "Nota de venta · No oficial",
+    "title": "Tu pedido",
+    "folio_label": "Folio provisional",
+    "piece_one": "pieza",
+    "piece_other": "piezas",
+    "product_one": "producto",
+    "product_other": "productos",
+    "unit_suffix": "c/u",
     "quantity": "Cantidad",
+    "qty_add": "Agregar una pieza",
+    "qty_less": "Quitar una pieza",
     "remove": "Quitar",
-    "subtotal": "Subtotal",
-    "taxes_note": "Impuestos y envío se calculan en el checkout.",
+    "empty": "Tu carrito está vacío.",
+    "taxes_note": "Impuestos incluidos. El envío se calcula al pagar.",
     "update": "Actualizar",
-    "checkout": "Finalizar compra"
+    "subtotal": "Subtotal",
+    "shipping": "Envío",
+    "shipping_free": "Gratis",
+    "total": "Total",
+    "checkout": "Pagar mi pedido",
+    "seal_missing": "Faltan {{ amount }} para envío gratis",
+    "seal_free": "Envío gratis aplicado",
+    "keep_shopping": "‹ Seguir comprando",
+    "footnote": "Enviamos a todo México en 2 a 4 días hábiles · Impuestos incluidos",
+    "upsell_eyebrow": "Se lleva bien con",
+    "upsell_lead": "Lo que más se agrega junto a lo que ya llevas.",
+    "upsell_add": "Agregar {{ product }} al carrito",
+    "empty_title": "Nota en blanco",
+    "empty_text": "Tu bolsa está vacía y hay un perro esperando. Empieza por lo que más se lleva: pulmón, hígado y patas de pollo.",
+    "empty_cta": "Ver el catálogo",
+    "empty_recover": "Recuperar mi bolsa",
+    "live_update": "Carrito actualizado: {{ pieces }} · total {{ total }}"
   },
   "newsletter": {
     "email": "Email",

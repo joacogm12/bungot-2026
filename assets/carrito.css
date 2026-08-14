@@ -1,0 +1,530 @@
+/* ==========================================================================
+   BUNGOT — Carrito "recibo de papel" (sections/cart-recibo.liquid)
+
+   Una nota de venta centrada sobre fondo arena: dientes de zigzag arriba y
+   abajo, sombra sólida desplazada a la izquierda, reglas y puntos guía como
+   de impresora de tickets. Nada de esquinas redondeadas adentro del recibo:
+   acá todo es borde recto de 2–3px.
+   ========================================================================== */
+
+.rcpage {
+  /* --- Mapeo del diseño a la paleta del tema ---
+     #013C3E y #EA4A27 son la MISMA tinta y el MISMO coral del handoff de
+     cuenta y del navbar (--nav-tinta / --nav-coral): van literales como en
+     .pdpage para que el recibo case pixel con pixel con esas pantallas.
+     El verde y el ámbar sí existen tal cual en los pantones. */
+  --rc-tinta: #013C3E;
+  --rc-naranja: #EA4A27;
+  --rc-verde: var(--p-7716, #00978E);
+  --rc-ambar: var(--p-122, #FED140);
+  --rc-papel: var(--cream, #F7F1E3);
+  /* Arena y el fondo de miniatura NO salen de los pantones: son el papel
+     "viejo" del diseño del recibo, como los tintes claros de cuenta.css. */
+  --rc-arena: #E7DECA;
+  --rc-mini: #EFE7D6;
+
+  /* Bayon solo trae 400; Anton es la condensada de respaldo que ya se sirve. */
+  --rc-font-cifra: 'Bayon', 'Anton', Impact, sans-serif;
+
+  background: var(--rc-arena);
+  color: var(--rc-tinta);
+  padding: 52px 20px 96px;
+  position: relative;
+}
+
+/* La franja arena que sigue DETRÁS del navbar transparente: mismo truco que
+   .pdpage::before, pero a todo lo ancho. Sin esto quedaría una tira crema
+   (el fondo del body) entre la barra y el recibo. */
+.rcpage::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  height: calc(var(--nav-h, 72px) + var(--nav-gap, 0px));
+  background: var(--rc-arena);
+}
+
+.rcwrap {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   El papel: diente + cuerpo + diente dentro de UN envoltorio.
+   La sombra va en drop-shadow y no en box-shadow a propósito: box-shadow
+   pinta la caja rectangular y taparía los picos; drop-shadow sigue el
+   contorno recortado por los clip-path.
+   -------------------------------------------------------------------------- */
+.recibo {
+  filter: drop-shadow(-12px 12px 0 rgba(1, 60, 62, 0.6));
+}
+.recibo[hidden] { display: none; }
+
+.recibo__diente {
+  height: 16px;
+  background: var(--rc-papel);
+}
+/* Zigzag de 30 picos (paso 3.33%): arriba los valles bajan al 40% del alto… */
+.recibo__diente--top {
+  clip-path: polygon(0 100%, 0 0, 3.33% 40%, 6.67% 0, 10% 40%, 13.33% 0, 16.67% 40%, 20% 0, 23.33% 40%, 26.67% 0, 30% 40%, 33.33% 0, 36.67% 40%, 40% 0, 43.33% 40%, 46.67% 0, 50% 40%, 53.33% 0, 56.67% 40%, 60% 0, 63.33% 40%, 66.67% 0, 70% 40%, 73.33% 0, 76.67% 40%, 80% 0, 83.33% 40%, 86.67% 0, 90% 40%, 93.33% 0, 96.67% 40%, 100% 0, 100% 100%);
+}
+/* …y abajo el mismo zigzag invertido, con los valles al 60%. */
+.recibo__diente--bottom {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 96.67% 60%, 93.33% 100%, 90% 60%, 86.67% 100%, 83.33% 60%, 80% 100%, 76.67% 60%, 73.33% 100%, 70% 60%, 66.67% 100%, 63.33% 60%, 60% 100%, 56.67% 60%, 53.33% 100%, 50% 60%, 46.67% 100%, 43.33% 60%, 40% 100%, 36.67% 60%, 33.33% 100%, 30% 60%, 26.67% 100%, 23.33% 60%, 20% 100%, 16.67% 60%, 13.33% 100%, 10% 60%, 6.67% 100%, 3.33% 60%, 0 100%);
+}
+
+.recibo__cuerpo {
+  background: var(--rc-papel);
+  padding: 64px 72px 60px;
+}
+
+/* --- Cabecera ------------------------------------------------------------ */
+.recibo__cab {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.recibo__eyebrow {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rc-verde);
+}
+
+.recibo__h1 {
+  margin: 0;
+  font-family: var(--rc-font-cifra);
+  font-weight: 400;
+  font-size: 74px;
+  line-height: 0.84;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--rc-tinta);
+}
+
+.recibo__folio {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  text-align: right;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: rgba(1, 60, 62, 0.7);
+}
+.recibo__folio strong {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--rc-tinta);
+}
+
+/* --- Reglas (la doble raya de impresora) --------------------------------- */
+.recibo__regla {
+  display: block;
+  border: 0;
+  background: var(--rc-tinta);
+}
+.recibo__regla--3 { height: 3px; }
+.recibo__regla--1 { height: 1px; }
+.recibo__reglas .recibo__regla--3 { margin: 38px 0 4px; }
+.recibo__reglas .recibo__regla--1 { margin-bottom: 12px; }
+/* En los totales la doble raya va al revés (fina arriba, gruesa abajo) y sin
+   el aire grande de la cabecera. */
+.recibo__reglas--total .recibo__regla--1 { margin: 0 0 4px; }
+.recibo__reglas--total .recibo__regla--3 { margin: 0; }
+
+/* --- Líneas de producto -------------------------------------------------- */
+.recibo__lineas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rlinea {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 26px;
+  padding: 26px 0;
+  border-bottom: 1px dashed rgba(1, 60, 62, 0.35);
+}
+
+.rlinea__mini {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  padding: 8px;
+  background: var(--rc-mini);
+}
+.rlinea__mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.rlinea__ph { width: 70%; }
+
+.rlinea__nombre {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 23px;
+  color: var(--rc-tinta);
+  text-decoration: none;
+}
+.rlinea__nombre:hover { color: var(--rc-verde); }
+
+.rlinea__meta {
+  margin: 4px 0 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: rgba(1, 60, 62, 0.65);
+}
+
+.rlinea__ctrl {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.rlinea__stepper {
+  display: flex;
+  align-items: stretch;
+  border: 2px solid var(--rc-tinta);
+}
+.rlinea__step {
+  width: 40px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--rc-tinta);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.rlinea__step:hover { background: var(--rc-ambar); }
+/* Las divisiones internas, del mismo grosor que el marco. */
+.rlinea__qty {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  border-left: 2px solid var(--rc-tinta);
+  border-right: 2px solid var(--rc-tinta);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.rlinea__importe {
+  min-width: 104px;
+  text-align: right;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.rlinea__x {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: rgba(1, 60, 62, 0.55);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.rlinea__x:hover { color: var(--rc-naranja); }
+
+/* --- Totales ------------------------------------------------------------- */
+.recibo__totales {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 38px;
+}
+
+.rtot {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.rtot__label {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: rgba(1, 60, 62, 0.75);
+}
+.rtot__puntos {
+  flex: 1;
+  border-bottom: 1px dotted rgba(1, 60, 62, 0.45);
+  transform: translateY(-4px);
+}
+.rtot__cifra {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  color: var(--rc-tinta);
+}
+/* El envío en verde cuando ya salió gratis. */
+.rtot__cifra.es-gratis { color: var(--rc-verde); }
+
+.rtotal {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+}
+.rtotal span {
+  font-family: var(--rc-font-cifra);
+  font-weight: 400;
+  font-size: 34px;
+  text-transform: uppercase;
+}
+.rtotal strong {
+  font-family: var(--rc-font-cifra);
+  font-weight: 400;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--rc-naranja);
+}
+
+/* --- CTA y sello --------------------------------------------------------- */
+.recibo__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 26px;
+  margin-top: 40px;
+}
+
+.recibo__pagar-form { flex: 1 1 260px; }
+.recibo__pagar {
+  width: 100%;
+  min-height: 62px;
+  border: 3px solid var(--rc-tinta);
+  background: var(--rc-naranja);
+  color: var(--rc-papel);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.recibo__pagar:hover { background: var(--rc-tinta); }
+
+.recibo__sello {
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 120px;
+  padding: 12px;
+  border: 3px solid currentColor;
+  border-radius: 50%;
+  transform: rotate(-9deg);
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.recibo__sello--falta { color: var(--rc-naranja); }
+.recibo__sello--gratis { color: var(--rc-verde); }
+
+/* --- Pie ----------------------------------------------------------------- */
+.recibo__pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: 34px;
+  padding-top: 24px;
+  border-top: 1px dashed rgba(1, 60, 62, 0.35);
+}
+.recibo__seguir {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--rc-verde);
+  text-decoration: none;
+}
+.recibo__seguir:hover { text-decoration: underline; }
+.recibo__nota {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: rgba(1, 60, 62, 0.65);
+}
+
+/* --------------------------------------------------------------------------
+   "Se lleva bien con" — fuera del recibo, sin sombra.
+   -------------------------------------------------------------------------- */
+.rupsell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 24px;
+  margin-top: 44px;
+  padding: 26px 32px;
+  border: 3px dashed rgba(1, 60, 62, 0.4);
+  background: rgba(247, 241, 227, 0.55);
+}
+.rupsell[hidden] { display: none; }
+
+.rupsell__eyebrow {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rc-verde);
+}
+.rupsell__bajada {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+
+.rupsell__botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.rupsell__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  padding: 0 18px;
+  border: 2px solid var(--rc-tinta);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.rupsell__btn:hover,
+.rupsell__btn:focus-visible { background: var(--rc-ambar); }
+.rupsell__btn:disabled { opacity: 0.5; cursor: wait; }
+.rupsell__nombre {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--rc-tinta);
+}
+.rupsell__precio {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: rgba(1, 60, 62, 0.6);
+}
+.rupsell__mas {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--rc-tinta);
+}
+
+/* --------------------------------------------------------------------------
+   Estado vacío — reemplaza al recibo, nada de nota con cero líneas.
+   -------------------------------------------------------------------------- */
+.rvacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 72px 64px;
+  background: var(--rc-papel);
+  text-align: center;
+}
+.rvacio[hidden] { display: none; }
+
+.rvacio__hueso {
+  width: 120px;
+  height: 120px;
+}
+.rvacio__h2 {
+  margin: 0;
+  font-family: var(--rc-font-cifra);
+  font-weight: 400;
+  font-size: 56px;
+  line-height: 0.9;
+  text-transform: uppercase;
+  color: var(--rc-tinta);
+}
+.rvacio__texto {
+  margin: 0;
+  max-width: 44ch;
+  font-family: var(--font-body);
+  font-size: 18px;
+}
+.rvacio__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 6px;
+}
+.rvacio__cta,
+.rvacio__ghost {
+  display: inline-flex;
+  align-items: center;
+  height: 58px;
+  padding: 0 26px;
+  border: 3px solid var(--rc-tinta);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.rvacio__cta {
+  background: var(--rc-naranja);
+  color: var(--rc-papel);
+}
+.rvacio__cta:hover { background: var(--rc-tinta); }
+.rvacio__ghost {
+  background: transparent;
+  color: var(--rc-tinta);
+}
+.rvacio__ghost:hover { background: var(--rc-ambar); }
+
+/* --------------------------------------------------------------------------
+   Responsive
+   (Lo de ≤900px del header —esconder enlaces, mostrar burger— ya vive en
+   base.css: acá solo se adapta el recibo.)
+   -------------------------------------------------------------------------- */
+@media (max-width: 760px) {
+  .recibo__cuerpo { padding: 40px 24px 36px; }
+  .recibo__h1 { font-size: 52px; }
+
+  .rlinea {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 16px 18px;
+  }
+  .rlinea__mini {
+    width: 76px;
+    height: 76px;
+  }
+  /* Los controles caen a su propia línea, de borde a borde. */
+  .rlinea__ctrl {
+    grid-column: 2 / -1;
+    justify-content: space-between;
+  }
+
+  .rvacio { padding: 52px 24px; }
+  .rupsell { padding: 22px 20px; }
+}

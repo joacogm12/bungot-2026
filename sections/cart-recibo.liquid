@@ -1,0 +1,235 @@
+{%- comment -%}
+  BUNGOT — Carrito como recibo de papel. Una nota de venta centrada sobre
+  fondo arena: dientes de zigzag arriba y abajo, sombra sólida que sigue el
+  contorno (drop-shadow, no box-shadow: box-shadow ignoraría el clip-path de
+  los dientes), líneas de puntos guía y total en naranja.
+
+  El header y el footer son los GLOBALES del tema (header-group /
+  footer-group): esta sección no dibuja nav propio. El contador que carrito.js
+  mantiene al día es el [data-cart-count] del header de la landing.
+
+  Tres piezas conviven acá y carrito.js las conmuta sin recargar:
+    · el recibo (data-rc-papel) — se esconde si el carrito queda vacío,
+    · el estado vacío (data-rc-vacio) — nada de recibo en blanco,
+    · "Se lleva bien con" (data-rc-upsell) — sugerencias que excluyen lo que
+      ya está en el carrito; agregar una recarga la página para que el recibo
+      se re-renderice del lado del servidor con la línea nueva.
+
+  El botón de pagar es un <button name="checkout"> dentro de un form real
+  contra /cart: es lo que cuenta.js escucha para ofrecer iniciar sesión antes
+  del checkout — no lo cambies por un enlace.
+
+  El envío de acá es INFORMATIVO (umbral y costo del schema): el checkout
+  cobra lo que digan las tarifas reales de la tienda.
+{%- endcomment -%}
+
+{{ 'carrito.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'carrito.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign umbral_mxn = section.settings.free_threshold | default: 500
+  assign envio_mxn = section.settings.shipping_cost | default: 99
+  assign umbral_cents = umbral_mxn | times: 100
+  assign envio_cents = envio_mxn | times: 100
+
+  if cart.item_count == 1
+    assign piezas_palabra = 'cart.piece_one' | t
+  else
+    assign piezas_palabra = 'cart.piece_other' | t
+  endif
+  if cart.items.size == 1
+    assign productos_palabra = 'cart.product_one' | t
+  else
+    assign productos_palabra = 'cart.product_other' | t
+  endif
+-%}
+
+<section
+  class="rcpage"
+  data-recibo
+  data-free-threshold="{{ umbral_cents }}"
+  data-shipping="{{ envio_cents }}"
+>
+  <div class="rcwrap">
+    <div class="recibo" data-rc-papel {% if cart.item_count == 0 %}hidden{% endif %}>
+      <div class="recibo__diente recibo__diente--top" aria-hidden="true"></div>
+
+      <div class="recibo__cuerpo">
+        <header class="recibo__cab">
+          <div>
+            <p class="recibo__eyebrow">{{ 'cart.eyebrow' | t }}</p>
+            <h1 class="recibo__h1">{{ 'cart.title' | t }}</h1>
+          </div>
+          <div class="recibo__folio">
+            <span>{{ 'cart.folio_label' | t }}</span>
+            <strong>{{ section.settings.folio }}</strong>
+            <span data-rc-resumen>{{ cart.item_count }} {{ piezas_palabra }} · {{ cart.items.size }} {{ productos_palabra }}</span>
+          </div>
+        </header>
+
+        <div class="recibo__reglas" aria-hidden="true">
+          <i class="recibo__regla recibo__regla--3"></i>
+          <i class="recibo__regla recibo__regla--1"></i>
+        </div>
+
+        <ul class="recibo__lineas" data-rc-lineas>
+          {%- for item in cart.items -%}
+            {%- render 'cart-linea', item: item -%}
+          {%- endfor -%}
+        </ul>
+
+        <div class="recibo__totales">
+          <div class="rtot">
+            <span class="rtot__label">{{ 'cart.subtotal' | t }}</span>
+            <span class="rtot__puntos" aria-hidden="true"></span>
+            <strong class="rtot__cifra" data-rc-subtotal>{{ cart.total_price | money }}</strong>
+          </div>
+          <div class="rtot">
+            <span class="rtot__label">{{ 'cart.shipping' | t }}</span>
+            <span class="rtot__puntos" aria-hidden="true"></span>
+            <strong class="rtot__cifra" data-rc-envio></strong>
+          </div>
+          <div class="recibo__reglas recibo__reglas--total" aria-hidden="true">
+            <i class="recibo__regla recibo__regla--1"></i>
+            <i class="recibo__regla recibo__regla--3"></i>
+          </div>
+          <div class="rtotal">
+            <span>{{ 'cart.total' | t }}</span>
+            <strong data-rc-total>{{ cart.total_price | money }}</strong>
+          </div>
+        </div>
+
+        <div class="recibo__cta">
+          {%- comment -%}
+            El form manda el carrito TAL CUAL está en el servidor (los
+            steppers ya sincronizaron por /cart/change.js): no necesita
+            updates[], solo el name="checkout".
+          {%- endcomment -%}
+          <form class="recibo__pagar-form" action="{{ routes.cart_url }}" method="post" novalidate>
+            <button class="recibo__pagar" type="submit" name="checkout">{{ 'cart.checkout' | t }}</button>
+          </form>
+          <div class="recibo__sello" data-rc-sello aria-hidden="true"></div>
+        </div>
+
+        <footer class="recibo__pie">
+          <a class="recibo__seguir" href="{{ routes.all_products_collection_url }}">{{ 'cart.keep_shopping' | t }}</a>
+          <p class="recibo__nota">{{ 'cart.footnote' | t }}</p>
+        </footer>
+      </div>
+
+      <div class="recibo__diente recibo__diente--bottom" aria-hidden="true"></div>
+    </div>
+
+    <div class="rvacio" data-rc-vacio {% if cart.item_count > 0 %}hidden{% endif %}>
+      <img
+        class="rvacio__hueso"
+        src="{{ 'bungot-sticker-hueso.png' | asset_url }}"
+        alt=""
+        width="120"
+        height="120"
+        loading="lazy"
+      >
+      <h2 class="rvacio__h2">{{ 'cart.empty_title' | t }}</h2>
+      <p class="rvacio__texto">{{ 'cart.empty_text' | t }}</p>
+      <div class="rvacio__acciones">
+        <a class="rvacio__cta" href="{{ routes.all_products_collection_url }}">{{ 'cart.empty_cta' | t }}</a>
+        <a class="rvacio__ghost" href="{% render 'account-url', destino: 'mis-pedidos' %}">{{ 'cart.empty_recover' | t }}</a>
+      </div>
+    </div>
+
+    {%- comment -%}
+      Sugeridos: hasta tres productos que NO están ya en el carrito. Los ids
+      se comparan envueltos en comas para que un id no matchee dentro de otro
+      más largo (123 vs 4123).
+    {%- endcomment -%}
+    {%- liquid
+      assign ids_en_carrito = ','
+      for item in cart.items
+        assign ids_en_carrito = ids_en_carrito | append: item.product_id | append: ','
+      endfor
+    -%}
+    {%- capture sugeridos -%}
+      {%- assign mostrados = 0 -%}
+      {%- for producto in collections.all.products limit: 12 -%}
+        {%- if mostrados >= 3 -%}{%- break -%}{%- endif -%}
+        {%- assign needle = producto.id | prepend: ',' | append: ',' -%}
+        {%- if producto.available -%}
+          {%- unless ids_en_carrito contains needle -%}
+            <button
+              class="rupsell__btn"
+              type="button"
+              data-rc-add="{{ producto.selected_or_first_available_variant.id }}"
+              aria-label="{{ 'cart.upsell_add' | t: product: producto.title | escape }}"
+            >
+              <span class="rupsell__nombre">{{ producto.title }}</span>
+              <span class="rupsell__precio">{{ producto.price | money }}</span>
+              <span class="rupsell__mas" aria-hidden="true">+</span>
+            </button>
+            {%- assign mostrados = mostrados | plus: 1 -%}
+          {%- endunless -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- assign sugeridos = sugeridos | strip -%}
+    {%- if sugeridos != blank -%}
+      <aside class="rupsell" data-rc-upsell {% if cart.item_count == 0 %}hidden{% endif %}>
+        <div class="rupsell__texto">
+          <p class="rupsell__eyebrow">{{ 'cart.upsell_eyebrow' | t }}</p>
+          <p class="rupsell__bajada">{{ 'cart.upsell_lead' | t }}</p>
+        </div>
+        <div class="rupsell__botones">{{ sugeridos }}</div>
+      </aside>
+    {%- endif -%}
+
+    <p class="visually-hidden" aria-live="polite" data-rc-live></p>
+
+    {%- comment -%}
+      Copy que carrito.js necesita para recalcular en el cliente. Sale de
+      locales/es.default.json: en el JS no hay ni una cadena de UI escrita a
+      mano. Los huecos van con corchetes ([amount]/[pieces]/[total], los
+      sustituye el JS) porque una llave literal dentro de {{ }} rompe el
+      parser de Liquid.
+    {%- endcomment -%}
+    <script type="application/json" data-rc-i18n>
+      {
+        "pieceOne": {{ 'cart.piece_one' | t | json }},
+        "pieceOther": {{ 'cart.piece_other' | t | json }},
+        "productOne": {{ 'cart.product_one' | t | json }},
+        "productOther": {{ 'cart.product_other' | t | json }},
+        "shippingFree": {{ 'cart.shipping_free' | t | json }},
+        "sealMissing": {{ 'cart.seal_missing' | t: amount: '[amount]' | json }},
+        "sealFree": {{ 'cart.seal_free' | t | json }},
+        "liveUpdate": {{ 'cart.live_update' | t: pieces: '[pieces]', total: '[total]' | json }}
+      }
+    </script>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Carrito — recibo",
+  "enabled_on": { "templates": ["cart"] },
+  "settings": [
+    {
+      "type": "text",
+      "id": "folio",
+      "label": "Folio del recibo",
+      "default": "#BG-2026",
+      "info": "Es decorativo: el folio real lo asigna Shopify al crear el pedido."
+    },
+    {
+      "type": "number",
+      "id": "free_threshold",
+      "label": "Umbral de envío gratis (MXN)",
+      "default": 500
+    },
+    {
+      "type": "number",
+      "id": "shipping_cost",
+      "label": "Costo de envío debajo del umbral (MXN)",
+      "default": 99,
+      "info": "Solo informativo en esta página: el checkout cobra las tarifas reales."
+    }
+  ]
+}
+{% endschema %}

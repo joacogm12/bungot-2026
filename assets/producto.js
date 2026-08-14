@@ -16,6 +16,7 @@
     setupOptions(root);
     setupStepper(root);
     setupAddToCart(root);
+    setupCrossSell();
     setupReviews(root);
   }
 
@@ -144,9 +145,11 @@
   }
 
   /* --- Agregar al carrito -------------------------------------------------
-     Con variante real va por /cart/add.js; sin ella (producto de ejemplo, sin
-     backend) solo suma al contador. En los dos casos el que se actualiza es el
-     [data-cart-count] del header global del tema. */
+     Nunca navega al carrito: con variante real va por /cart/add.js y sin ella
+     (producto de ejemplo, sin backend) solo se simula. La confirmación es el
+     vuelo de la bolita (window.BUNGOT.flyToCart, theme.js): el contador del
+     header sube cuando aterriza — con el item_count real si el fetch ya
+     regresó — y el botón solo se bloquea mientras dura el fetch. */
   function setupAddToCart(root) {
     var form = root.querySelector('[data-pd-form]');
     if (!form) return;
@@ -157,12 +160,10 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var qty = parseInt(qtyInput && qtyInput.value, 10) || 1;
+      var vuelo = despega(addBtn, qty);
 
-      if (!idInput || !idInput.value) {
-        bumpCount(qty);
-        flash(addBtn);
-        return;
-      }
+      // Sin variante no hay POST: la bolita ya subió el contador de mentira.
+      if (!idInput || !idInput.value) return;
 
       if (addBtn) addBtn.disabled = true;
       fetch('/cart/add.js', {
@@ -173,17 +174,56 @@
         .then(function () { return fetch('/cart.js', { headers: { Accept: 'application/json' } }); })
         .then(function (r) { return r.json(); })
         .then(function (cart) {
-          setCount(cart.item_count);
+          vuelo.ponTotal(cart.item_count);
           if (addBtn) addBtn.disabled = false;
-          flash(addBtn);
         })
         .catch(function () {
-          // Sin carrito disponible: al menos que el contador no mienta.
-          bumpCount(qty);
+          // Sin carrito disponible: el contador ya subió al aterrizar la
+          // bolita, así que al menos no miente. Solo soltar el botón.
           if (addBtn) addBtn.disabled = false;
-          flash(addBtn);
         });
     });
+  }
+
+  /* --- Venta cruzada: las tarjetas agregan sin salir de la PDP ------------
+     Son las mismas tarjetas del catálogo (snippets/banda-card.liquid): su
+     form navegaría a /cart/add, acá se intercepta y va por fetch con la
+     misma bolita del CTA. Las tarjetas manuales (sin variante) no traen
+     form, así que no pasan por acá. */
+  function setupCrossSell() {
+    toArray(document.querySelectorAll('.card__addform')).forEach(function (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var btn = form.querySelector('.card__add');
+        var vuelo = despega(btn, 1);
+        if (btn) btn.disabled = true;
+        fetch('/cart/add.js', {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' }
+        })
+          .then(function () { return fetch('/cart.js', { headers: { Accept: 'application/json' } }); })
+          .then(function (r) { return r.json(); })
+          .then(function (cart) {
+            vuelo.ponTotal(cart.item_count);
+            if (btn) btn.disabled = false;
+          })
+          .catch(function () {
+            if (btn) btn.disabled = false;
+          });
+      });
+    });
+  }
+
+  // El vuelo con el naranja de la PDP (--pd-naranja): la bolita coral del
+  // resto del tema desentonaría acá. Si theme.js no cargó, al menos que el
+  // contador no mienta.
+  function despega(btn, qty) {
+    if (window.BUNGOT && window.BUNGOT.flyToCart) {
+      return window.BUNGOT.flyToCart(btn, { cantidad: qty, color: '#E24E2E' });
+    }
+    bumpCount(qty);
+    return { ponTotal: setCount };
   }
 
   function counters() {
@@ -443,14 +483,6 @@
 
   function toArray(collection) {
     return Array.prototype.slice.call(collection);
-  }
-
-  // Confirmación breve en el botón, sin librerías ni popups.
-  function flash(btn) {
-    if (!btn) return;
-    var label = btn.textContent;
-    btn.textContent = btn.getAttribute('data-label-added');
-    setTimeout(function () { btn.textContent = label; }, 1200);
   }
 
   if (document.readyState === 'loading') {

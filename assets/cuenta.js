@@ -404,8 +404,11 @@
         })
         .then(function (r) { return r.json(); })
         .then(function (cart) {
-          var contador = document.querySelector('[data-cart-count]');
-          if (contador) contador.textContent = cart.item_count;
+          // Todos los contadores: el navbar v2 tiene dos (la pestaña de
+          // escritorio y el link dentro del panel del burger).
+          document.querySelectorAll('[data-cart-count]').forEach(function (contador) {
+            contador.textContent = cart.item_count;
+          });
           var msg = items.length < lineasOriginales
             ? root.getAttribute('data-msg-partial')
             : root.getAttribute('data-msg-done');

@@ -1,6 +1,6 @@
 {
   "sections": {
-    "main": { "type": "main-cart" }
+    "main": { "type": "cart-recibo" }
   },
   "order": ["main"]
 }
