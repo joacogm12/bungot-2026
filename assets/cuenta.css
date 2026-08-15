@@ -54,7 +54,7 @@
   border: none;
   cursor: pointer;
   text-decoration: none;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 14px;
   transition: background 0.18s, border-color 0.18s;
@@ -87,7 +87,7 @@
 .cbadge {
   padding: 5px 14px;
   border-radius: var(--radius-pill);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 13px;
   white-space: nowrap;
@@ -178,8 +178,8 @@
 }
 .clog__eyebrow {
   margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 15px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -252,8 +252,8 @@
   background: var(--cta-action);
   color: var(--cta-cream);
   text-decoration: none;
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 17px;
   transition: background 0.18s;
 }
@@ -271,8 +271,8 @@
   background: var(--white);
   color: var(--cta-ink);
   text-decoration: none;
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 17px;
   transition: background 0.18s;
 }
@@ -351,8 +351,8 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
 
 .cuenta__eyebrow {
   margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 15px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -381,7 +381,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 500;
   font-size: 15px;
   color: var(--cta-cream);
@@ -475,7 +475,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 14px;
   color: var(--cta-ink);
@@ -516,7 +516,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
 /* --- Selector de avatar --- */
 .cuenta__pick { display: flex; flex-direction: column; gap: 10px; }
 .cuenta__pick-label {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 14px;
   color: var(--cta-ink);
@@ -563,8 +563,8 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   cursor: pointer;
   background: var(--cta-action);
   color: var(--cta-cream);
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 17px;
   transition: background 0.18s;
 }
@@ -578,7 +578,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   background: none;
   padding: 0;
   cursor: pointer;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 14px;
   color: var(--cta-action);
@@ -595,7 +595,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   border-radius: var(--radius-pill);
   background: var(--cta-brand);
   color: var(--cta-cream);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 14px;
 }
@@ -651,8 +651,8 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
 }
 .cnav__name {
   margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 17px;
   color: var(--cta-ink);
 }
@@ -666,7 +666,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   cursor: pointer;
   text-align: left;
   text-decoration: none;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 500;
   font-size: 15px;
   color: var(--cta-ink);
@@ -728,8 +728,8 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
 .cord__left { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .cord__top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .cord__folio {
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 17px;
   color: var(--cta-ink);
 }
@@ -838,7 +838,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
 }
 .ctl__seg[data-on] .ctl__bar { background: var(--cta-brand); }
 .ctl__label {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 12px;
   color: var(--cta-soft);
@@ -850,8 +850,8 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
 
 .cdet__sub {
   margin: 0 0 4px;
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 14px;
   text-transform: uppercase;
   color: var(--cta-ink);
@@ -892,7 +892,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
 .cdet__price {
   min-width: 76px;
   text-align: right;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 15px;
   color: var(--cta-ink);
@@ -937,8 +937,8 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   cursor: pointer;
   background: var(--cta-action);
   color: var(--cta-cream);
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 16px;
   transition: background 0.18s;
 }
@@ -962,13 +962,13 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   border-radius: var(--radius-pill);
   background: var(--cta-ink);
   color: var(--cta-cream);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 14px;
   box-shadow: 0 14px 30px rgba(1, 60, 62, 0.35);
 }
 .ctoast[data-on='true'] { display: flex; }
-.ctoast a { color: var(--cta-yellow); font-weight: 700; }
+.ctoast a { color: var(--cta-yellow); font-weight: 600; /* tope real de la Inter cargada */ }
 
 /* ==========================================================================
    2c — Mis direcciones
@@ -992,8 +992,8 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
 .cadr--def { border: 3px solid var(--cta-ink); }
 .cadr__top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .cadr__name {
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 17px;
   color: var(--cta-ink);
 }
@@ -1025,7 +1025,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   border-radius: 20px;
   background: transparent;
   cursor: pointer;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 15px;
   color: var(--cta-ink);
@@ -1046,8 +1046,8 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
 }
 .cdir__note-title {
   margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 16px;
 }
 .cdir__note-text { margin: 0; font-size: 14px; color: rgba(247, 241, 227, 0.9); }

@@ -65,11 +65,14 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
 }
 .pgal .phead__title {
   margin: 0;
-  font-family: var(--font-display, 'Fredoka', sans-serif);
-  font-weight: 700;
+  /* La misma letra del claim de la portada ("¡PARA CHUPARSE LAS PATAS!"):
+     Anton solo trae peso 400 y es alta de caja, así que el interlineado va
+     como en el hero (.93) y no el .82 que pedía Fredoka. */
+  font-family: Anton, Bayon, sans-serif;
+  font-weight: 400;
   font-size: 128px;
-  line-height: .82;
-  letter-spacing: -.02em;
+  line-height: .93;
+  letter-spacing: -.005em;
   text-transform: uppercase;
   color: var(--pg-navy);
 }
@@ -81,15 +84,16 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
 }
 .pgal .phead__count { text-align: right; flex: 0 0 auto; }
 .pgal .phead__num {
-  font-family: var(--font-display, 'Fredoka', sans-serif);
-  font-weight: 700;
+  /* Cifra grande = va con la letra de títulos (Anton), como el titular. */
+  font-family: Anton, Bayon, sans-serif;
+  font-weight: 400;
   font-size: 60px;
   line-height: 1;
   color: var(--pg-naranja);
 }
 .pgal .phead__label {
   margin-top: 6px;
-  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-family: var(--font-body, 'Inter', sans-serif);
   font-weight: 600;
   font-size: 15px;
   letter-spacing: .08em;
@@ -107,7 +111,7 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
 }
 .pgal .pfilters__label {
   margin-right: 6px;
-  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-family: var(--font-body, 'Inter', sans-serif);
   font-weight: 600;
   font-size: 15px;
   letter-spacing: .08em;
@@ -115,7 +119,7 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
   color: rgba(1, 60, 62, .7);
 }
 .pgal .pfilter {
-  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-family: var(--font-body, 'Inter', sans-serif);
   font-weight: 600;
   font-size: 16px;
   padding: 12px 26px;
@@ -155,10 +159,13 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
 }
 .pgal .banda__title {
   margin: 4px 0 0;
-  font-family: var(--font-display, 'Fredoka', sans-serif);
-  font-weight: 700;
+  /* Misma letra que el titular de arriba (Anton, la del claim del hero). */
+  font-family: Anton, Bayon, sans-serif;
+  font-weight: 400;
   font-size: 62px;
   line-height: .94;
+  letter-spacing: -.005em;
+  text-transform: uppercase;
   color: var(--banda-bg); /* acento de la familia */
 }
 .pgal .banda__right { display: flex; align-items: flex-end; gap: 28px; }

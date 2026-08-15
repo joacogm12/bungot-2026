@@ -75,7 +75,11 @@
   --blue-ola: #2A6BFF;
 
   /* --- Tipografía --- */
-  --font-display: 'Fredoka', 'Trebuchet MS', system-ui, sans-serif;
+  /* Anton dejó de ser "solo la letra del claim del hero": ahora es la display
+     de TODO el sitio (Fredoka salió del tema a pedido) — títulos, nombres de
+     producto y cifras grandes. El texto chico va en --font-body (Inter).
+     Bayon es el respaldo más parecido y ya viene self-hosted. */
+  --font-display: 'Anton', 'Bayon', 'Arial Narrow', system-ui, sans-serif;
   /* La del logotipo. Solo para donde dice BUNGOT: header, footer y la portada.
      El respaldo es Anton porque es la condensada que más se le parece, así el
      salto es chico si la fuente no llega a cargar. */
@@ -144,6 +148,11 @@ body {
   font-size: var(--step-0);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  /* Anton y Brookline solo traen peso 400: sin esto, donde una regla vieja
+     pida 600/700 el navegador les inventaría un faux-bold pastoso. Inter no
+     lo resiente (es variable hasta 600 y ahí se planta). Es heredable, así
+     que cubre todo el árbol. */
+  font-synthesis-weight: none;
   /* clip y no hidden: `overflow-x: hidden` haría del body un contenedor de
      scroll y rompería position:sticky en los descendientes — que es la base
      del stacking de Favoritos y del header pegajoso. clip recorta igual. */
@@ -152,7 +161,7 @@ body {
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 400; /* único peso de Anton */
   line-height: 0.95;
   letter-spacing: -0.02em;
   margin: 0 0 0.4em;
@@ -214,7 +223,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   gap: 0.5em;
   background: var(--btn-bg);
   color: var(--btn-fg);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: var(--step-0);
   text-decoration: none;
@@ -239,7 +248,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   color: var(--brand-yellow);
   overflow: hidden;
   padding: 0.6em 0;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 500;
   font-size: var(--step--1);
   letter-spacing: 0.04em;
@@ -299,7 +308,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   margin: 0 0 clamp(1.5rem, 4vw, 3rem);
 }
 .closer__tagline {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: clamp(1.2rem, 2.5vw, 2rem);
   margin: 0 0 clamp(1.2rem, 3vw, 2rem);
   /* deja lugar al círculo de la derecha para que no lo pise */
@@ -332,7 +341,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   place-items: center;
   text-align: center;
   padding: 1rem;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: clamp(0.95rem, 1.4vw, 1.15rem);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -355,7 +364,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 .closer__links a {
   color: var(--cl-accent, var(--p-172));
   text-decoration: none;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
 }
 .closer__links a:hover { text-decoration: underline; }
 .closer__copy { color: rgba(247, 241, 227, 0.55); }
@@ -734,7 +743,7 @@ shopify-account::part(signed-out-avatar) {
 }
 
 .preloader__msg {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step-1);
   color: var(--brand);
   min-height: 1.4em;
@@ -1297,7 +1306,7 @@ shopify-account::part(signed-out-avatar) {
   color: var(--ink);
   border-radius: var(--radius-pill);
   padding: 0.3em 1em;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step--1);
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1336,7 +1345,7 @@ shopify-account::part(signed-out-avatar) {
   border: 2px solid var(--ink);
   border-radius: var(--radius-pill);
   padding: 0.22em 0.8em;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step--1);
   white-space: nowrap;
 }
@@ -1430,7 +1439,7 @@ shopify-account::part(signed-out-avatar) {
 
 .statement__eyebrow {
   display: inline-block;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: clamp(1rem, 0.8rem + 0.7vw, 1.5rem);
   text-transform: uppercase;
@@ -1483,7 +1492,7 @@ shopify-account::part(signed-out-avatar) {
      blanco queda ilegible (6141 C + blanco = 1.8:1). */
   background: var(--st-cta-bg, var(--st-accent));
   color: var(--st-cta-fg, var(--white));
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: var(--step-1);
   text-transform: uppercase;
@@ -1702,7 +1711,7 @@ shopify-account::part(signed-out-avatar) {
   margin: 0;
 }
 .collection__count {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   color: var(--white);
   font-size: var(--step-0);
   letter-spacing: 0.06em;
@@ -1735,7 +1744,7 @@ shopify-account::part(signed-out-avatar) {
   border: 3px solid var(--ink);
   border-radius: var(--radius-pill);
   padding: 0.5em 1.15em;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 500;
   font-size: var(--step--1);
   white-space: nowrap;
@@ -1810,7 +1819,7 @@ a.chip { text-decoration: none; }
   border: 2px solid var(--ink);
   border-radius: var(--radius-pill);
   padding: 0.2em 0.7em;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -1841,7 +1850,7 @@ a.chip { text-decoration: none; }
   text-overflow: ellipsis;
 }
 .card__price {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: var(--step-0);
   color: var(--brand-yellow);
@@ -1853,7 +1862,7 @@ a.chip { text-decoration: none; }
   grid-column: 1 / -1;
   text-align: center;
   color: var(--white);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step-1);
   padding: 3rem 1rem;
 }
@@ -1869,7 +1878,7 @@ a.chip { text-decoration: none; }
 .carousel__title { font-size: var(--step-3); text-transform: uppercase; margin: 0; }
 .carousel__nav { display: flex; align-items: center; gap: 0.7rem; }
 .carousel__counter {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step-1);
   color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
@@ -1910,7 +1919,7 @@ a.chip { text-decoration: none; }
 }
 @media (max-width: 700px) { .slide { grid-template-columns: 1fr; } }
 .slide__num {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step-1);
   opacity: 0.55;
   font-variant-numeric: tabular-nums;
@@ -1923,7 +1932,7 @@ a.chip { text-decoration: none; }
   border-radius: var(--radius-pill);
   padding: 0.25em 0.8em;
   font-size: var(--step--1);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
 }
 .slide__img { border-radius: var(--radius); aspect-ratio: 1; object-fit: cover; }
 
@@ -2010,7 +2019,7 @@ a.chip { text-decoration: none; }
   gap: 0.4em;
   background: var(--white);
   color: var(--ink);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: var(--step--1);
   letter-spacing: 0.12em;
@@ -2033,7 +2042,7 @@ a.chip { text-decoration: none; }
 .fpanel__chip {
   background: rgba(255, 255, 255, 0.92);
   color: var(--ink);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step--1);
   padding: 0.35em 1em;
   border-radius: var(--radius-pill);
@@ -2067,7 +2076,7 @@ a.chip { text-decoration: none; }
   justify-content: center;
   background: var(--fp-cta-bg, var(--brand-dark));
   color: var(--fp-cta-fg, var(--white));
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: var(--step-0);
   text-decoration: none;
@@ -2101,7 +2110,7 @@ a.chip { text-decoration: none; }
   right: -10px;
   background: var(--brand-dark);
   color: var(--white);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: var(--step--1);
   padding: 0.25em 0.7em;
@@ -2398,7 +2407,7 @@ a.chip { text-decoration: none; }
   position: relative;
   z-index: 2;
   /* Mismas letras que el titular del statement ("Para chuparse las patas"):
-     misma fuente (Fredoka), mismo peso (600) y mismo tracking (-0.04em). Se pone
+     misma fuente (Anton, vía --font-display) y mismo tracking (-0.04em). Se pone
      explícito además para que las DOS mitades queden iguales entre sí — la de
      arriba es <h2> y la de abajo <p>, que si no heredan fuente/peso distintos. */
   font-family: var(--font-display);
@@ -2484,7 +2493,7 @@ a.chip { text-decoration: none; }
   border-radius: var(--radius-pill);
   background: var(--cream);
   color: var(--ink);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step--1);
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -2592,7 +2601,7 @@ a.chip { text-decoration: none; }
   position: relative;
   z-index: 1;                     /* detrás de los globos */
   font-family: var(--font-display);
-  /* Mismas letras que el titular de la ola de arriba: Fredoka peso 600 y
+  /* Mismas letras que el titular de la ola de arriba: Anton (--font-display) y
      tracking -0.04em. */
   font-weight: 600;
   font-size: clamp(2.8rem, 1rem + 8.5vw, 7rem);   /* mismo tamaño que la ola de arriba */
@@ -2748,7 +2757,7 @@ a.chip { text-decoration: none; }
 .testimonial__quote { font-size: var(--step-0); margin: 0; }
 .testimonial__who {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step--1);
   color: var(--ink-soft);
 }
@@ -2782,7 +2791,7 @@ a.chip { text-decoration: none; }
 }
 .newsletter__input::placeholder { color: var(--ink-soft); }
 .newsletter__note { font-size: var(--step--1); color: var(--ink-soft); margin: 1rem 0 0; }
-.form-status { font-family: var(--font-display); margin-top: 0.8rem; }
+.form-status { font-family: var(--font-body); margin-top: 0.8rem; }
 .form-status--error { color: var(--p-492); }
 .form-status--ok { color: var(--brand-dark); }
 
@@ -2810,7 +2819,7 @@ a.chip { text-decoration: none; }
   border-radius: 50%;
   background: var(--white);
   display: grid; place-items: center;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   line-height: 1;
 }
 .popup__title { font-size: var(--step-1); text-transform: uppercase; }
@@ -2873,19 +2882,19 @@ a.chip { text-decoration: none; }
   border-radius: var(--radius-pill);
   background: var(--ft-btn-bg, var(--ink));
   color: var(--ft-btn-fg, var(--cream));
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step--1);
   transition: transform 0.16s;
 }
 .footer__signup-btn:hover { transform: translateY(-2px); }
-.footer__signup-msg { flex-basis: 100%; margin: 0.4rem 0 0; font-family: var(--font-display); font-size: var(--step--1); }
+.footer__signup-msg { flex-basis: 100%; margin: 0.4rem 0 0; font-family: var(--font-body); font-size: var(--step--1); }
 .footer__nav {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
   gap: clamp(1.2rem, 2.5vw, 2rem);
 }
 .footer__heading {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step--1);
   text-transform: lowercase;
   letter-spacing: 0.02em;
@@ -2895,7 +2904,7 @@ a.chip { text-decoration: none; }
 .footer__links { display: grid; gap: 0.55rem; list-style: none; margin: 0; padding: 0; }
 .footer__links a {
   text-decoration: none;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step-0);
   color: inherit;
   transition: opacity 0.16s;
@@ -2956,7 +2965,7 @@ a.chip { text-decoration: none; }
   padding-block: clamp(1.1rem, 2.4vw, 1.9rem);
   align-items: start;
 }
-.footer__disclaimer-label { font-family: var(--font-display); font-size: var(--step-0); }
+.footer__disclaimer-label { font-family: var(--font-body); font-size: var(--step-0); }
 .footer__disclaimer-text { font-size: var(--step--1); margin: 0; color: var(--ink-soft); max-width: 72ch; }
 @media (max-width: 760px) {
   .footer__top { grid-template-columns: 1fr; }
@@ -3018,7 +3027,7 @@ a.chip { text-decoration: none; }
 }
 
 .pdp__crumbs {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step--1);
   margin-bottom: 0.8rem;
 }
@@ -3038,7 +3047,7 @@ a.chip { text-decoration: none; }
 .pdp__option { margin-bottom: 1rem; }
 .pdp__label {
   display: block;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--step--1);
   text-transform: uppercase;
   margin-bottom: 0.35rem;
@@ -3089,7 +3098,7 @@ a.chip { text-decoration: none; }
 }
 .cart-item__variant,
 .cart-item__price { font-size: var(--step--1); color: var(--ink-soft); margin: 0.2rem 0 0; }
-.cart-item__price { font-family: var(--font-display); color: var(--brand); }
+.cart-item__price { font-family: var(--font-body); color: var(--brand); }
 .cart-item__qty { display: flex; align-items: center; gap: 0.5rem; }
 .cart-item__input {
   font: inherit;
@@ -3147,7 +3156,7 @@ a.chip { text-decoration: none; }
 }
 
 .article__meta {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   color: var(--ink-soft);
   font-size: var(--step--1);
   margin-bottom: 1.5rem;
@@ -3234,7 +3243,11 @@ a.chip { text-decoration: none; }
 /* min-height iguala títulos de 1 y 2 líneas: mantiene todas las tarjetas
    idénticas. No lo quites ni pongas alturas por familia. */
 .cardset .card__title {
-  font: 700 26px/1.02 var(--font-display, 'Fredoka', sans-serif);
+  /* Anton como los títulos del catálogo (la letra del claim del hero). Solo
+     trae peso 400, y como es más condensada que Fredoka el tamaño no cambia. */
+  font: 400 26px/1.02 Anton, Bayon, sans-serif;
+  letter-spacing: .01em;
+  text-transform: uppercase;
   color: var(--banda-bg, #00968F);
   margin: 8px 0 0;
   min-height: 54px;
@@ -3252,11 +3265,12 @@ a.chip { text-decoration: none; }
   color: inherit;
 }
 .cardset .card__price {
-  font: 700 15px var(--font-display, 'Fredoka', sans-serif);
+  /* Letra chica = Inter; 600 porque la variable solo carga 400..600. */
+  font: 600 15px var(--font-body, 'Inter', sans-serif);
   color: rgba(1, 60, 62, .78);
 }
 .cardset .card__add {
-  font: 600 14px var(--font-display, 'Fredoka', sans-serif);
+  font: 600 14px var(--font-body, 'Inter', sans-serif);
   background: #013C3E;
   color: #F7F1E3;
   padding: 11px 20px;

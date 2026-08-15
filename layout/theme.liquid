@@ -25,15 +25,20 @@
 
     {%- comment -%}
       Fuentes self-hosted desde el CDN de Shopify en vez de Google Fonts: evita
-      una conexión extra a otro dominio antes de pintar el texto. Son variables
-      (un archivo cubre todos los pesos) y están subseteadas a latin/latin-ext.
-      Fredoka e Inter son OFL. Para actualizarlas, volver a bajar los .woff2.
+      una conexión extra a otro dominio antes de pintar el texto. Están
+      subseteadas a latin/latin-ext. Anton e Inter son OFL. Para actualizarlas,
+      volver a bajar los .woff2.
     {%- endcomment -%}
     {%- comment -%}
       crossorigin es obligatorio acá: sin él el navegador descarta el preload y
       baja la fuente dos veces.
     {%- endcomment -%}
-    {{ 'fredoka-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- comment -%}
+      Anton ya no es "solo la bajada del hero": es la display de todos los
+      títulos del sitio (Fredoka salió del tema), así que se precarga en todas
+      las plantillas, igual que Inter para el cuerpo.
+    {%- endcomment -%}
+    {{ 'anton-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
     {{ 'inter-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
     {%- comment -%}
       Brookline va en TODAS las plantillas, no solo en la portada: es la fuente
@@ -42,14 +47,6 @@
       preload el nombre de la marca se quedaría en blanco un momento.
     {%- endcomment -%}
     {{ 'brookline-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
-    {%- comment -%}
-      Anton solo en la portada: ahí la usa la bajada del hero, que está en la
-      primera pantalla. En el resto de las plantillas no aparece, así que no se
-      precarga y no se paga.
-    {%- endcomment -%}
-    {%- if template.name == 'index' -%}
-      {{ 'anton-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
-    {%- endif -%}
 
     {% render 'font-face' %}
 

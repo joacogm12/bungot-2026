@@ -38,7 +38,7 @@
 
 .paseo__bajada {
   margin: 18px 0 0;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 500;
   font-size: 21px;
   color: var(--ink, #163C69);
@@ -152,8 +152,8 @@
   padding: 10px 22px;
   border-radius: 999px;
   rotate: -3deg;
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600; /* la Inter cargada llega hasta 600 */
   font-size: 19px;
   letter-spacing: 0.04em;
   color: var(--cream, #F7F1E3);
@@ -186,7 +186,7 @@
 
 .parada-card__texto {
   margin: 16px 4px 0;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 22px;
   line-height: 1.35;
@@ -210,8 +210,8 @@
 
 .paseo__remate {
   margin: 10px 4px 0;
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 26px;
   line-height: 1.25;
   color: #00968F;
@@ -225,8 +225,8 @@
   border: 3px solid #013C3E;
   background: #00968F;
   color: var(--cream, #F7F1E3);
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 19px;
   text-decoration: none;
 }

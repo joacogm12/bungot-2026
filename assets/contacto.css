@@ -18,6 +18,9 @@
   --ct-tinta:   #013C3E;
   --ct-teal:    #00968F;
   --ct-naranja: #E24E2E;
+  /* Mismo coral del claim de la portada (--hero-coral en base.css): el titular
+     de contacto va del mismo color que el de la landing. */
+  --ct-coral:   #EA4A27;
   --ct-crema:   #F7F1E3;
   --ct-crema-2: #FFFCF5;
   --ct-texto:   #3A5B5C;
@@ -60,7 +63,7 @@
   letter-spacing: 0.03em;
   text-transform: uppercase;
   text-align: center;
-  color: var(--ct-teal);
+  color: var(--ct-coral);
   /* Brookline solo trae un peso: el cartel se engorda con contorno del mismo
      color, igual que el wordmark del footer. */
   -webkit-text-stroke: 0.52vw currentColor;
@@ -132,7 +135,7 @@
 
 .ct-card__titulo {
   margin: 0;
-  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-family: var(--font-display, 'Anton', sans-serif);
   font-weight: 700;
   font-size: 38px;
   line-height: 1.05;
@@ -176,7 +179,7 @@
 .ct-label {
   display: block;
   margin-bottom: 9px;
-  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-family: var(--font-body, 'Inter', sans-serif);
   font-weight: 600;
   font-size: 13px;
   letter-spacing: 0.1em;
@@ -237,7 +240,7 @@
 
 .ct-pill {
   padding: 11px 22px;
-  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-family: var(--font-body, 'Inter', sans-serif);
   font-weight: 600;
   font-size: 15px;
   color: var(--ct-tinta);
@@ -267,7 +270,7 @@
 
 .ct-form__enviar {
   padding: 18px 38px;
-  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-family: var(--font-body, 'Inter', sans-serif);
   font-weight: 600;
   font-size: 17px;
   color: var(--ct-crema);
@@ -319,7 +322,7 @@
 
 .ct-dato__nombre {
   margin: 0;
-  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-family: var(--font-body, 'Inter', sans-serif);
   font-weight: 600;
   font-size: 17px;
   color: var(--ct-tinta);
@@ -353,7 +356,7 @@ a.ct-dato__valor:focus-visible {
 }
 
 .ct-mayoreo__correo {
-  font-family: var(--font-display, 'Fredoka', sans-serif);
+  font-family: var(--font-body, 'Inter', sans-serif);
   font-weight: 600;
   color: var(--ct-tinta);
   text-decoration: none;

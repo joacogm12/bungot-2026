@@ -100,7 +100,8 @@ Como ya no hay nada rezagado, **la última sección antes del footer no tiene re
 - El copy que edita el cliente va en `settings` con `default:` en español.
 
 ### Fuentes
-- **Fredoka** (display, títulos) e **Inter** (body) son self-hosted desde el CDN de Shopify vía `snippets/font-face.liquid`. No metas Google Fonts.
+- **Anton** (display: títulos, nombres de producto y cifras grandes, vía `--font-display`) e **Inter** (body y todo el texto chico: labels, botones, chips, precios chicos, vía `--font-body`) son self-hosted desde el CDN de Shopify vía `snippets/font-face.liquid`. No metas Google Fonts. Fredoka salió del tema (sus .woff2 siguen en assets por si se revierte, pero sin `@font-face`).
+- Anton solo trae peso 400: el `font-synthesis-weight: none` del `body` en `base.css` evita el faux-bold — no lo quites. La Inter cargada llega hasta 600; no pidas 700.
 - Las dos principales se precargan con `crossorigin: 'anonymous'` en `theme.liquid` — el `crossorigin` es obligatorio o el navegador baja la fuente dos veces.
 
 ### Accesibilidad y performance
