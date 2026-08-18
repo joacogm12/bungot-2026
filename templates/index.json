@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -11,39 +20,39 @@
           "type": "favorito",
           "settings": {
             "product": "snack-pulmon-de-cerdo",
-            "color": "#00847C",
+            "color": "#6591DF",
+            "fg": "#ffffff",
             "image_asset": "bungot-pulmon.webp",
             "title": "Pulmón de cerdo",
             "eyebrow": "Para perros · Masa muscular",
             "text": "40 g de pulmón de cerdo deshidratado. Proteína real para la masa muscular de tu perro.",
-            "pills": "Alta proteína, Masa muscular, 40 g",
-            "fg": "#FFFFFF"
+            "pills": "Alta proteína, Masa muscular, 40 g"
           }
         },
         "patas": {
           "type": "favorito",
           "settings": {
             "product": "premios-patas-de-pollo",
-            "color": "#DA3C1A",
+            "color": "#6591DF",
+            "fg": "#ffffff",
             "image_asset": "bungot-patas.webp",
             "title": "Patas de pollo",
             "eyebrow": "Para perros · Salud articular",
             "text": "14 piezas de patas de pollo deshidratadas. Masticado largo que acompaña sus articulaciones.",
-            "pills": "Alta proteína, Salud articular, 14 pzas",
-            "fg": "#FFFFFF"
+            "pills": "Alta proteína, Salud articular, 14 pzas"
           }
         },
         "higado": {
           "type": "favorito",
           "settings": {
             "product": "snacks-higado-de-cerdo",
-            "color": "#FED140",
+            "color": "#6591DF",
+            "fg": "#163c69",
             "image_asset": "bungot-higado.webp",
             "title": "Hígado de cerdo",
             "eyebrow": "Para perros · Sistema inmune",
             "text": "80 g de hígado de cerdo deshidratado. Un solo ingrediente para su sistema inmune.",
-            "pills": "Alta proteína, Sistema inmune, 80 g",
-            "fg": "#163C69"
+            "pills": "Alta proteína, Sistema inmune, 80 g"
           }
         }
       },
@@ -60,43 +69,91 @@
         "parallax": 110
       }
     },
+    "statement": {
+      "type": "statement",
+      "settings": {
+        "eyebrow": "",
+        "title": "Para\nchuparse\nlas patas",
+        "text": "Proteína real, deshidratada en lotes chicos. Un solo ingrediente y nada más — sin conservadores, sin rellenos, sin letra chica.",
+        "cta_label": "Comprar ahora",
+        "cta_url": "",
+        "image_asset": "bungot-premio.webp",
+        "image_alt": "Un perro se para en dos patas para alcanzar un premio BUNGOT",
+        "image_height": 80,
+        "show_sticker": true,
+        "sticker_asset": "bungot-sticker-logo.webp",
+        "sticker_size": 50,
+        "sticker_bottom": -6,
+        "sticker_peel": 30,
+        "peel_start": 55,
+        "peel_end": 10,
+        "bg": "#f7f1e3",
+        "accent": "#e94925",
+        "outline": "#ffffff",
+        "cta_bg": "#e94925",
+        "cta_fg": "#ffffff"
+      }
+    },
+    "panel": {
+      "type": "feature-panel",
+      "settings": {
+        "eyebrow": "",
+        "title": "Una cajita para chuparse las patas",
+        "text": "20% off en tu primera entrega",
+        "chips": "",
+        "cta_label": "Empieza tu suscripción",
+        "cta_url": "",
+        "note": "",
+        "bg": "#e94925",
+        "fg": "#ffffff",
+        "cta_bg": "#fed140",
+        "cta_fg": "#163c69",
+        "show_art": true
+      }
+    },
     "testimonials": {
       "type": "reviews-pin",
       "blocks": {
         "r1": {
           "type": "review",
           "settings": {
-            "text": "Escucha el ruido de la bolsa desde el otro lado de la casa. No falla nunca."
+            "text": "Escucha el ruido de la bolsa desde el otro lado de la casa. No falla nunca.",
+            "sticker": ""
           }
         },
         "r2": {
           "type": "review",
           "settings": {
-            "text": "Probé mil premios y siempre volvía uno con olor a químico. Estos huelen a comida de verdad."
+            "text": "Probé mil premios y siempre volvía uno con olor a químico. Estos huelen a comida de verdad.",
+            "sticker": ""
           }
         },
         "r3": {
           "type": "review",
           "settings": {
-            "text": "Las patas de pollo le duran un rato largo y quedan los dientes impecables. Compro fijo."
+            "text": "Las patas de pollo le duran un rato largo y quedan los dientes impecables. Compro fijo.",
+            "sticker": ""
           }
         },
         "r4": {
           "type": "review",
           "settings": {
-            "text": "Se sienta al lado de la alacena a esperar. Sabe perfectamente dónde los guardo."
+            "text": "Se sienta al lado de la alacena a esperar. Sabe perfectamente dónde los guardo.",
+            "sticker": ""
           }
         },
         "r5": {
           "type": "review",
           "settings": {
-            "text": "Un solo ingrediente y se los pelea hasta el gato. Cero culpa, pura cola moviéndose."
+            "text": "Un solo ingrediente y se los pelea hasta el gato. Cero culpa, pura cola moviéndose.",
+            "sticker": ""
           }
         },
         "r6": {
           "type": "review",
           "settings": {
-            "text": "Los usamos para premiar en el adiestramiento. Hace lo que sea por uno."
+            "text": "Los usamos para premiar en el adiestramiento. Hace lo que sea por uno.",
+            "sticker": ""
           }
         }
       },
@@ -110,51 +167,8 @@
       ],
       "settings": {
         "headline": "Lo olfatean.\nLo mordisquean.\nLo devoran.",
-        "bg": "#163C69",
+        "bg": "#163c69",
         "show_wave": true
-      }
-    },
-    "statement": {
-      "type": "statement",
-      "settings": {
-        "eyebrow": "",
-        "title": "Para\nchuparse\nlas patas",
-        "text": "Proteína real, deshidratada en lotes chicos. Un solo ingrediente y nada más — sin conservadores, sin rellenos, sin letra chica.",
-        "cta_label": "Comprar ahora",
-        "image_asset": "bungot-premio.webp",
-        "image_alt": "Un perro se para en dos patas para alcanzar un premio BUNGOT",
-        "bg": "#F7F1E3",
-        "accent": "#E94925",
-        "image_height": 80,
-        "show_sticker": true,
-        "sticker_asset": "bungot-sticker-logo.webp",
-        "sticker_size": 50,
-        "sticker_bottom": -6,
-        "sticker_peel": 30,
-        "peel_start": 55,
-        "peel_end": 10,
-        "outline": "#FFFFFF",
-        "cta_bg": "#E94925",
-        "cta_fg": "#FFFFFF"
-      }
-    },
-    "panel": {
-      "type": "feature-panel",
-      "blocks": {},
-      "block_order": [],
-      "settings": {
-        "title": "Una cajita para chuparse las patas",
-        "text": "20% off en tu primera entrega",
-        "cta_label": "Empieza tu suscripción",
-        "cta_url": "",
-        "bg": "#E94925",
-        "fg": "#FFFFFF",
-        "cta_bg": "#FED140",
-        "cta_fg": "#163C69",
-        "eyebrow": "",
-        "chips": "",
-        "note": "",
-        "show_art": true
       }
     },
     "foto-ancho": {
@@ -164,8 +178,8 @@
         "image_alt": "El equipo de BUNGOT sostiene las bolsas de premios sobre un fondo rojo",
         "height": 80,
         "focus": "50% 20%",
-        "frame_bg": "#163C69",
-        "bg": "#E94925"
+        "frame_bg": "#163c69",
+        "bg": "#e94925"
       }
     }
   },
