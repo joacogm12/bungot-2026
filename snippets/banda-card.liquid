@@ -9,8 +9,13 @@
   El contenedor que las agrupa tiene que llevar la clase .cardset: ahí viven
   los estilos (base.css). La usan el catálogo y la venta cruzada de la PDP.
 
+  Color: la foto va sobre blanco y el color vive en el pie (nombre + precio).
+  En el catálogo cada .banda inyecta --banda-bg y ese manda (una sola tinta
+  por familia, no hace falta pasar nada); media_color solo se usa donde no hay
+  banda (la venta cruzada de la PDP) y se lee como respaldo de --banda-bg.
+
   Params:
-    media_color (hex, requerido)  · color del bloque de arriba
+    media_color (hex, opcional)   · color del pie cuando no hay --banda-bg
     image        (obj, opcional)  · imagen del producto/tarjeta
     fallback_asset (str, opc.)    · nombre de asset del tema si no hay image
     title        (str)
@@ -26,7 +31,7 @@
 {%- assign has_link = false -%}
 {%- if url != blank -%}{%- assign has_link = true -%}{%- endif -%}
 
-<article class="card" style="--card-media: {{ media_color }};">
+<article class="card"{% if media_color != blank %} style="--card-media: {{ media_color }};"{% endif %}>
   {%- if has_link -%}
     <a class="card__media" href="{{ url }}">
   {%- else -%}

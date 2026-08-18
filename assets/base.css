@@ -2381,6 +2381,10 @@ a.chip { text-decoration: none; }
    y si no, se pisan. Cualquier contenedor de estas tarjetas lleva .cardset.
    -------------------------------------------------------------------------- */
 .cardset .card {
+  /* Respaldo del color del pie por si no llega ni --banda-bg (catálogo) ni el
+     inline --card-media del snippet: teal de la marca antes que un pie
+     transparente con tinta blanca. El inline del snippet gana sobre este. */
+  --card-media: var(--brand);
   flex: 0 0 344px;
   width: 344px;
   background: #FFFCF5;
@@ -2401,13 +2405,16 @@ a.chip { text-decoration: none; }
   box-shadow: 0 18px 34px rgba(1, 60, 62, .20);
 }
 .cardset .card__media {
-  height: 236px;
-  padding: 20px;
+  height: 320px;
+  padding: 24px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #EFE7D6; /* mosaico crema profundo, igual en todas las tarjetas */
+  /* Blanco fijo, sin color: la foto del producto manda arriba y el color de la
+     familia se va al pie (.card__body). Así el snack no compite con un fondo
+     saturado y todas las tarjetas se ven parejas. */
+  background: var(--white, #FFFFFF);
   text-decoration: none; /* la media puede ser un <a> al producto */
 }
 /* El título linkea al producto sin verse como link. */
@@ -2421,35 +2428,60 @@ a.chip { text-decoration: none; }
   object-fit: contain;
   filter: drop-shadow(0 14px 22px rgba(1, 60, 62, .32));
 }
+/* Recuadro de respaldo cuando el producto no trae foto (placeholder_svg_tag).
+   Ahora vive sobre blanco, así que sus líneas y su texto van en tinta y no en
+   crema: sobre blanco la crema desaparece. */
+.cardset .card__ph {
+  width: 74%;
+  height: 100%;
+  border: 2px dashed rgba(1, 60, 62, .22);
+  border-radius: 18px;
+  fill: rgba(1, 60, 62, .5);
+  color: rgba(1, 60, 62, .5);
+  filter: none;
+}
+/* El pie lleva el color y tinta blanca. --banda-bg es el color de la familia
+   en el catálogo (lo inyecta cada .banda, una sola tinta por familia); fuera
+   de ahí — la venta cruzada de la PDP, que no tiene banda — no existe, así
+   que cae a --card-media, el color que le pasa el propio snippet. */
 .cardset .card__body {
   padding: 22px 24px 26px;
   display: flex;
   flex-direction: column;
   flex: 1;
+  background: var(--banda-bg, var(--card-media));
+  color: #FFFFFF;
 }
-/* --banda-bg es el acento de la familia en el catálogo; fuera de ahí (la PDP)
-   no existe, así que el teal de la marca hace de respaldo. */
+/* CONTRASTE (es el motivo, no capricho): blanco chico sobre los corales
+   saturados de las familias da ~3:1 y no llega a AA. Por eso el eyebrow no va
+   en blanco: recupera la pastilla crema (como .fpanel__eyebrow) con texto en
+   verde oscuro — 12.4:1 sobre cualquier color de familia. */
 .cardset .card__eyebrow {
-  font: 600 13px/1 var(--font-body, 'Inter', sans-serif);
+  align-self: flex-start;
+  font: 600 13px/1.2 var(--font-body, 'Inter', sans-serif);
   letter-spacing: .06em;
   text-transform: uppercase;
-  color: var(--banda-bg, #00968F);
+  background: var(--cream);
+  color: var(--p-2217);
+  border-radius: var(--radius-pill);
+  padding: .3em .9em;
 }
 /* min-height iguala títulos de 1 y 2 líneas: mantiene todas las tarjetas
    idénticas. No lo quites ni pongas alturas por familia. */
 .cardset .card__title {
   /* Anton como los títulos del catálogo (la letra del claim del hero). Solo
-     trae peso 400, y como es más condensada que Fredoka el tamaño no cambia. */
+     trae peso 400, y como es más condensada que Fredoka el tamaño no cambia.
+     A 26px es texto grande: el blanco sobre el color de familia le alcanza. */
   font: 400 26px/1.02 Anton, Bayon, sans-serif;
   letter-spacing: .01em;
   text-transform: uppercase;
-  color: var(--banda-bg, #00968F);
+  color: inherit;
   margin: 8px 0 0;
   min-height: 54px;
 }
 /* margin-top:auto empuja el pie abajo: alinea precio + botón en todas.
    background:transparent resetea la "franja oscura" que este mismo archivo le
-   pone a .card__foot para la otra tarjeta; acá el pie va sobre la crema. */
+   pone a .card__foot para la otra tarjeta; acá el color ya lo pone el body. */
 .cardset .card__foot {
   display: flex;
   align-items: center;
@@ -2460,14 +2492,19 @@ a.chip { text-decoration: none; }
   color: inherit;
 }
 .cardset .card__price {
-  /* Letra chica = Inter; 600 porque la variable solo carga 400..600. */
-  font: 600 15px var(--font-body, 'Inter', sans-serif);
-  color: rgba(1, 60, 62, .78);
+  /* Letra chica = Inter; 600 porque la variable solo carga 400..600.
+     19px + 600 cuenta como texto grande (WCAG: 18.66px bold), y a texto grande
+     le basta 3:1 — justo lo que da el blanco sobre los corales. Nada de
+     opacity acá: solo empeoraría la relación. */
+  font: 600 19px var(--font-body, 'Inter', sans-serif);
+  color: inherit;
 }
+/* Invertido para no perderse sobre el color del pie: crema con tinta verde
+   oscura, el mismo par que la pastilla del eyebrow. */
 .cardset .card__add {
   font: 600 14px var(--font-body, 'Inter', sans-serif);
-  background: #013C3E;
-  color: #F7F1E3;
+  background: var(--cream);
+  color: var(--p-2217);
   padding: 11px 20px;
   border-radius: 999px;
   border: none;

@@ -7,8 +7,10 @@
   De dónde salen las tarjetas de cada banda:
     · Si la familia tiene una COLECCIÓN asignada, se listan sus productos reales
       (imagen, título, precio y link salen solos; agregar producto en Shopify =
-      tarjeta nueva). El color del media rota de la paleta salvo que el producto
-      fije custom.card_color; el eyebrow sale de custom.card_eyebrow si existe.
+      tarjeta nueva). El eyebrow sale de custom.card_eyebrow si existe.
+      El color de la tarjeta NO se pasa: el pie toma --banda-bg de su .banda,
+      así todas las tarjetas de una familia comparten el color de su título
+      (acá no aplica custom.card_color, eso es para fuera del catálogo).
     · Si no hay colección, cae a los productos MANUALES (bloques) — así nada se
       rompe hasta que asignes la colección.
 
@@ -18,9 +20,6 @@
 {{ 'productos.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
-  # Paleta del media para productos reales: saturada, para que el snack resalte.
-  assign media_palette = '#8E3237,#F59E28,#EA4A27,#6CC2EA,#00968F' | split: ','
-
   # Conteos para las píldoras de filtro (total = número del encabezado). Cada
   # familia cuenta su colección si la tiene; si no, sus productos manuales.
   assign total = 0
@@ -171,19 +170,6 @@
             {%- comment -%} Productos reales (colección o tipo de producto). {%- endcomment -%}
             {%- for product in items -%}
               {%- liquid
-                # Color del media: metafield del producto si lo fija; si no, rota
-                # de la paleta saltando el color de la propia banda.
-                assign idx = forloop.index0 | modulo: media_palette.size
-                assign mc = media_palette[idx]
-                if mc == block.settings.bg
-                  assign idx = forloop.index0 | plus: 1 | modulo: media_palette.size
-                  assign mc = media_palette[idx]
-                endif
-                assign mc_over = product.metafields.custom.card_color.value
-                if mc_over != blank
-                  assign mc = mc_over
-                endif
-
                 assign eb = product.metafields.custom.card_eyebrow.value
 
                 assign ph = ''
@@ -199,7 +185,6 @@
                 endif
               -%}
               {%- render 'banda-card',
-                media_color: mc,
                 image: product.featured_image,
                 title: product.title,
                 eyebrow: eb,
@@ -235,7 +220,6 @@
                 endif
               -%}
               {%- render 'banda-card',
-                media_color: p.settings.media_color,
                 image: p.settings.image,
                 title: p.settings.title,
                 eyebrow: p.settings.eyebrow,
@@ -287,7 +271,6 @@
         { "type": "image_picker", "id": "image", "label": "Imagen" },
         { "type": "text", "id": "title", "label": "Nombre", "default": "Producto" },
         { "type": "text", "id": "eyebrow", "label": "Eyebrow", "info": "Ej: Sistema inmune · 80 g" },
-        { "type": "color", "id": "media_color", "label": "Color del bloque de media", "default": "#85CCC6" },
         { "type": "text", "id": "family", "label": "Familia (clave)", "default": "deshidratados", "info": "deshidratados, gato, femur o juguetes." },
         { "type": "text", "id": "price", "label": "Precio", "info": "Déjalo vacío para mostrar \"Precio por confirmar\"." },
         { "type": "product", "id": "link_product", "label": "Producto (link)", "info": "Opcional. Si eliges uno, la tarjeta abre su página de producto y toma su precio real." }
@@ -299,32 +282,32 @@
       "name": "Catálogo por bandas",
       "blocks": [
         { "type": "family", "settings": { "title": "Premios deshidratados", "key": "deshidratados", "text": "Snacks 100% naturales, deshidratados a baja temperatura para que conserven todo su sabor y nutrientes. Sin conservadores ni colorantes.", "bg": "#00968F", "text_color": "#F7F1E3" } },
-        { "type": "product", "settings": { "title": "Hígado de cerdo", "eyebrow": "Sistema inmune · 80 g", "media_color": "#8E3237", "family": "deshidratados" } },
-        { "type": "product", "settings": { "title": "Hígado de res", "eyebrow": "Sistema inmune · 80 g", "media_color": "#EA4A27", "family": "deshidratados" } },
-        { "type": "product", "settings": { "title": "Pulmón de cerdo", "eyebrow": "Masa muscular · 40 y 60 g", "media_color": "#F59E28", "family": "deshidratados" } },
-        { "type": "product", "settings": { "title": "Pulmón de res", "eyebrow": "Masa muscular · 40 y 60 g", "media_color": "#6CC2EA", "family": "deshidratados" } },
-        { "type": "product", "settings": { "title": "Tráquea de cerdo", "eyebrow": "Colágeno · 80 g", "media_color": "#EA4A27", "family": "deshidratados" } },
-        { "type": "product", "settings": { "title": "Tráquea de res", "eyebrow": "Colágeno · 80 g", "media_color": "#8E3237", "family": "deshidratados" } },
-        { "type": "product", "settings": { "title": "Chicken jerky", "eyebrow": "Energía · 80 g", "media_color": "#6CC2EA", "family": "deshidratados" } },
-        { "type": "product", "settings": { "title": "Patas de pollo", "eyebrow": "Piel y pelaje · 14 pzas", "media_color": "#F59E28", "family": "deshidratados" } },
+        { "type": "product", "settings": { "title": "Hígado de cerdo", "eyebrow": "Sistema inmune · 80 g", "family": "deshidratados" } },
+        { "type": "product", "settings": { "title": "Hígado de res", "eyebrow": "Sistema inmune · 80 g", "family": "deshidratados" } },
+        { "type": "product", "settings": { "title": "Pulmón de cerdo", "eyebrow": "Masa muscular · 40 y 60 g", "family": "deshidratados" } },
+        { "type": "product", "settings": { "title": "Pulmón de res", "eyebrow": "Masa muscular · 40 y 60 g", "family": "deshidratados" } },
+        { "type": "product", "settings": { "title": "Tráquea de cerdo", "eyebrow": "Colágeno · 80 g", "family": "deshidratados" } },
+        { "type": "product", "settings": { "title": "Tráquea de res", "eyebrow": "Colágeno · 80 g", "family": "deshidratados" } },
+        { "type": "product", "settings": { "title": "Chicken jerky", "eyebrow": "Energía · 80 g", "family": "deshidratados" } },
+        { "type": "product", "settings": { "title": "Patas de pollo", "eyebrow": "Piel y pelaje · 14 pzas", "family": "deshidratados" } },
 
         { "type": "family", "settings": { "title": "Línea gato", "key": "gato", "text": "La misma bolsa de premios que aman los perros, ahora con un gato en el frente. Proteína natural pensada para michis exigentes.", "bg": "#E24E2E", "text_color": "#013C3E" } },
-        { "type": "product", "settings": { "title": "Pulmón de cerdo", "eyebrow": "40 y 60 g", "media_color": "#F59E28", "family": "gato" } },
-        { "type": "product", "settings": { "title": "Pulmón de res", "eyebrow": "40 y 60 g", "media_color": "#EA4A27", "family": "gato" } },
-        { "type": "product", "settings": { "title": "Hígado de cerdo", "eyebrow": "80 g", "media_color": "#8E3237", "family": "gato" } },
-        { "type": "product", "settings": { "title": "Hígado de res", "eyebrow": "80 g", "media_color": "#00968F", "family": "gato" } },
-        { "type": "product", "settings": { "title": "Chicken jerky", "eyebrow": "80 g", "media_color": "#EA4A27", "family": "gato" } },
-        { "type": "product", "settings": { "title": "Patas de pollo", "eyebrow": "Colágeno · 14 pzas", "media_color": "#F59E28", "family": "gato" } },
+        { "type": "product", "settings": { "title": "Pulmón de cerdo", "eyebrow": "40 y 60 g", "family": "gato" } },
+        { "type": "product", "settings": { "title": "Pulmón de res", "eyebrow": "40 y 60 g", "family": "gato" } },
+        { "type": "product", "settings": { "title": "Hígado de cerdo", "eyebrow": "80 g", "family": "gato" } },
+        { "type": "product", "settings": { "title": "Hígado de res", "eyebrow": "80 g", "family": "gato" } },
+        { "type": "product", "settings": { "title": "Chicken jerky", "eyebrow": "80 g", "family": "gato" } },
+        { "type": "product", "settings": { "title": "Patas de pollo", "eyebrow": "Colágeno · 14 pzas", "family": "gato" } },
 
-        { "type": "family", "settings": { "title": "Fémur de cerdo ahumado", "key": "femur", "text": "Hueso de fémur ahumado de larga duración. Entretiene por horas y ayuda a la higiene dental mientras mastican a gusto.", "bg": "#C97B12", "text_color": "#F7F1E3" } },
-        { "type": "product", "settings": { "title": "Jaw Breaker", "eyebrow": "3 pzas", "media_color": "#F59E28", "family": "femur" } },
-        { "type": "product", "settings": { "title": "Mini Bone", "eyebrow": "3 pzas", "media_color": "#00968F", "family": "femur" } },
-        { "type": "product", "settings": { "title": "Pig Bone", "eyebrow": "1 pza", "media_color": "#6CC2EA", "family": "femur" } },
+        { "type": "family", "settings": { "title": "Fémur de cerdo ahumado", "key": "femur", "text": "Hueso de fémur ahumado de larga duración. Entretiene por horas y ayuda a la higiene dental mientras mastican a gusto.", "bg": "#8E3235", "text_color": "#F7F1E3" } },
+        { "type": "product", "settings": { "title": "Jaw Breaker", "eyebrow": "3 pzas", "family": "femur" } },
+        { "type": "product", "settings": { "title": "Mini Bone", "eyebrow": "3 pzas", "family": "femur" } },
+        { "type": "product", "settings": { "title": "Pig Bone", "eyebrow": "1 pza", "family": "femur" } },
 
         { "type": "family", "settings": { "title": "Juego sin límites", "key": "juguetes", "text": "Juguetes de algodón y bambú, resistentes y seguros. Para jalar, morder y perseguir sin parar.", "bg": "#2F7FA8", "text_color": "#013C3E" } },
-        { "type": "product", "settings": { "title": "Toy Ball", "eyebrow": "1 pza", "media_color": "#6CC2EA", "family": "juguetes" } },
-        { "type": "product", "settings": { "title": "Juguete chico", "eyebrow": "2 pzas", "media_color": "#00968F", "family": "juguetes" } },
-        { "type": "product", "settings": { "title": "Juguete grande", "eyebrow": "1 pza", "media_color": "#EA4A27", "family": "juguetes" } }
+        { "type": "product", "settings": { "title": "Toy Ball", "eyebrow": "1 pza", "family": "juguetes" } },
+        { "type": "product", "settings": { "title": "Juguete chico", "eyebrow": "2 pzas", "family": "juguetes" } },
+        { "type": "product", "settings": { "title": "Juguete grande", "eyebrow": "1 pza", "family": "juguetes" } }
       ]
     }
   ]
