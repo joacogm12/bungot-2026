@@ -68,7 +68,7 @@
   --cream-2: #FBF7EE;
   --white:   #FFFFFF;
 
-  /* Azul de la sección Ola. Tampoco sale de los pantones: lo pidió la marca
+  /* Azul de la ola (respaldo de --wave-edge-color). Tampoco sale de los pantones: lo pidió la marca
      aparte, y es bastante más vivo que el marino 654 que había antes. Vive acá
      y no en la sección para que el respaldo del CSS no revierta al marino si
      algún día falta el valor del customizer. */
@@ -237,193 +237,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--ink); }
 
 .btn--brand  { --btn-bg: var(--brand); --btn-fg: var(--white); }
-.btn--coral  { --btn-bg: var(--p-709); --btn-fg: var(--white); }
-.btn--ghost  { --btn-bg: transparent; box-shadow: 0 5px 0 var(--ink); }
-
-/* --------------------------------------------------------------------------
-   Marquee de anuncios
-   -------------------------------------------------------------------------- */
-.marquee {
-  background: var(--brand-dark);
-  color: var(--brand-yellow);
-  overflow: hidden;
-  padding: 0.6em 0;
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: var(--step--1);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.marquee__track {
-  display: flex;
-  width: max-content;
-  gap: 2.5rem;
-  animation: marquee-scroll var(--marquee-speed, 26s) linear infinite;
-}
-.marquee:hover .marquee__track { animation-play-state: paused; }
-.marquee__item {
-  display: inline-flex;
-  align-items: center;
-  gap: 2.5rem;
-  white-space: nowrap;
-}
-.marquee__item::after {
-  content: '🦴';
-  font-size: 0.9em;
-}
-@keyframes marquee-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-/* --------------------------------------------------------------------------
-   Cierre / CTA (estilo garcy.studio): titular gigante + círculo con el botón
-   -------------------------------------------------------------------------- */
-.closer {
-  background: var(--cl-bg, var(--p-654));
-  color: var(--cl-fg, var(--cream));
-  /* Arriba corto: todo el bloque sube y el titular arranca casi pegado al borde. */
-  padding-block: clamp(1.75rem, 3.5vw, 3rem) clamp(3rem, 6vw, 5.5rem);
-  /* Pantalla completa: el cierre ocupa el viewport entero, como en la ref. */
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  overflow: clip;
-}
-.closer__inner {
-  position: relative; /* ancla el círculo absoluto */
-  /* Columna a todo el alto: así la fila de links baja hasta el fondo. */
-  flex: 1 0 auto;
-  display: flex;
-  flex-direction: column;
-}
-.closer__head {
-  font-family: var(--font-display);
-  font-weight: 700;
-  /* GIGANTE (~90% del ancho, como la ref) y cada mitad entra en UN renglón. */
-  font-size: clamp(2.8rem, 11vw, 8.25rem);
-  line-height: 0.9;
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-  margin: 0 0 clamp(1.5rem, 4vw, 3rem);
-}
-.closer__tagline {
-  font-family: var(--font-body);
-  font-size: clamp(1.2rem, 2.5vw, 2rem);
-  margin: 0 0 clamp(1.2rem, 3vw, 2rem);
-  /* deja lugar al círculo de la derecha para que no lo pise */
-  max-width: 62%;
-}
-.closer__body {
-  font-size: var(--step-0);
-  line-height: 1.5;
-  max-width: 46ch;
-  margin: 0;
-  color: rgba(247, 241, 227, 0.82);
-}
-.closer__check {
-  color: var(--cl-fg, var(--cream));
-  margin-right: 0.4em;
-}
-/* Círculo con el CTA, flotando a la derecha sobre la banda del medio. */
-.closer__circle {
-  position: absolute;
-  right: 0;
-  /* Banda media, como la ref: arranca justo DEBAJO del titular (que queda libre
-     arriba) y queda a la altura de la línea de marca + párrafo. */
-  top: clamp(12rem, 21vw, 18rem);
-  width: clamp(10rem, 19vw, 17rem);
-  height: clamp(10rem, 19vw, 17rem);
-  border-radius: 50%;
-  background: var(--cl-accent, var(--p-172));
-  color: var(--white);
-  display: grid;
-  place-items: center;
-  text-align: center;
-  padding: 1rem;
-  font-family: var(--font-body);
-  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: transform 0.2s var(--ease-bounce, ease);
-}
-.closer__circle:hover { transform: scale(1.06) rotate(-3deg); }
-.closer__foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  flex-wrap: wrap;
-  /* Al fondo de la pantalla (el cierre es 100svh); el padding garantiza no
-     chocar con el círculo (que baja hasta ~33rem) si el alto no alcanza. */
-  margin-top: auto;
-  padding-top: clamp(4.5rem, 11vw, 9.5rem);
-  font-size: var(--step--1);
-}
-.closer__links { display: flex; gap: clamp(1rem, 2.5vw, 2rem); flex-wrap: wrap; }
-.closer__links a {
-  color: var(--cl-accent, var(--p-172));
-  text-decoration: none;
-  font-family: var(--font-body);
-}
-.closer__links a:hover { text-decoration: underline; }
-.closer__copy { color: rgba(247, 241, 227, 0.55); }
-@media (max-width: 760px) {
-  /* El círculo baja al flujo, centrado, para no encimarse con el texto. */
-  .closer__tagline { max-width: 100%; }
-  .closer__circle {
-    position: static;
-    margin: 2rem auto 0;
-    width: clamp(9rem, 42vw, 13rem);
-    height: clamp(9rem, 42vw, 13rem);
-  }
-}
-
-/* --------------------------------------------------------------------------
-   Cinta / Marquee grande (palabras enormes + fotitos, corriendo sin parar)
-   -------------------------------------------------------------------------- */
-.wmarquee {
-  background: var(--wmq-bg, var(--p-1375));
-  color: var(--wmq-fg, var(--cream));
-  overflow: hidden;
-  padding-block: clamp(0.6rem, 1.6vw, 1.4rem);
-}
-.wmarquee__track {
-  display: flex;
-  width: max-content;
-  /* Corre siempre; -50% = el ancho de una secuencia, por eso el loop es continuo. */
-  animation: wmarquee-scroll var(--wmq-speed, 40s) linear infinite;
-}
-.wmarquee__seq {
-  display: flex;
-  align-items: center;
-  flex: none;
-  gap: clamp(1.5rem, 4vw, 3.5rem);
-  /* Mismo hueco entre la última palabra de una copia y la primera de la otra. */
-  padding-right: clamp(1.5rem, 4vw, 3.5rem);
-}
-.wmarquee__word {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(3.6rem, 11vw, 9rem);
-  line-height: 1;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-.wmarquee__img {
-  height: clamp(3.8rem, 11vw, 7.5rem);
-  width: auto;
-  flex: none;
-  object-fit: contain;
-}
-@keyframes wmarquee-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .wmarquee__track { animation: none; }
-}
 
 /* --------------------------------------------------------------------------
    Header — tres pestañas corales que cuelgan del borde de la ventana
@@ -1658,47 +1471,6 @@ shopify-account::part(signed-out-avatar) {
    -------------------------------------------------------------------------- */
 .collection { background: var(--brand); padding-block: clamp(2rem, 5vw, 3.5rem); }
 
-/* Página de shop: fondo crema (el de "Para chuparse las patas"), texto oscuro y
-   grilla fija de 3 por línea. Scopeado para no tocar el grid del home. */
-.collection--page {
-  background: var(--cream);
-  /* Alto mínimo de pantalla completa: con pocos productos (o al filtrar) la
-     sección quedaba enana y el footer asomaba en el primer viewport. Con esto
-     el footer siempre arranca por debajo del fold y solo aparece al scrollear;
-     además el padding de abajo absorbe la pisada breve del parallax. */
-  min-height: 100svh;
-  /* Más aire entre el último producto y el footer. */
-  padding-bottom: clamp(4.5rem, 9vw, 8rem);
-}
-.collection--page .collection__title { color: var(--ink); }
-.collection--page .collection__count { color: var(--ink-soft); }
-.collection--page .product-grid {
-  grid-template-columns: repeat(3, 1fr);
-  /* Cada tarjeta a su alto natural: si no, la grilla las estira al alto de la
-     fila y la foto absorbe ese estirado (ignorando el aspect-ratio). */
-  align-items: start;
-}
-/* Foto más baja (5:4) para que la tarjeta entera —foto + barra del nombre— quede
-   más cuadrada, no tan alta. Las fotos de producto son verticales, así que la
-   fila del grid se fija a minmax(0,1fr): si no, se dimensiona al alto natural de
-   la img (que es alta) y pisa el aspect-ratio. Con esto la img se ajusta adentro
-   (object-fit: contain ya está) y manda el aspect-ratio de la tarjeta. */
-.collection--page .card__media {
-  aspect-ratio: 5 / 4;
-  /* Clave: sin esto, el min-height:auto del flex-item toma el min-content de la
-     img (vertical, ~500px) y pisa el aspect-ratio. Con min-height:0 manda el
-     aspect-ratio y la img se ajusta adentro (object-fit: contain). */
-  min-height: 0;
-  grid-template-rows: minmax(0, 1fr);
-}
-.collection--page .card__img { min-height: 0; }
-@media (max-width: 720px) {
-  .collection--page .product-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 440px) {
-  .collection--page .product-grid { grid-template-columns: 1fr; }
-}
-
 .collection__head {
   display: flex;
   align-items: flex-end;
@@ -1722,22 +1494,6 @@ shopify-account::part(signed-out-avatar) {
   white-space: nowrap;
 }
 
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-bottom: 1.8rem;
-}
-.filters::-webkit-scrollbar { display: none; }
-@media (max-width: 640px) {
-  .filters {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    margin-inline: calc(var(--gutter) * -1);
-    padding-inline: var(--gutter);
-  }
-}
 .chip {
   display: inline-flex;
   align-items: center;
@@ -1755,14 +1511,6 @@ shopify-account::part(signed-out-avatar) {
   transition: transform 0.14s var(--ease-bounce), background 0.14s, box-shadow 0.14s;
 }
 .chip:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); }
-/* Activo. En el home los chips son <button> (filtro por JS) y en la página de
-   colección son <a> a colecciones reales — de ahí los dos selectores. */
-.chip[aria-pressed='true'],
-.chip[aria-current='page'] {
-  background: var(--brand-yellow);
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 var(--ink);
-}
 a.chip { text-decoration: none; }
 
 .product-grid {
@@ -1869,104 +1617,6 @@ a.chip { text-decoration: none; }
   font-size: var(--step-1);
   padding: 3rem 1rem;
 }
-
-/* --------------------------------------------------------------------------
-   Carrusel numerado 01/03 (idea de gethapply)
-   -------------------------------------------------------------------------- */
-.carousel { background: var(--cream-2); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
-.carousel__head {
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;
-}
-.carousel__title { font-size: var(--step-3); text-transform: uppercase; margin: 0; }
-.carousel__nav { display: flex; align-items: center; gap: 0.7rem; }
-.carousel__counter {
-  font-family: var(--font-body);
-  font-size: var(--step-1);
-  color: var(--ink-soft);
-  font-variant-numeric: tabular-nums;
-}
-.carousel__btn {
-  width: 46px; height: 46px;
-  display: grid; place-items: center;
-  border: 3px solid var(--ink);
-  border-radius: 50%;
-  background: var(--white);
-  box-shadow: 0 4px 0 var(--ink);
-  transition: transform 0.14s var(--ease-bounce);
-}
-.carousel__btn:hover { transform: translateY(-2px); }
-.carousel__btn:disabled { opacity: 0.35; box-shadow: none; transform: none; cursor: not-allowed; }
-
-.carousel__viewport {
-  display: flex;
-  gap: 1.2rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  padding-bottom: 0.6rem;
-}
-.carousel__viewport::-webkit-scrollbar { display: none; }
-
-.slide {
-  flex: 0 0 min(100%, 620px);
-  scroll-snap-align: start;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  align-items: center;
-  background: var(--slide-bg, var(--p-516));
-  border: 3px solid var(--ink);
-  border-radius: var(--radius-lg);
-  padding: clamp(1.2rem, 3vw, 2rem);
-}
-@media (max-width: 700px) { .slide { grid-template-columns: 1fr; } }
-.slide__num {
-  font-family: var(--font-body);
-  font-size: var(--step-1);
-  opacity: 0.55;
-  font-variant-numeric: tabular-nums;
-}
-.slide__title { font-size: var(--step-2); text-transform: uppercase; }
-.slide__tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
-.slide__tag {
-  background: rgba(255,255,255,0.75);
-  border: 2px solid var(--ink);
-  border-radius: var(--radius-pill);
-  padding: 0.25em 0.8em;
-  font-size: var(--step--1);
-  font-family: var(--font-body);
-}
-.slide__img { border-radius: var(--radius); aspect-ratio: 1; object-fit: cover; }
-
-/* --------------------------------------------------------------------------
-   Beneficios
-   -------------------------------------------------------------------------- */
-.benefits { background: var(--cream); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
-.benefits__title {
-  font-size: var(--step-3);
-  text-transform: uppercase;
-  text-align: center;
-  margin-bottom: 2rem;
-}
-.benefits__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
-  gap: 1.2rem;
-}
-.benefit {
-  background: var(--benefit-bg, var(--white));
-  border: 3px solid var(--ink);
-  border-radius: var(--radius);
-  padding: 1.6rem 1.3rem;
-  text-align: center;
-  box-shadow: var(--shadow-card);
-  transition: transform 0.18s var(--ease-bounce);
-}
-.benefit:hover { transform: translateY(-5px) rotate(-1deg); }
-.benefit__icon { font-size: 42px; line-height: 1; margin-bottom: 0.6rem; }
-.benefit__title { font-size: var(--step-1); text-transform: uppercase; margin-bottom: 0.3em; }
-.benefit__text { font-size: var(--step--1); color: var(--ink-soft); margin: 0; }
 
 /* --------------------------------------------------------------------------
    Panel destacado (estructura del bloque de gethapply)
@@ -2215,34 +1865,9 @@ a.chip { text-decoration: none; }
 }
 
 /* --------------------------------------------------------------------------
-   Ola — sección con el borde de arriba curvo, que sube sobre la anterior
+   Ola (snippets/wave-edge.liquid) — el borde curvo que monta la sección de
+   reviews, y que sube sobre la sección anterior
    -------------------------------------------------------------------------- */
-.wave {
-  position: relative;
-  background: var(--wave-bg, var(--blue-ola));
-  color: var(--wave-fg, var(--white));
-  --wave-edge-color: var(--wave-bg, var(--blue-ola));
-  /* Este margen es la PAUSA: el tramo en que el panel de arriba ya está
-     congelado y se ve entero, todavía sin olas. Recién después empieza a subir
-     el azul.
-
-     Sin él la ola arranca ~500px por encima del panel (su borde SVG vive 200px
-     arriba del bloque), o sea que lo tapa desde el primer píxel de scroll y
-     nunca llegás a verlo limpio. 80svh deja ~220px de pausa. */
-  margin-top: 80svh;
-  /* Arriba GENEROSO a propósito: cuando la sección sube y la ola aparece, el
-     titular tiene que quedar despegado de la cresta, no pegado a las letras.
-     Abajo también generoso: titular, stickers y texto derivan ~90px hacia abajo
-     con el scroll (ver wave-title-drift), y sin este colchón el sticker de la
-     esquina inferior se metía en Testimonios, que lo pintaba por encima y lo
-     cortaba. No se lee como vacío: Testimonios es del mismo navy y ese tramo lo
-     ocupa el contenido derivado. El piso (6.5rem) cubre los 90px aun en el ancho
-     más angosto donde los stickers todavía se ven (>860px).
-
-     Extra abajo (piso 10rem) para SEPARAR la cinta/marquee que viene después:
-     ese tramo navy despega la banda naranja del contenido de la ola. */
-  padding-block: clamp(3.5rem, 7vw, 6.5rem) clamp(10rem, 14vw, 13rem);
-}
 
 /* La sección de ARRIBA se congela y la ola le sube por encima. El scroll no se
    detiene de verdad (eso rompe el gesto del usuario): esa sección queda fija y
@@ -2304,8 +1929,8 @@ a.chip { text-decoration: none; }
   }
 }
 
-/* La ola es un componente suelto (snippets/wave-edge.liquid), no una parte de
-   .wave: la usan la sección Ola y la de reviews. Cada sección que la monta se
+/* La ola es un componente suelto (snippets/wave-edge.liquid): hoy la monta la
+   sección de reviews (la sección Ola se dio de baja). Cada sección que la monta se
    declara `position: relative` y pasa su color en --wave-edge-color. */
 .wave-edge {
   position: absolute;
@@ -2384,211 +2009,6 @@ a.chip { text-decoration: none; }
   100% {
     d: path("M0,260 L0,80 C50,57.0 100,36.0 150,36.0 C200,36.0 250,55.6 300,80 C357,107.7 413,135.8 470,135.8 C527,135.8 583,103.9 640,80 C715,48.4 790,33.2 865,33.2 C940,33.2 1015,70.7 1090,80 C1148,87.2 1207,88.0 1265,88.0 C1323,88.0 1382,84.2 1440,80 L1440,260 Z");
   }
-}
-
-/* Composición "envolvente" (ref Brar's "ROOTED IN TRADITION, GROWING WITH
-   COMMUNITY"): el titular GIGANTE va partido en dos —una frase arriba y otra
-   abajo, a todo el ancho— y la foto queda en el medio, centro-izquierda,
-   asomando POR DELANTE de las letras. El texto + botón van a la derecha, a media
-   altura; los stickers rematan las esquinas como los sellos de la ref.
-   `position: relative` ancla la foto, el texto y los stickers absolutos. */
-.wave__inner {
-  position: relative;
-  min-height: clamp(30rem, 62vw, 52rem);
-}
-
-/* Separación al scrollear: el contenido (titular, foto, texto) baja de a poco a
-   medida que la sección entra, alejándose de la ola —que queda fija en el borde
-   superior de .wave (es hija de .wave, no de .wave__inner, así que no se mueve).
-   Ligado al scroll con view-timeline; sin soporte queda estático y no se rompe. */
-@keyframes wave-content-drift {
-  from { translate: 0 0; }
-  to { translate: 0 var(--wave-drift, 90px); }
-}
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .wave { view-timeline-name: --wave-vt; view-timeline-axis: block; }
-    .wave__inner {
-      animation: wave-content-drift linear both;
-      animation-timeline: --wave-vt;
-      animation-range: entry 12% cover 60%;
-    }
-  }
-}
-
-/* Las dos mitades del titular, a todo el ancho. Comparten estilo; solo cambia
-   dónde caen (arriba / abajo de la foto). Van POR DELANTE de la foto (z-index 2):
-   las letras pisan la foto, no al revés. */
-.wave__title {
-  position: relative;
-  z-index: 2;
-  /* Mismas letras que el titular del statement ("Para chuparse las patas"):
-     misma fuente (Anton, vía --font-display) y mismo tracking (-0.04em). Se pone
-     explícito además para que las DOS mitades queden iguales entre sí — la de
-     arriba es <h2> y la de abajo <p>, que si no heredan fuente/peso distintos. */
-  font-family: var(--font-display);
-  font-weight: 600;
-  /* Mismo tamaño que el titular del statement ("Para chuparse las patas"). */
-  font-size: clamp(2.8rem, 1rem + 8.5vw, 7rem);
-  line-height: 0.82;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
-  color: var(--wave-title-color, var(--white));
-  margin: 0;
-}
-
-/* Foto al centro-izquierda, POR DETRÁS del titular (z-index menor): las letras
-   de arriba y de abajo le pasan por encima. Más ancha para que domine el cuadro
-   como en la ref. */
-.wave__media {
-  position: relative;
-  z-index: 1;
-  /* Más ancha SIN tocar el texto ni ganar alto: crece hacia la IZQUIERDA (el
-     margin negativo la saca del gutter hasta el borde de la ventana) y el recorte
-     se aplana a 2:1 (ver .wave__photo) para que el alto no suba. El borde derecho
-     casi no se mueve, así el texto de la derecha queda igual. */
-  width: clamp(22rem, 76%, 58rem);
-  margin-left: clamp(-2.5rem, -3vw, -1rem);
-  /* Solape con las dos mitades del titular: como las letras van encima, pisan el
-     borde de la foto. */
-  margin-top: clamp(-1.5rem, -1.5vw, -0.5rem);
-  margin-bottom: clamp(-3.5rem, -3.5vw, -1.5rem);
-}
-.wave__photo {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  object-position: center 35%;
-  border-radius: var(--radius-lg);
-}
-
-/* Mitad de ARRIBA del titular: corrida a la izquierda, saliéndose del gutter
-   para pegarse casi al borde de la ventana. */
-.wave__title--top {
-  margin-left: clamp(-2rem, -2.5vw, -0.75rem);
-}
-/* Mitad de ABAJO del titular, corrida a la derecha. */
-.wave__title--bot {
-  margin-left: clamp(6rem, 30vw, 30rem);
-}
-
-/* Texto + botón: a la derecha, a media altura, por encima de todo (como el
-   párrafo + "Learn More" de la ref). */
-.wave__pitch {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 3;
-  width: clamp(16rem, 27%, 23rem);
-  display: grid;
-  justify-items: start;
-  gap: clamp(1.1rem, 2vw, 1.6rem);
-}
-
-.wave__text {
-  font-size: var(--step-0);
-  /* En mayúsculas y algo más apretado, como el texto de la derecha de la ref.
-     Misma tipografía (solo cambia el text-transform y el interlineado). */
-  text-transform: uppercase;
-  line-height: 1.4;
-  letter-spacing: 0.015em;
-  color: var(--wave-fg, var(--cream));
-  margin: 0;
-}
-
-/* Botón pill SÓLIDO con la flechita en círculo, como el "Learn More" de la ref
-   (invertido para el fondo navy: pastilla clara, círculo oscuro). Lleva a la
-   página de conócenos. */
-.wave__cta {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.65em 0.8em 0.65em 1.5em;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: var(--cream);
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-size: var(--step--1);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  text-decoration: none;
-  transition: background-color 0.2s, transform 0.2s;
-}
-.wave__cta::after {
-  content: "\203A"; /* › */
-  display: grid;
-  place-items: center;
-  width: 1.5em;
-  height: 1.5em;
-  margin-left: 0.7em;
-  border-radius: 50%;
-  background: var(--ink);
-  color: var(--cream);
-  font-size: 0.95em;
-  line-height: 1;
-}
-.wave__cta:hover {
-  background: var(--brand-yellow);
-  transform: translateY(-2px);
-}
-
-/* Stickers superpuestos al titular, como la mariposa y el sol de la ref.
-   Absolutos sobre .wave__inner, rotados, con el filo blanco de siempre. */
-.wave__sticker {
-  position: absolute;
-  z-index: 2;
-  height: auto;
-  pointer-events: none;
-}
-/* Greta: sello de la esquina ABAJO-IZQUIERDA de la foto (como el starburst
-   naranja de la ref). Por delante de la foto. */
-.wave__sticker--a {
-  z-index: 3;
-  left: -1%;
-  bottom: 6%;
-  width: clamp(6.5rem, 10vw, 10rem);
-  transform: rotate(-8deg);
-}
-/* Bache: sello clavado en la esquina ARRIBA-DERECHA de la FOTO (va dentro de
-   .wave__media en el markup, por eso se ancla a la imagen y no al fondo). El
-   translate lo hace montar sobre la esquina, mitad adentro mitad afuera, como
-   el sello redondo "Canadian Made" de la ref. */
-.wave__sticker--b {
-  z-index: 3;
-  top: 0;
-  right: 0;
-  left: auto;
-  bottom: auto;
-  width: clamp(5.5rem, 9vw, 9rem);
-  transform: translate(35%, -45%) rotate(7deg);
-}
-
-@media (max-width: 860px) {
-  /* Todo apilado y centrado: titular arriba, foto, titular abajo, texto. El
-     texto deja de estar absoluto y vuelve al flujo. Los stickers se ocultan
-     (como absolutos encimados se salían de cuadro en angosto). */
-  .wave__inner {
-    min-height: 0;
-    text-align: center;
-  }
-  .wave__title--top,
-  .wave__title--bot { margin-left: 0; }
-  .wave__media {
-    width: 100%;
-    max-width: 22rem;
-    margin: clamp(0.75rem, 3vw, 1.5rem) auto;
-  }
-  .wave__pitch {
-    position: static;
-    transform: none;
-    width: 100%;
-    margin-top: clamp(1.25rem, 4vw, 2rem);
-    justify-items: center;
-    text-align: center;
-  }
-  .wave__sticker { display: none; }
 }
 
 /* --------------------------------------------------------------------------
@@ -2735,111 +2155,6 @@ a.chip { text-decoration: none; }
   transform: none;
   width: auto;
 }
-
-/* --------------------------------------------------------------------------
-   Testimonios
-   -------------------------------------------------------------------------- */
-.testimonials {
-  background: var(--tm-bg, var(--p-654));
-  padding-block: clamp(2.5rem, 6vw, 4.5rem);
-}
-.testimonials__title {
-  font-size: var(--step-3);
-  text-transform: uppercase;
-  text-align: center;
-  margin-bottom: 2rem;
-  /* Color propio y no heredado: el body hereda tinta oscura, que sobre el
-     654 C da 1.1:1 — el título desaparecía. */
-  color: var(--tm-fg, var(--white));
-}
-.testimonials__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
-  gap: 1.2rem;
-}
-.testimonial {
-  background: var(--white);
-  border: 3px solid var(--ink);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-card);
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-.testimonial:nth-child(even) { transform: rotate(-1deg); }
-.testimonial:nth-child(odd)  { transform: rotate(1deg); }
-.testimonial__stars { color: var(--p-1375); font-size: 18px; letter-spacing: 2px; }
-.testimonial__quote { font-size: var(--step-0); margin: 0; }
-.testimonial__who {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--step--1);
-  color: var(--ink-soft);
-}
-
-/* --------------------------------------------------------------------------
-   Newsletter
-   -------------------------------------------------------------------------- */
-.newsletter { background: var(--p-122); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
-.newsletter__inner {
-  max-width: 660px;
-  margin-inline: auto;
-  text-align: center;
-}
-.newsletter__title { font-size: var(--step-3); text-transform: uppercase; }
-.newsletter__text { font-size: var(--step-1); color: var(--ink); margin-bottom: 1.4rem; }
-.newsletter__form {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.newsletter__input {
-  flex: 1 1 260px;
-  min-width: 0;
-  font: inherit;
-  padding: 0.85em 1.2em;
-  border: 3px solid var(--ink);
-  border-radius: var(--radius-pill);
-  background: var(--white);
-  color: var(--ink);
-}
-.newsletter__input::placeholder { color: var(--ink-soft); }
-.newsletter__note { font-size: var(--step--1); color: var(--ink-soft); margin: 1rem 0 0; }
-.form-status { font-family: var(--font-body); margin-top: 0.8rem; }
-.form-status--error { color: var(--p-492); }
-.form-status--ok { color: var(--brand-dark); }
-
-/* Popup */
-.popup {
-  position: fixed;
-  left: var(--gutter);
-  bottom: var(--gutter);
-  z-index: 90;
-  width: min(360px, calc(100vw - var(--gutter) * 2));
-  background: var(--cream);
-  border: 3px solid var(--ink);
-  border-radius: var(--radius);
-  padding: 1.4rem;
-  box-shadow: var(--shadow-soft);
-  transform: translateY(140%);
-  transition: transform 0.45s var(--ease-bounce);
-}
-.popup[data-open='true'] { transform: translateY(0); }
-.popup__close {
-  position: absolute;
-  top: 8px; right: 8px;
-  width: 30px; height: 30px;
-  border: 2px solid var(--ink);
-  border-radius: 50%;
-  background: var(--white);
-  display: grid; place-items: center;
-  font-family: var(--font-body);
-  line-height: 1;
-}
-.popup__title { font-size: var(--step-1); text-transform: uppercase; }
-.popup__text { font-size: var(--step--1); color: var(--ink-soft); }
 
 /* --------------------------------------------------------------------------
    Footer
@@ -2989,7 +2304,7 @@ a.chip { text-decoration: none; }
 }
 
 /* --------------------------------------------------------------------------
-   Páginas internas (producto, carrito, contenido)
+   Páginas internas (contenido: page, 404, blog, artículos, búsqueda)
    -------------------------------------------------------------------------- */
 .wrap--narrow { max-width: 760px; }
 
@@ -3006,155 +2321,26 @@ a.chip { text-decoration: none; }
 .rte ol { padding-left: 1.3em; }
 .rte img { border-radius: var(--radius); border: 3px solid var(--ink); }
 
-/* --- PDP --- */
-.pdp { padding-block: clamp(2rem, 5vw, 3.5rem); background: var(--cream); }
-.pdp__inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  align-items: start;
-}
-@media (max-width: 900px) { .pdp__inner { grid-template-columns: 1fr; } }
-
-.pdp__media {
-  background: var(--pdp-bg, var(--p-714));
-  border: 3px solid var(--ink);
-  border-radius: var(--radius-lg);
-  padding: clamp(1rem, 3vw, 2rem);
-  box-shadow: var(--shadow-card);
-  position: sticky;
-  top: 100px;
-}
-@media (max-width: 900px) { .pdp__media { position: static; } }
-
-.pdp__img {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: contain;
-  filter: drop-shadow(0 14px 22px rgba(22, 60, 105, 0.28));
-}
-.pdp__thumbs { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
-.pdp__thumb {
-  width: 62px; height: 62px;
-  object-fit: cover;
-  border: 2px solid var(--ink);
-  border-radius: 12px;
-  background: var(--white);
-}
-
-.pdp__crumbs {
-  font-family: var(--font-body);
-  font-size: var(--step--1);
-  margin-bottom: 0.8rem;
-}
-.pdp__crumbs a { color: var(--ink-soft); text-decoration: none; }
-.pdp__crumbs a:hover { color: var(--brand); }
-
-.pdp__title { font-size: var(--step-3); text-transform: uppercase; }
-.pdp__price {
-  font-family: var(--font-display);
-  font-size: var(--step-2);
-  color: var(--brand);
-  margin-bottom: 1rem;
-}
-.pdp__price s { color: var(--ink-soft); font-size: 0.6em; margin-right: 0.4em; }
-
-.pdp__form { margin: 1.6rem 0; }
-.pdp__option { margin-bottom: 1rem; }
-.pdp__label {
-  display: block;
-  font-family: var(--font-body);
-  font-size: var(--step--1);
-  text-transform: uppercase;
-  margin-bottom: 0.35rem;
-}
-.pdp__select {
-  font: inherit;
-  width: 100%;
-  padding: 0.7em 1em;
-  border: 3px solid var(--ink);
-  border-radius: var(--radius-pill);
-  background: var(--white);
-  color: var(--ink);
-}
-.pdp__add { width: 100%; justify-content: center; }
-.pdp__add:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; transform: none; }
-.pdp__desc { border-top: 2px dashed rgba(22, 60, 105, 0.25); padding-top: 1.4rem; }
-
-/* --- Carrito --- */
-.cart-empty { text-align: center; padding: 3rem 1rem; }
-.cart-empty__emoji { font-size: 64px; line-height: 1; margin: 0 0 0.6rem; }
-
-.cart-list { display: grid; gap: 1rem; margin-bottom: 2rem; }
-.cart-item {
-  display: grid;
-  grid-template-columns: 92px 1fr auto;
-  gap: 1rem;
-  align-items: center;
-  background: var(--white);
-  border: 3px solid var(--ink);
-  border-radius: var(--radius);
-  padding: 0.8rem;
-}
-@media (max-width: 560px) {
-  .cart-item { grid-template-columns: 68px 1fr; }
-  .cart-item__qty { grid-column: 2; justify-self: start; }
-}
-.cart-item__media img {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 14px;
-  background: var(--p-6141);
-}
-.cart-item__title {
-  font-family: var(--font-display);
-  font-size: var(--step-0);
-  text-decoration: none;
-}
-.cart-item__variant,
-.cart-item__price { font-size: var(--step--1); color: var(--ink-soft); margin: 0.2rem 0 0; }
-.cart-item__price { font-family: var(--font-body); color: var(--brand); }
-.cart-item__qty { display: flex; align-items: center; gap: 0.5rem; }
-.cart-item__input {
-  font: inherit;
-  width: 68px;
-  padding: 0.5em;
-  text-align: center;
-  border: 3px solid var(--ink);
-  border-radius: var(--radius-pill);
-  background: var(--white);
-  color: var(--ink);
-}
-.cart-item__remove {
-  text-decoration: none;
-  color: var(--ink-soft);
-  font-size: 18px;
-  padding: 0.2em 0.4em;
-  line-height: 1;
-}
-.cart-item__remove:hover { color: var(--p-492); }
-
-.cart-foot {
-  background: var(--brand-dark);
-  color: var(--cream);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  margin-left: auto;
-  max-width: 420px;
-}
-.cart-foot__total {
+/* --- Buscador (main-search) --- */
+/* Antes colgaba de las clases del newsletter, que se dio de baja: el input
+   pill con borde de tinta es el mismo que usa el footer para el correo. */
+.search-form {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  font-family: var(--font-display);
-  font-size: var(--step-1);
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.8rem;
 }
-.cart-foot__total strong { color: var(--brand-yellow); font-size: var(--step-2); }
-.cart-foot__note { font-size: var(--step--1); color: rgba(247, 241, 227, 0.65); margin: 0.4rem 0 1.2rem; }
-.cart-foot__actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
-.cart-foot__actions .btn { flex: 1; justify-content: center; }
-.cart-foot__actions .btn--ghost { color: var(--cream); border-color: var(--cream); box-shadow: 0 5px 0 var(--cream); }
+.search-form__input {
+  flex: 1 1 260px;
+  min-width: 0;
+  font: inherit;
+  padding: 0.85em 1.2em;
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--ink);
+}
+.search-form__input::placeholder { color: var(--ink-soft); }
 
 /* --- Paginación / varios --- */
 .pagination {
@@ -3164,12 +2350,6 @@ a.chip { text-decoration: none; }
   margin-top: 2rem;
 }
 .pagination .chip { text-decoration: none; }
-
-.collection__desc {
-  color: var(--white);
-  max-width: 70ch;
-  margin-bottom: 1.5rem;
-}
 
 .article__meta {
   font-family: var(--font-body);
@@ -3188,7 +2368,6 @@ a.chip { text-decoration: none; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .marquee__track { animation: none; }
 }
 
 /* --------------------------------------------------------------------------

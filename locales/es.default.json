@@ -1,4 +1,9 @@
 {
+  "404": {
+    "title": "Esta página se la llevó el perro",
+    "text": "En serio. No está por ningún lado. Pero los premios sí.",
+    "cta": "Ver productos"
+  },
   "general": {
     "meta": {
       "tags": "Etiquetado con {{ tags }}",
@@ -14,18 +19,13 @@
     "menu": "Menú",
     "account": "Mi cuenta",
     "cart": "Carrito",
-    "breadcrumbs": "Migas de pan",
     "pagination": "Paginación"
   },
   "collections": {
-    "count_label": "PRODUCTOS",
     "count_collections": "CATEGORÍAS",
-    "all_title": "Categorías",
-    "filter_by": "Filtrar por categoría",
-    "empty": "No hay nada por acá todavía 🐾"
+    "all_title": "Categorías"
   },
   "products": {
-    "back": "← Volver a productos",
     "card": {
       "buy": "Agregar al carrito",
       "added": "¡Listo!",
@@ -34,7 +34,6 @@
     }
   },
   "favoritos": {
-    "label": "Favorito",
     "added": "¡Va en el carrito!"
   },
   "sections": {
@@ -50,7 +49,6 @@
     },
     "collection_bandas": {
       "aria": "Catálogo BUNGOT",
-      "nav": "Navegación",
       "filters": "Filtrar catálogo",
       "filter": "Filtrar",
       "cart_alt": "Un perro empuja un carrito de súper lleno de premios y juguetes BUNGOT",
@@ -58,7 +56,6 @@
     },
     "producto": {
       "thumbs": "Fotos del producto",
-      "photo_pending": "Foto pendiente",
       "shot_bag": "Bolsa del producto",
       "shot_treat": "El premio fuera de la bolsa",
       "shot_dog": "Un perro comiéndose el premio",
@@ -111,9 +108,6 @@
     "qty_add": "Agregar una pieza",
     "qty_less": "Quitar una pieza",
     "remove": "Quitar",
-    "empty": "Tu carrito está vacío.",
-    "taxes_note": "Impuestos incluidos. El envío se calcula al pagar.",
-    "update": "Actualizar",
     "subtotal": "Subtotal",
     "shipping": "Envío",
     "shipping_free": "Gratis",
@@ -132,11 +126,6 @@
     "empty_recover": "Recuperar mi bolsa",
     "live_update": "Carrito actualizado: {{ pieces }} · total {{ total }}"
   },
-  "newsletter": {
-    "email": "Email",
-    "placeholder": "tu@email.com",
-    "success": "¡Listo! Revisá tu casilla 🐾"
-  },
   "search": {
     "title": "Buscar",
     "placeholder": "¿Qué estás buscando?",
@@ -144,22 +133,11 @@
     "results": "RESULTADOS",
     "empty": "No encontramos nada con eso. Probá con otra cosa."
   },
-  "404": {
-    "title": "Esta página se la llevó el perro",
-    "text": "En serio. No está por ningún lado. Pero los premios sí.",
-    "cta": "Ver productos"
-  },
   "footer": {
     "rights": "Todos los derechos reservados."
   },
   "cuenta": {
     "perro": {
-      "eyebrow": "La manada",
-      "title": "La ficha de tu perro",
-      "intro": "Con esto te recomendamos el tamaño correcto y te avisamos en su cumpleaños.",
-      "benefit_1": "Te sugerimos el tamaño que le queda",
-      "benefit_2": "Le ponemos cara a tu manada",
-      "benefit_3": "Un regalo en el cumpleaños",
       "form_title": "Tu perro",
       "form_note": "todo es opcional — nos sirve para recomendarte tamaños",
       "name_label": "Cómo se llama",
@@ -184,8 +162,7 @@
       "my_dog_generic": "La ficha de tu perro",
       "orders": "Mis pedidos",
       "addresses": "Mis direcciones",
-      "logout": "Cerrar sesión",
-      "open": "Abrir el menú de mi cuenta"
+      "logout": "Cerrar sesión"
     },
     "login": {
       "eyebrow": "La manada",
@@ -245,7 +222,6 @@
       "timeline_2": "Pagado",
       "timeline_3": "Enviado",
       "tracking": "Guía {{ number }}",
-      "tracking_company": "Paquetería",
       "items": "Lo que pediste",
       "shipping_to": "Se envía a",
       "total": "Total",
@@ -262,15 +238,11 @@
       "delete": "Borrar",
       "make_default": "Hacer predeterminada",
       "add": "+ Agregar dirección",
-      "empty_title": "Todavía no hay direcciones",
-      "empty_text": "Guarda una y el próximo pedido sale en dos toques.",
       "cancel": "Cancelar",
       "save": "Guardar",
       "confirm_delete": "¿Borrar esta dirección?",
-      "cant_delete_default": "Primero haz predeterminada otra dirección: Shopify no deja borrar la que está en uso.",
       "f_first_name": "Nombre",
       "f_last_name": "Apellido",
-      "f_company": "Empresa",
       "f_address1": "Calle y número",
       "f_address2": "Interior, colonia",
       "f_city": "Ciudad",

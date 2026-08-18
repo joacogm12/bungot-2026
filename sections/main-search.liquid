@@ -9,10 +9,10 @@
       {%- endif -%}
     </div>
 
-    <form action="{{ routes.search_url }}" method="get" role="search" class="newsletter__form" style="justify-content:flex-start;margin-bottom:1.8rem;">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
       <label class="visually-hidden" for="q">{{ 'search.title' | t }}</label>
       <input
-        class="newsletter__input"
+        class="search-form__input"
         id="q"
         type="search"
         name="q"

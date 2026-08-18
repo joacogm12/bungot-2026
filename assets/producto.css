@@ -1,7 +1,7 @@
 /* ==========================================================================
    BUNGOT 2026 — producto.css  (PDP, split fijo 50/50)
 
-   Todo va scopeado bajo .pdpage: la clase .pdp ya es de main-product/base.css.
+   Todo va scopeado bajo .pdpage para no pisar nada de base.css.
    Sistema: bordes de 3px + sombra dura (4px 4px 0), pastillas de 999px, nada
    de degradados ni sombras difusas. Ancho de diseño 1582px, padding 63px.
 

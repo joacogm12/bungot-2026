@@ -433,116 +433,6 @@
     });
   }
 
-  /* --- Filtros del grid + contador ------------------------------------- */
-  function initFilters() {
-    var root = document.querySelector('[data-collection]');
-    if (!root) return;
-
-    var chips = root.querySelectorAll('[data-filter]');
-    var cards = root.querySelectorAll('[data-tags]');
-    var countEl = root.querySelector('[data-count]');
-    var emptyEl = root.querySelector('[data-empty]');
-    var countLabel = countEl ? countEl.getAttribute('data-label') || 'PRODUCTOS' : '';
-
-    function apply(filter) {
-      var shown = 0;
-
-      // Un chip puede declarar varios tokens separados por coma ("juguete,juguetes"):
-      // los datos de la tienda mezclan singular y plural, y las categorías salen
-      // de tags, product type y colecciones a la vez.
-      var wanted = filter.split(',').map(function (s) { return s.trim(); });
-
-      cards.forEach(function (card) {
-        var tokens = (card.getAttribute('data-tags') || '').split('|');
-        var match = filter === 'all' || wanted.some(function (w) {
-          return w !== '' && tokens.indexOf(w) !== -1;
-        });
-        card.hidden = !match;
-        if (match) shown += 1;
-      });
-
-      chips.forEach(function (chip) {
-        chip.setAttribute('aria-pressed', String(chip.getAttribute('data-filter') === filter));
-      });
-
-      if (countEl) countEl.textContent = shown + ' ' + countLabel;
-      if (emptyEl) emptyEl.hidden = shown !== 0;
-
-      // Reflejar el filtro en la URL para que sea compartible / navegable.
-      var url = new URL(window.location.href);
-      if (filter === 'all') url.searchParams.delete('c');
-      else url.searchParams.set('c', filter);
-      history.replaceState(null, '', url);
-    }
-
-    chips.forEach(function (chip) {
-      chip.addEventListener('click', function () {
-        apply(chip.getAttribute('data-filter'));
-      });
-    });
-
-    var initial = new URL(window.location.href).searchParams.get('c') || 'all';
-    var valid = Array.prototype.some.call(chips, function (c) {
-      return c.getAttribute('data-filter') === initial;
-    });
-    apply(valid ? initial : 'all');
-  }
-
-  /* --- Carrusel numerado 01/03 ----------------------------------------- */
-  function initCarousels() {
-    document.querySelectorAll('[data-carousel]').forEach(function (root) {
-      var viewport = root.querySelector('[data-carousel-viewport]');
-      var slides = root.querySelectorAll('[data-slide]');
-      var counter = root.querySelector('[data-carousel-counter]');
-      var prev = root.querySelector('[data-carousel-prev]');
-      var next = root.querySelector('[data-carousel-next]');
-      if (!viewport || !slides.length) return;
-
-      var index = 0;
-
-      function pad(n) {
-        return String(n).padStart(2, '0');
-      }
-
-      function render() {
-        if (counter) counter.textContent = pad(index + 1) + ' / ' + pad(slides.length);
-        if (prev) prev.disabled = index === 0;
-        if (next) next.disabled = index === slides.length - 1;
-      }
-
-      function go(to) {
-        index = Math.max(0, Math.min(slides.length - 1, to));
-        viewport.scrollTo({
-          left: slides[index].offsetLeft - viewport.offsetLeft,
-          behavior: reduceMotion ? 'auto' : 'smooth'
-        });
-        render();
-      }
-
-      if (prev) prev.addEventListener('click', function () { go(index - 1); });
-      if (next) next.addEventListener('click', function () { go(index + 1); });
-
-      // El usuario también puede swipear: mantener el contador sincronizado.
-      var raf;
-      viewport.addEventListener('scroll', function () {
-        cancelAnimationFrame(raf);
-        raf = requestAnimationFrame(function () {
-          var mid = viewport.scrollLeft + viewport.clientWidth / 2;
-          var closest = 0;
-          var best = Infinity;
-          slides.forEach(function (s, i) {
-            var d = Math.abs(s.offsetLeft - viewport.offsetLeft + s.clientWidth / 2 - mid);
-            if (d < best) { best = d; closest = i; }
-          });
-          index = closest;
-          render();
-        });
-      }, { passive: true });
-
-      render();
-    });
-  }
-
   /* --- Favoritos: el color sube, el contenido no se mueve --------------- */
   function initFavoritos() {
     document.querySelectorAll('[data-favs]').forEach(function (root) {
@@ -608,44 +498,6 @@
      Se fue con el pin del panel — ver el comentario de .fpanel__box en
      base.css. Sin el panel congelado, congelar el statement solo hacía que le
      recortara el titular al panel. */
-
-  /* --- Popup de newsletter --------------------------------------------- */
-  function initPopup() {
-    var el = document.querySelector('[data-popup]');
-    if (!el) return;
-
-    var key = 'bungot:popup-dismissed';
-    var dismissed = false;
-    try {
-      dismissed = localStorage.getItem(key) === '1';
-    } catch (e) {
-      /* no-op */
-    }
-    if (dismissed) return;
-
-    var delay = parseInt(el.getAttribute('data-delay'), 10) || 8000;
-
-    var timer = setTimeout(function () {
-      el.setAttribute('data-open', 'true');
-    }, delay);
-
-    function close() {
-      clearTimeout(timer);
-      el.setAttribute('data-open', 'false');
-      try {
-        localStorage.setItem(key, '1');
-      } catch (e) {
-        /* no-op */
-      }
-    }
-
-    var btn = el.querySelector('[data-popup-close]');
-    if (btn) btn.addEventListener('click', close);
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && el.getAttribute('data-open') === 'true') close();
-    });
-  }
 
   /* --- Portada: las patas calcan la caja del perro ----------------------- */
   /* La figura del perro vive recortada en su ventana, pero las patas
@@ -824,11 +676,8 @@
     initPreloader();
     initHeroPerro();
     initNav();
-    initFilters();
-    initCarousels();
     initFavoritos();
     initFavCart();
-    initPopup();
     initReviews();
     initFooterPushesNav();
   }
