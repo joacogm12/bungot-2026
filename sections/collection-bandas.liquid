@@ -61,7 +61,8 @@
   assign perro_n = total | minus: gato_n
 
   assign cta = section.settings.cta_text | default: 'Agregar'
-  assign accent = section.settings.title_line2 | default: 'de verdad'
+  assign title_mid = section.settings.title_line2 | default: 'para'
+  assign accent = section.settings.title_line3 | default: 'tu peludo'
 -%}
 
 <section class="pgal" data-productos aria-label="{{ 'sections.collection_bandas.aria' | t }}">
@@ -73,7 +74,10 @@
     {%- endcomment -%}
     <header class="phead">
       <h1 class="phead__title">
-        {{- section.settings.title_line1 | default: 'Premios' -}}<br>
+        {{- section.settings.title_line1 | default: 'Shopping' -}}<br>
+        {%- if title_mid != blank -%}
+          {{- title_mid -}}<br>
+        {%- endif -%}
         <span class="phead__accent">{{ accent }}</span>
       </h1>
       {%- comment -%}
@@ -257,8 +261,9 @@
   "tag": "section",
   "settings": [
     { "type": "header", "content": "Encabezado" },
-    { "type": "text", "id": "title_line1", "label": "Título — línea 1", "default": "Premios" },
-    { "type": "text", "id": "title_line2", "label": "Título — línea 2 (mango)", "default": "de verdad", "info": "Se pinta en mango y no se parte en dos renglones." },
+    { "type": "text", "id": "title_line1", "label": "Título — línea 1", "default": "Shopping" },
+    { "type": "text", "id": "title_line2", "label": "Título — línea 2", "default": "para", "info": "Déjala vacía para un título de dos renglones." },
+    { "type": "text", "id": "title_line3", "label": "Título — línea 3 (mango)", "default": "tu peludo", "info": "Se pinta en mango y no se parte en dos renglones." },
     { "type": "header", "content": "Tarjetas" },
     { "type": "text", "id": "cta_text", "label": "Texto del botón (CTA)", "default": "Agregar", "info": "Se usa en el botón de todas las tarjetas." }
   ],

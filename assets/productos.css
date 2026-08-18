@@ -76,7 +76,7 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
   text-transform: uppercase;
   color: var(--pg-navy);
 }
-/* "de verdad" en naranja intenso; nowrap para que nunca se parta. */
+/* La última línea ("tu peludo") en naranja intenso; nowrap para que nunca se parta. */
 .pgal .phead__title .phead__accent {
   display: inline-block;
   color: var(--pg-naranja);
@@ -88,7 +88,7 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
    Así se puede hacer grande sin que la cabecera crezca ni empuje los filtros:
    lo que crece se come el aire que ya hay entre el nav y el título. Como la
    imagen está recortada al dibujo, las patas caen justo en la base de
-   "DE VERDAD". El movimiento son dos cuadros (.phead__frame--a/--b) que se
+   "TU PELUDO". El movimiento son dos cuadros (.phead__frame--a/--b) que se
    alternan con steps() más abajo; ver el comentario en collection-bandas. */
 .pgal .phead__art {
   position: relative;
