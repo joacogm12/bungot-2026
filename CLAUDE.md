@@ -70,7 +70,7 @@ fotos/                     Fotos fuente sin procesar (gitignored, no es asset)
 ```
 
 **Material de referencia en la raíz que NO es parte del tema** (no lo edites como si fuera código, no lo subas):
-`home4.html` (export estático de la home para Claude Design), `BUNGOT_logo_vector.svg`, `Informacion de etiquetas.xlsx`, `*.zip` (gitignored). Los exports y handoffs viejos (`home2/3.html`, `ficha2.html`, `BUNGOT Portada.dc.html`, `7-*.md`, `8-*`) se borraron en la limpieza de 2026-08-18; si hace falta alguno está en el historial de git.
+`BUNGOT_logo_vector.svg`, `Informacion de etiquetas.xlsx`, `*.zip` (gitignored). Los exports y handoffs viejos (`home2/3/4.html`, `ficha2.html`, `BUNGOT Portada.dc.html`, `7-*.md`, `8-*`) se borraron en la limpieza de 2026-08-18; si hace falta alguno está en el historial de git.
 
 ### Páginas custom: una sección full-bleed + su CSS/JS propio
 
