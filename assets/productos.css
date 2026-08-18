@@ -89,13 +89,24 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
    lo que crece se come el aire que ya hay entre el nav y el título. Como la
    imagen está recortada al dibujo, las patas caen justo en la base de
    "TU PELUDO". El movimiento son dos cuadros (.phead__frame--a/--b) que se
-   alternan con steps() más abajo; ver el comentario en collection-bandas. */
+   alternan con steps() más abajo; ver el comentario en collection-bandas.
+   El ancho está calculado con el techo del aire disponible: la imagen es
+   1000×688, así que a 660px mide ~454px de alto y su tope queda apenas
+   debajo del borde de la sección (96px de padding + las tres líneas del
+   título ≈ 453px) sin asomar entre las pestañas del nav; de ~1450px para
+   arriba el `bottom` negativo la baja más y por eso ahí puede crecer hasta
+   760px. Se encoge (flex-shrink 1) antes que el título si no caben los dos. */
 .pgal .phead__art {
   position: relative;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  min-width: 0;
   align-self: flex-end;
-  width: clamp(300px, 36vw, 620px);
+  width: clamp(360px, 46vw, 760px);
   height: 0;
+  /* Un poco más a la derecha que el margen del encabezado (63px): el dibujo
+     tiene aire transparente del lado de la cola y así queda visualmente
+     alineado con el borde del contenido. */
+  margin-right: -28px;
 }
 .pgal .phead__art img {
   position: absolute;

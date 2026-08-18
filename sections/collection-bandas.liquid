@@ -88,8 +88,8 @@
         (los .gif sí pasan intactos, ver feature-panel). Por eso van los dos
         cuadros como PNG normales con alfa real (bungot-carrito-a/-b, 1000px)
         y la alternancia la hace CSS con steps() en .phead__frame. Con
-        prefers-reduced-motion se queda el cuadro A. Es decorativa: el conteo
-        real de productos sigue en el chip "Todos · N" de los filtros.
+        prefers-reduced-motion se queda el cuadro A. Es decorativa: los conteos
+        reales van en los chips de los filtros.
       {%- endcomment -%}
       <div class="phead__art">
         <img
@@ -116,7 +116,6 @@
 
     <div class="pfilters" role="group" aria-label="{{ 'sections.collection_bandas.filters' | t }}">
       <span class="pfilters__label">{{ 'sections.collection_bandas.filter' | t }}</span>
-      <button type="button" class="pfilter pfilter--active" data-filter="all">Todos · {{ total }}</button>
       <button type="button" class="pfilter" data-filter="perro" data-target="deshidratados" data-hide="gato">Para perro · {{ perro_n }}</button>
       <button type="button" class="pfilter" data-filter="gato" data-target="gato">Para gato · {{ gato_n }}</button>
       <button type="button" class="pfilter" data-filter="femur" data-target="femur">Fémur ahumado · {{ femur_n }}</button>

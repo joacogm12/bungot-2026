@@ -98,7 +98,10 @@
     }
   }
 
-  /* --- Filtros: reordenan las bandas, no recargan -------------------------- */
+  /* --- Filtros: reordenan las bandas, no recargan --------------------------
+     No hay chip "Todos": como las bandas nunca se esconden (salvo la de gato
+     al elegir "Para perro"), el estado sin filtro es simplemente ningún chip
+     activo. Volver a picar el chip activo regresa a ese estado. */
   function setupFilters(root, bandas) {
     var buttons = root.querySelectorAll('[data-filter]');
     if (!buttons.length) return;
@@ -129,15 +132,12 @@
       buttons[i].addEventListener('click', function (e) {
         var btn = e.currentTarget;
         var wasActive = btn.classList.contains('pfilter--active');
-        var isAll = btn.getAttribute('data-filter') === 'all';
 
         clearActive();
         reset();
 
-        // Clic en el activo o en "Todos": queda el orden original.
-        if (wasActive || isAll) {
-          var all = root.querySelector('[data-filter="all"]');
-          if (all) all.classList.add('pfilter--active');
+        // Clic en el activo: se apaga y queda el orden original, sin activo.
+        if (wasActive) {
           remeasure(root);
           return;
         }
