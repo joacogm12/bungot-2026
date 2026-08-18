@@ -187,6 +187,15 @@
   color: rgba(1, 60, 62, 0.65);
 }
 
+/* Plan de suscripción bajo el precio unitario: chiquito y en verde, para que
+   se lea como aviso y no como otro dato de la etiqueta. */
+.rlinea__plan {
+  margin: 2px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--rc-verde);
+}
+
 .rlinea__ctrl {
   display: flex;
   align-items: center;

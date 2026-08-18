@@ -172,6 +172,10 @@
 
                 {%- form 'product', product, class: 'fav__form' -%}
                   <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  {%- if product.requires_selling_plan -%}
+                    {%- comment -%} Solo-suscripción: sin plan Shopify rechaza el add. {%- endcomment -%}
+                    <input type="hidden" name="selling_plan" value="{{ product.selected_or_first_available_variant.selling_plan_allocations.first.selling_plan.id }}">
+                  {%- endif -%}
                   {%- comment -%}
                     El submit lo intercepta initFavCart (theme.js): el agregado
                     va por fetch y la confirmación es la bolita de flyToCart;

@@ -18,6 +18,8 @@
     price_html   (str, opcional)  · vacío → "Precio por confirmar"
     url          (str, opcional)  · si viene, media + título son links
     variant_id   (id,  opcional)  · si viene, "Agregar" agrega al carrito
+    selling_plan_id (id, opcional) · plan de suscripción que viaja con el
+                                     agregado (productos de solo-suscripción)
     cta          (str)            · texto del botón
 {%- endcomment -%}
 
@@ -80,6 +82,9 @@
         <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="card__addform">
           <input type="hidden" name="id" value="{{ variant_id }}">
           <input type="hidden" name="quantity" value="1">
+          {%- if selling_plan_id != blank -%}
+            <input type="hidden" name="selling_plan" value="{{ selling_plan_id }}">
+          {%- endif -%}
           {%- comment -%}
             El submit lo intercepta el JS (productos.js / producto.js) y el
             agregado va por fetch, con la bolita de flyToCart; sin JS, el form

@@ -51,6 +51,13 @@
       {%- if linea_eyebrow != blank -%}{{ linea_eyebrow }} · {% endif -%}
       <span data-rc-unit>{{ item.final_price | money }}</span> {{ 'cart.unit_suffix' | t }}
     </p>
+    {%- comment -%}
+      Línea con plan de suscripción (Shopify Subscriptions): se dice aquí
+      mismo para que nadie llegue al checkout sin saber que se renueva.
+    {%- endcomment -%}
+    {%- if item.selling_plan_allocation -%}
+      <p class="rlinea__plan">{{ 'cart.plan_prefix' | t }} {{ item.selling_plan_allocation.selling_plan.name }}</p>
+    {%- endif -%}
   </div>
 
   <div class="rlinea__ctrl">

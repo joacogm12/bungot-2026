@@ -118,7 +118,7 @@
       "type": "statement",
       "settings": {
         "eyebrow": "",
-        "title": "Para chuparse las patas",
+        "title": "Para\nchuparse\nlas patas",
         "text": "Proteína real, deshidratada en lotes chicos. Un solo ingrediente y nada más — sin conservadores, sin rellenos, sin letra chica.",
         "cta_label": "Comprar ahora",
         "image_asset": "bungot-premio.webp",
@@ -154,9 +154,7 @@
         "eyebrow": "",
         "chips": "",
         "note": "",
-        "show_art": true,
-        "art_bg": "#FED140",
-        "badge": "-20%"
+        "show_art": true
       }
     },
     "foto-ancho": {

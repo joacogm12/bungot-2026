@@ -76,9 +76,37 @@
         {{- section.settings.title_line1 | default: 'Premios' -}}<br>
         <span class="phead__accent">{{ accent }}</span>
       </h1>
-      <div class="phead__count">
-        <div class="phead__num">{{ total }}</div>
-        <div class="phead__label">{{ 'sections.collection_bandas.count_label' | t }}</div>
+      {%- comment -%}
+        El perro con el carrito lleno. La ilustración original es un APNG de
+        dos cuadros (cola abajo / cola arriba), pero NO se sirve como APNG: el
+        CDN de Shopify re-comprime los .png de assets al entregarlos y tira los
+        cuadros, así que llega congelado aunque el archivo subido esté animado
+        (los .gif sí pasan intactos, ver feature-panel). Por eso van los dos
+        cuadros como PNG normales con alfa real (bungot-carrito-a/-b, 1000px)
+        y la alternancia la hace CSS con steps() en .phead__frame. Con
+        prefers-reduced-motion se queda el cuadro A. Es decorativa: el conteo
+        real de productos sigue en el chip "Todos · N" de los filtros.
+      {%- endcomment -%}
+      <div class="phead__art">
+        <img
+          class="phead__frame phead__frame--a"
+          src="{{ 'bungot-carrito-a.png' | asset_url }}"
+          alt="{{ 'sections.collection_bandas.cart_alt' | t }}"
+          width="1000"
+          height="688"
+          loading="eager"
+          decoding="async"
+        >
+        <img
+          class="phead__frame phead__frame--b"
+          src="{{ 'bungot-carrito-b.png' | asset_url }}"
+          alt=""
+          aria-hidden="true"
+          width="1000"
+          height="688"
+          loading="eager"
+          decoding="async"
+        >
       </div>
     </header>
 
@@ -159,6 +187,13 @@
                 if product.price > 0
                   assign ph = product.price | money
                 endif
+
+                # Solo-suscripción (ej. la Caja): el agregado rápido lleva su
+                # primer plan, si no Shopify rechaza el add sin selling_plan.
+                assign sp = ''
+                if product.requires_selling_plan
+                  assign sp = product.selected_or_first_available_variant.selling_plan_allocations.first.selling_plan.id
+                endif
               -%}
               {%- render 'banda-card',
                 media_color: mc,
@@ -168,6 +203,7 @@
                 price_html: ph,
                 url: product.url,
                 variant_id: product.selected_or_first_available_variant.id,
+                selling_plan_id: sp,
                 cta: cta -%}
             {%- endfor -%}
           {%- else -%}
@@ -182,12 +218,16 @@
                 assign p_link = p.settings.link_product
                 assign p_url = ''
                 assign p_vid = ''
+                assign p_sp = ''
                 assign p_price = p.settings.price
                 if p_link != blank
                   assign p_url = p_link.url
                   assign p_vid = p_link.selected_or_first_available_variant.id
                   if p_link.price > 0
                     assign p_price = p_link.price | money
+                  endif
+                  if p_link.requires_selling_plan
+                    assign p_sp = p_link.selected_or_first_available_variant.selling_plan_allocations.first.selling_plan.id
                   endif
                 endif
               -%}
@@ -199,6 +239,7 @@
                 price_html: p_price,
                 url: p_url,
                 variant_id: p_vid,
+                selling_plan_id: p_sp,
                 cta: cta -%}
             {%- endfor -%}
           {%- endif -%}

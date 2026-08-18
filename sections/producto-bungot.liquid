@@ -135,6 +135,16 @@
   endif
 
   assign cur_variant = product.selected_or_first_available_variant
+
+  # --- Suscripción ---
+  # Los planes (Shopify Subscriptions) cuelgan del producto; el precio de cada
+  # plan es por variante (selling_plan_allocations). Sin planes no se pinta
+  # nada y la PDP queda como siempre. Con requires_selling_plan (ej. la Caja)
+  # no hay opción de compra única y el primer plan arranca elegido.
+  assign has_plans = false
+  if product != blank and product.selling_plan_groups.size > 0
+    assign has_plans = true
+  endif
 -%}
 
 <section class="pdpage" data-pdp style="--pd-fam: {{ fam }};">
@@ -268,6 +278,61 @@
           {%- endif -%}
         </div>
 
+        {%- if has_plans -%}
+          {%- comment -%}
+            Radios apilados (mejor que pastillas lado a lado: el nombre del plan
+            más el precio no caben en una fila en móvil). El name de los radios
+            NO es selling_plan: lo que viaja al carrito es el input oculto de
+            abajo, que producto.js llena o deshabilita (un input deshabilitado
+            no va en el FormData, así "compra única" no manda el campo).
+          {%- endcomment -%}
+          <fieldset class="pdplan" data-pd-plans>
+            <legend class="pdopt__label">{{ 'sections.producto.plan_legend' | t }}</legend>
+
+            {%- unless product.requires_selling_plan -%}
+              <label class="pdplan__opt is-selected">
+                <input class="pdplan__radio" type="radio" name="pd_plan" value="" data-pd-plan checked>
+                <span class="pdplan__mark" aria-hidden="true"></span>
+                <span class="pdplan__name">{{ 'sections.producto.plan_one_time' | t }}</span>
+                <span class="pdplan__price" data-pd-plan-price="">{{ cur_variant.price | money }}</span>
+              </label>
+            {%- endunless -%}
+
+            {%- assign plan_idx = 0 -%}
+            {%- assign group_fallback = 'sections.producto.plan_group_fallback' | t -%}
+            {%- for group in product.selling_plan_groups -%}
+              {%- assign group_name = group.name | strip | default: group_fallback -%}
+              {%- for alloc in cur_variant.selling_plan_allocations -%}
+                {%- if alloc.selling_plan_group_id != group.id -%}{%- continue -%}{%- endif -%}
+                {%- liquid
+                  assign plan = alloc.selling_plan
+                  # La opción del plan ("Entregar cada mes") es más limpia que el
+                  # nombre completo, que trae el descuento pegado.
+                  assign plan_label = plan.options.first.value | default: plan.name
+                  assign plan_checked = false
+                  if product.requires_selling_plan and plan_idx == 0
+                    assign plan_checked = true
+                  endif
+                -%}
+                <label class="pdplan__opt{% if plan_checked %} is-selected{% endif %}">
+                  <input class="pdplan__radio" type="radio" name="pd_plan" value="{{ plan.id }}" data-pd-plan{% if plan_checked %} checked{% endif %}>
+                  <span class="pdplan__mark" aria-hidden="true"></span>
+                  <span class="pdplan__name">
+                    <strong>{{ group_name }}</strong> · {{ plan_label }}
+                    {%- if plan.description != blank -%}
+                      <small class="pdplan__desc">{{ plan.description }}</small>
+                    {%- endif -%}
+                  </span>
+                  <span class="pdplan__price" data-pd-plan-price="{{ plan.id }}">{{ alloc.price | money }}</span>
+                </label>
+                {%- assign plan_idx = plan_idx | plus: 1 -%}
+              {%- endfor -%}
+            {%- endfor -%}
+
+            <p class="pdplan__note">{{ 'sections.producto.plan_note' | t }}</p>
+          </fieldset>
+        {%- endif -%}
+
         <div class="pdbuyrow">
           <div class="pdstepper" data-pd-stepper>
             <button type="button" class="pdstepper__btn" data-pd-step="-1" aria-label="{{ 'sections.producto.qty_less' | t }}">−</button>
@@ -284,6 +349,7 @@
             class="pdcta"
             data-pd-add
             data-prefix="{{ section.settings.cta_prefix | escape }}"
+            data-prefix-plan="{{ section.settings.cta_prefix_plan | escape }}"
             data-label-added="{{ 'sections.producto.added' | t }}"
             data-label-soldout="{{ 'products.card.sold_out' | t }}"
             data-label-unavailable="{{ 'sections.producto.unavailable' | t }}"
@@ -292,6 +358,20 @@
 
         <input type="hidden" name="id" value="{{ cur_variant.id }}" data-pd-variant>
         <input type="hidden" name="quantity" value="1" data-pd-qty-input>
+        {%- if has_plans -%}
+          {%- liquid
+            # Arranca con el primer plan solo cuando el producto no se vende
+            # suelto; si no, deshabilitado (= compra única) hasta que elijan.
+            assign first_plan_id = cur_variant.selling_plan_allocations.first.selling_plan.id
+          -%}
+          <input
+            type="hidden"
+            name="selling_plan"
+            value="{% if product.requires_selling_plan %}{{ first_plan_id }}{% endif %}"
+            data-pd-plan-input
+            {% unless product.requires_selling_plan %}disabled{% endunless %}
+          >
+        {%- endif -%}
 
         {%- if section.settings.note != blank -%}
           <p class="pdnote">{{ section.settings.note }}</p>
@@ -723,6 +803,12 @@
               if xp.price > 0
                 assign xp_price = xp.price | money
               endif
+
+              # Solo-suscripción: el agregado rápido lleva su primer plan.
+              assign xp_sp = ''
+              if xp.requires_selling_plan
+                assign xp_sp = xp.selected_or_first_available_variant.selling_plan_allocations.first.selling_plan.id
+              endif
             -%}
             {%- render 'banda-card',
               media_color: xcolor,
@@ -732,6 +818,7 @@
               price_html: xp_price,
               url: xp.url,
               variant_id: xp.selected_or_first_available_variant.id,
+              selling_plan_id: xp_sp,
               cta: section.settings.cta_prefix
             -%}
           {%- endfor -%}
@@ -765,7 +852,7 @@
   {%- comment -%} Variantes reales para el JS (precio/id/disponibilidad). {%- endcomment -%}
   {%- if use_real_options -%}
     <script type="application/json" data-pd-variants>
-      [{% for v in product.variants %}{% unless forloop.first %},{% endunless %}{"id":{{ v.id }},"options":{{ v.options | json }},"available":{{ v.available }}}{% endfor %}]
+      [{% for v in product.variants %}{% unless forloop.first %},{% endunless %}{"id":{{ v.id }},"options":{{ v.options | json }},"available":{{ v.available }},"price":{{ v.price | money | json }},"plans":[{% for a in v.selling_plan_allocations %}{% unless forloop.first %},{% endunless %}[{{ a.selling_plan.id | json }},{{ a.price | money | json }}]{% endfor %}]}{% endfor %}]
     </script>
   {%- endif -%}
 </section>
@@ -790,6 +877,7 @@
     { "type": "text", "id": "title", "label": "Título", "info": "Vacío = el nombre del producto." },
     { "type": "textarea", "id": "lead", "label": "Párrafo", "info": "Vacío = la descripción del producto." },
     { "type": "text", "id": "cta_prefix", "label": "Texto del botón", "default": "Agregar", "info": "Al lado se agrega solo lo que esté elegido." },
+    { "type": "text", "id": "cta_prefix_plan", "label": "Texto del botón con suscripción", "default": "Suscribirme", "info": "Se usa cuando el cliente elige un plan de suscripción (Shopify Subscriptions)." },
     { "type": "text", "id": "note", "label": "Línea debajo del botón", "default": "Precio por confirmar · envío gratis desde $500" },
 
     { "type": "header", "content": "Cifras" },

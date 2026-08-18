@@ -14,6 +14,7 @@
 
     setupThumbs(root);
     setupOptions(root);
+    setupPlans(root);
     setupStepper(root);
     setupAddToCart(root);
     setupCrossSell();
@@ -77,11 +78,15 @@
       return null;
     }
 
-    // La etiqueta viva del CTA: "Agregar · 40 g · Cerdo".
+    // La etiqueta viva del CTA: "Agregar · 40 g · Cerdo" — o "Suscribirme ·
+    // 40 g" cuando hay un plan de suscripción elegido (ver setupPlans).
     function update() {
       if (!addBtn) return;
       var vals = selectedValues().filter(Boolean);
-      var label = [addBtn.getAttribute('data-prefix')].concat(vals).join(' · ');
+      var prefix = root.classList.contains('has-plan')
+        ? (addBtn.getAttribute('data-prefix-plan') || addBtn.getAttribute('data-prefix'))
+        : addBtn.getAttribute('data-prefix');
+      var label = [prefix].concat(vals).join(' · ');
 
       if (!variants.length) {
         addBtn.textContent = label;
@@ -97,7 +102,11 @@
       if (idInput) idInput.value = v.id;
       addBtn.disabled = !v.available;
       addBtn.textContent = v.available ? label : addBtn.getAttribute('data-label-soldout');
+      refreshPlanPrices(root, v);
     }
+
+    // setupPlans lo llama al cambiar de plan, para rehacer la etiqueta.
+    root.pdUpdateCta = update;
 
     groups.forEach(function (group) {
       var pills = group.querySelectorAll('[data-pd-opt]');
@@ -119,6 +128,46 @@
 
   function readVariants(root) {
     return readJSON(root.querySelector('[data-pd-variants]'), []);
+  }
+
+  /* --- Suscripción (Shopify Subscriptions) --------------------------------
+     Los radios del selector no viajan al carrito: lo que va es el input oculto
+     name="selling_plan". Con plan elegido se llena y se habilita; con "compra
+     única" se deshabilita, y un input deshabilitado no entra al FormData, así
+     el POST a /cart/add.js no lleva el campo. Sin selector no hace nada. */
+  function setupPlans(root) {
+    var box = root.querySelector('[data-pd-plans]');
+    var input = root.querySelector('[data-pd-plan-input]');
+    if (!box || !input) return;
+    var radios = toArray(box.querySelectorAll('[data-pd-plan]'));
+
+    function apply() {
+      var chosen = radios.filter(function (r) { return r.checked; })[0];
+      var planId = chosen ? chosen.value : '';
+      radios.forEach(function (r) {
+        var opt = r.closest('.pdplan__opt');
+        if (opt) opt.classList.toggle('is-selected', r.checked);
+      });
+      input.value = planId;
+      input.disabled = !planId;
+      root.classList.toggle('has-plan', !!planId);
+      if (root.pdUpdateCta) root.pdUpdateCta();
+    }
+
+    radios.forEach(function (r) { r.addEventListener('change', apply); });
+    apply();
+  }
+
+  // Los precios del selector son por variante (el JSON trae pares [plan, precio]
+  // por cada una): al cambiar de variante se repintan. Sin datos, se quedan.
+  function refreshPlanPrices(root, v) {
+    if (!v) return;
+    var oneTime = root.querySelector('[data-pd-plan-price=""]');
+    if (oneTime && v.price) oneTime.textContent = v.price;
+    (v.plans || []).forEach(function (pair) {
+      var el = root.querySelector('[data-pd-plan-price="' + pair[0] + '"]');
+      if (el) el.textContent = pair[1];
+    });
   }
 
   // Los <script type="application/json"> de la sección: variantes y textos.

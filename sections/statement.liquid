@@ -24,7 +24,12 @@
       {%- endif -%}
 
       {%- if section.settings.title != blank -%}
-        <h2 class="statement__title">{{ section.settings.title }}</h2>
+        {%- comment -%}
+          Los saltos de línea del textarea se respetan, así el titular corta
+          donde se decide ("Para / chuparse / las patas") y no donde le toque
+          por el ancho de la columna.
+        {%- endcomment -%}
+        <h2 class="statement__title">{{ section.settings.title | escape | newline_to_br }}</h2>
       {%- endif -%}
 
       {%- if section.settings.text != blank -%}
@@ -113,7 +118,7 @@
       "id": "title",
       "label": "Titular",
       "default": "Para chuparse las patas",
-      "info": "Va enorme y con contorno. Cuanto más corto, más pega."
+      "info": "Va enorme y con contorno. Cuanto más corto, más pega. Un salto de línea acá es un salto de línea en la página."
     },
     {
       "type": "textarea",

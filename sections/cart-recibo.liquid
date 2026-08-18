@@ -153,7 +153,12 @@
       {%- for producto in collections.all.products limit: 12 -%}
         {%- if mostrados >= 3 -%}{%- break -%}{%- endif -%}
         {%- assign needle = producto.id | prepend: ',' | append: ',' -%}
-        {%- if producto.available -%}
+        {%- comment -%}
+          Los de solo-suscripción (requires_selling_plan) no se sugieren: el
+          botón agrega sin plan y Shopify lo rechazaría; además nadie debe
+          quedar suscrito con un "+".
+        {%- endcomment -%}
+        {%- if producto.available and producto.requires_selling_plan != true -%}
           {%- unless ids_en_carrito contains needle -%}
             <button
               class="rupsell__btn"

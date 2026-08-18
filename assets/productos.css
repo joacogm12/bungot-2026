@@ -82,38 +82,60 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
   color: var(--pg-naranja);
   white-space: nowrap;
 }
-.pgal .phead__count { text-align: right; flex: 0 0 auto; }
-.pgal .phead__num {
-  /* Cifra grande = va con la letra de títulos (Anton), como el titular. */
-  font-family: Anton, Bayon, sans-serif;
-  font-weight: 400;
-  font-size: 60px;
-  line-height: 1;
-  color: var(--pg-naranja);
+/* El perro del carrito, a la derecha del titular. NO ocupa alto en el layout:
+   el contenedor mide 0 de alto y se ancla a la base del título (el header es
+   flex-end), y la imagen cuelga de ahí hacia ARRIBA con position:absolute.
+   Así se puede hacer grande sin que la cabecera crezca ni empuje los filtros:
+   lo que crece se come el aire que ya hay entre el nav y el título. Como la
+   imagen está recortada al dibujo, las patas caen justo en la base de
+   "DE VERDAD". El movimiento son dos cuadros (.phead__frame--a/--b) que se
+   alternan con steps() más abajo; ver el comentario en collection-bandas. */
+.pgal .phead__art {
+  position: relative;
+  flex: 0 0 auto;
+  align-self: flex-end;
+  width: clamp(300px, 36vw, 620px);
+  height: 0;
 }
-.pgal .phead__label {
-  margin-top: 6px;
-  font-family: var(--font-body, 'Inter', sans-serif);
-  font-weight: 600;
-  font-size: 15px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: rgba(1, 60, 62, .7);
+.pgal .phead__art img {
+  position: absolute;
+  left: 0;
+  /* Negativo: el perro baja por debajo de la base del título, hacia el aire
+     que hay antes de los filtros (y compensa el margen transparente de las
+     ruedas). Cuánto baja depende del ancho: en pantallas anchas (≥ ~1585px)
+     los chips terminan lejos y baja los 110px completos; de 1440px para abajo
+     el carrito ya se encima en x con el último chip, así que se queda en
+     -8px, asentado sobre la base del título y por encima de la fila de
+     filtros. Entre medio interpola. Nunca recibe clics de todos modos. */
+  bottom: clamp(-110px, (1450px - 100vw) * 0.8, -8px);
+  width: 100%;
+  height: auto;
+  pointer-events: none;
 }
+/* La animación: dos cuadros encimados que se turnan cada 142 ms (el ritmo del
+   APNG original), con steps() para que no haya fundido entre uno y otro. Se
+   apagan/prenden LOS DOS porque el cuadro B no tapa por completo al A (las
+   líneas de movimiento y la cola caen en distinto lugar y el fondo es
+   transparente): si A siguiera visible debajo se vería doble. Con
+   prefers-reduced-motion no hay animación y queda el cuadro A. */
+.pgal .phead__frame--a { animation: phead-frame-a 284ms steps(1, end) infinite; }
+.pgal .phead__frame--b { opacity: 0; animation: phead-frame-b 284ms steps(1, end) infinite; }
+@keyframes phead-frame-a { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes phead-frame-b { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
 
 /* --- Barra de filtros ---------------------------------------------------- */
 .pgal .pfilters {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   padding: 8px 63px 42px;
 }
 .pgal .pfilters__label {
   margin-right: 6px;
   font-family: var(--font-body, 'Inter', sans-serif);
   font-weight: 600;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: rgba(1, 60, 62, .7);
@@ -121,8 +143,8 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
 .pgal .pfilter {
   font-family: var(--font-body, 'Inter', sans-serif);
   font-weight: 600;
-  font-size: 16px;
-  padding: 12px 26px;
+  font-size: 14px;
+  padding: 8px 18px;
   border-radius: 999px;
   border: 2px solid rgba(1, 60, 62, .35);
   background: transparent;
@@ -220,4 +242,6 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
 /* --- prefers-reduced-motion --------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   .pgal .rail { scroll-behavior: auto; }
+  .pgal .phead__frame--a,
+  .pgal .phead__frame--b { animation: none; }
 }

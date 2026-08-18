@@ -1457,8 +1457,11 @@ shopify-account::part(signed-out-avatar) {
 
 .statement__title {
   font-size: clamp(2.8rem, 1rem + 8.5vw, 7rem);
-  line-height: 0.82;
-  letter-spacing: -0.04em;
+  /* Con aire: Anton ya es condensada y el contorno de 4px le come el poco
+     espacio que queda entre glifos, así que se compensa abriendo el tracking y
+     el interlineado en vez de apretarlos como en otros titulares del tema. */
+  line-height: 0.98;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--st-accent);
   margin: 0 0 0.5em;
@@ -1995,7 +1998,14 @@ a.chip { text-decoration: none; }
   /* Franja compacta: copy a la izquierda, gráfico a la derecha. El `auto` de la
      segunda columna deja que el gráfico pida lo suyo y el texto se quede con el
      resto. */
-  padding: clamp(1.6rem, 3.5vw, 2.8rem) clamp(1.5rem, 4vw, 3.5rem);
+  padding-block: clamp(1.6rem, 3.5vw, 2.8rem);
+  /* El padding lateral sigue el eje del .wrap para que el titular arranque en
+     la MISMA x que el texto del statement de arriba (que también se alinea a
+     ese eje). El cuadro mide 100vw menos dos marcos, así que "(100% - wrap)/2 +
+     gutter" medido desde su borde cae exactamente donde cae el wrap medido
+     desde la pantalla. Es simétrico: la bici entra hacia el centro lo mismo que
+     el texto. En pantallas chicas gana el mínimo de siempre. */
+  padding-inline: max(clamp(1.5rem, 4vw, 3.5rem), calc((100% - var(--wrap)) / 2 + var(--gutter)));
   display: grid;
   grid-template-columns: 1fr auto;
   gap: clamp(1.5rem, 4vw, 3rem);
@@ -2087,34 +2097,40 @@ a.chip { text-decoration: none; }
 .fpanel__cta:hover { transform: translateY(-3px); box-shadow: 0 8px 0 rgba(0, 0, 0, 0.18); }
 .fpanel__cta:active { transform: translateY(1px); box-shadow: none; }
 
-/* --- El regalo de la derecha --- */
-.fpanel__art { position: relative; justify-self: end; }
-@media (max-width: 640px) { .fpanel__art { justify-self: center; } }
-
-.fpanel__art-box {
-  width: clamp(96px, 12vw, 140px);
-  aspect-ratio: 1;
-  background: var(--fp-art, var(--brand-yellow));
-  color: var(--ink);
-  border-radius: 22%;
-  display: grid;
-  place-items: center;
-  transform: rotate(-8deg);
-  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.12);
+/* --- El perro repartidor de la derecha --- */
+/* La bici va CONTENIDA en el panel: no se sale por ningún lado. El GIF trae
+   mucho margen transparente (el dibujo ocupa solo el 55% del lienzo, medido
+   con el bbox del cuadro 0), así que si la imagen midiera lo que el contenedor
+   el perro quedaría chiquito. En vez de eso el contenedor mide lo que el
+   dibujo, y la imagen se agranda y se corre para que sus márgenes vacíos
+   caigan afuera: lo que sobresale es transparente y no se ve. Los cuatro
+   números son la posición y el tamaño del dibujo dentro del lienzo (fracción
+   de 2048px): si se cambia el GIF hay que volver a medirlos.
+   El movimiento viene adentro del GIF: acá no hay @keyframes. */
+.fpanel__bici {
+  --bici-x: 0.236;
+  --bici-y: 0.149;
+  --bici-w: 0.551;
+  --bici-h: 0.509;
+  position: relative;
+  justify-self: end;
+  width: clamp(220px, 30vw, 460px);
+  aspect-ratio: var(--bici-w) / var(--bici-h);
 }
-.fpanel__art-box svg { width: 46%; height: auto; }
-
-.fpanel__badge {
+.fpanel__bici img {
   position: absolute;
-  top: -6px;
-  right: -10px;
-  background: var(--brand-dark);
-  color: var(--white);
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: var(--step--1);
-  padding: 0.25em 0.7em;
-  border-radius: var(--radius-pill);
+  left: calc(-1 * var(--bici-x) / var(--bici-w) * 100%);
+  top: calc(-1 * var(--bici-y) / var(--bici-h) * 100%);
+  width: calc(100% / var(--bici-w));
+  /* El reset global le pone max-width: 100% a toda <img>; acá el 100% es el
+     contenedor y el perro quedaría del tamaño de un sellito. */
+  max-width: none;
+  height: auto;
+  /* Nunca le roba el clic al botón "Empieza tu suscripción". */
+  pointer-events: none;
+}
+@media (max-width: 640px) {
+  .fpanel__bici { justify-self: center; width: min(62vw, 280px); }
 }
 
 .fpanel__items {

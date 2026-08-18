@@ -66,23 +66,31 @@
 
     {%- if section.settings.show_art -%}
       {%- comment -%}
-        Gráfico decorativo: aria-hidden y sin texto alternativo. Lo que dice el
-        badge (-20%) ya está en la bajada, así que para un lector de pantalla no
-        aporta nada y repetirlo sería ruido.
+        El perro repartidor en bici. NO es una animación de CSS: es un GIF de
+        dos cuadros que ya trae el pedaleo adentro, así que va como una sola
+        <img> sin @keyframes ni steps(). Dos cosas que no hay que hacerle:
+        - Convertirlo a MP4/WebM: el GIF tiene alfa real y el video lo pierde
+          (quedaría un rectángulo sólido encima del panel).
+        - Pasarlo por image_url / image_tag / srcset: el redimensionado de
+          Shopify tumba la animación y deja un solo cuadro congelado. Por eso
+          va con asset_url directo.
+        Con prefers-reduced-motion el <source> sirve el primer cuadro fijo
+        (bungot-repartidor-estatico.png): un GIF en loop no se pausa con CSS,
+        así que la única forma honesta de respetarlo es servir la imagen quieta.
+        Es decorativa: si no carga, la franja se ve completa y el CTA sigue.
       {%- endcomment -%}
-      <div class="fpanel__art" aria-hidden="true" style="--fp-art: {{ section.settings.art_bg }};">
-        <div class="fpanel__art-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
-            <rect x="2.5" y="8.5" width="19" height="12.5" rx="2.2"/>
-            <path d="M2.5 13h19"/>
-            <path d="M12 8.5V21"/>
-            <path d="M12 8.5S9.6 8.5 8.2 7.1 8.2 3.4 9.6 3.4 12 8.5 12 8.5z"/>
-            <path d="M12 8.5s2.4 0 3.8-1.4S15.8 3.4 14.4 3.4 12 8.5 12 8.5z"/>
-          </svg>
-        </div>
-        {%- if section.settings.badge != blank -%}
-          <span class="fpanel__badge">{{ section.settings.badge }}</span>
-        {%- endif -%}
+      <div class="fpanel__bici">
+        <picture>
+          <source media="(prefers-reduced-motion: reduce)" srcset="{{ 'bungot-repartidor-estatico.png' | asset_url }}">
+          <img
+            src="{{ 'bungot-repartidor.gif' | asset_url }}"
+            alt="{{ 'sections.feature_panel.bici_alt' | t }}"
+            width="2048"
+            height="2048"
+            loading="lazy"
+            decoding="async"
+          >
+        </picture>
       </div>
     {%- endif -%}
 
@@ -184,20 +192,13 @@
       "info": "PANTONE 122 C"
     },
     { "type": "color", "id": "cta_fg", "label": "Texto del botón", "default": "#163C69" },
-    { "type": "header", "content": "Gráfico" },
-    { "type": "checkbox", "id": "show_art", "label": "Mostrar el regalo a la derecha", "default": true },
+    { "type": "header", "content": "Perro repartidor" },
     {
-      "type": "color",
-      "id": "art_bg",
-      "label": "Color del gráfico",
-      "default": "#FED140",
-      "info": "PANTONE 122 C"
-    },
-    {
-      "type": "text",
-      "id": "badge",
-      "label": "Globito del gráfico",
-      "info": "Va sobre la esquina del regalo. Es decorativo: lo que diga tiene que estar también en la bajada, porque un lector de pantalla no lo lee."
+      "type": "checkbox",
+      "id": "show_art",
+      "label": "Mostrar al perro repartidor en bici",
+      "default": true,
+      "info": "Es un GIF que pedalea solo (assets/bungot-repartidor.gif). Va contenido dentro del panel, a la derecha del texto."
     }
   ],
   "blocks": [

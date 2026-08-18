@@ -30,6 +30,9 @@
                 {%- unless item.variant.title contains 'Default' -%}
                   <p class="cart-item__variant">{{ item.variant.title }}</p>
                 {%- endunless -%}
+                {%- if item.selling_plan_allocation -%}
+                  <p class="cart-item__variant">{{ 'cart.plan_prefix' | t }} {{ item.selling_plan_allocation.selling_plan.name }}</p>
+                {%- endif -%}
                 <p class="cart-item__price">{{ item.final_line_price | money }}</p>
               </div>
 
