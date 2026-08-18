@@ -20,7 +20,7 @@
           "type": "favorito",
           "settings": {
             "product": "snack-pulmon-de-cerdo",
-            "color": "#6591DF",
+            "color": "#6591df",
             "fg": "#ffffff",
             "image_asset": "bungot-pulmon.webp",
             "title": "Pulmón de cerdo",
@@ -33,7 +33,7 @@
           "type": "favorito",
           "settings": {
             "product": "premios-patas-de-pollo",
-            "color": "#6591DF",
+            "color": "#6591df",
             "fg": "#ffffff",
             "image_asset": "bungot-patas.webp",
             "title": "Patas de pollo",
@@ -46,20 +46,34 @@
           "type": "favorito",
           "settings": {
             "product": "snacks-higado-de-cerdo",
-            "color": "#6591DF",
-            "fg": "#163c69",
+            "color": "#6591df",
+            "fg": "#FFFFFF",
             "image_asset": "bungot-higado.webp",
             "title": "Hígado de cerdo",
             "eyebrow": "Para perros · Sistema inmune",
             "text": "80 g de hígado de cerdo deshidratado. Un solo ingrediente para su sistema inmune.",
             "pills": "Alta proteína, Sistema inmune, 80 g"
           }
+        },
+        "favorito_WhYJxY": {
+          "type": "favorito",
+          "settings": {
+            "product": "",
+            "color": "",
+            "fg": "#163c69",
+            "image_asset": "",
+            "title": "",
+            "eyebrow": "",
+            "text": "",
+            "pills": ""
+          }
         }
       },
       "block_order": [
         "pulmon",
         "patas",
-        "higado"
+        "higado",
+        "favorito_WhYJxY"
       ],
       "settings": {
         "title": "",
