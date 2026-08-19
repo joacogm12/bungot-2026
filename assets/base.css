@@ -9,8 +9,8 @@
      borde: el escenario de Favoritos, el panel de suscripción y la foto a lo
      ancho. Un solo número para los tres, o se ve que uno es más ancho que el
      otro justo cuando quedan uno abajo del otro.
-     OJO: en Favoritos cada píxel de marco se lo saca al escenario y la bolsa se
-     mide contra él — subir esto obliga a bajar el max-height de .fav__img. */
+     En Favoritos cada píxel de marco se lo saca al escenario (la foto es cover
+     y se recorta sola, así que subirlo no rompe nada). */
   --favs-frame: clamp(1.5rem, 3vw, 2.5rem);
 
   /* El marco del panel naranja tiene nombre propio porque el statement lo
@@ -866,28 +866,24 @@ shopify-account::part(signed-out-avatar) {
 }
 
 /* --------------------------------------------------------------------------
-   Favoritos — el color sube, el contenido se queda quieto
+   Favoritos — tres fotos a sangre que se revelan una sobre otra
 
    Los paneles están todos superpuestos en un escenario pineado, en la misma
    posición. El scroll no los mueve: revela cada uno con clip-path de abajo
-   hacia arriba (--fav-reveal, lo maneja theme.js). Por eso la foto y el texto
-   no se mueven nunca de lugar y lo único que viaja es el color.
+   hacia arriba (--fav-reveal, lo maneja theme.js). Cada panel es solo su
+   foto, cover del bloque entero: no hay packshot, texto, número de fondo ni
+   capa de color — lo único que cambia entre panel y panel es la foto.
 
-   Sin JS no hay [data-enhanced] y todo esto no aplica: quedan secciones
-   normales, una abajo de la otra, con su color. Se lee igual.
+   Sin JS no hay [data-enhanced] y todo esto no aplica: quedan tres fotos
+   normales, una abajo de la otra. Se ve igual.
    -------------------------------------------------------------------------- */
 .favs {
   position: relative;
-  /* --favs-frame (el marco de crema alrededor del bloque de color) se declara en
-     :root: lo comparte la foto a lo ancho, que copia este mismo encuadre. */
-  /* Línea de tiempo con nombre para que el escenario pueda animarse contra la
-     posición de TODA la sección, y no contra la suya (que es sticky y miente). */
-  view-timeline-name: --favs;
-  view-timeline-axis: block;
+  /* --favs-frame (el marco de crema alrededor del bloque) se declara en :root:
+     lo comparte la foto a lo ancho, que copia este mismo encuadre. */
 }
 
-/* Banda a todo el ancho, con la mitad del alto que tenía originalmente:
-   ~70px contra los ~141px de antes (era padding 2.6rem + step-3). */
+/* Banda a todo el ancho arriba del escenario. Hoy va vacía (no se pinta). */
 .favs__heading {
   background: var(--brand-dark);
   color: var(--brand-yellow);
@@ -901,7 +897,7 @@ shopify-account::part(signed-out-avatar) {
 
 /* Con enhancement se despega del flujo y queda clavada arriba del escenario,
    por encima de los paneles (que van con z-index 1..n). Como tiene fondo
-   propio, no la alcanza el cambio de color de atrás. */
+   propio, no la alcanza el cambio de foto de atrás. */
 .favs[data-enhanced='true'] .favs__heading {
   position: absolute;
   top: 0;
@@ -913,17 +909,26 @@ shopify-account::part(signed-out-avatar) {
   .favs__heading { font-size: var(--step-1); }
 }
 
-/* --- Sin enhancement: secciones normales apiladas --- */
+/* --- Sin enhancement: tres fotos apiladas --- */
 .fav {
   position: relative;
-  background: var(--fav-bg);
-  border-top: 3px solid var(--ink);
-  /* var(--fav-fg) y no var(--ink) fijo: cada panel elige su tinta según su
-     fondo. Sobre 7716 C la tinta da 3.4:1 y el blanco 3.6:1; sobre 122 C el
-     blanco da 1.6:1. No hay un color de texto que sirva para toda la paleta. */
-  color: var(--fav-fg, var(--ink));
-  padding-block: clamp(2.5rem, 7vw, 4.5rem);
+  /* Solo se ve el instante que tarda la foto en cargar: tinta y no crema para
+     que el marco crema de alrededor siga leyéndose como marco. */
+  background: var(--ink);
+  height: 70svh;
   overflow: hidden;
+}
+
+/* La foto es el panel entero. --fav-focus la elige el customizer por foto:
+   qué parte se conserva al recortar (apunta a las caras). */
+.fav__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--fav-focus, 50% 50%);
+  display: block;
 }
 
 /* --- Con enhancement: escenario pineado + capas superpuestas --- */
@@ -938,90 +943,22 @@ shopify-account::part(signed-out-avatar) {
 .favs[data-enhanced='true'] .favs__stage {
   position: sticky;
   /* Se pega DEBAJO del navbar (72px fijos) más un respiro, no a la altura del
-     marco: la barra es transparente y con el marco solo (~40px) el color
-     quedaba pegado a los links. El recorte es solo por arriba — el marco de
+     marco: la barra es transparente y con el marco solo (~40px) la foto
+     quedaba pegada a los links. El recorte es solo por arriba — el marco de
      abajo sigue siendo --favs-frame, igual que antes. */
   --favs-top: 82px;
   top: var(--favs-top);
   height: calc(100svh - var(--favs-top) - var(--favs-frame));
   margin-inline: var(--favs-frame);
   border-radius: var(--radius-lg);
-  /* overflow hidden hace dos cosas acá: recorta las capas al radio (si no, las
-     esquinas de color se salen del marco) y contiene el clip-path de los
-     paneles. */
+  /* overflow hidden hace dos cosas acá: recorta las fotos al radio (si no, las
+     esquinas se salen del marco) y contiene el clip-path de los paneles. */
   overflow: hidden;
 }
 
-/* Parallax de salida: en el último tramo la BOLSA se rezaga dentro del marco.
-   El marco, el color y el texto se van con el scroll; la bolsa los sigue más
-   lento. Esa diferencia de velocidad es el efecto.
-
-   Por qué la bolsa y nada más. Medido en Chrome a 700/900/1080px de alto:
-     - el escenario: mover el marco entero es mover toda la sección (no).
-     - los paneles: son los que pintan el color; moverlos deja el marco vacío.
-     - el texto: a 700px de alto le quedan 24px abajo y 34px arriba. Cualquier
-       recorrido que se note lo mete debajo de la barra del título.
-     - la bolsa: ya se sale del marco en todos los tamaños (a 900px sobresale
-       7px, a 700px 53px) y overflow:hidden la recorta. Le sobra lugar.
-   Con .fav__inner (bolsa + texto juntos) mandaba el más apretado: 40px contra
-   860px de recorrido, un 4.6% — invisible.
-
-   El signo es POSITIVO: baja mientras el scroll sube. Rezagarse es lo que lee
-   como profundidad, y clavando la bolsa hacia abajo solo se recorta más contra
-   el borde — nunca aparece un canto flotando dentro del marco.
-
-   El rango `exit` de una sección más alta que la pantalla equivale justo al
-   último viewport de scroll: exactamente la transición que queremos suavizar. */
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .favs[data-enhanced='true'] .fav__num,
-    .favs[data-enhanced='true'] .fav__media,
-    .favs[data-enhanced='true'] .fav__claim,
-    .favs[data-enhanced='true'] .fav__copy {
-      animation: favs-parallax linear both;
-      animation-timeline: --favs;
-      animation-range: exit 0% exit 100%;
-    }
-
-    /* Cuántos px baja cada capa al salir la sección. TODAS para el mismo lado
-       (positivo = se rezaga); lo que cambia es cuánto. El número es el fondo y
-       es el que más se queda; la bolsa, el claim y el texto van juntos.
-
-       El texto va con clamp() y no con un número fijo porque es el único al
-       que se le acaba el aire. Hacia abajo el borde inferior del marco se ve
-       hasta el final, así que ahí un recorte se nota (hacia arriba no pasaba:
-       se metía bajo la barra opaca del título, y por eso antes lo mandé al
-       revés que la bolsa).
-
-       El aire sale de la geometría, no de probar números:
-         escenario  = 100svh - top(82) - marco(40)
-         .fav       = padding-block 5rem 0  -> 80px arriba
-         caja       = 100svh - 202
-         el texto queda centrado ahí, así que:
-         aire debajo = (100svh - 202 - 491) / 2 = 50svh - 346px
-       (491px es el alto del bloque de texto. Si cambias el copy, el navbar o
-       --favs-top, rehacer esta cuenta.)
-
-       Uso 320 y no 346 a propósito: deja ~26px de sobrepaso, y el recorte
-       recién aparece cuando del marco ya casi no queda nada en pantalla. */
-    .favs[data-enhanced='true'] .fav__num { --favs-shift: calc(var(--favs-parallax) * 1.45); }
-    .favs[data-enhanced='true'] .fav__media { --favs-shift: var(--favs-parallax); }
-    .favs[data-enhanced='true'] .fav__claim { --favs-shift: var(--favs-parallax); }
-    .favs[data-enhanced='true'] .fav__copy { --favs-shift: clamp(0px, calc(50svh - 320px), var(--favs-parallax)); }
-  }
-}
-@keyframes favs-parallax {
-  from { transform: translateY(0); }
-  /* En px y no en %: el % se mide contra el alto del propio elemento, que
-     cambia con el viewport, y el desplazamiento quedaba impredecible. */
-  to { transform: translateY(var(--favs-shift, 0px)); }
-}
-
 /* El escenario es sticky, o sea posicionado: se pinta por encima de cualquier
-   sección estática que venga después. Sin esto, el escenario rezagado taparía a
-   la sección siguiente en vez de meterse por debajo, y el parallax se vería al
-   revés. Se la sube de plano a la que sigue, sea cual sea — así aguanta que
-   reordenen las secciones desde el customizer. */
+   sección estática que venga después. Se sube de plano a la que sigue, sea
+   cual sea — así aguanta que reordenen las secciones desde el customizer. */
 .shopify-section:has(.favs) + .shopify-section {
   position: relative;
   z-index: 1;
@@ -1029,177 +966,9 @@ shopify-account::part(signed-out-avatar) {
 .favs[data-enhanced='true'] .fav {
   position: absolute;
   inset: 0;
-  /* Deja el techo libre para la pestaña del título, que va por encima. */
-  padding-block: 5rem 0;
-  display: grid;
-  place-items: center;
-  border-top: 0;
+  height: auto;
   /* La cortina. 0% = revelado del todo; 100% = escondido abajo. */
   clip-path: inset(var(--fav-reveal, 0%) 0 0 0);
-}
-
-.fav__num {
-  position: absolute;
-  left: clamp(0.5rem, 3vw, 2.5rem);
-  bottom: clamp(0.5rem, 2vw, 1.5rem);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(5rem, 16vh, 11rem);
-  line-height: 0.75;
-  /* Sigue al color del panel: en tinta fija se perdía sobre los fondos oscuros. */
-  color: currentColor;
-  opacity: 0.16;
-  pointer-events: none;
-  user-select: none;
-  font-variant-numeric: tabular-nums;
-  z-index: 0;
-}
-
-.fav__inner {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  /* Más ancho que el --wrap del resto del sitio, y con menos aire a los lados:
-     son los píxeles que necesita la columna del texto para no partirse una vez
-     que los laterales quedan iguales (ver grid-template-columns abajo).
-     Medido a 1440, el ancho más apretado donde todavía se ven las tres
-     columnas: el texto queda en 350px y necesita 346. */
-  max-width: min(1480px, 100%);
-  margin-inline: auto;
-  padding-inline: clamp(1rem, 2vw, 1.75rem);
-  display: grid;
-  /* Laterales IGUALES para que la foto quede en el centro exacto del panel.
-     Antes eran 0.45fr y 1fr: 156px contra 346px, y esa diferencia dejaba la
-     columna del medio 95px corrida a la izquierda. No se veía porque las
-     bolsas venían descentradas dentro de su propio recorte y compensaban de
-     casualidad; al alinearlas bien, el desbalance quedó a la vista.
-
-     El medio va a 540px fijos y no en fr: es el max-width de la foto, así que
-     la columna mide exactamente lo que puede ocupar y los dos lados se
-     reparten el resto en partes iguales. Con fr el ancho dependía del reparto
-     y volvía a descentrarse. */
-  grid-template-columns: minmax(0, 1fr) minmax(0, 540px) minmax(0, 1fr);
-  gap: clamp(0.75rem, 2.2vw, 2rem);
-  align-items: center;
-}
-
-.fav__claim {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(2rem, 5.5vw, 4.4rem);
-  line-height: 0.85;
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-  margin: 0;
-  align-self: start;
-}
-
-.fav__media { display: grid; place-items: center; }
-.fav__img {
-  width: 100%;
-  /* El packaging es vertical (645x900) y sin rotar la caja que ocupa es la del
-     propio alto. El tope sale de: alto del escenario (100svh - 2*marco) menos
-     la barra del título (~70px) menos el aire de arriba del panel (5rem).
-     A 700px de alto, el caso peor: 620 - 70 - 80 = 470px = 67svh. Dejo 66svh.
-     Antes esto era 62svh porque a 30° la caja crecía x1.224 y había que
-     descontarlo; sin ángulo esa cuenta ya no corre. Verificado de 700 a 1440.
-     Si volvés a rotarla o cambiás el marco o la barra, hay que rehacer esto. */
-  max-width: 540px;
-  max-height: 66svh;
-  object-fit: contain;
-  filter: drop-shadow(0 22px 34px rgba(22, 60, 105, 0.32));
-}
-
-.fav__copy { text-align: right; }
-
-.fav__eyebrow {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.55);
-  /* Tinta fija, no heredada: la pastilla tiene fondo claro propio. */
-  color: var(--ink);
-  border-radius: var(--radius-pill);
-  padding: 0.3em 1em;
-  font-family: var(--font-body);
-  font-size: var(--step--1);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 0.7rem;
-}
-.fav__title {
-  font-size: clamp(1.9rem, 1rem + 3.6vw, 4rem);
-  text-transform: uppercase;
-  margin: 0 0 0.4em;
-}
-.fav__desc {
-  font-size: var(--step-0);
-  max-width: 40ch;
-  margin: 0 0 1rem auto;
-  /* El panel no puede crecer más allá de la pantalla. */
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.fav__pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  justify-content: flex-end;
-  margin: 0 0 1.2rem;
-  padding: 0;
-  list-style: none;
-}
-.fav__pill {
-  background: rgba(255, 255, 255, 0.72);
-  /* Tinta fija, no heredada: el pill tiene fondo claro propio. */
-  color: var(--ink);
-  border: 2px solid var(--ink);
-  border-radius: var(--radius-pill);
-  padding: 0.22em 0.8em;
-  font-family: var(--font-body);
-  font-size: var(--step--1);
-  white-space: nowrap;
-}
-
-.fav__foot {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-.fav__price {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: var(--step-2);
-}
-.fav__price s { opacity: 0.5; font-size: 0.6em; margin-right: 0.3em; }
-.fav__form { margin: 0; }
-/* Pulsado de "Agregar": más hundido que el .btn genérico (2px) — baja 4px,
-   casi a ras de su sombra dura, con el resorte corto del vuelo al carrito. */
-.fav__btn { transition: transform 0.12s ease, box-shadow 0.12s ease; }
-.fav__btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
-.fav__btn:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; transform: none; }
-
-/* 1400 y no 980: con las tres columnas y los laterales iguales, la del texto
-   se parte por debajo de 1410px (medido — el eyebrow se va a dos líneas y los
-   pills a dos filas). El claim es decorativo (aria-hidden), así que soltarlo
-   antes le devuelve ese ancho al texto. Debajo de acá la foto ya no queda
-   centrada en el panel: sin columna izquierda no hay contra qué centrarla, y
-   es otra composición. */
-@media (max-width: 1400px) {
-  .fav__claim { display: none; }
-  .fav__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-}
-@media (max-width: 720px) {
-  .fav__inner { grid-template-columns: 1fr; gap: 0.8rem; }
-  .fav__copy { text-align: center; }
-  .fav__pills, .fav__foot { justify-content: center; }
-  .fav__desc { margin-inline: auto; -webkit-line-clamp: 2; line-clamp: 2; }
-  .fav__img { max-height: 34svh; }
-  .fav__num { font-size: 4.5rem; opacity: 0.13; }
 }
 
 /* --------------------------------------------------------------------------

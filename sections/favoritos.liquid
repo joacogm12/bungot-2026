@@ -1,30 +1,30 @@
 {%- comment -%}
-  Favoritos — el color sube, el contenido se queda quieto.
+  Favoritos — tres fotos a sangre que se revelan una sobre otra.
 
   Todos los paneles están superpuestos en un escenario pineado (sticky), en la
   misma posición exacta. Al scrollear, cada panel se revela con
-  `clip-path: inset(X% 0 0 0)` de abajo hacia arriba: el color sube como una
-  cortina y la foto y el texto nunca se mueven de lugar.
+  `clip-path: inset(X% 0 0 0)` de abajo hacia arriba: la foto siguiente sube
+  como una cortina sobre la anterior. Cada panel es SOLO su foto, a todo el
+  bloque y con object-fit: cover — sin packshot, sin texto, sin número de
+  fondo ni capa de color encima. Lo que se ve es la foto y ya.
 
-  Por qué no sticky puro: con paneles apilados en flujo, el contenido viaja con
-  la caja de su panel — es imposible anclarlo al viewport mientras el panel sube.
-  Por eso el reveal lo maneja JS (ver theme.js).
+  Por qué no sticky puro: con paneles apilados en flujo cada foto viaja con la
+  caja de su panel y no hay forma de anclarla al viewport mientras sube. Por
+  eso el reveal lo maneja JS (ver theme.js).
 
   Progressive enhancement: sin JS no se agrega `data-enhanced` y los paneles se
-  ven como secciones normales, una abajo de la otra, con su color. Se lee todo.
+  ven como tres fotos normales, una abajo de la otra. Se ve todo.
 
-  Es una sección curada (bloques) y no una colección: cada producto necesita su
-  arte de packaging y su color propio, que no salen de Shopify.
-
-  Prioridad de la foto: imagen del bloque > asset del tema > foto del producto.
-  Hoy manda el asset: el packaging nuevo vive en assets/ y todavía no está
-  cargado en la tienda.
+  Prioridad de la foto: imagen subida a Shopify (con srcset real) > asset del
+  tema. Hoy mandan los assets: las tres fotos viven en assets/ como
+  bungot-fav-*.webp, en dos anchos (1000 para celular, el grande para
+  escritorio) porque un asset no admite los filtros de image_url.
 {%- endcomment -%}
 
 {%- liquid
   assign panels = 0
   for block in section.blocks
-    if block.settings.product != blank
+    if block.settings.image != blank or block.settings.image_asset != blank
       assign panels = panels | plus: 1
     endif
   endfor
@@ -34,12 +34,13 @@
   <section
     class="favs"
     data-favs
-    style="--fav-count: {{ panels }}; --fav-hold: {{ section.settings.hold }}; --fav-trans: {{ section.settings.trans }}; --favs-parallax: {{ section.settings.parallax }}px;"
+    style="--fav-count: {{ panels }}; --fav-hold: {{ section.settings.hold }}; --fav-trans: {{ section.settings.trans }};"
   >
     <div class="favs__stage" data-favs-stage>
       {%- comment -%}
         El título va DENTRO del escenario y por encima de los paneles: así queda
-        fijo, con su color propio, mientras los tres colores cambian detrás.
+        fijo, con su color propio, mientras las fotos cambian detrás. Vacío =
+        no se pinta.
       {%- endcomment -%}
       {%- if section.settings.title != blank -%}
         <h2 class="favs__heading">{{ section.settings.title }}</h2>
@@ -47,159 +48,55 @@
 
       {%- assign i = 0 -%}
       {%- for block in section.blocks -%}
-        {%- assign product = block.settings.product -%}
-        {%- if product == blank -%}{%- continue -%}{%- endif -%}
+        {%- if block.settings.image == blank and block.settings.image_asset == blank -%}{%- continue -%}{%- endif -%}
         {%- assign i = i | plus: 1 -%}
+        {%- assign alt = block.settings.alt | escape -%}
 
-        {%- liquid
-          assign bg = block.settings.color
-          if bg == blank
-            capture bg
-              render 'card-color', product: product, index: forloop.index0
-            endcapture
-            assign bg = bg | strip
-          endif
-
-          assign n = i | prepend: '0' | slice: -2, 2
-
-          assign desc = block.settings.text
-          if desc == blank
-            assign desc = product.description | strip_html | truncate: 140
-          endif
-
-          assign pills = block.settings.pills | split: ','
-        -%}
-
-        <article
+        <div
           class="fav"
           data-fav
-          style="--fav-bg: {{ bg }}; --fav-fg: {{ block.settings.fg | default: '#163C69' }}; z-index: {{ i }};"
+          style="--fav-focus: {{ block.settings.focus | default: '50% 50%' }}; z-index: {{ i }};"
           {{ block.shopify_attributes }}
         >
-          <span class="fav__num" aria-hidden="true">{{ n }}</span>
-
-          <div class="fav__inner">
-            {%- if section.settings.claim != blank -%}
-              <p class="fav__claim" aria-hidden="true">{{ section.settings.claim }}</p>
-            {%- endif -%}
-
-            <div class="fav__media">
-              {%- if block.settings.image != blank -%}
-                <img
-                  class="fav__img"
-                  src="{{ block.settings.image | image_url: width: 800 }}"
-                  srcset="
-                    {{ block.settings.image | image_url: width: 400 }} 400w,
-                    {{ block.settings.image | image_url: width: 800 }} 800w"
-                  sizes="(max-width: 820px) 55vw, 32vw"
-                  alt="{{ block.settings.image.alt | default: product.title | escape }}"
-                  width="{{ block.settings.image.width }}"
-                  height="{{ block.settings.image.height }}"
-                  loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-                >
-              {%- elsif block.settings.image_asset != blank -%}
-                {%- comment -%}
-                  Asset del tema: no admite los filtros de image_url, así que va
-                  a tamaño fijo. Por eso los .webp de assets/ están a 900px y
-                  pesan ~80-100 KB.
-
-                  OJO: este width/height es uno solo para TODAS las fotos. Los
-                  tres .webp de packaging están montados sobre el mismo lienzo
-                  de 796x900 justamente por eso: si tuvieran proporciones
-                  distintas, object-fit las encajaría a escalas distintas y las
-                  bolsas cambiarían de tamaño al pasar de un panel a otro.
-                  Si regenerás las fotos, estos dos números tienen que seguir
-                  al lienzo.
-
-                  Y el lienzo está armado alineando LA BOLSA, no el recorte:
-                  las tres tienen la bolsa clavada en x=398. Centrar el recorte
-                  entero no sirve — los premios se despatarran distinto en cada
-                  foto (en patas, 294px hacia la izquierda), y eso empuja la
-                  bolsa al otro lado. De ahí el aire transparente a la derecha:
-                  es el precio de que las bolsas no salten entre paneles.
-                {%- endcomment -%}
-                <img
-                  class="fav__img"
-                  src="{{ block.settings.image_asset | asset_url }}"
-                  alt="{{ product.title | escape }}"
-                  width="796"
-                  height="900"
-                  loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-                >
-              {%- elsif product.featured_image -%}
-                <img
-                  class="fav__img"
-                  src="{{ product.featured_image | image_url: width: 800 }}"
-                  alt="{{ product.featured_image.alt | default: product.title | escape }}"
-                  width="800"
-                  height="800"
-                  loading="lazy"
-                >
-              {%- else -%}
-                {{ 'product-1' | placeholder_svg_tag: 'fav__img' }}
+          {%- if block.settings.image != blank -%}
+            <img
+              class="fav__img"
+              src="{{ block.settings.image | image_url: width: 1800 }}"
+              srcset="
+                {{ block.settings.image | image_url: width: 800 }} 800w,
+                {{ block.settings.image | image_url: width: 1200 }} 1200w,
+                {{ block.settings.image | image_url: width: 1800 }} 1800w,
+                {{ block.settings.image | image_url: width: 2400 }} 2400w"
+              sizes="100vw"
+              alt="{{ block.settings.image.alt | default: alt }}"
+              width="{{ block.settings.image.width }}"
+              height="{{ block.settings.image.height }}"
+              loading="{% if i == 1 %}eager{% else %}lazy{% endif %}"
+            >
+          {%- else -%}
+            {%- comment -%}
+              Asset del tema: sin image_url no hay srcset por ancho, así que el
+              tamaño lo elige un <picture> por media query. La chica (si la
+              hay) va en celular; el grande en escritorio. Sin width/height
+              a propósito: la foto es cover del panel (el CSS le fija ancho y
+              alto, así que no hay CLS) y una proporción intrínseca fija no
+              aplica a tres fotos con proporciones distintas.
+            {%- endcomment -%}
+            <picture>
+              {%- if block.settings.image_asset_sm != blank -%}
+                <source media="(max-width: 900px)" srcset="{{ block.settings.image_asset_sm | asset_url }}">
               {%- endif -%}
-            </div>
-
-            <div class="fav__copy">
-              {%- if block.settings.eyebrow != blank -%}
-                <span class="fav__eyebrow">{{ block.settings.eyebrow }}</span>
-              {%- endif -%}
-
-              <h3 class="fav__title">{{ block.settings.title | default: product.title }}</h3>
-
-              {%- if desc != blank -%}
-                <p class="fav__desc">{{ desc }}</p>
-              {%- endif -%}
-
-              {%- if pills.size > 0 -%}
-                <ul class="fav__pills">
-                  {%- for pill in pills limit: 3 -%}
-                    {%- assign p = pill | strip -%}
-                    {%- if p != blank -%}
-                      <li class="fav__pill">{{ p }}</li>
-                    {%- endif -%}
-                  {%- endfor -%}
-                </ul>
-              {%- endif -%}
-
-              <div class="fav__foot">
-                <span class="fav__price">
-                  {%- if product.compare_at_price > product.price -%}
-                    <s>{{ product.compare_at_price | money }}</s>
-                  {%- endif -%}
-                  {{ product.price | money }}
-                </span>
-
-                {%- form 'product', product, class: 'fav__form' -%}
-                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                  {%- if product.requires_selling_plan -%}
-                    {%- comment -%} Solo-suscripción: sin plan Shopify rechaza el add. {%- endcomment -%}
-                    <input type="hidden" name="selling_plan" value="{{ product.selected_or_first_available_variant.selling_plan_allocations.first.selling_plan.id }}">
-                  {%- endif -%}
-                  {%- comment -%}
-                    El submit lo intercepta initFavCart (theme.js): el agregado
-                    va por fetch y la confirmación es la bolita de flyToCart;
-                    sin JS, el form navega y agrega igual. data-label-added es
-                    el texto que el botón muestra al aterrizar la bolita.
-                  {%- endcomment -%}
-                  <button
-                    class="btn btn--brand fav__btn"
-                    type="submit"
-                    name="add"
-                    data-label-added="{{ 'favoritos.added' | t }}"
-                    {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
-                  >
-                    {%- if product.selected_or_first_available_variant.available -%}
-                      {{ 'products.card.buy' | t }}
-                    {%- else -%}
-                      {{ 'products.card.sold_out' | t }}
-                    {%- endif -%}
-                  </button>
-                {%- endform -%}
-              </div>
-            </div>
-          </div>
-        </article>
+              {%- # theme-check-disable ImgWidthAndHeight -%}
+              <img
+                class="fav__img"
+                src="{{ block.settings.image_asset | asset_url }}"
+                alt="{{ alt }}"
+                loading="{% if i == 1 %}eager{% else %}lazy{% endif %}"
+              >
+              {%- # theme-check-enable ImgWidthAndHeight -%}
+            </picture>
+          {%- endif -%}
+        </div>
       {%- endfor -%}
     </div>
   </section>
@@ -210,86 +107,77 @@
   "name": "Favoritos",
   "max_blocks": 5,
   "settings": [
-    { "type": "text", "id": "title", "label": "Título", "default": "Los favoritos de la manada" },
     {
       "type": "text",
-      "id": "claim",
-      "label": "Frase grande de la izquierda",
-      "default": "100% natural",
-      "info": "Se repite en todos los paneles, así queda fija mientras sube el color."
+      "id": "title",
+      "label": "Título",
+      "info": "Banda fija arriba del escenario. Vacío = sin banda, solo las fotos."
     },
     { "type": "header", "content": "Ritmo del scroll" },
     {
       "type": "range",
       "id": "hold",
-      "label": "Pausa en cada producto (pantallas)",
+      "label": "Pausa en cada foto (pantallas)",
       "min": 0.2,
       "max": 1.5,
       "step": 0.1,
       "default": 0.6,
-      "info": "Cuánto se queda quieto cada producto antes de que empiece a subir el color siguiente. 1 = una pantalla de scroll."
+      "info": "Cuánto se queda quieta cada foto antes de que empiece a subir la siguiente. 1 = una pantalla de scroll."
     },
     {
       "type": "range",
       "id": "trans",
-      "label": "Largo del cambio de color (pantallas)",
+      "label": "Largo del cambio de foto (pantallas)",
       "min": 0.3,
       "max": 1.5,
       "step": 0.1,
       "default": 0.8,
-      "info": "Cuánto scroll tarda el color en subir de un producto al siguiente."
-    },
-    {
-      "type": "range",
-      "id": "parallax",
-      "label": "Parallax al salir",
-      "min": 0,
-      "max": 200,
-      "step": 10,
-      "unit": "px",
-      "default": 110,
-      "info": "Cuánto se rezaga la bolsa dentro del marco al salir la sección. El marco y el texto no se mueven. Contra los ~860px que recorre la sección, menos de 60px no se nota. 0 = sin parallax."
+      "info": "Cuánto scroll tarda una foto en subir sobre la anterior."
     }
   ],
   "blocks": [
     {
-      "type": "favorito",
-      "name": "Producto",
+      "type": "foto",
+      "name": "Foto",
       "settings": [
-        { "type": "product", "id": "product", "label": "Producto" },
-        {
-          "type": "color",
-          "id": "color",
-          "label": "Color del panel",
-          "info": "Elegido para contrastar con la bolsa. Si lo dejás vacío usa la rotación de la paleta."
-        },
-        {
-          "type": "color",
-          "id": "fg",
-          "label": "Color del texto",
-          "default": "#163C69",
-          "info": "Tiene que ir por panel: sobre 605 C el blanco da 1.6:1 y sobre 7700 C la tinta da 1.7:1 — en los dos casos el texto desaparece."
-        },
         {
           "type": "image_picker",
           "id": "image",
           "label": "Foto (subida a Shopify)",
-          "info": "Tiene prioridad sobre el asset del tema. Usala cuando subas el packaging a Shopify."
+          "info": "Tiene prioridad sobre el asset del tema. Como se sirve a pantalla completa, súbela de 2400 px de ancho para arriba."
         },
         {
           "type": "text",
           "id": "image_asset",
           "label": "Foto (asset del tema)",
-          "info": "Nombre de archivo dentro de assets/, ej: bungot-patas.webp. Es lo que se usa hoy."
+          "info": "Nombre de archivo dentro de assets/, ej: bungot-fav-terraza-1620.webp. Es lo que se usa hoy."
         },
-        { "type": "text", "id": "title", "label": "Título", "info": "Vacío = nombre del producto." },
-        { "type": "text", "id": "eyebrow", "label": "Etiqueta chica" },
-        { "type": "textarea", "id": "text", "label": "Descripción corta", "info": "Vacío = descripción del producto." },
         {
           "type": "text",
-          "id": "pills",
-          "label": "Beneficios",
-          "info": "Separados por coma, máximo 3. Sacalos del packaging."
+          "id": "image_asset_sm",
+          "label": "Foto chica para celular (asset del tema)",
+          "info": "Opcional. Se sirve hasta 900 px de ancho de pantalla, ej: bungot-fav-terraza-1000.webp."
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Texto alternativo",
+          "info": "Describe lo que se ve. La foto es contenido, no decoración: necesita alt."
+        },
+        {
+          "type": "select",
+          "id": "focus",
+          "label": "Foco del recorte",
+          "options": [
+            { "value": "50% 20%", "label": "Arriba" },
+            { "value": "50% 35%", "label": "Arriba del centro" },
+            { "value": "50% 50%", "label": "Centro" },
+            { "value": "50% 80%", "label": "Abajo" },
+            { "value": "20% 50%", "label": "Izquierda" },
+            { "value": "80% 50%", "label": "Derecha" }
+          ],
+          "default": "50% 50%",
+          "info": "Qué parte de la foto se conserva al recortarla. Apunta a las caras."
         }
       ]
     }

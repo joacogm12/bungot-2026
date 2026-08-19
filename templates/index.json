@@ -16,71 +16,43 @@
     "favoritos": {
       "type": "favoritos",
       "blocks": {
-        "pulmon": {
-          "type": "favorito",
+        "terraza": {
+          "type": "foto",
           "settings": {
-            "product": "snack-pulmon-de-cerdo",
-            "color": "#6591df",
-            "fg": "#ffffff",
-            "image_asset": "bungot-pulmon.webp",
-            "title": "Pulmón de cerdo",
-            "eyebrow": "Para perros · Masa muscular",
-            "text": "40 g de pulmón de cerdo deshidratado. Proteína real para la masa muscular de tu perro.",
-            "pills": "Alta proteína, Masa muscular, 40 g"
+            "image_asset": "bungot-fav-terraza-1620.webp",
+            "image_asset_sm": "bungot-fav-terraza-1000.webp",
+            "alt": "Dos perros echados en un camastro de la terraza con sus bolsas de premios BUNGOT",
+            "focus": "50% 50%"
           }
         },
-        "patas": {
-          "type": "favorito",
+        "gato": {
+          "type": "foto",
           "settings": {
-            "product": "premios-patas-de-pollo",
-            "color": "#6591df",
-            "fg": "#ffffff",
-            "image_asset": "bungot-patas.webp",
-            "title": "Patas de pollo",
-            "eyebrow": "Para perros · Salud articular",
-            "text": "14 piezas de patas de pollo deshidratadas. Masticado largo que acompaña sus articulaciones.",
-            "pills": "Alta proteína, Salud articular, 14 pzas"
+            "image_asset": "bungot-fav-gato-1800.webp",
+            "image_asset_sm": "bungot-fav-gato-1000.webp",
+            "alt": "Un gato gris se relame al sol junto a dos bolsas de snacks BUNGOT para gato",
+            "focus": "50% 50%"
           }
         },
-        "higado": {
-          "type": "favorito",
+        "bulldog": {
+          "type": "foto",
           "settings": {
-            "product": "snacks-higado-de-cerdo",
-            "color": "#6591df",
-            "fg": "#FFFFFF",
-            "image_asset": "bungot-higado.webp",
-            "title": "Hígado de cerdo",
-            "eyebrow": "Para perros · Sistema inmune",
-            "text": "80 g de hígado de cerdo deshidratado. Un solo ingrediente para su sistema inmune.",
-            "pills": "Alta proteína, Sistema inmune, 80 g"
-          }
-        },
-        "favorito_WhYJxY": {
-          "type": "favorito",
-          "settings": {
-            "product": "",
-            "color": "",
-            "fg": "#163c69",
-            "image_asset": "",
-            "title": "",
-            "eyebrow": "",
-            "text": "",
-            "pills": ""
+            "image_asset": "bungot-fav-bulldog-1600.webp",
+            "image_asset_sm": "bungot-fav-bulldog-1000.webp",
+            "alt": "Un bulldog inglés en el jardín con un hueso BUNGOT en el hocico",
+            "focus": "50% 35%"
           }
         }
       },
       "block_order": [
-        "pulmon",
-        "patas",
-        "higado",
-        "favorito_WhYJxY"
+        "terraza",
+        "gato",
+        "bulldog"
       ],
       "settings": {
         "title": "",
-        "claim": "100% natural",
         "hold": 0.6,
-        "trans": 0.8,
-        "parallax": 110
+        "trans": 0.8
       }
     },
     "statement": {

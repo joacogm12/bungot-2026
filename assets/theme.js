@@ -242,8 +242,7 @@
      La confirmación de todo botón "Agregar", sin salir de la página: una
      bolita vuela del botón a la pastilla del carrito, el contador sube al
      aterrizar (no en el clic) y la pastilla rebota. Lo llaman producto.js
-     (CTA de la PDP y venta cruzada), productos.js (tarjetas del catálogo)
-     y los paneles de favoritos (initFavCart, acá abajo).
+     (CTA de la PDP y venta cruzada) y productos.js (tarjetas del catálogo).
 
      opts.cantidad → cuánto sumarle al contador si nadie confirma el total.
      opts.color    → el de la bolita; sin él, el coral de la pestaña
@@ -374,37 +373,6 @@
 
   window.BUNGOT.flyToCart = flyToCart;
 
-  /* --- Favoritos: "Agregar al carrito" sin salir de la página ------------ */
-  /* El form de cada panel es un {% form 'product' %} que navegaría al
-     carrito al enviarse; acá se intercepta: el agregado va por fetch y la
-     confirmación es el vuelo de la bolita. El botón solo se bloquea
-     mientras dura el fetch, nunca por la animación. */
-  function initFavCart() {
-    document.querySelectorAll('.fav__form').forEach(function (form) {
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var btn = form.querySelector('.fav__btn');
-        var vuelo = flyToCart(btn, { cantidad: 1 });
-        if (btn) btn.disabled = true;
-        fetch('/cart/add.js', {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { Accept: 'application/json' }
-        })
-          .then(function () { return fetch('/cart.js', { headers: { Accept: 'application/json' } }); })
-          .then(function (r) { return r.json(); })
-          .then(function (cart) {
-            vuelo.ponTotal(cart.item_count);
-            if (btn) btn.disabled = false;
-          })
-          .catch(function () {
-            // Sin backend el contador ya subió al aterrizar; solo soltar el botón.
-            if (btn) btn.disabled = false;
-          });
-      });
-    });
-  }
-
   /* --- Menú mobile ----------------------------------------------------- */
   function initNav() {
     var burger = document.querySelector('[data-burger]');
@@ -433,7 +401,7 @@
     });
   }
 
-  /* --- Favoritos: el color sube, el contenido no se mueve --------------- */
+  /* --- Favoritos: cada foto sube como cortina sobre la anterior --------- */
   function initFavoritos() {
     document.querySelectorAll('[data-favs]').forEach(function (root) {
       var panels = Array.prototype.slice.call(root.querySelectorAll('[data-fav]'));
@@ -452,7 +420,7 @@
 
       // La línea de tiempo alterna pausa y cambio:
       //   [pausa 01][sube 02][pausa 02][sube 03][pausa 03]
-      // Sin las pausas el color arranca a subir apenas te movés, y el último
+      // Sin las pausas la foto siguiente arranca a subir apenas te mueves, y el último
       // panel nunca llega a verse solo.
       var total = n * hold + (n - 1) * trans;
 
@@ -677,7 +645,6 @@
     initHeroPerro();
     initNav();
     initFavoritos();
-    initFavCart();
     initReviews();
     initFooterPushesNav();
   }
