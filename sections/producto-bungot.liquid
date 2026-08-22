@@ -24,8 +24,9 @@
 
 {%- liquid
   # --- Color de la familia (fondo del panel izquierdo) ---
-  # 1) override del customizer · 2) card-color.liquid (única fuente de verdad
-  # del color de un producto: respeta el metafield custom.card_color) ·
+  # 1) override del customizer (normalmente vacío) · 2) card-color.liquid
+  # (única fuente de verdad del color de un producto: el de su familia en el
+  # catálogo, así la galería es del mismo color que su tarjeta) ·
   # 3) naranja del diseño, para cuando no hay producto (preview del editor).
   assign fam = section.settings.family_color
   if fam == blank and product != blank
@@ -770,8 +771,11 @@
           # Assets de respaldo, en el orden de las tarjetas del diseño.
           assign fallback_cards = 'bungot-higado.webp,bungot-patas.webp,bungot-sticker-manada.webp' | split: ','
           # Cuenta aparte del forloop: hay que saltarse el producto que se está
-          # viendo, así que el límite no puede ir en el for.
+          # viendo, así que el límite no puede ir en el for. Cuatro tarjetas:
+          # es lo que cabe en una fila a lo ancho del contenedor (ver
+          # .pdcross__grid en producto.css).
           assign shown = 0
+          assign cross_max = 4
         -%}
 
         {%- comment -%}
@@ -782,22 +786,18 @@
         {%- if xcoll != blank and xcoll.products.size > 1 -%}
           {%- for xp in xcoll.products -%}
             {%- if xp.id == product.id -%}{%- continue -%}{%- endif -%}
-            {%- if shown >= 3 -%}{%- break -%}{%- endif -%}
+            {%- if shown >= cross_max -%}{%- break -%}{%- endif -%}
             {%- assign shown = shown | plus: 1 -%}
             {%- liquid
               capture xcolor
                 render 'card-color', product: xp, index: forloop.index0
               endcapture
 
-              # El antetítulo se arma con los datos de la etiqueta, en el mismo
-              # formato que el catálogo: "Sistema inmune · 80 g".
-              assign xp_ey = xp.metafields.custom.beneficio_principal.value
-              assign xp_gr = xp.metafields.custom.gramaje.value
-              if xp_ey != blank and xp_gr != blank
-                assign xp_eyebrow = xp_ey | append: ' · ' | append: xp_gr
-              else
-                assign xp_eyebrow = xp_ey | default: xp_gr | default: xp.type
-              endif
+              # El antetítulo sale del MISMO metafield que en el catálogo
+              # (custom.card_eyebrow): si el producto no lo trae, la tarjeta va
+              # sin pastilla, igual que allá. Antes se armaba aquí con
+              # beneficio + gramaje y por eso estas tarjetas se veían distintas.
+              assign xp_eyebrow = xp.metafields.custom.card_eyebrow.value
 
               assign xp_price = blank
               if xp.price > 0
@@ -868,7 +868,7 @@
     { "type": "paragraph", "content": "Split fijo 50/50: galería a la izquierda, compra a la derecha. Los campos vacíos se llenan con los datos del producto." },
 
     { "type": "header", "content": "Panel de la galería" },
-    { "type": "color", "id": "family_color", "label": "Color de la familia", "info": "Vacío = el color del producto (metafield custom.card_color o la rotación de la paleta)." },
+    { "type": "color", "id": "family_color", "label": "Color de la familia", "info": "Déjalo vacío: así la galería toma el color de la familia del producto en el catálogo (Configuración del tema → Familias del catálogo). Si lo llenas, TODAS las páginas de producto con esta plantilla salen de este color." },
     { "type": "image_picker", "id": "bag_image", "label": "Foto principal", "info": "Vacío = la foto principal del producto." },
     { "type": "text", "id": "lote", "label": "Línea de lote", "default": "Lote 04 · Guadalajara" },
 

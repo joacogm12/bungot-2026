@@ -68,7 +68,7 @@
     "settings": [
       {
         "type": "paragraph",
-        "content": "Las tarjetas rotan por esta lista de colores. Todos salen de las 8 hojas de pantones. Para fijar el color de un producto puntual, usá el metafield custom.card_color con un hex."
+        "content": "Rotación de respaldo para productos que no caen en ninguna familia del catálogo (la familia manda, ver Familias del catálogo). Todos salen de las 8 hojas de pantones. Para fijar el color de un producto puntual, usa el metafield custom.card_color con un hex."
       },
       {
         "type": "text",
@@ -77,6 +77,35 @@
         "default": "#F6A762,#70C4E8,#FED140,#88CBC4,#EB5F7A,#8FC7E8,#F59C26,#E6BDDB,#E1CC00,#619AC5,#7FA8AC,#E94925",
         "info": "Hex separados por coma. En orden: 714, 297, 122, 6141, 709, 2905, 1375, 516, 605, 2170, 5493, 172."
       }
+    ]
+  },
+  {
+    "name": "Familias del catálogo",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Cada familia del catálogo: qué productos lista (colección o, si no hay, product_type exacto) y su color. Ese mismo color es el que lleva el producto fuera del catálogo (fondo de la galería en su página y pie de las tarjetas de venta cruzada), así nunca cambia de color según dónde aparezca."
+      },
+      { "type": "header", "content": "Deshidratados (perro)" },
+      { "type": "collection", "id": "fam_deshidratados_collection", "label": "Colección", "info": "Tiene prioridad sobre el tipo de producto." },
+      { "type": "text", "id": "fam_deshidratados_type", "label": "Tipo de producto", "info": "Alternativa a la colección: product_type exacto (ej. huesos, Juguete). Si hay colección, se ignora." },
+      { "type": "color", "id": "fam_deshidratados_bg", "label": "Color de la familia", "default": "#00968F" },
+      { "type": "color", "id": "fam_deshidratados_fg", "label": "Color de texto (banda)", "default": "#F7F1E3" },
+      { "type": "header", "content": "Línea gato" },
+      { "type": "collection", "id": "fam_gato_collection", "label": "Colección", "info": "Tiene prioridad sobre el tipo de producto." },
+      { "type": "text", "id": "fam_gato_type", "label": "Tipo de producto", "info": "Alternativa a la colección: product_type exacto (ej. huesos, Juguete). Si hay colección, se ignora." },
+      { "type": "color", "id": "fam_gato_bg", "label": "Color de la familia", "default": "#F59C26", "info": "PANTONE 1375 C, el naranja de la paleta." },
+      { "type": "color", "id": "fam_gato_fg", "label": "Color de texto (banda)", "default": "#013C3E" },
+      { "type": "header", "content": "Huesos ahumados" },
+      { "type": "collection", "id": "fam_femur_collection", "label": "Colección", "info": "Tiene prioridad sobre el tipo de producto." },
+      { "type": "text", "id": "fam_femur_type", "label": "Tipo de producto", "info": "Alternativa a la colección: product_type exacto (ej. huesos, Juguete). Si hay colección, se ignora." },
+      { "type": "color", "id": "fam_femur_bg", "label": "Color de la familia", "default": "#8E3235" },
+      { "type": "color", "id": "fam_femur_fg", "label": "Color de texto (banda)", "default": "#F7F1E3" },
+      { "type": "header", "content": "Juguetes" },
+      { "type": "collection", "id": "fam_juguetes_collection", "label": "Colección", "info": "Tiene prioridad sobre el tipo de producto." },
+      { "type": "text", "id": "fam_juguetes_type", "label": "Tipo de producto", "info": "Alternativa a la colección: product_type exacto (ej. huesos, Juguete). Si hay colección, se ignora." },
+      { "type": "color", "id": "fam_juguetes_bg", "label": "Color de la familia", "default": "#2F7FA8" },
+      { "type": "color", "id": "fam_juguetes_fg", "label": "Color de texto (banda)", "default": "#013C3E" }
     ]
   },
   {

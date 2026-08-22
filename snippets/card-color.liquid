@@ -1,16 +1,20 @@
 {%- comment -%}
   Devuelve (echo) el color de un producto. Única fuente de verdad para el color
-  de marca de un producto: la usan el grid y la sección Favoritos.
+  de marca de un producto: lo usan la PDP (fondo de la galería), la venta
+  cruzada de la PDP y la tarjeta de búsqueda.
 
   Prioridad:
-    1. metafield custom.card_color  — el color canónico del producto
-    2. rotación de la paleta por posición
+    1. metafield custom.card_color  — override puntual por producto
+    2. color de su FAMILIA del catálogo — el mismo que pinta su banda/tarjeta
+       en la página de productos (Familias del catálogo en los ajustes del
+       tema: colección o product_type + color). Si el producto cae en varias
+       familias (ej. Patas de pollo está en perro y en gato) gana la primera
+       en el orden del catálogo: deshidratados · gato · femur · juguetes.
+    3. rotación de la paleta por posición — solo para lo que no está en
+       ninguna familia (ej. la Caja BUNGOT, que no va en colecciones).
 
-  Ojo: hoy el metafield NO existe en la tienda, así que en la práctica siempre
-  cae en la rotación. Mientras sea así, un mismo producto puede tener distinto
-  color en el grid y en Favoritos (la posición manda). Creando el metafield y
-  cargándole un hex a cada producto, el color pasa a ser único en todo el sitio
-  sin tocar una línea de este tema.
+  Así un producto tiene un solo color en todo el sitio: el del catálogo. Para
+  cambiarlo se cambia el color de la familia en el customizer, no aquí.
 
   Params: product (obj), index (int)
 {%- endcomment -%}
@@ -24,6 +28,38 @@
   assign i = index | default: 0
   assign slot = i | modulo: palette.size
   assign c = palette[slot] | strip
+
+  # Familia del catálogo. Mismas reglas que collection-bandas.liquid: si la
+  # familia tiene colección, manda la colección; si no, el product_type exacto.
+  assign fams = 'deshidratados,gato,femur,juguetes' | split: ','
+  for k in fams
+    assign id_coll = 'fam_' | append: k | append: '_collection'
+    assign id_type = 'fam_' | append: k | append: '_type'
+    assign id_bg = 'fam_' | append: k | append: '_bg'
+    assign f_coll = settings[id_coll]
+    assign f_type = settings[id_type] | strip
+    assign f_bg = settings[id_bg]
+    if f_bg == blank
+      continue
+    endif
+
+    assign hit = false
+    if f_coll != blank
+      for pc in product.collections
+        if pc.handle == f_coll.handle
+          assign hit = true
+          break
+        endif
+      endfor
+    elsif f_type != blank and product.type == f_type
+      assign hit = true
+    endif
+
+    if hit
+      assign c = f_bg
+      break
+    endif
+  endfor
 
   assign override = product.metafields.custom.card_color.value
   if override != blank

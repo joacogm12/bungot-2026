@@ -16,12 +16,8 @@
           "type": "family",
           "settings": {
             "title": "100% NATURALES",
-            "collection": "snacks-favoritos",
-            "product_type": "",
             "key": "deshidratados",
-            "text": "Snacks 100% naturales, deshidratados a baja temperatura para que conserven todo su sabor y nutrientes. Sin conservadores ni colorantes.",
-            "bg": "#00968f",
-            "text_color": "#f7f1e3"
+            "text": "Snacks 100% naturales, deshidratados a baja temperatura para que conserven todo su sabor y nutrientes. Sin conservadores ni colorantes."
           }
         },
         "desh1": {
@@ -108,12 +104,8 @@
           "type": "family",
           "settings": {
             "title": "¡PARA CHUPARSE LAS GARRAS!",
-            "collection": "productos-gatos",
-            "product_type": "",
             "key": "gato",
-            "text": "Snacks 100% naturales, deshidratados a baja temperatura para que conserven todo su sabor y nutrientes. Sin conservadores ni colorantes.",
-            "bg": "#e24e2e",
-            "text_color": "#013c3e"
+            "text": "Snacks 100% naturales, deshidratados a baja temperatura para que conserven todo su sabor y nutrientes. Sin conservadores ni colorantes."
           }
         },
         "gato1": {
@@ -180,12 +172,8 @@
           "type": "family",
           "settings": {
             "title": "HUESOS AHUMADOS",
-            "collection": "",
-            "product_type": "huesos",
             "key": "femur",
-            "text": "Hueso de fémur ahumado de larga duración. Entretiene por horas y ayuda a la higiene dental mientras mastican a gusto.",
-            "bg": "#8e3235",
-            "text_color": "#f7f1e3"
+            "text": "Hueso de fémur ahumado de larga duración. Entretiene por horas y ayuda a la higiene dental mientras mastican a gusto."
           }
         },
         "femur1": {
@@ -222,12 +210,8 @@
           "type": "family",
           "settings": {
             "title": "Juego sin límites",
-            "collection": "",
-            "product_type": "Juguete",
             "key": "juguetes",
-            "text": "Juguetes de algodón y bambú, resistentes y seguros. Para jalar, morder y perseguir sin parar.",
-            "bg": "#2f7fa8",
-            "text_color": "#013c3e"
+            "text": "Juguetes de algodón y bambú, resistentes y seguros. Para jalar, morder y perseguir sin parar."
           }
         },
         "jug1": {

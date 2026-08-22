@@ -1,12 +1,21 @@
 {%- comment -%}
-  Favoritos — tres fotos a sangre que se revelan una sobre otra.
+  Favoritos — fotos a sangre que se revelan una sobre otra.
 
   Todos los paneles están superpuestos en un escenario pineado (sticky), en la
   misma posición exacta. Al scrollear, cada panel se revela con
   `clip-path: inset(X% 0 0 0)` de abajo hacia arriba: la foto siguiente sube
   como una cortina sobre la anterior. Cada panel es SOLO su foto, a todo el
-  bloque y con object-fit: cover — sin packshot, sin texto, sin número de
-  fondo ni capa de color encima. Lo que se ve es la foto y ya.
+  bloque y con object-fit: cover — sin packshot, sin número de fondo ni capa
+  de color encima. Lo único que va sobre la foto es una caja de texto chica en
+  la esquina inferior izquierda (título, una línea y el botón "Ver producto")
+  sobre un degradado marino corto que sale del borde de abajo (~45% del panel),
+  para que el texto se lea sin taparle el centro a la foto — el perro y el
+  hueso quedan libres. Si el bloque no trae texto ni producto, no se pinta ni
+  la caja ni el degradado.
+
+  Además de la caja chica hay bloques "panel" (hoy: Juguetes): misma mecánica
+  de cortina, pero abajo llevan un degradado más presente con chip + título +
+  párrafo + botón — presentan una familia entera, no un producto puntual.
 
   Por qué no sticky puro: con paneles apilados en flujo cada foto viaja con la
   caja de su panel y no hay forma de anclarla al viewport mientras sube. Por
@@ -51,9 +60,26 @@
         {%- if block.settings.image == blank and block.settings.image_asset == blank -%}{%- continue -%}{%- endif -%}
         {%- assign i = i | plus: 1 -%}
         {%- assign alt = block.settings.alt | escape -%}
+        {%- liquid
+          # La caja de texto sale del producto elegido (título y URL) y cada
+          # campo se puede pisar a mano. Sin título no hay caja ni degradado.
+          # Los bloques "panel" (la tarjeta de Juguetes) usan la variante
+          # grande: chip + título + párrafo + botón sobre su propio degradado.
+          assign prod = block.settings.product
+          assign copy_title = block.settings.title | default: prod.title
+          assign copy_url = block.settings.link | default: prod.url
+          assign has_copy = false
+          if copy_title != blank
+            assign has_copy = true
+          endif
+          assign is_panel = false
+          if block.type == 'panel'
+            assign is_panel = true
+          endif
+        -%}
 
         <div
-          class="fav"
+          class="fav{% if is_panel %} fav--panel{% elsif has_copy %} fav--copy{% endif %}"
           data-fav
           style="--fav-focus: {{ block.settings.focus | default: '50% 50%' }}; z-index: {{ i }};"
           {{ block.shopify_attributes }}
@@ -95,6 +121,41 @@
               >
               {%- # theme-check-enable ImgWidthAndHeight -%}
             </picture>
+          {%- endif -%}
+
+          {%- if is_panel -%}
+            {%- comment -%}
+              El panel ES el degradado (marino 654 que sube a transparente):
+              chip, título, párrafo y botón viven adentro. Sin título no se
+              pinta nada, igual que la caja chica.
+            {%- endcomment -%}
+            {%- if copy_title != blank -%}
+              <div class="fav__panel">
+                {%- if block.settings.chip != blank -%}
+                  <span class="fav__chip">{{ block.settings.chip }}</span>
+                {%- endif -%}
+                <h3 class="fav__ptitle">{{ copy_title }}</h3>
+                {%- if block.settings.text != blank -%}
+                  <p class="fav__ptext">{{ block.settings.text }}</p>
+                {%- endif -%}
+                {%- if copy_url != blank -%}
+                  <a class="fav__pcta" href="{{ copy_url }}">{{ block.settings.cta_label | default: 'Ver producto' }}</a>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          {%- elsif has_copy -%}
+            <div class="fav__copy">
+              {%- if block.settings.eyebrow != blank -%}
+                <span class="fav__eyebrow">{{ block.settings.eyebrow }}</span>
+              {%- endif -%}
+              <h3 class="fav__title">{{ copy_title }}</h3>
+              {%- if block.settings.text != blank -%}
+                <p class="fav__text">{{ block.settings.text }}</p>
+              {%- endif -%}
+              {%- if copy_url != blank -%}
+                <a class="fav__cta" href="{{ copy_url }}">{{ block.settings.cta_label | default: 'Ver producto' }}</a>
+              {%- endif -%}
+            </div>
           {%- endif -%}
         </div>
       {%- endfor -%}
@@ -174,10 +235,132 @@
             { "value": "50% 50%", "label": "Centro" },
             { "value": "50% 80%", "label": "Abajo" },
             { "value": "20% 50%", "label": "Izquierda" },
+            { "value": "65% 45%", "label": "Derecha del centro, un poco arriba" },
             { "value": "80% 50%", "label": "Derecha" }
           ],
           "default": "50% 50%",
-          "info": "Qué parte de la foto se conserva al recortarla. Apunta a las caras."
+          "info": "Qué parte de la foto se conserva al recortarla. Apunta a las caras y deja libre la esquina inferior izquierda, que es donde va el texto."
+        },
+        { "type": "header", "content": "Texto sobre la foto" },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Producto",
+          "info": "Da el título y el destino del botón. Los campos de abajo lo pisan si se llenan."
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Etiqueta chica (arriba del título)",
+          "info": "Opcional. Ej: Para perros, Premio del mes."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título",
+          "info": "Si queda vacío se usa el nombre del producto. Sin título no se pinta texto ni degradado."
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Una línea de texto",
+          "info": "Corto: la caja mide ~30 caracteres de ancho para no cruzar al centro de la foto."
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "Texto del botón",
+          "default": "Ver producto"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Destino del botón",
+          "info": "Si queda vacío va a la página del producto."
+        }
+      ]
+    },
+    {
+      "type": "panel",
+      "name": "Foto con panel de texto",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Foto (subida a Shopify)",
+          "info": "Tiene prioridad sobre el asset del tema. Como se sirve a pantalla completa, súbela de 2400 px de ancho para arriba."
+        },
+        {
+          "type": "text",
+          "id": "image_asset",
+          "label": "Foto (asset del tema)",
+          "info": "Nombre de archivo dentro de assets/, ej: bungot-fav-juguete-1800.webp."
+        },
+        {
+          "type": "text",
+          "id": "image_asset_sm",
+          "label": "Foto chica para celular (asset del tema)",
+          "info": "Opcional. Se sirve hasta 900 px de ancho de pantalla."
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Texto alternativo",
+          "info": "Describe lo que se ve. La foto es contenido, no decoración: necesita alt."
+        },
+        {
+          "type": "select",
+          "id": "focus",
+          "label": "Foco del recorte",
+          "options": [
+            { "value": "50% 20%", "label": "Arriba" },
+            { "value": "50% 35%", "label": "Arriba del centro" },
+            { "value": "50% 50%", "label": "Centro" },
+            { "value": "50% 62%", "label": "Abajo del centro" },
+            { "value": "50% 80%", "label": "Abajo" },
+            { "value": "20% 50%", "label": "Izquierda" },
+            { "value": "80% 50%", "label": "Derecha" }
+          ],
+          "default": "50% 62%",
+          "info": "Qué parte de la foto se conserva al recortarla."
+        },
+        { "type": "header", "content": "Panel de texto" },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Producto",
+          "info": "Da el título y el destino del botón. Los campos de abajo lo pisan si se llenan."
+        },
+        {
+          "type": "text",
+          "id": "chip",
+          "label": "Chip (etiqueta de familia)",
+          "default": "Juguetes",
+          "info": "Pastilla crema arriba del título. Vacío = sin chip."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título",
+          "info": "Si queda vacío se usa el nombre del producto. Sin título no se pinta el panel."
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Párrafo",
+          "info": "Máximo ~38 caracteres por renglón; dos o tres renglones se leen bien."
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "Texto del botón",
+          "default": "Ver producto"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Destino del botón",
+          "info": "Si queda vacío va a la página del producto."
         }
       ]
     }

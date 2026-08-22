@@ -1,0 +1,284 @@
+{%- comment -%}
+  Conócenos (bonche de fotos) — 10 fotos apiladas al centro que se dispersan
+  con el scroll y revelan el texto (titular + párrafo + botón a Conócenos).
+
+  Cómo funciona: SIN PIN. La sección mide 100svh y scrollea normal, nada de
+  sticky ni de frenar la página. Mientras entra al viewport, su avance mueve
+  UNA variable --s (0 montón, 1 abiertas) con ease-out cuadrático que completa
+  al 52% del recorrido (initBonche en theme.js); --st revela el texto del
+  centro (opacidad + escala + blur). El CSS interpola la posición de cada
+  tarjeta — ver .bonche en base.css. Con prefers-reduced-motion no anima: se
+  ve de una en su estado final (fotos dispersas, texto visible).
+
+  Cada bloque de foto declara su destino y su forma:
+    fx / fy    posición final en fracciones del medio viewport (-1..1),
+               descontando su propio medio ancho/alto y 24px de aire;
+    formato    relación alto/ancho de la TARJETA (la foto la cubre con cover):
+               3:4 y 2:3 verticales, 4:3 horizontal, 10:11 casi cuadrada;
+    tam        grande o chica (dos escalas de ancho, capadas también por svh).
+
+  El layout de referencia: cuatro clusters en las esquinas (una grande + una
+  chica que monta apenas una esquina — la chica va DESPUÉS de su grande en el
+  orden de bloques para quedar arriba), más dos grandes sueltas a media altura
+  de cada costado, desalineadas entre sí. Nada cruza la columna central del
+  texto. Sin rotaciones.
+
+  Al abrirse, las tarjetas bajan a escala 0.9 (por eso --hw/--hh descuentan
+  ese 0.9: fx/fy = ±1 es "pegado al borde" del tamaño ya escalado). El texto
+  vive DENTRO del mismo wrapper animado, en z-index 20.
+
+  Controles de la sección: "escala" (--z, 70–150%), "dispersión" (multiplica
+  el avance final de la apertura, 50–160%) y "modo acomodar" (checkbox, o
+  ?acomodar en la URL): clava la dispersión al 100%, marca cada foto con borde
+  punteado, la deja arrastrar (convierte px a fx/fy con el mismo rango del
+  CSS, límite ±1.25) y muestra un panel con los valores y botón de copiar.
+{%- endcomment -%}
+
+{%- liquid
+  # Desorden inicial del montón (vmin, |v| <= 3): patrón fijo por orden de
+  # foto, suficiente para que el montón se vea vivo sin regalar el layout.
+  # El orden calca la tabla del layout: 6 grandes y luego 4 chicas.
+  assign oxs = "-3,2,-2,3,-3,2,-2,3,-3,2" | split: ","
+  assign oys = "-2,-3,3,-2,2,3,-3,-3,3,2" | split: ","
+  # Radio de esquina por tarjeta (18–26px): las grandes varían, las chicas
+  # van todas a 18.
+  assign rs = "24,22,24,24,26,22,18,18,18,18" | split: ","
+  assign fotos_n = 0
+  for block in section.blocks
+    if block.settings.image != blank or block.settings.image_asset != blank
+      assign fotos_n = fotos_n | plus: 1
+    endif
+  endfor
+-%}
+
+<section
+  class="bonche"
+  data-bonche
+  data-dispersion="{{ section.settings.dispersion | default: 100 | divided_by: 100.0 }}"
+  {% if section.settings.acomodar %}data-acomodar-on{% endif %}
+  style="--bonche-bg: {{ section.settings.bg }}; --z: {{ section.settings.escala | default: 100 | divided_by: 100.0 }};"
+>
+  {%- comment -%}
+    La ola va ARRIBA del borde superior de la sección (bottom: 100%), así que
+    sube por encima de lo que venga antes en vez de cortarlo con una línea
+    recta. Se pinta del color de la sección — ver .bonche en base.css.
+  {%- endcomment -%}
+  {%- if section.settings.show_wave -%}
+    {%- render 'wave-edge' -%}
+  {%- endif -%}
+
+  <div class="bonche__stage">
+    {%- comment -%}
+      Un solo wrapper para TODO lo animado: el texto del centro y las fotos.
+      Las dos variables (--s/--st) se escriben acá y las heredan todos —
+      nunca una por elemento. pointer-events: none para que el bonche no
+      tape la página; el botón del texto los reactiva.
+    {%- endcomment -%}
+    <div class="bonche__pile" data-pile>
+      <div class="bonche__copy">
+        {%- if section.settings.headline != blank -%}
+          <h2 class="bonche__headline">{{ section.settings.headline | newline_to_br }}</h2>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <p class="bonche__text">{{ section.settings.text }}</p>
+        {%- endif -%}
+        {%- if section.settings.cta_label != blank and section.settings.cta_url != blank -%}
+          <a class="bonche__cta" href="{{ section.settings.cta_url }}">{{ section.settings.cta_label }}</a>
+        {%- endif -%}
+      </div>
+
+      {%- if fotos_n > 0 -%}
+        {%- assign fi = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.settings.image == blank and block.settings.image_asset == blank -%}{%- continue -%}{%- endif -%}
+          {%- liquid
+            assign k = fi | modulo: 10
+            assign fi = fi | plus: 1
+            assign alt = block.settings.alt | escape
+          -%}
+          <figure
+            class="bonche__card{% if block.settings.tam == 'chica' %} bonche__card--chica{% endif %}"
+            data-bonche-card
+            style="--i: {{ fi }}; --ox: {{ oxs[k] }}; --oy: {{ oys[k] }}; --r: {{ rs[k] }}; --fx: {{ block.settings.fx | default: 0 }}; --fy: {{ block.settings.fy | default: 0 }}; --ar: {{ block.settings.formato | default: '1.3333' }}; --focus: {{ block.settings.focus | default: '50% 50%' }};"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.image != blank -%}
+              <img
+                class="bonche__photo"
+                src="{{ block.settings.image | image_url: width: 840 }}"
+                srcset="
+                  {{ block.settings.image | image_url: width: 420 }} 420w,
+                  {{ block.settings.image | image_url: width: 840 }} 840w,
+                  {{ block.settings.image | image_url: width: 1200 }} 1200w"
+                sizes="(max-width: 700px) 40vw, 22rem"
+                alt="{{ block.settings.image.alt | default: alt }}"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+                loading="lazy"
+              >
+            {%- else -%}
+              {%- comment -%}
+                Asset del tema: la tarjeta es cover y el CSS le fija ancho y
+                alto (no hay CLS), así que no se fuerza un w/h intrínseco que
+                además variaría por foto.
+              {%- endcomment -%}
+              {%- # theme-check-disable ImgWidthAndHeight -%}
+              <img
+                class="bonche__photo"
+                src="{{ block.settings.image_asset | asset_url }}"
+                alt="{{ alt }}"
+                loading="lazy"
+              >
+              {%- # theme-check-enable ImgWidthAndHeight -%}
+            {%- endif -%}
+          </figure>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Conócenos (bonche)",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "headline",
+      "label": "Titular",
+      "default": "La manada\ndetrás de BUNGOT",
+      "info": "Enter para partir en renglones. Aparece al centro cuando las fotos se abren."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Párrafo",
+      "default": "Premios naturales hechos en México, de un solo ingrediente y probados por los perros de la casa. Esta es nuestra historia.",
+      "info": "Dos o tres renglones. Vacío = no se pinta."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Texto del botón",
+      "default": "Conócenos"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Destino del botón",
+      "info": "Normalmente la página Conócenos. Vacío = sin botón."
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Fondo",
+      "default": "#2E5FA0",
+      "info": "El azul de bloque de la marca. Pinta la sección y la ola de arriba a la vez; ponle el mismo a la Despedida para que se lean como un solo bloque azul."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wave",
+      "label": "Borde de arriba en ola",
+      "default": true,
+      "info": "La cresta sube por encima de la sección anterior y se le come la orilla de abajo. Desactívalo si arriba viene algo que no se puede tapar."
+    },
+    {
+      "type": "range",
+      "id": "escala",
+      "label": "Escala de las fotos",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100,
+      "info": "Agranda o achica TODAS las tarjetas a la vez (la --z del CSS)."
+    },
+    {
+      "type": "range",
+      "id": "dispersion",
+      "label": "Dispersión de las fotos",
+      "min": 50,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100,
+      "info": "Multiplica el avance final de la apertura: menos de 100% las deja más cerca del centro, más de 100% las empuja hacia los bordes."
+    },
+    {
+      "type": "checkbox",
+      "id": "acomodar",
+      "label": "Modo acomodar (maqueta)",
+      "default": false,
+      "info": "Clava la dispersión al 100%, marca las fotos con borde punteado y deja arrastrarlas para sacar sus fx/fy (panel con los valores y botón de copiar). Apágalo antes de publicar. También se activa con ?acomodar en la URL."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "foto",
+      "name": "Foto",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Foto (subida a Shopify)",
+          "info": "Tiene prioridad sobre el asset del tema."
+        },
+        {
+          "type": "text",
+          "id": "image_asset",
+          "label": "Foto (asset del tema)",
+          "info": "Nombre de archivo dentro de assets/, ej: bungot-bonche-01-olfatea.webp."
+        },
+        { "type": "text", "id": "alt", "label": "Texto alternativo", "info": "Describe lo que se ve." },
+        {
+          "type": "select",
+          "id": "tam",
+          "label": "Tamaño",
+          "options": [
+            { "value": "grande", "label": "Grande" },
+            { "value": "chica", "label": "Chica" }
+          ],
+          "default": "grande",
+          "info": "Seis grandes y cuatro chicas es el layout de referencia."
+        },
+        {
+          "type": "select",
+          "id": "formato",
+          "label": "Formato de la tarjeta",
+          "options": [
+            { "value": "1.3333", "label": "Vertical 3:4" },
+            { "value": "1.5", "label": "Vertical 2:3" },
+            { "value": "0.75", "label": "Horizontal 4:3" },
+            { "value": "1.1", "label": "Casi cuadrada 10:11" }
+          ],
+          "default": "1.3333",
+          "info": "La forma del recorte; la foto lo cubre con cover."
+        },
+        {
+          "type": "text",
+          "id": "fx",
+          "label": "Posición horizontal (fx)",
+          "default": "0",
+          "info": "-1 pegada a la izquierda … 1 a la derecha. Ajústala arrastrando con ?acomodar en la URL."
+        },
+        {
+          "type": "text",
+          "id": "fy",
+          "label": "Posición vertical (fy)",
+          "default": "0",
+          "info": "-1 pegada arriba … 1 abajo."
+        },
+        {
+          "type": "text",
+          "id": "focus",
+          "label": "Foco del recorte (object-position)",
+          "default": "50% 50%",
+          "info": "Qué parte de la foto se conserva al recortarla a la tarjeta, ej. 50% 32%. Apunta a las caras, sobre todo en las horizontales."
+        }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Conócenos (bonche)" }]
+}
+{% endschema %}

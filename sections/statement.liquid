@@ -10,7 +10,12 @@
   cuando se suban a Shopify.
 
   Los .webp de sticker están padeados a cuadrado a propósito: el reflejo del
-  doblez (ver .sticker__flap en base.css) solo es exacto en una caja cuadrada.
+  doblez (ver .bg-sticker en base.css) solo es exacto en una caja cuadrada.
+  El despegado es el genérico de .bg-sticker y lo monta initPeelStickers() en
+  theme.js. Por defecto va el completo (data-peel="print-full" / "flap-full",
+  el mismo de la perrita de Despedida: el papel se va del todo); el customizer
+  puede cambiarlo al parcial ("print" / "flap"), donde queda la esquinita
+  doblada que marca --st-peel y mandan los rangos --st-peel-from / --st-peel-to.
 {%- endcomment -%}
 
 <section
@@ -80,6 +85,11 @@
         elsif section.settings.sticker_asset != blank
           assign sticker_url = section.settings.sticker_asset | asset_url
         endif
+        # Sufijo de data-peel: vacío = parcial, "-full" = completo (ver arriba).
+        assign peel_suffix = ''
+        if section.settings.sticker_mode == 'full'
+          assign peel_suffix = '-full'
+        endif
       -%}
 
       {%- if section.settings.show_sticker and sticker_url != blank -%}
@@ -91,9 +101,9 @@
           la capa gris (el papel), así el gris toma exactamente la silueta del
           sticker y no se sale del círculo.
         {%- endcomment -%}
-        <span class="sticker" style="--sticker-src: url({{ sticker_url }});">
+        <span class="sticker bg-sticker" style="--sticker-src: url({{ sticker_url }});">
           <img
-            class="sticker__print"
+            data-peel="print{{ peel_suffix }}"
             src="{{ sticker_url }}"
             alt=""
             aria-hidden="true"
@@ -101,7 +111,7 @@
             height="581"
             loading="lazy"
           >
-          <span class="sticker__flap" aria-hidden="true"></span>
+          <span data-peel="flap{{ peel_suffix }}" aria-hidden="true"></span>
         </span>
       {%- endif -%}
     </div>
@@ -200,6 +210,17 @@
       "unit": "%",
       "default": -6,
       "info": "Distancia al borde de abajo de la foto. En negativo cuelga por fuera; pasando de -8% empieza a meterse en la sección de abajo."
+    },
+    {
+      "type": "select",
+      "id": "sticker_mode",
+      "label": "Cómo se despega",
+      "options": [
+        { "value": "full", "label": "Completo (como la perrita de Despedida)" },
+        { "value": "partial", "label": "Parcial (queda la esquina doblada)" }
+      ],
+      "default": "full",
+      "info": "Completo: el papel se va del todo al entrar, con el mismo ritmo que el sticker de Despedida. Los tres ajustes de abajo solo aplican al parcial."
     },
     {
       "type": "range",

@@ -3,7 +3,6 @@
     "main": {
       "type": "producto-bungot",
       "settings": {
-        "family_color": "#E24E2E",
         "lote": "Lote 04 · Guadalajara",
         "eyebrow": "",
         "lead": "",

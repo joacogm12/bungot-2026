@@ -22,7 +22,13 @@
             "image_asset": "bungot-fav-terraza-1620.webp",
             "image_asset_sm": "bungot-fav-terraza-1000.webp",
             "alt": "Dos perros echados en un camastro de la terraza con sus bolsas de premios BUNGOT",
-            "focus": "50% 50%"
+            "focus": "50% 50%",
+            "product": "premios-patas-de-pollo",
+            "eyebrow": "Para perros",
+            "title": "Patas de Pollo",
+            "text": "Altas en colágeno natural. Un solo ingrediente y le duran un buen rato.",
+            "cta_label": "Ver producto",
+            "link": ""
           }
         },
         "gato": {
@@ -31,7 +37,13 @@
             "image_asset": "bungot-fav-gato-1800.webp",
             "image_asset_sm": "bungot-fav-gato-1000.webp",
             "alt": "Un gato gris se relame al sol junto a dos bolsas de snacks BUNGOT para gato",
-            "focus": "50% 50%"
+            "focus": "50% 50%",
+            "product": "snack-pulmon-de-cerdo-para-gatos",
+            "eyebrow": "Para gatos",
+            "title": "Pulmón de Cerdo",
+            "text": "Ligero y fácil de digerir. Hasta el gato se los pelea.",
+            "cta_label": "Ver producto",
+            "link": ""
           }
         },
         "bulldog": {
@@ -40,14 +52,37 @@
             "image_asset": "bungot-fav-bulldog-1600.webp",
             "image_asset_sm": "bungot-fav-bulldog-1000.webp",
             "alt": "Un bulldog inglés en el jardín con un hueso BUNGOT en el hocico",
-            "focus": "50% 35%"
+            "focus": "65% 45%",
+            "product": "pig-bone",
+            "eyebrow": "Huesos",
+            "title": "Pig Bone",
+            "text": "Fémur de cerdo ahumado, entero. El que más le dura de los tres.",
+            "cta_label": "Ver producto",
+            "link": ""
+          }
+        },
+        "juguete": {
+          "type": "panel",
+          "settings": {
+            "image": "shopify://shop_images/Captura_de_Pantalla_2024-08-06_a_la_s_13.22.21.png",
+            "image_asset": "",
+            "image_asset_sm": "",
+            "alt": "Un border collie camina por el jardín con su juguete de cuerda trenzada en el hocico",
+            "focus": "50% 50%",
+            "product": "juguete-grande",
+            "chip": "Juguetes",
+            "title": "Cuerda trenzada",
+            "text": "Para jalar, traer y sacudir. Aguanta el jardín y de pasada le limpia los dientes.",
+            "cta_label": "Ver producto",
+            "link": ""
           }
         }
       },
       "block_order": [
         "terraza",
         "gato",
-        "bulldog"
+        "bulldog",
+        "juguete"
       ],
       "settings": {
         "title": "",
@@ -98,74 +133,172 @@
       }
     },
     "testimonials": {
-      "type": "reviews-pin",
+      "type": "conocenos-bonche",
       "blocks": {
-        "r1": {
-          "type": "review",
+        "g-sillon": {
+          "type": "foto",
           "settings": {
-            "text": "Escucha el ruido de la bolsa desde el otro lado de la casa. No falla nunca.",
-            "sticker": ""
+            "image": "shopify://shop_images/bonche-1N0A0651.jpg",
+            "image_asset": "",
+            "alt": "Un shih tzu con paliacate posa en un sillón de cuero",
+            "tam": "grande",
+            "formato": "1.3333",
+            "fx": "-0.84",
+            "fy": "-0.94",
+            "focus": "50% 32%"
           }
         },
-        "r2": {
-          "type": "review",
+        "g-risas": {
+          "type": "foto",
           "settings": {
-            "text": "Probé mil premios y siempre volvía uno con olor a químico. Estos huelen a comida de verdad.",
-            "sticker": ""
+            "image": "shopify://shop_images/bonche-1N0A0001.jpg",
+            "image_asset": "",
+            "alt": "Una fundadora levanta a su perro entre risas",
+            "tam": "grande",
+            "formato": "1.5",
+            "fx": "-0.97",
+            "fy": "-0.2",
+            "focus": "50% 46%"
           }
         },
-        "r3": {
-          "type": "review",
+        "g-familia": {
+          "type": "foto",
           "settings": {
-            "text": "Las patas de pollo le duran un rato largo y quedan los dientes impecables. Compro fijo.",
-            "sticker": ""
+            "image": "shopify://shop_images/bonche-1N0A0620.jpg",
+            "image_asset": "",
+            "alt": "Los tres fundadores de BUNGOT con sus perros",
+            "tam": "grande",
+            "formato": "0.75",
+            "fx": "-0.7",
+            "fy": "0.96",
+            "focus": "50% 28%"
           }
         },
-        "r4": {
-          "type": "review",
+        "g-bolsas": {
+          "type": "foto",
           "settings": {
-            "text": "Se sienta al lado de la alacena a esperar. Sabe perfectamente dónde los guardo.",
-            "sticker": ""
+            "image": "shopify://shop_images/bonche-1N0A0513.jpg",
+            "image_asset": "",
+            "alt": "Una fundadora abraza las bolsas de premios",
+            "tam": "grande",
+            "formato": "1.5",
+            "fx": "0.86",
+            "fy": "-0.86",
+            "focus": "50% 52%"
           }
         },
-        "r5": {
-          "type": "review",
+        "g-sentada": {
+          "type": "foto",
           "settings": {
-            "text": "Un solo ingrediente y se los pelea hasta el gato. Cero culpa, pura cola moviéndose.",
-            "sticker": ""
+            "image": "shopify://shop_images/bonche-1N0A0476.jpg",
+            "image_asset": "",
+            "alt": "Una fundadora sentada con las bolsas de BUNGOT",
+            "tam": "grande",
+            "formato": "1.1",
+            "fx": "0.95",
+            "fy": "0.14",
+            "focus": "50% 46%"
           }
         },
-        "r6": {
-          "type": "review",
+        "g-caja": {
+          "type": "foto",
           "settings": {
-            "text": "Los usamos para premiar en el adiestramiento. Hace lo que sea por uno.",
-            "sticker": ""
+            "image": "shopify://shop_images/bonche-1N0A0459.jpg",
+            "image_asset": "",
+            "alt": "Un fundador carga una caja de BUNGOT",
+            "tam": "grande",
+            "formato": "1.3333",
+            "fx": "0.72",
+            "fy": "0.9",
+            "focus": "50% 42%"
+          }
+        },
+        "c-rie": {
+          "type": "foto",
+          "settings": {
+            "image": "shopify://shop_images/bonche-1N0A0413.jpg",
+            "image_asset": "",
+            "alt": "Una fundadora ríe con los premios en brazos",
+            "tam": "chica",
+            "formato": "1.3333",
+            "fx": "-0.6",
+            "fy": "-0.52",
+            "focus": "50% 46%"
+          }
+        },
+        "c-schnauzer": {
+          "type": "foto",
+          "settings": {
+            "image": "shopify://shop_images/bonche-1N0A9850.jpg",
+            "image_asset": "",
+            "alt": "Un schnauzer negro echado junto a dos bolsas",
+            "tam": "chica",
+            "formato": "0.75",
+            "fx": "0.7",
+            "fy": "-0.62",
+            "focus": "56% 62%"
+          }
+        },
+        "c-abrazo": {
+          "type": "foto",
+          "settings": {
+            "image": "shopify://shop_images/bonche-1N0A0147.jpg",
+            "image_asset": "",
+            "alt": "Una fundadora abraza a su schnauzer",
+            "tam": "chica",
+            "formato": "1.5",
+            "fx": "-0.62",
+            "fy": "0.48",
+            "focus": "50% 52%"
+          }
+        },
+        "c-cajas": {
+          "type": "foto",
+          "settings": {
+            "image": "shopify://shop_images/bonche-1N0A0339.jpg",
+            "image_asset": "",
+            "alt": "Un fundador junto a las cajas de envío",
+            "tam": "chica",
+            "formato": "0.75",
+            "fx": "0.52",
+            "fy": "0.95",
+            "focus": "50% 44%"
           }
         }
       },
       "block_order": [
-        "r1",
-        "r2",
-        "r3",
-        "r4",
-        "r5",
-        "r6"
+        "g-sillon",
+        "g-risas",
+        "g-familia",
+        "g-bolsas",
+        "g-sentada",
+        "g-caja",
+        "c-rie",
+        "c-schnauzer",
+        "c-abrazo",
+        "c-cajas"
       ],
       "settings": {
-        "headline": "Lo olfatean.\nLo mordisquean.\nLo devoran.",
-        "bg": "#163c69",
-        "show_wave": true
+        "headline": "La manada\ndetrás\nde BUNGOT",
+        "text": "Premios naturales hechos en México, de un solo ingrediente y probados por los perros de la casa. Esta es nuestra historia.",
+        "cta_label": "Conócenos",
+        "cta_url": "/pages/conocenos",
+        "bg": "#2E5FA0",
+        "show_wave": true,
+        "escala": 100,
+        "dispersion": 100,
+        "acomodar": false
       }
     },
-    "foto-ancho": {
-      "type": "full-photo",
+    "despedida": {
+      "type": "despedida",
       "settings": {
-        "image_asset": "bungot-equipo-banda.jpg",
-        "image_alt": "El equipo de BUNGOT sostiene las bolsas de premios sobre un fondo rojo",
-        "height": 80,
-        "focus": "50% 20%",
-        "frame_bg": "#163c69",
-        "bg": "#e94925"
+        "kicker": "Gracias por llegar hasta acá",
+        "title": "Que coman bien",
+        "show_sticker": true,
+        "sticker_asset": "bungot-sticker-perrita.png",
+        "bg": "#2E5FA0",
+        "fg": "#F7F1E3"
       }
     }
   },
@@ -175,6 +308,6 @@
     "statement",
     "panel",
     "testimonials",
-    "foto-ancho"
+    "despedida"
   ]
 }

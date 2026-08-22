@@ -1,0 +1,148 @@
+{%- comment -%}
+  Despedida — la franja baja en azul que cierra la landing, última antes del
+  footer naranja. Kicker + titular enorme a la izquierda y, a la derecha, el
+  sticker de la perrita que se despega del todo al entrar (peel completo:
+  data-peel="print-full" / "flap-full", la mecánica vive en .bg-sticker de
+  base.css y la monta initPeelStickers() en theme.js).
+
+  Sin altura forzada, a propósito: no tiene que repetir la sensación del bonche
+  de arriba. Corre del mismo azul (#2E5FA0) como continuación del bloque, así
+  que si la mueves de lugar pinta el fondo del mismo color que lo que tenga
+  arriba.
+
+  El sticker se padea a cuadrado (1565×1565): el reflejo del doblez solo es
+  exacto en una caja cuadrada — ver .bg-sticker en base.css. El image_picker
+  tiene prioridad sobre el asset del tema, para cuando se suba a Shopify.
+{%- endcomment -%}
+
+{%- liquid
+  # El titular va en UN solo renglón (white-space: nowrap) y el CSS le capa el
+  # tamaño al ancho de su columna: font-size <= 100cqi / --title-em. Ese
+  # --title-em es el ancho estimado del renglón más largo en em: caracteres
+  # x 0.42 (Anton en mayúsculas mide ~0.40em por letra, con aire de sobra).
+  # Se calcula acá porque el CSS no puede contar letras y el texto lo decide
+  # el customizer.
+  assign title_em = 0
+  assign title_lines = section.settings.title | newline_to_br | split: '<br />'
+  for line in title_lines
+    assign n = line | strip | size
+    if n > title_em
+      assign title_em = n
+    endif
+  endfor
+  assign title_em = title_em | times: 0.42
+
+  assign sticker_url = ''
+  # Medidas del PNG del tema; solo fijan la proporción intrínseca para que no
+  # haya salto de layout, el ancho real lo manda el CSS.
+  assign sticker_w = 1565
+  assign sticker_h = 1565
+  if section.settings.sticker != blank
+    assign sticker_url = section.settings.sticker | image_url: width: 800
+    assign sticker_w = section.settings.sticker.width
+    assign sticker_h = section.settings.sticker.height
+  elsif section.settings.sticker_asset != blank
+    assign sticker_url = section.settings.sticker_asset | asset_url
+  endif
+-%}
+
+<section
+  class="despedida"
+  style="--desp-bg: {{ section.settings.bg }}; --desp-fg: {{ section.settings.fg }}; --title-em: {{ title_em }};"
+>
+  <div class="despedida__inner">
+    <div class="despedida__copy">
+      {%- if section.settings.kicker != blank -%}
+        <p class="despedida__kicker">{{ section.settings.kicker | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.title != blank -%}
+        {%- comment -%}
+          Nunca se parte solo (nowrap + tope por ancho de columna); los saltos
+          de línea del textarea sí se respetan, por si se quiere partir a mano.
+        {%- endcomment -%}
+        <h2 class="despedida__title">{{ section.settings.title | escape | newline_to_br }}</h2>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_sticker and sticker_url != blank -%}
+      {%- comment -%}
+        Decorativo: alt vacío + aria-hidden en la impresión y en la lámina.
+
+        La misma URL va dos veces: como <img> (la impresión) y como máscara de
+        la capa gris (el papel), así el gris toma exactamente la silueta del
+        sticker y no se sale del contorno.
+      {%- endcomment -%}
+      <span class="despedida__sticker bg-sticker" style="--sticker-src: url({{ sticker_url }});">
+        <img
+          data-peel="print-full"
+          src="{{ sticker_url }}"
+          alt=""
+          aria-hidden="true"
+          width="{{ sticker_w }}"
+          height="{{ sticker_h }}"
+          loading="lazy"
+        >
+        <span data-peel="flap-full" aria-hidden="true"></span>
+      </span>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Despedida",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Etiqueta chica",
+      "default": "Gracias por llegar hasta acá",
+      "info": "Va en mayúsculas, arriba del titular. Vacía = no se pinta."
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Titular",
+      "default": "Que coman bien",
+      "info": "Enorme, en Anton, y siempre en un solo renglón: se achica lo que haga falta para caber. Enter parte a mano si algún día se quiere en dos."
+    },
+    { "type": "header", "content": "Sticker" },
+    {
+      "type": "checkbox",
+      "id": "show_sticker",
+      "label": "Mostrar el sticker",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "sticker",
+      "label": "Sticker (subido a Shopify)",
+      "info": "Tiene prioridad sobre el asset del tema. Fondo transparente y padeado a cuadrado, o el doblez sale chueco."
+    },
+    {
+      "type": "text",
+      "id": "sticker_asset",
+      "label": "Sticker (asset del tema)",
+      "default": "bungot-sticker-perrita.png",
+      "info": "Nombre de archivo dentro de assets/ (PNG recortado, cuadrado de 1565×1565)."
+    },
+    { "type": "header", "content": "Colores" },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Fondo",
+      "default": "#2E5FA0",
+      "info": "El azul de bloque de la marca. Ponle el mismo que el bonche de arriba y los dos se leen como un solo bloque azul hasta el footer."
+    },
+    {
+      "type": "color",
+      "id": "fg",
+      "label": "Texto",
+      "default": "#F7F1E3",
+      "info": "Crema sólido: sobre el azul da 5.7:1 de contraste. No le bajes la opacidad."
+    }
+  ],
+  "presets": [{ "name": "Despedida" }]
+}
+{% endschema %}

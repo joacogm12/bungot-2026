@@ -8,7 +8,23 @@
     "social_instagram": "https://instagram.com/bungot",
     "social_tiktok": "",
     "social_facebook": "",
-    "social_whatsapp": ""
+    "social_whatsapp": "",
+    "fam_deshidratados_collection": "snacks-favoritos",
+    "fam_deshidratados_type": "",
+    "fam_deshidratados_bg": "#00968f",
+    "fam_deshidratados_fg": "#f7f1e3",
+    "fam_gato_collection": "productos-gatos",
+    "fam_gato_type": "",
+    "fam_gato_bg": "#f59c26",
+    "fam_gato_fg": "#013c3e",
+    "fam_femur_collection": "",
+    "fam_femur_type": "huesos",
+    "fam_femur_bg": "#8e3235",
+    "fam_femur_fg": "#f7f1e3",
+    "fam_juguetes_collection": "",
+    "fam_juguetes_type": "Juguete",
+    "fam_juguetes_bg": "#2f7fa8",
+    "fam_juguetes_fg": "#013c3e"
   },
   "presets": {
     "BUNGOT 2026": {
@@ -16,7 +32,23 @@
       "color_dark": "#163C69",
       "color_yellow": "#FED140",
       "color_cream": "#F7F1E3",
-      "card_colors": "#F6A762,#70C4E8,#FED140,#88CBC4,#EB5F7A,#8FC7E8,#F59C26,#E6BDDB,#E1CC00,#619AC5,#7FA8AC,#E94925"
+      "card_colors": "#F6A762,#70C4E8,#FED140,#88CBC4,#EB5F7A,#8FC7E8,#F59C26,#E6BDDB,#E1CC00,#619AC5,#7FA8AC,#E94925",
+      "fam_deshidratados_collection": "snacks-favoritos",
+      "fam_deshidratados_type": "",
+      "fam_deshidratados_bg": "#00968f",
+      "fam_deshidratados_fg": "#f7f1e3",
+      "fam_gato_collection": "productos-gatos",
+      "fam_gato_type": "",
+      "fam_gato_bg": "#f59c26",
+      "fam_gato_fg": "#013c3e",
+      "fam_femur_collection": "",
+      "fam_femur_type": "huesos",
+      "fam_femur_bg": "#8e3235",
+      "fam_femur_fg": "#f7f1e3",
+      "fam_juguetes_collection": "",
+      "fam_juguetes_type": "Juguete",
+      "fam_juguetes_bg": "#2f7fa8",
+      "fam_juguetes_fg": "#013c3e"
     }
   }
 }

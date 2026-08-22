@@ -56,6 +56,11 @@
   --p-5493: #7FA8AC; /* verde grisáceo */
 
   /* --- Roles semánticos --- */
+  /* Coral y tinta de la barra de navegación (los mismos del hero y de las
+     pantallas de cuenta — no son colores nuevos). Viven acá y no en .header
+     porque el botón del bonche va "del color del navbar": una sola fuente. */
+  --nav-coral: #EA4A27;
+  --nav-tinta: #013C3E;
   --brand:        var(--p-7716);
   --brand-dark:   var(--p-654);
   --brand-yellow: var(--p-122);
@@ -249,10 +254,8 @@ ul { margin: 0; padding: 0; list-style: none; }
    -------------------------------------------------------------------------- */
 .header {
   background: transparent;
-  /* Paleta local de la barra: el mismo coral y la misma tinta del hero y de
-     las pantallas de cuenta — no son colores nuevos. */
-  --nav-coral: #EA4A27;
-  --nav-tinta: #013C3E;
+  /* Su paleta (--nav-coral / --nav-tinta) está en :root, para que otras piezas
+     puedan ir "del color del navbar" sin duplicar el hex. */
 }
 /* El header se pega arriba y queda SIEMPRE visible en toda la página. La sticky
    va en el WRAPPER de sección y no en .header: el <header> vive dentro de su
@@ -931,6 +934,158 @@ shopify-account::part(signed-out-avatar) {
   display: block;
 }
 
+/* --- Texto sobre la foto (solo paneles con título: .fav--copy) --- */
+/* Degradado marino corto que sale del borde de abajo: 45% del alto del panel y
+   nada más, para que el texto se lea sin comerse media foto. Termina en
+   transparente justo en su tope (no se desvanece a lo largo del panel). */
+.fav--copy::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 45%;
+  background: linear-gradient(to top, rgba(22, 60, 105, 0.85), rgba(22, 60, 105, 0));
+  pointer-events: none;
+  z-index: 1;
+}
+/* La caja va clavada en la esquina inferior izquierda y de ancho corto (~30ch)
+   para que no cruce al centro de la imagen: el perro y el hueso quedan libres.
+   El margen copia el marco del escenario para alinearse con el radio. */
+.fav__copy {
+  position: absolute;
+  left: clamp(1.25rem, 3vw, 2.5rem);
+  bottom: clamp(1.25rem, 3vw, 2.5rem);
+  z-index: 2;
+  max-width: min(30ch, calc(100% - 2 * clamp(1.25rem, 3vw, 2.5rem)));
+  color: var(--white);
+  display: grid;
+  gap: 0.7rem;
+  /* El ch de max-width se mide con ESTE tamaño: la caja crece con la letra y
+     sigue midiendo ~30 caracteres de la línea de texto. */
+  font-size: var(--step-1);
+  justify-items: start;
+}
+.fav__eyebrow {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--step-0);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.fav__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-3);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin: 0;
+  text-shadow: 0 2px 14px rgba(22, 60, 105, 0.45);
+}
+.fav__text {
+  font-family: var(--font-body);
+  font-size: var(--step-1);
+  line-height: 1.35;
+  margin: 0;
+  text-wrap: pretty;
+}
+/* "Ver producto": naranja intenso (PANTONE 172 C), pero un paso más chico que
+   el .btn genérico — sobre la foto no tiene que gritar. */
+.fav__cta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.3rem;
+  background: var(--p-172);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--step-0);
+  text-decoration: none;
+  padding: 0.6em 1.25em;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 0 rgba(22, 60, 105, 0.35);
+  transition: transform 0.14s var(--ease-bounce), box-shadow 0.14s;
+}
+.fav__cta:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(22, 60, 105, 0.35); }
+.fav__cta:active { transform: translateY(1px); box-shadow: 0 2px 0 rgba(22, 60, 105, 0.35); }
+
+/* --- Panel de texto grande (bloques "panel": la tarjeta de Juguetes) --- */
+/* Respaldo mientras carga la foto: el azul de la banda Juguetes del catálogo
+   (mismo #2F7FA8 que collection-bandas; no sale de las hojas pantone). */
+.fav--panel { background: #2F7FA8; }
+/* A diferencia de .fav--copy (caja chica + ::after aparte), acá el bloque ES el
+   degradado: marino 654 pleno abajo que se apaga hacia arriba, y adentro van
+   chip, título, párrafo y botón. Presenta una familia entera, así que pesa más
+   que la caja de producto puntual. */
+.fav__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  gap: 0.85rem;
+  justify-items: start;
+  /* El padding de arriba es aire del degradado: el texto arranca donde el
+     marino ya cubre, para que el primer renglón no caiga sobre foto limpia. */
+  padding: clamp(3.5rem, 9svh, 6rem) clamp(1.25rem, 3vw, 2.5rem) clamp(1.5rem, 3.5vw, 2.75rem);
+  background: linear-gradient(to top, rgba(22, 60, 105, 0.78), rgba(22, 60, 105, 0.34) 46%, rgba(22, 60, 105, 0));
+  color: var(--white);
+}
+.fav__chip {
+  background: var(--cream);
+  color: var(--p-654);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--step--1);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35em 0.95em;
+  border-radius: var(--radius-pill);
+}
+.fav__ptitle {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 1rem + 3.4vw, 3.6rem);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--white);
+}
+.fav__ptext {
+  font-family: var(--font-body);
+  font-size: var(--step-1);
+  line-height: 1.35;
+  margin: 0;
+  max-width: 38ch;
+  color: rgba(247, 241, 227, 0.92);  /* crema al 92%, se funde con el marino */
+  text-wrap: pretty;
+}
+.fav__pcta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.35rem;
+  background: var(--p-172);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--step-0);
+  text-decoration: none;
+  padding: 0.7em 1.5em;
+  border-radius: var(--radius-pill);
+  transition: transform 0.14s var(--ease-bounce), background-color 0.14s, color 0.14s;
+}
+.fav__pcta:hover,
+.fav__pcta:focus-visible {
+  background: var(--cream);
+  color: var(--p-654);
+  transform: translateY(-2px);
+}
+.fav__pcta:active { transform: translateY(1px); }
+
 /* --- Con enhancement: escenario pineado + capas superpuestas --- */
 .favs[data-enhanced='true'] {
   /* El recorrido tiene que dar para: una pausa por panel, un cambio entre cada
@@ -1094,59 +1249,62 @@ shopify-account::part(signed-out-avatar) {
 
 .statement__media { justify-self: end; width: 100%; position: relative; }
 
-/* --- Sticker de la esquina ---
+/* --- Stickers que se despegan (.bg-sticker) ---
    El sticker no se mueve: lo que pasa es que se le despega el papel. Una capa
-   gris (el liner) va tapando la impresión y se repliega en diagonal con el
-   scroll, hasta quedar en la esquinita doblada de arriba a la izquierda.
+   gris (el liner, el hijo [data-peel^="flap"]) tapa la impresión y se repliega
+   en diagonal hacia arriba-izquierda con el scroll. Dos variantes:
 
-   Estado base = ya pegado, con la esquinita. La animación solo se monta encima
-   si el navegador soporta scroll-driven; si no, se ve así, puesto.
+     data-peel="print" / "flap"            parcial: queda la esquinita doblada
+                                           que marca --st-peel (30% por defecto);
+     data-peel="print-full" / "flap-full"  completo: el papel se va del todo y no
+                                           queda nada gris.
+
+   Markup (statement.liquid y despedida.liquid lo repiten tal cual):
+
+     <span class="bg-sticker" style="--sticker-src: url(…)">
+       <img data-peel="print" src="…" alt="" aria-hidden="true" width height>
+       <span data-peel="flap" aria-hidden="true"></span>
+     </span>
+
+   La lámina usa como máscara EL MISMO PNG del sticker (--sticker-src), así el
+   gris nunca se sale de la silueta. Los dos son decorativos (alt="" +
+   aria-hidden): lo que dice el sticker ya está en el texto de al lado. El
+   width/height intrínseco del <img> evita el salto de layout.
+
+   Estado base = YA DESPEGADO, lámina invisible. La animación la monta
+   initPeelStickers() (theme.js) solo si el navegador soporta scroll-driven
+   animations y no hay prefers-reduced-motion; si no, se ve así, puesto, sin
+   un flash de gris. Nunca `animation … both` sin timeline: salta al final.
    ------------------------------------------------------------------------- */
-.sticker {
+.bg-sticker {
   display: block;
-  position: absolute;
-  /* Pisa el borde de la foto, como un sticker pegado sobre el canto. */
-  left: -8%;
-  /* Negativo = cuelga por debajo del canto de la foto. */
-  bottom: var(--st-sticker-b, -6%);
-  width: var(--st-sticker-w, 45%);
-  /* El tope tiene que dejar respirar al %: con 200px el porcentaje casi nunca
-     llegaba a mandar y el sticker quedaba chico en cualquier monitor. */
-  max-width: 400px;
+  position: relative;
   height: auto;
-  z-index: 2;
-  pointer-events: none;
-  transform: rotate(-8deg);
-  /* Sombra corta = pegado contra la superficie. */
-  filter: drop-shadow(0 5px 5px rgba(22, 60, 105, 0.3));
+  pointer-events: none;           /* decorativo: nunca roba un clic */
 }
-@media (max-width: 900px) {
-  .sticker { left: 0; bottom: 4%; width: 34%; max-width: 190px; }
+.bg-sticker > img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 /* La geometría del doblez. El pliegue es la diagonal x + y = P:
 
      · la cara impresa se recorta al lado pegado (el cuadrado MENOS la esquina):
-       donde se despegó ya no tapa nada y se ve la foto de atrás;
-     · la solapa es esa MISMA esquina reflejada sobre el pliegue. No la dibujo a
-       mano: recorto la esquina y le aplico el reflejo con transform, así el
-       dorso sale con la silueta correcta y del tamaño exacto que se despegó.
+       donde se despegó ya no tapa nada y se ve lo de atrás;
+     · la solapa es esa MISMA esquina reflejada sobre el pliegue. No se dibuja a
+       mano: se recorta la esquina y se le aplica el reflejo con transform, así
+       el dorso sale con la silueta correcta y del tamaño exacto que se despegó.
 
    El reflejo sobre x+y=P es (x,y) -> (P-y, P-x), o sea rotar -90°, espejar en X
-   y correr P. Solo es exacto si la caja es cuadrada — por eso los .webp están
+   y correr P. El `scaleX(-1) rotate(-90deg)` es justo eso: lo que hace que la
+   lámina se lea como DORSO espejado y no como una copia del sticker — no se
+   simplifica. Solo es exacto si la caja es cuadrada — por eso los stickers van
    padeados a cuadrado.
 
-   P va de 100% (medio sticker doblado) al valor final del customizer. */
-.sticker__print {
-  display: block;
-  width: 100%;
-  height: auto;
-  clip-path: polygon(
-    var(--st-peel, 30%) 0, 100% 0, 100% 100%, 0 100%, 0 var(--st-peel, 30%)
-  );
-}
-
-.sticker__flap {
+   P va de 100% (medio sticker doblado) al final: --st-peel en la parcial, 0 en
+   la completa (la `from` arranca en 205% para que la solapa entre desde fuera). */
+.bg-sticker > [data-peel^="flap"] {
   position: absolute;
   inset: 0;
   /* Dorso del papel: más oscuro contra el borde suelto, más claro en el pliegue. */
@@ -1158,46 +1316,35 @@ shopify-account::part(signed-out-avatar) {
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  /* La esquina despegada, en coordenadas sin reflejar. */
-  clip-path: polygon(0 0, var(--st-peel, 30%) 0, 0 var(--st-peel, 30%));
   transform-origin: 0 0;
-  transform: translate(var(--st-peel, 30%), var(--st-peel, 30%)) scaleX(-1) rotate(-90deg);
+  /* Estado base "ya despegado": polígono vacío y sin corrimiento, para que no
+     haya flash de gris si el navegador no soporta scroll-driven animations. */
+  clip-path: polygon(0 0, 0 0, 0 0);
+  transform: translate(0, 0) scaleX(-1) rotate(-90deg);
   /* Sombra: es lo que hace que se lea levantado y no plano. */
-  filter: drop-shadow(-3px 3px 4px rgba(22, 60, 105, 0.4));
+  filter: drop-shadow(-4px 4px 6px rgba(11, 32, 58, 0.45));
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  /* @supports: sin scroll-driven no se declara animación y queda el estado
-     base (pegado, con la esquina doblada). Nada de JS ni de fallback a tiempo. */
-  @supports (animation-timeline: view()) {
-    .sticker__print {
-      animation: peel-print linear both;
-      animation-timeline: view();
-      /* Arranca cuando el sticker ya asomó bastante y termina dentro de la fase
-         `contain` (el tramo en que el sticker ya está entero en pantalla).
-
-         Antes el final estaba clavado en `entry 100%` y eso ataba las dos
-         puntas: retrasar el arranque acortaba la animación. Con el final en
-         `contain` las dos se mueven independientes. */
-      animation-range: entry var(--st-peel-from, 55%) contain var(--st-peel-to, 10%);
-    }
-    .sticker__flap {
-      animation: peel-flap linear both;
-      animation-timeline: view();
-      /* Arranca cuando el sticker ya asomó bastante y termina dentro de la fase
-         `contain` (el tramo en que el sticker ya está entero en pantalla).
-
-         Antes el final estaba clavado en `entry 100%` y eso ataba las dos
-         puntas: retrasar el arranque acortaba la animación. Con el final en
-         `contain` las dos se mueven independientes. */
-      animation-range: entry var(--st-peel-from, 55%) contain var(--st-peel-to, 10%);
-    }
+/* Peel completo: la impresión arranca tapada entera (el pliegue en 205%, fuera
+   de la caja) y termina sin recorte; la solapa sale por la esquina y se va. */
+@keyframes peel-print-full {
+  from { clip-path: polygon(205% 0, 100% 0, 100% 100%, 0 100%, 0 205%); }
+  to   { clip-path: polygon(0% 0, 100% 0, 100% 100%, 0 100%, 0 0%); }
+}
+@keyframes peel-flap-full {
+  from {
+    clip-path: polygon(0 0, 205% 0, 0 205%);
+    transform: translate(205%, 205%) scaleX(-1) rotate(-90deg);
+  }
+  to {
+    clip-path: polygon(0 0, 0% 0, 0 0%);
+    transform: translate(0%, 0%) scaleX(-1) rotate(-90deg);
   }
 }
 
-/* Arranque: pliegue en la diagonal completa. Media cara pegada, media
-   despegada, y la solapa (esa mitad reflejada) cae justo encima de la mitad
-   pegada: se ve casi todo dorso, como recién despegado del papel. */
+/* Peel parcial: arranca con el pliegue en la diagonal completa (media cara
+   pegada, media despegada, la solapa cae justo encima de la mitad pegada) y
+   termina con la esquinita de --st-peel levantada. */
 @keyframes peel-print {
   from { clip-path: polygon(100% 0, 100% 0, 100% 100%, 0 100%, 0 100%); }
   to {
@@ -1215,6 +1362,28 @@ shopify-account::part(signed-out-avatar) {
     clip-path: polygon(0 0, var(--st-peel, 30%) 0, 0 var(--st-peel, 30%));
     transform: translate(var(--st-peel, 30%), var(--st-peel, 30%)) scaleX(-1) rotate(-90deg);
   }
+}
+
+/* --- Sticker de la esquina del statement ---
+   Dónde se pega (la mecánica del despegado es la de .bg-sticker, arriba).
+   Estado base = pegado y entero. */
+.sticker {
+  position: absolute;
+  /* Pisa el borde de la foto, como un sticker pegado sobre el canto. */
+  left: -8%;
+  /* Negativo = cuelga por debajo del canto de la foto. */
+  bottom: var(--st-sticker-b, -6%);
+  width: var(--st-sticker-w, 50%);
+  /* El tope tiene que dejar respirar al %: con 200px el porcentaje casi nunca
+     llegaba a mandar y el sticker quedaba chico en cualquier monitor. */
+  max-width: 400px;
+  z-index: 2;
+  transform: rotate(-8deg);
+  /* Sombra corta = pegado contra la superficie. */
+  filter: drop-shadow(0 5px 5px rgba(22, 60, 105, 0.3));
+}
+@media (max-width: 900px) {
+  .sticker { left: 0; bottom: 4%; width: 34%; max-width: 190px; }
 }
 .statement__img {
   width: 100%;
@@ -1781,150 +1950,301 @@ a.chip { text-decoration: none; }
 }
 
 /* --------------------------------------------------------------------------
-   Reviews con pin: el titular se frena en el centro y los globos suben
+   Conócenos (bonche de fotos): el montón se dispersa y revela el texto
    -------------------------------------------------------------------------- */
-.reviews {
+/* SIN PIN. La sección mide 100svh y scrollea en flujo normal, nada de sticky
+   ni de frenar la página. Mientras entra al viewport, initBonche() (theme.js)
+   mueve UNA sola variable --s (0 = montón al centro, 1 = fotos abiertas) con
+   ease-out cuadrático que completa cuando la sección lleva el 52% de su
+   recorrido de entrada; --st (0→1) revela el texto del centro: opacidad +
+   escala 0.94→1 + blur que se va.
+
+   Cada tarjeta declara en su style (desde el bloque del customizer):
+     --fx / --fy  destino en fracciones del medio viewport libre (-1..1),
+                  descontando su propio medio ancho/alto y 24px de aire,
+                  así ninguna se recorta contra el borde;
+     --ar         relación ALTO/ancho (3:4 → 1.3333, 2:3 → 1.5, 4:3 → 0.75,
+                  10:11 → 1.1);
+     --ox / --oy  desorden inicial del montón en vmin (patrón fijo, ±3).
+   El ancho se capa también por svh (30svh de alto para las grandes, 20svh
+   las chicas) para que las verticales no se coman la pantalla en viewports
+   bajos, y todo se multiplica por la escala global --z (setting "escala").
+
+   Sin JS / reduce motion los valores por defecto (--s: 1, --st: 1) dejan todo
+   abierto y legible, sin animar. */
+.bonche {
   position: relative;
-  background: var(--reviews-bg, var(--blue-ola));
+  /* El azul de bloque lo pide la marca aparte de los pantones (como el crema):
+     es el mismo que el de la despedida, para que las dos se lean como un solo
+     bloque azul hasta el footer. */
+  background: var(--bonche-bg, #2E5FA0);
   color: var(--cream);
+  --s: 1;
+  --st: 1;
   /* El color con el que se pinta la ola de arriba (snippets/wave-edge.liquid):
      el mismo de la sección, o el borde curvo se despega del fondo. */
-  --wave-edge-color: var(--reviews-bg, var(--blue-ola));
-  /* Sección ALTA: mientras scrollea, el escenario sticky se queda quieto. Cuanto
-     más alto, más dura el pin. Escala con la cantidad de reviews. */
-  min-height: calc(140svh + var(--n, 6) * 28svh);
-}
-.reviews__stage {
-  position: sticky;
-  top: 0;
+  --wave-edge-color: var(--bonche-bg, #2E5FA0);
   height: 100svh;
-  overflow: hidden;               /* recorta los globos que entran/salen */
+  /* El aire de arriba (la ola vive ahí) lo pone el envoltorio de Shopify:
+     ver .shopify-section:has(.wave-edge). */
+}
+/* El recorte va en el escenario y NO en la sección: la ola se posiciona por
+   encima del borde superior de la sección (bottom: 100%) y un overflow en ella
+   se la comería. El escenario ocupa la sección entera, así que recorta igual
+   cualquier foto que roce el borde y ninguna genera scroll horizontal. */
+.bonche__stage {
+  position: relative;
+  height: 100%;
+  overflow: clip;
   display: grid;
   place-items: center;
 }
-.reviews__headline {
-  position: relative;
-  z-index: 1;                     /* detrás de los globos */
+/* Texto del centro: titular + párrafo + botón. Vive DENTRO del wrapper
+   animado, absoluto al centro y en z-index 20 (encima de las fotos): al
+   llegar el bonche lo tapa igual porque entra en opacidad 0 y desenfocado,
+   y al abrirse ninguna tarjeta cruza su columna. El ancho corto (42vw máx)
+   es el que las fotos deben respetar. */
+.bonche__copy {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 20;
+  width: min(33rem, 42vw);
+  display: grid;
+  justify-items: center;
+  gap: clamp(1.1rem, 2.2vw, 1.7rem);
+  text-align: center;
+  padding-inline: clamp(0.5rem, 1.4vw, 1rem);
+  opacity: var(--st, 0);
+  transform: translate(-50%, -50%) scale(calc(0.94 + 0.06 * var(--st, 0)));
+  filter: blur(calc((1 - var(--st, 0)) * 6px));
+  will-change: opacity, transform, filter;
+}
+.bonche__headline {
   font-family: var(--font-display);
-  /* Mismas letras que el titular de la ola de arriba: Anton (--font-display) y
-     tracking -0.04em. */
-  font-weight: 600;
-  font-size: clamp(2.8rem, 1rem + 8.5vw, 7rem);   /* mismo tamaño que la ola de arriba */
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;      /* igual que la ola de arriba */
+  font-weight: 400;
+  /* Los saltos de línea son autorales (el textarea del customizer): la copy
+     va escrita en líneas cortas que quepan en el ancho del bloque — Anton no
+     perdona un rag roto. */
+  font-size: clamp(2.2rem, 1rem + 4.4vw, 4.4rem);
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
   text-align: center;
   color: var(--white);
   margin: 0;
-  padding-inline: var(--gutter);
 }
-.reviews__belt {
+.bonche__text {
+  font-family: var(--font-body);
+  font-size: clamp(1.05rem, 0.97rem + 0.38vw, 1.35rem);
+  line-height: 1.4;
+  max-width: 38ch;
+  margin: 0;
+  color: rgba(247, 241, 227, 0.9);
+  text-wrap: pretty;
+}
+.bonche__cta {
+  /* El wrapper apaga los pointer-events (es una capa a pantalla completa);
+     el botón es lo único del bonche que sí se toca. */
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.4rem;
+  /* Del mismo coral que el navbar (pedido): una sola fuente, --nav-coral. */
+  background: var(--nav-coral);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--step-0);
+  text-decoration: none;
+  padding: 0.75em 1.7em;
+  border-radius: var(--radius-pill);
+  transition: transform 0.14s var(--ease-bounce), background-color 0.14s, color 0.14s;
+}
+.bonche__cta:hover,
+.bonche__cta:focus-visible {
+  background: var(--cream);
+  color: var(--p-654);
+  transform: translateY(-2px);
+}
+.bonche__cta:active { transform: translateY(1px); }
+
+/* --- El wrapper animado y las fotos --- */
+/* Un solo wrapper a 100% × 100% aloja el texto y las 10 tarjetas; --s/--st se
+   escriben ACÁ (initBonche) y las heredan todos sus hijos. */
+.bonche__pile {
   position: absolute;
   inset: 0;
-  z-index: 2;                     /* delante del titular */
-  pointer-events: none;
+  pointer-events: none;           /* capa a pantalla completa: no tapa nada */
 }
-.reviews__item {
+.bonche__card {
+  --ar: 1.3333;
+  /* Grande: hasta 19vw de ancho, capado a 350px y a 30svh de ALTO (de ahí el
+     30svh / --ar). El tope por svh es indispensable: hay tres tarjetas por
+     columna y sin él se traslapan o se recortan en ventanas bajas. --z es la
+     escala global de la sección. */
+  --w: calc(min(clamp(130px, 19vw, 350px), 30svh / var(--ar)) * var(--z, 1));
+  /* Medio ancho/alto DEL TAMAÑO FINAL: al abrirse la tarjeta baja a escala
+     0.9, así que el 0.9 se descuenta acá para que fx/fy = ±1 sea "pegado al
+     borde" con sus 24px de aire, sin salirse. */
+  --hw: calc(var(--w) * 0.9 / 2);
+  --hh: calc(var(--w) * var(--ar) * 0.9 / 2);
+  /* Interpolación montón → destino. Con --s: 0 todas al centro (desfase
+     --ox/--oy en vmin); con --s: 1 cada una en su lugar, sin tocar el borde. */
+  --dx: calc(var(--ox, 0) * (1 - var(--s, 0)) * 1vmin + var(--fx, 0) * var(--s, 0) * (50vw - var(--hw) - 24px));
+  --dy: calc(var(--oy, 0) * (1 - var(--s, 0)) * 1vmin + var(--fy, 0) * var(--s, 0) * (50svh - var(--hh) - 24px));
   position: absolute;
-  /* Ancla en (centro + --x). --ax decide hacia dónde crece la burbuja: las de la
-     derecha (--ax: -100%) se pegan por su borde derecho y crecen hacia el centro;
-     las de la izquierda (--ax: 0%) al revés. --y (de theme.js) es la altura. */
-  left: calc(50% + var(--x, 0px));
+  left: 50%;
   top: 50%;
-  width: min(33rem, 90vw);
-  transform: translate(var(--ax, -50%), calc(-50% + var(--y, 80vh)));
+  width: var(--w);
+  height: calc(var(--w) * var(--ar));
+  margin: 0;
+  /* Sin rotaciones — ni una: la variedad la ponen los formatos mezclados. Al
+     abrirse bajan un 10% de escala, nada más. El scale va al final para
+     escalar sobre su propio centro. */
+  transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(calc(1 - 0.1 * var(--s, 0)));
+  z-index: var(--i, 1);           /* la chica de cada cluster va después de su
+                                     grande en el orden de bloques (arriba) —
+                                     salvo el cluster donde va a propósito
+                                     ANTES, para asomarse por detrás */
+  border-radius: calc(var(--r, 22) * 1px);
+  overflow: hidden;
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.34);
   will-change: transform;
 }
-.reviews__bubble {
+.bonche__card--chica {
+  --w: calc(min(clamp(102px, 14.5vw, 255px), 20svh / var(--ar)) * var(--z, 1));
+}
+.bonche__photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--focus, 50% 50%);
+  background: var(--p-654);       /* el hueco mientras carga, del azul oscuro */
+}
+
+/* --- Modo acomodar (checkbox de la sección o ?acomodar en la URL) --- */
+/* Herramienta de maqueta: initBonche() clava la dispersión al 100%, deja
+   arrastrar cada foto y pinta un HUD con los --fx/--fy resultantes (y botón
+   de copiar) para pasarlos a los bloques del customizer. */
+.bonche[data-acomodar] .bonche__pile { pointer-events: auto; }
+.bonche[data-acomodar] .bonche__card {
+  cursor: grab;
+  user-select: none;
+  /* Marca de "esto se arrastra": outline y no border, para no mover layout. */
+  outline: 2px dashed var(--brand-yellow);
+  outline-offset: 2px;
+}
+.bonche[data-acomodar] .bonche__card:active { cursor: grabbing; }
+.bonche-hud {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.82);
+  color: #fff;
+  font: 12px/1.6 ui-monospace, Consolas, monospace;
+  padding: 10px 12px;
+  border-radius: 10px;
+  max-height: 60svh;
+  max-width: min(320px, 80vw);
+  overflow: auto;
+  white-space: pre;
+}
+.bonche-hud input[type='range'] { width: 100%; }
+.bonche-hud button {
+  margin-top: 8px;
+  width: 100%;
+  background: var(--brand-yellow);
+  color: var(--p-654);
+  border: 0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font: 600 12px/1.4 var(--font-body);
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   Despedida: la franja baja en azul que cierra la landing antes del footer
+   -------------------------------------------------------------------------- */
+/* Sin altura forzada (no repite la sensación del bonche): kicker + titular
+   enorme a la izquierda y el sticker de la perrita a la derecha, que se
+   despega del todo al entrar (.bg-sticker, variante -full). Corre del mismo
+   azul que el bonche, como continuación del bloque, hasta el footer naranja.
+   overflow: clip para que el sticker (rotado y con sombra) nunca genere scroll
+   horizontal. */
+.despedida {
   position: relative;
-  /* Amarillo de marca (PANTONE 122 C). Antes era un naranja suelto que no salía
-     de las hojas; el amarillo ya lo usan los botones y pega más contra el
-     marino. El ink navy encima mantiene el contraste. */
-  background: var(--review-bubble, var(--brand-yellow));
-  color: var(--review-ink, var(--p-654));
-  border: 2px solid var(--ink);
-  border-radius: 16px;
-  padding: 1.5rem 1.9rem;
-  font-family: var(--font-body);
-  font-size: var(--step-1);
-  line-height: 1.4;
-  text-align: center;
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.28);
+  background: var(--desp-bg, #2E5FA0);
+  color: var(--desp-fg, var(--cream));
+  overflow: clip;
+  padding: clamp(9rem, 19vw, 15rem) clamp(1.5rem, 4vw, 2.5rem) clamp(3rem, 7vw, 5.5rem);
 }
-/* Pico (colita triangular) que baja hacia el sticker. Dos triángulos: uno ink
-   (el contorno) detrás y uno del color del globo adelante. */
-.reviews__bubble::before,
-.reviews__bubble::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-style: solid;
-}
-.reviews__bubble::before {   /* contorno ink, un poco más grande */
-  bottom: -22px;
-  left: 30px;
-  border-width: 22px 18px 0 18px;
-  border-color: var(--ink) transparent transparent transparent;
-}
-.reviews__bubble::after {    /* relleno del color del globo */
-  bottom: -16px;
-  left: 34px;
-  border-width: 17px 14px 0 14px;
-  border-color: var(--review-bubble, var(--brand-yellow)) transparent transparent transparent;
-}
-.reviews__mark {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin: 0.9rem 0 0 0.9rem;
-}
-.reviews__spark {
-  color: var(--white);
-  font-size: 1.15rem;
-  order: 2;
-}
-.reviews__sticker {
-  width: clamp(4rem, 7vw, 5.6rem);
-  height: auto;
-  order: 1;
-}
-
-/* Lado derecho: la burbuja crece hacia el centro y el perro va del lado EXTERIOR
-   (derecha), con la colita apuntándole. (Izquierda queda como el default.) */
-.reviews__item.is-right .reviews__bubble::before { left: auto; right: 30px; }
-.reviews__item.is-right .reviews__bubble::after { left: auto; right: 34px; }
-.reviews__item.is-right .reviews__mark {
-  justify-content: flex-end;
-  margin-left: 0;
-  margin-right: 0.9rem;
-}
-.reviews__item.is-right .reviews__spark { order: 1; }
-.reviews__item.is-right .reviews__sticker { order: 2; }
-
-/* Sin animación (reduce motion): se desactiva el pin y los reviews se listan
-   normal debajo del titular, para que igual se lean. Ver theme.js. */
-.reviews[data-static] { min-height: 0; }
-.reviews[data-static] .reviews__stage {
-  position: static;
-  height: auto;
-  overflow: visible;
-  padding-block: clamp(2.5rem, 6vw, 4.5rem);
-  gap: 2rem;
-}
-.reviews[data-static] .reviews__belt {
-  position: static;
+.despedida__inner {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
-  gap: 1.5rem;
-  margin-top: 2.5rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  /* center y no end: el centro vertical del sticker tiene que coincidir con
+     el del bloque de texto. */
+  align-items: center;
 }
-.reviews[data-static] .reviews__item {
-  position: static;
-  transform: none;
-  width: auto;
+.despedida__copy {
+  display: grid;
+  gap: clamp(0.9rem, 2vw, 1.4rem);
+  z-index: 2;
+  /* Contenedor de consulta: el titular mide su tamaño contra ESTA columna
+     (cqi), no contra la pantalla. De paso, el nowrap del titular deja de
+     contar para el ancho mínimo de la columna y no empuja al sticker. */
+  container-type: inline-size;
+  min-width: 0;
 }
-
+.despedida__kicker {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(0.82rem, 0.78rem + 0.2vw, 0.95rem);
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  /* Crema sólido, sin bajarle la opacidad: así queda 5.7:1 sobre el azul. */
+  color: var(--desp-fg, var(--cream));
+}
+.despedida__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(3.2rem, 1rem + 10.5vw, 9rem);
+  /* UN solo renglón, siempre: no se parte solo. El tope por ancho de columna
+     (100cqi / --title-em, el largo del titular en em que calcula
+     despedida.liquid) achica la letra lo justo para que quepa. La línea de
+     arriba es el respaldo para navegadores sin unidades de contenedor. */
+  font-size: min(clamp(3.2rem, 1rem + 10.5vw, 9rem), calc(100cqi / var(--title-em, 6)));
+  white-space: nowrap;
+  line-height: 0.84;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--desp-fg, var(--cream));
+  margin: 0;
+}
+.despedida__sticker {
+  justify-self: end;
+  align-self: center;
+  z-index: 1;
+  width: clamp(150px, 21vw, 330px);
+  height: auto;
+  transform: rotate(-6deg);
+  filter: drop-shadow(0 6px 10px rgba(11, 32, 58, 0.35));
+}
+@media (max-width: 640px) {
+  /* El sticker baja debajo del texto, alineado a la izquierda del flujo. */
+  .despedida__inner {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+  .despedida__sticker { justify-self: start; }
+}
 /* --------------------------------------------------------------------------
    Footer
    -------------------------------------------------------------------------- */

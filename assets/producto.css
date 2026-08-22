@@ -23,6 +23,20 @@
   --pd-pad: 63px;
   --pd-split-h: 960px;
   --pd-frame-h: 700px;
+  /* Dónde se pega la galería, medido desde el borde de la VENTANA: centrada en
+     la pantalla (mitad del viewport menos mitad del marco), pero nunca más
+     arriba de la base del header más un respiro, para que en pantallas bajas
+     el marco no se meta debajo de la barra. La misma var pone el padding de
+     arriba del panel (ver .pdsplit__media): así la galería ARRANCA ya en su
+     sitio y se pega desde el primer pixel de scroll, sin ese tramo corto en
+     que primero sube y luego se frena. */
+  --pd-gal-top: max(
+    calc(var(--nav-h, 72px) + var(--nav-gap, 0px) + 24px),
+    calc(50svh - var(--pd-frame-h) / 2)
+  );
+  /* El padding de arriba del panel sale de --pd-gal-top restándole el header,
+     que está en flujo por encima de la página. */
+  --pd-gal-pad: calc(var(--pd-gal-top) - var(--nav-h, 72px) - var(--nav-gap, 0px));
 
   font-family: var(--font-body, 'Inter', sans-serif);
   color: var(--pd-green);
@@ -76,13 +90,14 @@
 /* --- Panel de la galería ------------------------------------------------- */
 /* flex-start (no center/stretch): la galería conserva su tamaño y no se estira
    con la columna cuando la derecha crece. Lo que la mantiene a la vista es el
-   sticky de .pdgal, no el alto. */
+   sticky de .pdgal, no el alto. El padding de arriba NO es un número: es
+   --pd-gal-pad, para que la galería nazca justo donde se va a pegar. */
 .pdsplit__media {
   position: relative;
   display: flex;
   align-items: flex-start;
   gap: 26px;
-  padding: 60px 44px;
+  padding: var(--pd-gal-pad) 44px 60px;
   background: var(--pd-fam, var(--pd-naranja));
   box-sizing: border-box;
 }
@@ -91,11 +106,11 @@
    no en cada parte, así viajan en conjunto y nunca se descuelgan entre sí.
    Las miniaturas quedan centradas contra el marco (align-items: center).
 
-   El top centra la pieza en la PANTALLA: la mitad del viewport menos la mitad
-   de su alto, que es el del marco (el más alto de los dos). Con un top en px
-   la foto se pegaría arriba; así queda a media pantalla todo el recorrido. Es
-   sticky puro, sin transform, para que el borde de abajo de la banda de color
-   la siga frenando donde corresponde. */
+   El top es --pd-gal-top (ver :root de .pdpage): la pieza centrada en la
+   PANTALLA y el mismo valor que el padding de arriba del panel, así no hay
+   tramo en que primero suba y luego se pegue. Es sticky puro, sin transform,
+   para que el borde de abajo de la banda de color la siga frenando donde
+   corresponde. */
 .pdgal {
   flex: 1;
   display: flex;
@@ -103,7 +118,7 @@
   gap: 26px;
   min-width: 0;
   position: sticky;
-  top: calc(50svh - var(--pd-frame-h) / 2);
+  top: var(--pd-gal-top);
 }
 
 /* Tira vertical de miniaturas. */
@@ -823,15 +838,22 @@
   border-bottom: 3px solid var(--pd-fam, var(--pd-naranja));
   padding-bottom: 3px;
 }
+/* Las tarjetas son las del catálogo (banda-card + .cardset en base.css) y se
+   ven IGUAL que allá: mismo ancho fijo de 344px y la misma separación de 24px
+   del carrusel (.pgal .rail), pegadas a la izquierda. No se estiran a llenar
+   la rejilla: si el contenedor es más ancho, el aire queda a la derecha. El
+   minmax(0, …) es para que en anchos intermedios las columnas encojan en vez
+   de desbordar; la tarjeta toma el ancho de su columna (width: auto). */
 .pdcross__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  /* Cuatro en una fila: 4 × 344 + 3 × 24 = 1448, justo el ancho útil del
+     contenedor (1582 − 2 × 63). Abajo de eso las columnas se encogen a partes
+     iguales (minmax desde 0) hasta el corte de dos columnas. */
+  grid-template-columns: repeat(4, minmax(0, 344px));
+  justify-content: start;
+  gap: 24px;
   margin-top: 34px;
 }
-/* Las tarjetas son las del catálogo (banda-card + .cardset en base.css). Acá
-   solo se ajusta lo que cambia de contexto: en el catálogo van en un carrusel
-   horizontal de ancho fijo, y aquí llenan las columnas de la rejilla. */
 .pdcross__grid .card {
   flex: none;
   width: auto;
@@ -858,7 +880,7 @@
     --pd-split-h: 900px;
     --pd-frame-h: 620px;
   }
-  .pdsplit__media { padding: 48px 32px; gap: 20px; }
+  .pdsplit__media { padding: var(--pd-gal-pad) 32px 48px; gap: 20px; }
   .pdsplit__buy { padding: 32px 40px 40px; }
   .pdbuy__title { font-size: 58px; }
   .pdsplit__lote { left: 32px; }
@@ -895,11 +917,14 @@
   .pdops { padding: 40px var(--pd-pad) 44px; }
   .pdcross__head { flex-direction: column; align-items: flex-start; gap: 14px; }
   .pdcross__title { font-size: clamp(2rem, 8vw, 2.5rem); }
-  .pdcross__grid { grid-template-columns: 1fr; gap: 24px; }
+  /* Cuatro columnas ya no dan tarjeta legible: dos filas de dos. */
+  .pdcross__grid { grid-template-columns: repeat(2, minmax(0, 344px)); }
 }
 
 @media (max-width: 620px) {
   .pdopts { grid-template-columns: 1fr; }
+  /* Una columna, pero nunca más ancha que la tarjeta del catálogo. */
+  .pdcross__grid { grid-template-columns: minmax(0, 344px); }
   .pdbuyrow { flex-wrap: wrap; }
   .pdcta { flex: 1 1 100%; }
   /* El botón de escribir baja debajo del título y se estira: al lado no le

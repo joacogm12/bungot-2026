@@ -597,35 +597,87 @@
     render();
   }
 
-  /* --- Reviews con pin: el titular se frena y los globos suben --------- */
-  function initReviews() {
-    document.querySelectorAll('[data-reviews]').forEach(function (root) {
-      var items = Array.prototype.slice.call(root.querySelectorAll('[data-review]'));
-      if (!items.length) return;
+  /* --- Stickers que se despegan (.bg-sticker) --------------------------- */
+  /* Monta el despegado SOLO si el navegador soporta scroll-driven animations
+     (animation-timeline: view()) y no hay reduce motion. Si no, no se monta
+     nada: el estado base del CSS ya es el final (sticker entero, sin lámina
+     gris). Nunca `animation … both` sin timeline: saltaría al estado final de
+     golpe. Por eso timeline y rango se escriben DESPUÉS del shorthand
+     `animation`, que los resetea.
 
-      // Reduce motion: sin pin ni subida. Se listan estáticos debajo del titular.
-      if (reduceMotion) {
-        root.setAttribute('data-static', '');
+     data-peel = print | flap (parcial: queda la esquinita de --st-peel) o
+     print-full | flap-full (completo: el papel se va del todo). El rango de
+     la parcial lo mandan --st-peel-from / --st-peel-to (el customizer del
+     statement, 55% / 10% por defecto); la completa arranca al 25% de la
+     entrada y termina al 45% de `contain`. Ver .bg-sticker en base.css. */
+  function initPeelStickers() {
+    var els = document.querySelectorAll('[data-peel]');
+    if (!els.length) return;
+    var ok = window.CSS && CSS.supports && CSS.supports('animation-timeline', 'view()');
+    if (!ok || reduceMotion) return;
+    els.forEach(function (el) {
+      var kind = el.getAttribute('data-peel');          // print | flap | print-full | flap-full
+      var full = kind.slice(-5) === '-full';
+      el.style.animation = 'peel-' + kind + ' linear both';
+      el.style.setProperty('animation-timeline', 'view()');
+      el.style.setProperty(
+        'animation-range',
+        full ? 'entry 25% contain 45%' : 'entry var(--st-peel-from, 55%) contain var(--st-peel-to, 10%)'
+      );
+    });
+  }
+
+  /* --- Conócenos (bonche): el montón se abre y revela el texto ---------- */
+  /* SIN PIN: la sección mide 100svh y baja en flujo. Mientras entra al
+     viewport, el avance p (0 = su borde superior asoma por abajo, 1 = ya pasó
+     entera) mueve UNA variable --s (0 montón, 1 abiertas) con ease-out
+     cuadrático, completa al 52% del recorrido; --st revela el texto del
+     centro, mapeada del 45% al 75% del avance SIN easing. Las dos se escriben
+     en el WRAPPER [data-pile] (texto y fotos las heredan de ahí) — nunca una
+     por elemento. El CSS interpola la posición de cada foto con --s. Ver
+     .bonche en base.css. */
+  function initBonche() {
+    document.querySelectorAll('[data-bonche]').forEach(function (root) {
+      var pile = root.querySelector('[data-pile]');
+      if (!pile) return;
+
+      // Modo acomodar (checkbox de la sección o ?acomodar en la URL):
+      // herramienta de maqueta, no UI de la tienda. Dispersión clavada al
+      // 100% y fotos arrastrables; el HUD lista los fx/fy para copiarlos.
+      var acomodar = root.hasAttribute('data-acomodar-on') || /[?&]acomodar/.test(window.location.search);
+      if (acomodar) {
+        setupBoncheAcomodar(root, pile);
         return;
       }
 
-      var N = items.length;
-      var START = 72;              // vh por debajo del centro donde arranca el 1º
-      var GAP = 42;                // vh entre un review y el siguiente
-      var END = 78;                // vh por encima del centro donde sale el último
-      var total = START + (N - 1) * GAP + END;
+      // Reduce motion: nada anima. Fotos ya dispersas y texto visible de una
+      // (--s: 1 / --st: 1 son también el defecto del CSS, por si no hay JS).
+      if (reduceMotion) {
+        pile.style.setProperty('--s', '1');
+        pile.style.setProperty('--st', '1');
+        return;
+      }
+
+      var SPAN = 0.52;             // la dispersión completa al 52% del recorrido
+      // "Dispersión" del customizer: multiplica el avance FINAL de la
+      // apertura (0.5 = a medio camino, 1.6 = empujadas hacia los bordes).
+      var DISP = parseFloat(root.dataset.dispersion) || 1;
+
+      function clamp01(v) { return Math.max(0, Math.min(1, v)); }
 
       function render() {
         var rect = root.getBoundingClientRect();
-        var travel = rect.height - window.innerHeight;
-        var p = travel > 0 ? (-rect.top) / travel : 0;
-        if (p < 0) p = 0; else if (p > 1) p = 1;
+        var vh = window.innerHeight;
+        // 0 = borde superior entrando por abajo, 1 = la sección ya pasó entera.
+        var p = (vh - rect.top) / (vh + rect.height);
+        var s = clamp01(p / SPAN);
+        var e = 1 - Math.pow(1 - s, 2);                 // ease-out cuadrático
 
-        for (var i = 0; i < N; i++) {
-          // Cinta vertical: todos bajan-a-subir juntos, separados por GAP.
-          var y = START + i * GAP - p * total;   // vh respecto del centro (+ = abajo)
-          items[i].style.setProperty('--y', y.toFixed(2) + 'vh');
-        }
+        // --s lleva el multiplicador de dispersión; --st se mapea del avance
+        // lineal, para que el texto entre igual aunque la apertura sea corta
+        // o pasada.
+        pile.style.setProperty('--s', (e * DISP).toFixed(4));
+        pile.style.setProperty('--st', clamp01((s - 0.45) / 0.3).toFixed(4));
       }
 
       var ticking = false;
@@ -640,12 +692,116 @@
     });
   }
 
+  /* Arma el modo acomodar del bonche: cada foto se arrastra (pointer events)
+     y su delta en px se convierte a la fracción --fx/--fy que usa el CSS
+     (medio viewport menos medio ancho/alto de la tarjeta menos 24px). El HUD
+     también trae la escala global --z en vivo. Textos hardcodeados a
+     propósito: es una herramienta de desarrollo, no UI de la tienda. */
+  function setupBoncheAcomodar(root, pile) {
+    root.setAttribute('data-acomodar', '');
+    pile.style.setProperty('--s', '1');
+    pile.style.setProperty('--st', '1');
+
+    var cards = Array.prototype.slice.call(pile.querySelectorAll('[data-bonche-card]'));
+    var hud = document.createElement('div');
+    hud.className = 'bonche-hud';
+
+    var slider = document.createElement('input');
+    slider.type = 'range';
+    slider.min = '0.7';
+    slider.max = '1.5';
+    slider.step = '0.05';
+    slider.value = getComputedStyle(root).getPropertyValue('--z').trim() || '1';
+
+    var pre = document.createElement('div');
+
+    function values() {
+      return cards.map(function (card, i) {
+        var fx = parseFloat(getComputedStyle(card).getPropertyValue('--fx')) || 0;
+        var fy = parseFloat(getComputedStyle(card).getPropertyValue('--fy')) || 0;
+        return 'foto ' + (i + 1) + ':  fx ' + fx.toFixed(2) + '   fy ' + fy.toFixed(2);
+      });
+    }
+
+    function readout() {
+      pre.textContent =
+        'MODO ACOMODAR — arrastra cada foto\n' +
+        'y pasa los valores a su bloque:\n\n' +
+        values().join('\n') +
+        '\n\nescala global (setting "escala"): ' +
+        Math.round(parseFloat(slider.value) * 100) + '%';
+    }
+
+    slider.addEventListener('input', function () {
+      root.style.setProperty('--z', slider.value);
+      readout();
+    });
+
+    var copiar = document.createElement('button');
+    copiar.type = 'button';
+    copiar.textContent = 'Copiar valores';
+    copiar.addEventListener('click', function () {
+      var texto = values().join('\n') + '\nescala: ' + Math.round(parseFloat(slider.value) * 100) + '%';
+      navigator.clipboard.writeText(texto).then(
+        function () { copiar.textContent = 'Copiado ✓'; },
+        function () { copiar.textContent = 'No se pudo copiar'; }
+      );
+      setTimeout(function () { copiar.textContent = 'Copiar valores'; }, 1600);
+    });
+
+    cards.forEach(function (card) {
+      card.addEventListener('pointerdown', function (e) {
+        e.preventDefault();
+        card.setPointerCapture(e.pointerId);
+        // La tarjeta arrastrada sube por encima de todo y al soltar recupera
+        // su z-index original (el --i del CSS).
+        var zAntes = card.style.zIndex;
+        card.style.zIndex = '999';
+        var startX = e.clientX;
+        var startY = e.clientY;
+        var fx0 = parseFloat(getComputedStyle(card).getPropertyValue('--fx')) || 0;
+        var fy0 = parseFloat(getComputedStyle(card).getPropertyValue('--fy')) || 0;
+        // El espacio libre usa el MISMO rango que el calc() del CSS: medio
+        // viewport menos medio ancho/alto del tamaño final (escala 0.9)
+        // menos 24px. Así el arrastre va 1:1 con el cursor.
+        var freeX = window.innerWidth / 2 - (card.offsetWidth * 0.9) / 2 - 24;
+        var freeY = window.innerHeight / 2 - (card.offsetHeight * 0.9) / 2 - 24;
+
+        function move(ev) {
+          // Se permite pasarse un poco del borde (±1.25): a veces la compo
+          // pide una foto medio recortada.
+          var fx = Math.max(-1.25, Math.min(1.25, fx0 + (ev.clientX - startX) / freeX));
+          var fy = Math.max(-1.25, Math.min(1.25, fy0 + (ev.clientY - startY) / freeY));
+          card.style.setProperty('--fx', fx.toFixed(2));
+          card.style.setProperty('--fy', fy.toFixed(2));
+          readout();
+        }
+        function up() {
+          card.style.zIndex = zAntes;
+          card.removeEventListener('pointermove', move);
+          card.removeEventListener('pointerup', up);
+          card.removeEventListener('pointercancel', up);
+        }
+        card.addEventListener('pointermove', move);
+        card.addEventListener('pointerup', up);
+        card.addEventListener('pointercancel', up);
+      });
+    });
+
+    hud.appendChild(pre);
+    hud.appendChild(slider);
+    hud.appendChild(copiar);
+    document.body.appendChild(hud);
+    readout();
+  }
+
   function init() {
     initPreloader();
     initHeroPerro();
     initNav();
     initFavoritos();
-    initReviews();
+    initPeelStickers();
+    initBonche();
     initFooterPushesNav();
   }
 

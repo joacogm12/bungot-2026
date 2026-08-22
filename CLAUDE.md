@@ -78,7 +78,7 @@ Las páginas grandes NO usan las secciones `main-*` genéricas: cada una es **un
 
 | Página | Plantilla | Sección | Assets | Scope |
 |---|---|---|---|---|
-| Landing | `index.json` | hero, favoritos, reviews-pin, statement, feature-panel, full-photo | base.css / theme.js | — |
+| Landing | `index.json` | hero, favoritos (foto + caja de texto "Ver producto"; el bloque "panel" de Juguetes lleva chip + párrafo + botón), statement, feature-panel, conocenos-bonche (bonche de 10 fotos que se dispersa + titular/CTA a Conócenos; se ajusta con ?acomodar), full-photo | base.css / theme.js | — |
 | Catálogo | `collection.json` | `collection-bandas` (bandas por familia, collection-driven) | productos.css/js | `.pgal` |
 | PDP | `product.json`, `product.juguete.json` | `producto-bungot` (split fijo 50/50, cinturón, cruzada) | producto.css/js | `.pdpage` |
 | Carrito | `cart.json` | `cart-recibo` (recibo de papel, sugeridos, /cart/change.js) | carrito.css/js | `.rcpage` |
@@ -97,6 +97,7 @@ Las páginas grandes NO usan las secciones `main-*` genéricas: cada una es **un
 - Color madre de la marca: verde azulado `--brand` / PANTONE 7716 C `#00978E`.
 - Las tarjetas de producto rotan colores desde el setting `card_colors` (lista de hex por coma). Un producto puntual puede fijar su color con el metafield `custom.card_color`.
 - **`snippets/card-color.liquid` es la única fuente de verdad del color de un producto.** Si necesitas el color de un producto en cualquier lado, renderiza ese snippet — no dupliques la lógica de rotación.
+- **El color de un producto es el de su familia del catálogo.** Las familias (colección o `product_type` + color de banda) viven en los ajustes globales `fam_<clave>_collection/_type/_bg/_fg` (grupo *Familias del catálogo* en `settings_schema.json`), no en los bloques de `collection-bandas`: es la única forma de que la PDP (fondo de la galería), la venta cruzada y la búsqueda lean el mismo color que pinta la banda, porque desde otra plantilla no se pueden leer los bloques de una sección. `card-color.liquid` cae a la rotación solo para lo que no está en ninguna familia (la Caja). El `family_color` de `producto-bungot` se deja vacío a propósito.
 - Mismo criterio con la cara del perro: **`snippets/dog-avatar.liquid` es la única fuente de verdad del avatar** — nunca armes el nombre de archivo de una carita a mano.
 
 ### Categorías (¡ojo, no triviales!)
