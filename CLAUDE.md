@@ -83,7 +83,7 @@ Las páginas grandes NO usan las secciones `main-*` genéricas: cada una es **un
 | PDP | `product.json`, `product.juguete.json` | `producto-bungot` (split fijo 50/50, cinturón, cruzada) | producto.css/js | `.pdpage` |
 | Carrito | `cart.json` | `cart-recibo` (recibo de papel, sugeridos, /cart/change.js) | carrito.css/js | `.rcpage` |
 | Contacto | `page.contacto.json` | `contacto` | contacto.css/js | `.ctpage` |
-| Conócenos | `page.conocenos.json` | `conocenos-paseo` (la historia como paseo; escena en PROPS/PARADAS de conocenos.js) | conocenos.css/js | — |
+| Conócenos | `page.conocenos.json` | `conocenos-paseo` (el paseo del salchicha: lienzo fijo 1582×5650 escalado con `zoom`, riel de 17000px + ventana sticky + escena que mueve JS; tres fases de scroll `FASE_*` — perro, remate del rollo, carrusel por scroll —; posiciones fijas en el CSS, anclajes al camino en el JS) | conocenos-paseo.css/js | `.paseo` |
 | Cuenta | `page.mi-perro/mis-pedidos/mis-direcciones/crear-cuenta.json` | `cuenta-perro`, `cuenta-pedidos`, `cuenta-direcciones`, `cuenta-registro`, `cuenta-login` | cuenta.css/js (**los carga el header** en todas las páginas) | `.cpage` |
 
 - De las secciones `main-*` genéricas solo quedan `main-page`, `main-search` y `main-404` (las usan `page.json`, `search.json` y `404.json`). `main-collection`, `main-product`, `main-cart`, `product-grid` y las secciones de landing que ya no se montaban (`announcement-marquee`, `benefits`, `cta-closer`, `newsletter`, `product-carousel`, `testimonials`, `wave`, `word-marquee`) se borraron junto con su CSS/JS. Antes de borrar cualquier otra, `grep` en `templates/`, `sections/*-group.json` y `config/settings_data.json`.
@@ -112,6 +112,14 @@ Por eso `product-card.liquid` (hoy solo lo usa la búsqueda) emite tags + type +
 
 ### Metafields de producto (los lee la PDP)
 Namespace `custom`: `beneficios` (lista de metaobjetos `beneficio` con `titulo` + `icono`), `beneficio_principal`, `gramaje`, `ingredientes`, `instrucciones`, `recomendacion`, `aviso_legal`, análisis garantizado (`proteina_cruda`, `grasa_cruda`, `fibra_cruda`, `humedad`, `cenizas`, `eln` — **en porcentaje**, 72 = 72%), `card_color`, `card_eyebrow`. El cinturón de `producto-bungot.liquid` usa `beneficios` y cae a los bloques `beneficio` de la sección si el producto no trae ninguno. El copy fuente es el docx de `pg_web/Productos/`.
+
+### Video en la galería de la PDP
+La galería de `producto-bungot` itera `product.media` (fotos **y** videos), no `product.images`. Reglas que no se ven en el código a simple vista:
+- **La primera posición siempre es una foto** (`bag` = `featured_image`, que es imagen aunque el video vaya primero en el admin): el LCP es el `<img fetchpriority="high">` y el video no pesa nada al cargar.
+- Cada video vive en un `<template>` y `producto.js` lo clona al slot del marco cuando eligen su miniatura; entra con `preload="none"`, `playsinline`, sin `autoplay`, y solo el botón de play dispara la descarga. **Chrome no pide el `poster` de un `<video>` que nació en un `<template>`** — por eso el JS vuelve a asignar el atributo ya en el DOM; no lo quites.
+- **Liquid solo expone dos `media.sources`: el HLS (`m3u8`) y el mp4 original** — las versiones 480p/720p existen en el CDN (las lista la Admin API) pero no llegan al tema, así que no hay forma de elegir "el 720p". El orden es el del `video_tag` de Shopify: HLS primero (adaptativo en Safari/iOS), mp4 de respaldo.
+- Videos externos (YouTube/Vimeo) muestran el poster y el iframe se crea hasta el play. Modelos 3D no se pintan.
+- En móvil el marco toma la proporción del video (`--pd-frame-ar` desde `data-ar`, tope `78svh`) para que un vertical se vea entero; la tira de miniaturas se desplaza en horizontal.
 
 ### Suscripciones (selling plans)
 La tienda usa **Shopify Subscriptions** (app gratis) para la Caja BUNGOT. El tema ya lo soporta: selector `.pdplan` + `input[name=selling_plan]` en la PDP (producto.js lo habilita/deshabilita), línea "Suscripción · …" en `cart-linea`, `banda-card` acepta `selling_plan_id`, y los agregados rápidos de un producto `requires_selling_plan` mandan su primer plan (sin él Shopify rechaza el add). Los sugeridos del carrito excluyen los de solo-suscripción. **No propongas bundles ni apps de paga**: la caja es un SKU y la elección del suscriptor vive en un metafield del cliente (pendiente: página "Arma tu caja" + ruta `/caja` en el worker + Flow).
@@ -174,7 +182,7 @@ Datos de contacto sin hardcodear: WhatsApp del ajuste `whatsapp_numero`, Instagr
 - Respeta `prefers-reduced-motion` (ya se hace en el preloader y animaciones). Toda animación nueva debe tener su fallback.
 - Imágenes con `alt`, `width`/`height`, `loading="lazy"` y `srcset` responsivo (ver `product-card.liquid` como patrón).
 - Mantén el `skip-link` y los roles/landmarks del layout.
-- Ojo con `transform` en ancestros de un `position: sticky` (lo rompe) — conocenos.css lo documenta.
+- Ojo con `transform` en ancestros de un `position: sticky` (lo rompe) — conocenos-paseo.css lo documenta: el lienzo del paseo se escala con `zoom`, nunca con `transform: scale()`.
 
 ### Estilo de código
 - Comenta el **por qué**, no el qué — como ya está el código (ej. por qué el `crossorigin`, por qué el color no sale de los pantones). Comentarios en español de México.

@@ -1,0 +1,532 @@
+/* ==========================================================================
+   BUNGOT 2026 — conocenos-paseo.css  (la historia como un paseo)
+
+   El escenario es un lienzo fijo de 1582px con todo en absoluto sobre una
+   escena de 5650px. En pantallas angostas NO se recorta ni se re-maqueta:
+   .paseo__lienzo se escala completo con `zoom` (lo escribe JS:
+   min(1, marco/1582)). Tiene que ser `zoom` y no transform: scale() — un
+   transform en el ancestro rompe el position: sticky de la ventana (la fija
+   contra el lienzo en vez de contra la pantalla) y el recorrido entero deja
+   de funcionar.
+
+   Capas:
+     .paseo__marco    recorta el zoom
+     .paseo__lienzo   1582px, zoom
+     .paseo__riel     17000px — lo único que produce scroll
+     .paseo__ventana  sticky, 100svh
+     .paseo__escena   5650px — la cámara; JS la mueve con translate3d
+
+   Todas las posiciones de utilería y tarjetas viven aquí (left/top fijos)
+   salvo las que JS ancla al camino (ancla(): escribe left/top una sola vez
+   por posición). Las animaciones son puro `transform`/`opacity`/clip-path
+   escritas por JS: nada aquí lleva transition, porque todo se deriva del
+   scroll y se rebobina.
+
+   Colores del diseño, sin excepción: crema #F7F1E3, tinta #013C3E, azul del
+   resorte #011670, verde #00968F, rojo #E24E2E, naranja quemado #C2721A,
+   negro del negativo #141414, hueco de foto #EFE7D6.
+
+   Tipografía: el diseño pide Fredoka para el texto de las tarjetas; Fredoka
+   salió del tema, así que va en --font-body (Inter) 600, igual que el resto
+   del sitio.
+   ========================================================================== */
+
+.paseo {
+  background: #F7F1E3;
+  color: #013C3E;
+}
+
+.paseo__marco {
+  overflow: clip;
+}
+
+.paseo__lienzo {
+  position: relative;
+  width: 1582px;
+  margin-inline: auto;
+  overflow: clip;
+  background: #F7F1E3;
+}
+
+/* --- Encabezado, en flujo normal antes del riel --------------------------- */
+
+.paseo__intro {
+  max-width: 1100px;
+  padding: 74px 63px 0;
+}
+
+.paseo__titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 128px;
+  line-height: .92;
+  text-transform: uppercase;
+  color: #00968F;
+}
+
+.paseo__bajada {
+  max-width: 560px;
+  margin: 14px 0 0;
+  font-family: var(--font-body);
+  font-size: 21px;
+  line-height: 1.4;
+  color: rgba(1, 60, 62, .82);
+}
+
+/* --- La pista, la ventana y la escena ------------------------------------ */
+
+/* 17000px = las tres fases de scroll (paseo del perro, remate del rollo y
+   carrusel de fotos; el reparto vive en FASE_* del JS). */
+.paseo__riel {
+  position: relative;
+  height: 17000px;
+  margin-top: 8px;
+}
+
+.paseo__ventana {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;
+}
+
+/* 5650 = H del JS = alto del viewBox del SVG del camino: los tres deben
+   coincidir o el path se escala y todo lo anclado se desalinea. */
+.paseo__escena {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 5650px;
+  will-change: transform;
+}
+
+/* Nada en la escena se encoge al ancho del contenedor (base.css pone
+   max-width: 100% a toda imagen). El height: auto va solo en los sprites,
+   más abajo: las fotos de tarjeta, los avatares y los fotogramas del rollo
+   llevan alto fijo con object-fit: cover. */
+.paseo__escena img,
+.paseo__escena svg {
+  max-width: none;
+}
+
+.paseo__dachs,
+img.pest,
+.pest__bote,
+.pest__tapa,
+.prollo__bote {
+  height: auto;
+}
+
+/* --- El camino (y el resorte, que JS dibuja sobre la guía) --------------- */
+
+.paseo__camino {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.paseo__riel-guia {
+  stroke: #011670;
+  stroke-width: 9;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.paseo__riel-medida {
+  stroke: none;
+  fill: none;
+}
+
+/* --- El perro -------------------------------------------------------------- */
+
+/* Un nivel por encima del camino (z 5): el resorte pasa por detrás del
+   perro y sus extremos se esconden bajo la grupa y la cabeza. */
+.paseo__dachs {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 6;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.paseo__dachs--atras { width: 190px; }
+.paseo__dachs--frente { width: 228px; }
+
+/* --- Utilería de las estaciones ------------------------------------------ */
+
+.pest {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+/* 6.1 El bote: grupo que se vuelca; la tapa rueda aparte. */
+.pest--bote {
+  z-index: 3;
+  width: 300px;
+  height: 277px;
+  margin: -89px 0 0 -150px;
+  transform-origin: 10% 100%;
+}
+
+.pest__bote {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 300px;
+}
+
+.pest__tapa {
+  position: absolute;
+  left: 4px;
+  top: -34px;
+  width: 292px;
+  transform-origin: 50% 50%;
+}
+
+.pest--platano {
+  left: 851px;
+  top: 1622px;
+  width: 132px;
+  z-index: 4;
+  opacity: 0;
+  transform-origin: 50% 90%;
+}
+
+/* 6.2 La mesa de pruebas. La base (558×768) y la de burbujas (593×768) son el
+   mismo dibujo; la segunda es más ancha solo por las chispas de la derecha,
+   así que se alinean por la esquina inferior IZQUIERDA (con `contain` las dos
+   escalan por el alto, 768 → 620, y coinciden píxel a píxel). Centradas se
+   veía la mesa doble. */
+.pest--pruebas {
+  z-index: 3;
+  width: 620px;
+  height: 620px;
+  margin: -311px 0 0 -310px;
+  transform-origin: 50% 96%;
+}
+
+.pest--pruebas > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 0 100%;
+  transform-origin: 50% 96%;
+}
+
+.pest__burbujas { opacity: 0; }
+
+/* El humo va aparte, plantado con su base angosta sobre la boca de la probeta
+   alta (en la base escalada la boca queda en ≈(395, 222) del grupo; la base
+   del humo está al 30% / 94% de su propia caja). */
+.pest--pruebas > .pest__humo {
+  inset: auto;
+  left: 304px;
+  top: -131px;
+  width: 300px;
+  height: auto;
+  object-fit: fill;
+  opacity: 0;
+  transform-origin: 30% 94%;
+}
+
+/* 6.3 El hidrante mira al otro lado; el chorro nace en su boca (el origen
+   0.2% 66.7%) y el scaleX(-1) va DENTRO del transform animado en JS. */
+.pest--hidrante {
+  z-index: 3;
+  width: 421px;
+  margin: -150px 0 0 -210px;
+  transform-origin: 50% 96%;
+  transform: scaleX(-1);
+}
+
+.pest--agua {
+  z-index: 4;
+  width: 477px;
+  margin: -204px 0 0 -26px;
+  transform-origin: 0.2% 66.7%;
+  opacity: 0;
+}
+
+/* 6.4 La casita, la pelota y su estela de historieta. */
+.pest--casa {
+  z-index: 3;
+  width: 560px;
+  margin: -245px 0 0 -280px;
+}
+
+.pest--pelota {
+  z-index: 6;
+  width: 56px;
+  margin: -40px 0 0 -28px;
+  transform: translate(210px, 250px);
+}
+
+.pest--estela {
+  z-index: 6;
+  width: 1200px;
+  height: 800px;
+  margin-top: -14px;
+  overflow: visible;
+  opacity: 0;
+}
+
+.pest--estela path {
+  fill: none;
+  stroke: #013C3E;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pest--estela [data-estela="1"] { stroke-width: 5; }
+.pest--estela [data-estela="2"] { stroke-width: 3; opacity: .55; }
+
+/* 6.5 La cámara y el flash: coordenadas fijas, afuera de la última vuelta. El
+   flash (z 8) queda debajo de la tarjeta 4 (z 9): la foto crece encima del
+   destello. */
+.pest--camara {
+  left: 120px;
+  top: 3839px;
+  width: 486px;
+  z-index: 7;
+  transform-origin: 50% 82%;
+}
+
+/* El destello sale del cuadrito blanco de la cámara (el flash, en ≈(262,38)
+   de la cámara → (382,3877) de la escena): el origen de la estrella se
+   planta ahí y la estrella crece hacia arriba y a la derecha. */
+.pest--flash {
+  left: 192px;
+  top: 3778px;
+  width: 317px;
+  z-index: 8;
+  opacity: 0;
+  transform-origin: 60% 47%;
+}
+
+/* --- Las tarjetas --------------------------------------------------------- */
+
+.ptar {
+  position: absolute;
+  width: 560px;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+
+/* Posiciones del diseño original (numeración interna, ver la sección). */
+.ptar--1 { left: 365px; top: 1277px; z-index: 2; }
+/* La 5 va en el hueco libre entre las dos pasadas del perro (arriba ≈1985,
+   abajo ≈2790, y la cabeza mide ±107): con top 2140 el texto quedaba tapado
+   por el perro de regreso. */
+.ptar--5 { left: 700px; top: 2090px; width: 540px; z-index: 2; opacity: 0; }
+.ptar--2 { left: 380px; top: 2930px; z-index: 3; }
+.ptar--3 { left: 638px; top: 490px;  z-index: 2; }
+.ptar--4 { left: 690px; top: 3730px; z-index: 9; opacity: 0; }
+
+.ptar__titulo {
+  display: block;
+  margin: 0 0 16px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 68px;
+  line-height: .92;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.ptar--1 .ptar__titulo { color: #E24E2E; }
+.ptar--5 .ptar__titulo { color: #00968F; }
+.ptar--2 .ptar__titulo { color: #C2721A; }
+.ptar--3 .ptar__titulo { color: #013C3E; }
+.ptar--4 .ptar__titulo { color: #00968F; }
+
+.ptar__foto {
+  position: relative;
+  height: 360px;
+  border-radius: 24px;
+  border: 3px solid #013C3E;
+  overflow: hidden;
+  background: #EFE7D6;
+}
+
+.ptar__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ptar__hueco {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.3;
+  text-align: center;
+  color: rgba(1, 60, 62, .55);
+}
+
+.ptar__texto {
+  margin: 18px 0 0;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.35;
+  color: #013C3E;
+  text-wrap: pretty;
+}
+
+.ptar--5 .ptar__texto {
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* --- El rollo de fotos ---------------------------------------------------- */
+
+/* El bote (190×336) y la tira dibujada (722×218), ya a su tamaño final
+   (×2.05 desde la esquina superior izquierda, bajado 280px para centrarse
+   en la última pantalla): el bote queda a la izquierda y la parte recta de
+   la cinta llega al borde del lienzo — la lengüeta curva queda fuera y solo
+   se ve el rectángulo de negativos. No crece: JS solo anima la caída del
+   bote y la salida de la cinta. Si cambias la escala, cámbiala también en
+   `arrastre.escala` del JS (convierte los px del puntero al arrastrar). */
+.prollo {
+  position: absolute;
+  left: 80px;
+  top: 4600px; /* pegado al último tramo del camino (y≈4490) */
+  width: 900px;
+  height: 328px;
+  z-index: 6;
+  transform-origin: 0% 0%;
+  transform: translateY(280px) scale(2.05);
+}
+
+.prollo__bote {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 190px;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* La tira nace en la línea del doblez de la tapa gris del bote (x≈179; las
+   líneas del bote a media altura están en 132 unión, 179 doblez y 188 borde)
+   y pasa POR ENCIMA de la tapa (z 3 > z 2 del bote). El
+   dibujo es fondo y máscara a la vez: las perforaciones quedan caladas y la
+   lengüeta del final recorta los fotogramas. El desplazamiento y el
+   clip-path los escribe JS al desenrollar. */
+.prollo__tira {
+  position: absolute;
+  left: 179px;
+  top: 77px;
+  z-index: 3;
+  width: 722px;
+  height: 218px;
+  background: #141414 var(--tira-img) 0 0 / 100% 100% no-repeat;
+  -webkit-mask: var(--tira-img) 0 0 / 100% 100% no-repeat;
+  mask: var(--tira-img) 0 0 / 100% 100% no-repeat;
+  overflow: hidden;
+  /* Empieza metida entera en el bote: JS la desliza hacia afuera con la
+     lengüeta por delante (translateX + clip-path del lado izquierdo). */
+  transform: translateX(-722px);
+  clip-path: inset(0 0 0 100%);
+}
+
+/* Los fotogramas van entre las dos filas de perforaciones del dibujo
+   (≈28px arriba, ≈26px abajo). */
+.prollo__pista {
+  position: absolute;
+  left: 0;
+  top: 29px;
+  height: 160px;
+  display: flex;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  will-change: transform;
+}
+
+.prollo__pista.is-arrastrando { cursor: grabbing; }
+
+.prollo__foto {
+  position: relative;
+  flex: 0 0 226px; /* 226 + 14 de margen = 240, el paso del arrastre en JS */
+  height: 160px;
+  margin-right: 14px;
+  border: 3px solid #F7F1E3;
+  border-radius: 6px;
+  background: #EFE7D6;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.prollo__foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* --- Modo plano: sin recorrido -------------------------------------------
+   prefers-reduced-motion, "Animar" apagado en el customizer, o sin JS. El
+   riel deja de dar scroll, la ventana deja de ser sticky y la escena se ve
+   completa en su estado final (JS la pinta con p = 1 y todas las paradas
+   en u = 1). El carrusel del rollo sigue siendo arrastrable. */
+
+.paseo--plano .paseo__riel,
+.paseo:not(.paseo--js) .paseo__riel {
+  height: auto;
+}
+
+.paseo--plano .paseo__ventana,
+.paseo:not(.paseo--js) .paseo__ventana {
+  position: static;
+  height: auto;
+  overflow: visible;
+}
+
+.paseo--plano .paseo__escena,
+.paseo:not(.paseo--js) .paseo__escena {
+  position: relative;
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paseo__riel { height: auto; }
+  .paseo__ventana { position: static; height: auto; overflow: visible; }
+  .paseo__escena { position: relative; transform: none !important; }
+}
+
+/* Sin JS nadie coloca al perro ni abre el rollo: se muestran las tarjetas,
+   la utilería quieta y la tira ya desenrollada. */
+.paseo:not(.paseo--js) .ptar,
+.paseo:not(.paseo--js) .prollo__bote {
+  opacity: 1;
+}
+
+.paseo:not(.paseo--js) .prollo__tira {
+  clip-path: none;
+}
+
+.paseo:not(.paseo--js) .paseo__dachs {
+  display: none;
+}

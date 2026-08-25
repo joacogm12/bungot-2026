@@ -62,7 +62,12 @@
       "price_tbd": "Precio por confirmar"
     },
     "producto": {
-      "thumbs": "Fotos del producto",
+      "thumbs": "Fotos y videos del producto",
+      "video_thumb": "Ver video",
+      "video_play": "Reproducir video",
+      "gal_prev": "Foto anterior",
+      "gal_next": "Siguiente foto",
+      "gal_of": " de ",
       "shot_bag": "Bolsa del producto",
       "qty_less": "Quitar uno",
       "qty_more": "Agregar uno",
@@ -304,5 +309,20 @@
       "horario_texto": "Lunes a viernes 9 a 18 h · Sábados 10 a 14 h · San Luis Potosí capital"
     },
     "mayoreo_html": "¿Vendes en tu tienda? Trabajamos con veterinarias, estéticas y tiendas de barrio: escríbenos a {{ correo }} y te mandamos la lista de mayoreo."
+  },
+  "conocenos": {
+    "hueco": {
+      "bote": "Etiquetas del súper",
+      "pruebas": "Etiquetas pegadas a mano",
+      "hidrante": "La manada del barrio",
+      "casa": "Greta y Bache",
+      "rollo": "Foto {{ n }}"
+    },
+    "avatares": {
+      "greta": "Greta",
+      "manolo": "Manolo",
+      "ramona": "Ramona"
+    },
+    "rollo_label": "Rollo de fotos: arrastra para verlas"
   }
 }
