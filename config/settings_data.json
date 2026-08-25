@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
     "color_brand": "#00978E",
@@ -5,10 +14,6 @@
     "color_yellow": "#FED140",
     "color_cream": "#F7F1E3",
     "card_colors": "#F6A762,#70C4E8,#FED140,#88CBC4,#EB5F7A,#8FC7E8,#F59C26,#E6BDDB,#E1CC00,#619AC5,#7FA8AC,#E94925",
-    "social_instagram": "https://instagram.com/bungot",
-    "social_tiktok": "",
-    "social_facebook": "",
-    "social_whatsapp": "",
     "fam_deshidratados_collection": "snacks-favoritos",
     "fam_deshidratados_type": "",
     "fam_deshidratados_bg": "#00968f",
@@ -24,7 +29,13 @@
     "fam_juguetes_collection": "",
     "fam_juguetes_type": "Juguete",
     "fam_juguetes_bg": "#2E5FA0",
-    "fam_juguetes_fg": "#013c3e"
+    "fam_juguetes_fg": "#013c3e",
+    "social_instagram": "https://wa.me524441716559",
+    "social_tiktok": "https://www.tiktok.com/@bungot_mx",
+    "social_facebook": "",
+    "social_whatsapp": "https://wa.me524441716559",
+    "whatsapp_numero": "524441716559",
+    "content_for_index": []
   },
   "presets": {
     "BUNGOT 2026": {

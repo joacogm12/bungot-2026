@@ -1,23 +1,16 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "producto-bungot",
-      "settings": {
-        "lote": "Lote 04 · Guadalajara",
-        "eyebrow": "",
-        "lead": "",
-        "cta_prefix": "Agregar",
-        "note": "Envío gratis desde $500 · llega en 2 a 4 días",
-        "stat1_value": "",
-        "stat1_label": "Proteína",
-        "stat2_value": "",
-        "stat2_label": "",
-        "stat3_value": "0",
-        "stat3_label": "Conservadores",
-        "reviews_title": "Opiniones de los clientes",
-        "cross_title": "La manada también se lleva",
-        "cross_link_label": "Ver todos los productos"
-      },
       "blocks": {
         "acc-1": {
           "type": "acordeon",
@@ -54,31 +47,36 @@
         "ben-1": {
           "type": "beneficio",
           "settings": {
-            "title": "Ayuda al desarrollo muscular"
+            "title": "Ayuda al desarrollo muscular",
+            "text": ""
           }
         },
         "ben-2": {
           "type": "beneficio",
           "settings": {
-            "title": "Aumenta niveles de energía"
+            "title": "Aumenta niveles de energía",
+            "text": ""
           }
         },
         "ben-3": {
           "type": "beneficio",
           "settings": {
-            "title": "Refuerza sistema inmune"
+            "title": "Refuerza sistema inmune",
+            "text": ""
           }
         },
         "ben-4": {
           "type": "beneficio",
           "settings": {
-            "title": "Favorece la función cardiaca"
+            "title": "Favorece la función cardiaca",
+            "text": ""
           }
         },
         "ben-5": {
           "type": "beneficio",
           "settings": {
-            "title": "Aporta vitamina B12"
+            "title": "Aporta vitamina B12",
+            "text": ""
           }
         },
         "op-1": {
@@ -159,7 +157,8 @@
             "title": "Hígado deshidratado",
             "detail": "cerdo y res · 80 g",
             "price": "$70.00",
-            "color": "#85CCC6"
+            "url": "",
+            "color": "#85ccc6"
           }
         },
         "xs-2": {
@@ -168,7 +167,8 @@
             "title": "Patas de pollo",
             "detail": "colágeno · 14 piezas",
             "price": "$95.00",
-            "color": "#F59E28"
+            "url": "",
+            "color": "#f59e28"
           }
         },
         "xs-3": {
@@ -177,17 +177,58 @@
             "title": "Caja de la manada",
             "detail": "cuatro premios surtidos",
             "price": "$260.00",
-            "color": "#6CC2EA"
+            "url": "",
+            "color": "#6cc2ea"
           }
         }
       },
       "block_order": [
-        "acc-1", "acc-2", "acc-3", "acc-4",
-        "ben-1", "ben-2", "ben-3", "ben-4", "ben-5",
-        "op-1", "op-2", "op-3", "op-4", "op-5", "op-6", "op-7", "op-8", "op-9",
-        "xs-1", "xs-2", "xs-3"
-      ]
+        "acc-1",
+        "acc-2",
+        "acc-3",
+        "acc-4",
+        "ben-1",
+        "ben-2",
+        "ben-3",
+        "ben-4",
+        "ben-5",
+        "op-1",
+        "op-2",
+        "op-3",
+        "op-4",
+        "op-5",
+        "op-6",
+        "op-7",
+        "op-8",
+        "op-9",
+        "xs-1",
+        "xs-2",
+        "xs-3"
+      ],
+      "settings": {
+        "family_color": "",
+        "lote": "",
+        "eyebrow": "",
+        "title": "",
+        "lead": "",
+        "cta_prefix": "Agregar",
+        "cta_prefix_plan": "Suscribirme",
+        "note": "Envío gratis desde $500 · llega en 2 a 4 días",
+        "stat1_value": "",
+        "stat1_label": "Proteína",
+        "stat2_value": "",
+        "stat2_label": "",
+        "stat3_value": "0",
+        "stat3_label": "Conservadores",
+        "reviews_title": "Opiniones de los clientes",
+        "cross_title": "La manada también se lleva",
+        "cross_link_label": "Ver todos los productos",
+        "cross_link_url": "",
+        "cross_collection": ""
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main"
+  ]
 }

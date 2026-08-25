@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "footer",
   "name": "Footer",
@@ -7,24 +16,38 @@
       "blocks": {
         "shop": {
           "type": "menu",
-          "settings": { "title": "Tienda", "menu": "main-menu" }
+          "settings": {
+            "title": "Tienda",
+            "menu": "main-menu"
+          }
         },
         "help": {
           "type": "menu",
-          "settings": { "title": "Ayuda", "menu": "footer" }
+          "settings": {
+            "title": "Ayuda",
+            "menu": "footer"
+          }
         }
       },
-      "block_order": ["shop", "help"],
+      "block_order": [
+        "shop",
+        "help"
+      ],
       "settings": {
-        "tagline": "La porción justa\nde bueno",
+        "tagline": "¡Para chuparse\nlas patas!",
         "signup_text": "Únete a BUNGOT y llévate 10% en tu primer pedido",
+        "signup_placeholder": "tu@email.com",
+        "signup_button": "Suscribirme",
+        "policy_menu": "",
         "disclaimer": "Los snacks son un complemento, no reemplazan una dieta balanceada. Consulta a tu veterinario ante cualquier duda.",
-        "bg": "#E94925",
-        "fg": "#F7F1E3",
+        "bg": "#e94925",
+        "fg": "#f7f1e3",
         "btn_bg": "#2E5FA0",
-        "btn_fg": "#F7F1E3"
+        "btn_fg": "#f7f1e3"
       }
     }
   },
-  "order": ["footer"]
+  "order": [
+    "footer"
+  ]
 }

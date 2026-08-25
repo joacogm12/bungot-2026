@@ -23,12 +23,12 @@
             "image_asset_sm": "bungot-fav-terraza-1000.webp",
             "alt": "Dos perros echados en un camastro de la terraza con sus bolsas de premios BUNGOT",
             "focus": "50% 50%",
-            "product": "premios-patas-de-pollo",
+            "product": "snacks-pulmon-de-res-para-perro",
             "eyebrow": "Para perros",
-            "title": "Patas de Pollo",
-            "text": "Altas en colágeno natural. Un solo ingrediente y le duran un buen rato.",
+            "title": "Pulmón de Res",
+            "text": "Alto en proteína y fácil de digerir. Excelente para aumentar la masa muscular.",
             "cta_label": "Ver producto",
-            "link": ""
+            "link": "shopify://collections/all"
           }
         },
         "gato": {
@@ -64,7 +64,7 @@
         "juguete": {
           "type": "panel",
           "settings": {
-            "image": "shopify://shop_images/Captura_de_Pantalla_2024-08-06_a_la_s_13.22.21.png",
+            "image": "shopify://shop_images/Tezza-0045.jpg",
             "image_asset": "",
             "image_asset_sm": "",
             "alt": "Un border collie camina por el jardín con su juguete de cuerda trenzada en el hocico",
@@ -105,6 +105,7 @@
         "sticker_asset": "bungot-sticker-logo.webp",
         "sticker_size": 50,
         "sticker_bottom": -6,
+        "sticker_mode": "full",
         "sticker_peel": 30,
         "peel_start": 55,
         "peel_end": 10,
@@ -283,7 +284,7 @@
         "text": "Premios naturales hechos en México, de un solo ingrediente y probados por los perros de la casa. Esta es nuestra historia.",
         "cta_label": "Conócenos",
         "cta_url": "/pages/conocenos",
-        "bg": "#2E5FA0",
+        "bg": "#2e5fa0",
         "show_wave": true,
         "escala": 100,
         "dispersion": 100,
@@ -297,8 +298,8 @@
         "title": "Que coman bien",
         "show_sticker": true,
         "sticker_asset": "bungot-sticker-perrita.png",
-        "bg": "#2E5FA0",
-        "fg": "#F7F1E3"
+        "bg": "#2e5fa0",
+        "fg": "#f7f1e3"
       }
     }
   },
