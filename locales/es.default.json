@@ -38,6 +38,7 @@
     "card": {
       "buy": "Agregar al carrito",
       "added": "¡Listo!",
+      "add_failed": "No se pudo agregar",
       "on_sale": "Oferta",
       "sold_out": "Agotado"
     }

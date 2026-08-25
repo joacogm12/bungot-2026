@@ -342,6 +342,7 @@
             data-prefix-plan="{{ section.settings.cta_prefix_plan | escape }}"
             data-label-added="{{ 'sections.producto.added' | t }}"
             data-label-soldout="{{ 'products.card.sold_out' | t }}"
+            data-label-failed="{{ 'products.card.add_failed' | t }}"
             data-label-unavailable="{{ 'sections.producto.unavailable' | t }}"
           >{{ section.settings.cta_prefix }}</button>
         </div>
@@ -807,6 +808,7 @@
               price_html: xp_price,
               url: xp.url,
               variant_id: xp.selected_or_first_available_variant.id,
+              available: xp.available,
               selling_plan_id: xp_sp,
               cta: section.settings.cta_prefix
             -%}

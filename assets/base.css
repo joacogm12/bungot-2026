@@ -2642,6 +2642,11 @@ a.chip { text-decoration: none; }
 }
 /* Pulsado plano: sin sombra dura que absorber, se hunde 3px y ya. */
 .cardset .card__add:active { transform: translateY(3px); }
+/* Agotado: se ve apagado y no se hunde. Va por clase y no por :disabled
+   porque el botón normal también se deshabilita el instante que dura el
+   fetch, y ese parpadeo no debe verse. */
+.cardset .card__add--soldout { opacity: 0.55; cursor: not-allowed; }
+.cardset .card__add--soldout:active { transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .cardset .card { transition: none; will-change: auto; }

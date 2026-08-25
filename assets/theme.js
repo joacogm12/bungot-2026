@@ -248,16 +248,22 @@
      opts.color    → el de la bolita; sin él, el coral de la pestaña
                      (--nav-coral). La PDP manda su naranja propio.
 
-     Devuelve { ponTotal(n) }: el caller lo llama con el item_count real de
-     /cart.js y ese número le gana a la suma a ciegas — si la bolita ya
-     aterrizó corrige al momento, si no queda listo para el aterrizaje. Así
-     la cifra cambia justo cuando llega la bolita, con el valor del backend
-     si el fetch fue más rápido que el vuelo. */
+     Devuelve { ponTotal(n), falla() }: ponTotal lo llama el caller con el
+     item_count real de /cart.js y ese número le gana a la suma a ciegas — si
+     la bolita ya aterrizó corrige al momento, si no queda listo para el
+     aterrizaje. Así la cifra cambia justo cuando llega la bolita, con el
+     valor del backend si el fetch fue más rápido que el vuelo.
+
+     falla() es para cuando Shopify RECHAZA el agregado (422: agotado, plan
+     que falta, variante que ya no existe): la bolita se esfuma sin aterrizar,
+     el contador no sube y el botón dice data-label-failed un momento en vez
+     de "¡Listo!". Antes el vuelo festejaba igual y el carrito llegaba vacío. */
   function flyToCart(btn, opts) {
     opts = opts || {};
     var cantidad = opts.cantidad || 1;
     var total = null;      // item_count real, si el caller lo confirma
     var aterrizado = false;
+    var fallido = false;
     var bola = null;
 
     var pastilla = pastillaCarrito();
@@ -292,6 +298,7 @@
       if (aterrizado) return;
       aterrizado = true;
       if (bola) bola.remove();
+      if (fallido) return; // rechazado: nada que sumar ni que festejar
       subeContador();
       rebota();
     }
@@ -305,6 +312,7 @@
       var textoOriginal = btn.textContent;
       var fondoOriginal = btn.style.background;
       setTimeout(function () {
+        if (fallido) return; // el rótulo de error ya está puesto, no pisarlo
         if (textoConfirmacion) btn.textContent = textoConfirmacion;
         btn.style.background = '#EA4A27'; // el coral de la pestaña (--nav-coral)
       }, vuela ? 380 : 0);
@@ -351,6 +359,18 @@
         if (aterrizado) {
           contadores().forEach(function (el) { el.textContent = n; });
         }
+      },
+      falla: function () {
+        fallido = true;
+        // Si aterrizó antes de que contestara Shopify ya sumó de más: deshacer.
+        if (aterrizado) {
+          contadores().forEach(function (el) {
+            el.textContent = Math.max(0, (parseInt(el.textContent, 10) || 0) - cantidad);
+          });
+        }
+        aterriza();
+        var textoError = btn && btn.getAttribute('data-label-failed');
+        if (textoError) btn.textContent = textoError;
       }
     };
   }

@@ -220,15 +220,20 @@
         body: new FormData(form),
         headers: { Accept: 'application/json' }
       })
-        .then(function () { return fetch('/cart.js', { headers: { Accept: 'application/json' } }); })
+        .then(function (r) {
+          if (!r.ok) throw rechazo(r);
+          return fetch('/cart.js', { headers: { Accept: 'application/json' } });
+        })
         .then(function (r) { return r.json(); })
         .then(function (cart) {
           vuelo.ponTotal(cart.item_count);
           if (addBtn) addBtn.disabled = false;
         })
-        .catch(function () {
-          // Sin carrito disponible: el contador ya subió al aterrizar la
+        .catch(function (err) {
+          // Rechazado por Shopify (422): cancelar el festejo. Sin carrito
+          // disponible (red caída) el contador ya subió al aterrizar la
           // bolita, así que al menos no miente. Solo soltar el botón.
+          if (err && err.rechazado) vuelo.falla();
           if (addBtn) addBtn.disabled = false;
         });
     });
@@ -251,17 +256,30 @@
           body: new FormData(form),
           headers: { Accept: 'application/json' }
         })
-          .then(function () { return fetch('/cart.js', { headers: { Accept: 'application/json' } }); })
+          .then(function (r) {
+            if (!r.ok) throw rechazo(r);
+            return fetch('/cart.js', { headers: { Accept: 'application/json' } });
+          })
           .then(function (r) { return r.json(); })
           .then(function (cart) {
             vuelo.ponTotal(cart.item_count);
             if (btn) btn.disabled = false;
           })
-          .catch(function () {
+          .catch(function (err) {
+            if (err && err.rechazado) vuelo.falla();
             if (btn) btn.disabled = false;
           });
       });
     });
+  }
+
+  // Error marcado para distinguir "Shopify dijo que no" (422: agotado, sin
+  // plan, variante inexistente) de "no hubo red": solo el primero cancela el
+  // vuelo, el segundo deja el contador como ya subió.
+  function rechazo(r) {
+    var err = new Error('cart/add ' + r.status);
+    err.rechazado = true;
+    return err;
   }
 
   // El vuelo con el naranja de la PDP (--pd-naranja): la bolita coral del
@@ -272,7 +290,7 @@
       return window.BUNGOT.flyToCart(btn, { cantidad: qty, color: '#E24E2E' });
     }
     bumpCount(qty);
-    return { ponTotal: setCount };
+    return { ponTotal: setCount, falla: function () { bumpCount(-qty); } };
   }
 
   function counters() {

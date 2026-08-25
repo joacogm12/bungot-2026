@@ -23,6 +23,9 @@
     price_html   (str, opcional)  · vacío → "Precio por confirmar"
     url          (str, opcional)  · si viene, media + título son links
     variant_id   (id,  opcional)  · si viene, "Agregar" agrega al carrito
+    available    (bool, opcional) · product.available; en false el botón sale
+                                    deshabilitado con "Agotado" en vez de un
+                                    form que Shopify rechazaría con 422
     selling_plan_id (id, opcional) · plan de suscripción que viaja con el
                                      agregado (productos de solo-suscripción)
     cta          (str)            · texto del botón
@@ -85,7 +88,14 @@
         {%- endif -%}
       </span>
 
-      {%- if variant_id != blank -%}
+      {%- if variant_id != blank and available == false -%}
+        {%- comment -%}
+          Agotado (rastrea inventario y no queda): selected_or_first_available_variant
+          cae a la primera variante aunque nada esté disponible, así que sin
+          este cheque la tarjeta ofrecería un "Agregar" que Shopify rechaza.
+        {%- endcomment -%}
+        <button type="button" class="card__add card__add--soldout" disabled>{{ 'products.card.sold_out' | t }}</button>
+      {%- elsif variant_id != blank -%}
         <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="card__addform">
           <input type="hidden" name="id" value="{{ variant_id }}">
           <input type="hidden" name="quantity" value="1">
@@ -96,9 +106,10 @@
             El submit lo intercepta el JS (productos.js / producto.js) y el
             agregado va por fetch, con la bolita de flyToCart; sin JS, el form
             navega y agrega igual. data-label-added: el texto de confirmación
-            que el botón muestra un momento al aterrizar la bolita.
+            que el botón muestra un momento al aterrizar la bolita;
+            data-label-failed: el que muestra si Shopify rechaza el agregado.
           {%- endcomment -%}
-          <button type="submit" class="card__add" data-label-added="{{ 'products.card.added' | t }}">{{ cta }}</button>
+          <button type="submit" class="card__add" data-label-added="{{ 'products.card.added' | t }}" data-label-failed="{{ 'products.card.add_failed' | t }}">{{ cta }}</button>
         </form>
       {%- else -%}
         <button type="button" class="card__add">{{ cta }}</button>

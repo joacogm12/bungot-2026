@@ -209,6 +209,7 @@
                 price_html: ph,
                 url: product.url,
                 variant_id: product.selected_or_first_available_variant.id,
+                available: product.available,
                 selling_plan_id: sp,
                 cta: cta -%}
             {%- endfor -%}
@@ -225,10 +226,12 @@
                 assign p_url = ''
                 assign p_vid = ''
                 assign p_sp = ''
+                assign p_avail = true
                 assign p_price = p.settings.price
                 if p_link != blank
                   assign p_url = p_link.url
                   assign p_vid = p_link.selected_or_first_available_variant.id
+                  assign p_avail = p_link.available
                   if p_link.price > 0
                     assign p_price = p_link.price | money
                   endif
@@ -244,6 +247,7 @@
                 price_html: p_price,
                 url: p_url,
                 variant_id: p_vid,
+                available: p_avail,
                 selling_plan_id: p_sp,
                 cta: cta -%}
             {%- endfor -%}

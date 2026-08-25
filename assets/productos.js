@@ -27,7 +27,10 @@
      carrito); acá se intercepta y el agregado va por fetch. La confirmación
      es el vuelo de la bolita (window.BUNGOT.flyToCart, theme.js): el contador
      del header sube al aterrizar, con el item_count real si el fetch ya
-     regresó. El botón solo se bloquea mientras dura el fetch. */
+     regresó. El botón solo se bloquea mientras dura el fetch. Si Shopify
+     rechaza el agregado (422: agotado, sin plan…) el vuelo se cancela con
+     vuelo.falla() — sin eso el botón decía "¡Listo!" y el carrito llegaba
+     vacío. */
   function setupAddForms(root) {
     var forms = root.querySelectorAll('.card__addform');
     for (var i = 0; i < forms.length; i++) wireAddForm(forms[i]);
@@ -48,14 +51,20 @@
         body: new FormData(form),
         headers: { Accept: 'application/json' }
       })
-        .then(function () { return fetch('/cart.js', { headers: { Accept: 'application/json' } }); })
+        .then(function (r) {
+          if (!r.ok) { var err = new Error('cart/add ' + r.status); err.rechazado = true; throw err; }
+          return fetch('/cart.js', { headers: { Accept: 'application/json' } });
+        })
         .then(function (r) { return r.json(); })
         .then(function (cart) {
           vuelo.ponTotal(cart.item_count);
           if (btn) btn.disabled = false;
         })
-        .catch(function () {
-          // Sin backend el contador ya subió al aterrizar; solo soltar el botón.
+        .catch(function (err) {
+          // Rechazado por Shopify: cancelar el festejo. Sin backend (red caída,
+          // /cart.js que no contesta) el contador ya subió al aterrizar; solo
+          // soltar el botón.
+          if (err && err.rechazado) vuelo.falla();
           if (btn) btn.disabled = false;
         });
     });
