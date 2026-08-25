@@ -22,28 +22,158 @@
   }
 
   /* --- Miniaturas ---------------------------------------------------------
-     Cambian la foto del marco, su tratamiento y el borde de activa. El "fit"
-     viaja en el data-fit de cada miniatura: una foto recortada respira dentro
-     del marco (contain + padding) y una con fondo propio va a sangre (cover). */
+     Cambian lo que muestra el marco. Una foto cambia el src del <img> y su
+     tratamiento (el "fit" viaja en data-fit: una recortada respira con
+     contain + padding, una con fondo propio va a sangre). Un video se clona
+     desde su <template> al slot del marco y la foto se esconde; entra con
+     preload="none" y solo su poster, y el archivo no baja hasta que la persona
+     le da play. Cada video se clona UNA vez, así regresar a él no lo vuelve a
+     bajar; al cambiar de miniatura se pausa (o se desmonta, si es un embed). */
   function setupThumbs(root) {
+    var frame = root.querySelector('.pdframe');
     var main = root.querySelector('[data-pd-main]');
+    var slot = root.querySelector('[data-pd-media-slot]');
     var thumbs = root.querySelectorAll('[data-pd-thumb]');
-    if (!main || !thumbs.length) return;
+    if (!frame || !main || !thumbs.length) return;
 
-    thumbs.forEach(function (thumb) {
-      thumb.addEventListener('click', function () {
-        thumbs.forEach(function (t) {
-          t.classList.remove('is-active');
-          t.setAttribute('aria-pressed', 'false');
-        });
-        thumb.classList.add('is-active');
-        thumb.setAttribute('aria-pressed', 'true');
-
-        main.src = thumb.getAttribute('data-full');
-        main.alt = thumb.getAttribute('data-full-alt') || main.alt;
-        main.classList.toggle('is-cover', thumb.getAttribute('data-fit') === 'cover');
+    function stopVideos() {
+      if (!slot) return;
+      slot.querySelectorAll('.pdvideo').forEach(function (fig) {
+        var video = fig.querySelector('video');
+        if (video) video.pause();
+        // Un embed externo no se pausa desde afuera: se saca y vuelve al poster.
+        var iframe = fig.querySelector('iframe');
+        if (iframe) {
+          iframe.remove();
+          var poster = fig.querySelector('.pdvideo__poster');
+          if (poster) poster.hidden = false;
+        }
+        fig.classList.remove('is-playing');
       });
+    }
+
+    function showImage(thumb) {
+      stopVideos();
+      if (slot) slot.hidden = true;
+      main.hidden = false;
+      main.src = thumb.getAttribute('data-full');
+      main.alt = thumb.getAttribute('data-full-alt') || main.alt;
+      main.classList.toggle('is-cover', thumb.getAttribute('data-fit') === 'cover');
+      frame.classList.remove('is-video');
+      frame.style.removeProperty('--pd-frame-ar');
+    }
+
+    function showVideo(thumb) {
+      if (!slot) return;
+      var id = thumb.getAttribute('data-media');
+      var fig = slot.querySelector('.pdvideo[data-media-id="' + id + '"]');
+      if (!fig) {
+        var tpl = root.querySelector('template[data-pd-media="' + id + '"]');
+        if (!tpl || !tpl.content.firstElementChild) return;
+        fig = tpl.content.firstElementChild.cloneNode(true);
+        wireVideo(fig);
+        slot.appendChild(fig);
+        // Chrome no pide el poster de un <video> que nació dentro de un
+        // <template> (lo "cargó" en el documento inerte, donde no hay red) y
+        // al insertarlo no lo reintenta: se ve crema en lugar del poster.
+        // Volver a poner el atributo ya en el DOM dispara la carga real.
+        var video = fig.querySelector('video');
+        if (video && video.getAttribute('poster')) {
+          var poster = video.getAttribute('poster');
+          video.removeAttribute('poster');
+          video.setAttribute('poster', poster);
+        }
+      }
+      stopVideos();
+      slot.querySelectorAll('.pdvideo').forEach(function (f) { f.hidden = f !== fig; });
+      slot.hidden = false;
+      main.hidden = true;
+      frame.classList.add('is-video');
+      // En móvil el marco toma la proporción del video (vertical incluido).
+      frame.style.setProperty('--pd-frame-ar', thumb.getAttribute('data-ar') || '1');
+    }
+
+    /* El botón de play es el único disparador de la descarga. Con un <video>
+       nativo enciende los controles y reproduce; con un embed crea el iframe
+       en ese momento. Nunca hay autoplay: el clic es el gesto del usuario. */
+    function wireVideo(fig) {
+      var play = fig.querySelector('[data-pd-play]');
+      var video = fig.querySelector('video');
+      var embed = fig.getAttribute('data-embed');
+      if (!play) return;
+
+      play.addEventListener('click', function () {
+        fig.classList.add('is-playing');
+        if (video) {
+          video.controls = true;
+          var p = video.play();
+          if (p && p.catch) p.catch(function () { fig.classList.remove('is-playing'); });
+        } else if (embed && !fig.querySelector('iframe')) {
+          var iframe = document.createElement('iframe');
+          iframe.src = embed;
+          iframe.className = 'pdvideo__embed';
+          iframe.title = play.getAttribute('aria-label') || '';
+          iframe.allow = 'autoplay; fullscreen; picture-in-picture';
+          iframe.setAttribute('allowfullscreen', '');
+          var poster = fig.querySelector('.pdvideo__poster');
+          if (poster) poster.hidden = true;
+          fig.insertBefore(iframe, play);
+        }
+      });
+      if (video) {
+        video.addEventListener('ended', function () { fig.classList.remove('is-playing'); });
+      }
+    }
+
+    /* Una sola ruta para cambiar de pieza: la usan las miniaturas, las flechas
+       y el teclado. Mantiene el contador y deja la miniatura activa a la vista
+       en la tira (en móvil se desplaza). */
+    var list = Array.prototype.slice.call(thumbs);
+    var countCur = root.querySelector('[data-pd-count-cur]');
+    var countTotal = root.querySelector('[data-pd-count-total]');
+    if (countTotal) countTotal.textContent = String(list.length);
+
+    function current() {
+      var i = list.findIndex(function (t) { return t.classList.contains('is-active'); });
+      return i < 0 ? 0 : i;
+    }
+
+    function select(index, viaNav) {
+      var i = (index + list.length) % list.length;
+      var thumb = list[i];
+      list.forEach(function (t) {
+        t.classList.remove('is-active');
+        t.setAttribute('aria-pressed', 'false');
+      });
+      thumb.classList.add('is-active');
+      thumb.setAttribute('aria-pressed', 'true');
+      if (countCur) countCur.textContent = String(i + 1);
+      if (viaNav && thumb.scrollIntoView) {
+        thumb.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+      if (thumb.getAttribute('data-kind') === 'video') showVideo(thumb);
+      else showImage(thumb);
+    }
+
+    list.forEach(function (thumb, i) {
+      thumb.addEventListener('click', function () { select(i, false); });
     });
+
+    var prev = root.querySelector('[data-pd-prev]');
+    var next = root.querySelector('[data-pd-next]');
+    if (prev) prev.addEventListener('click', function () { select(current() - 1, true); });
+    if (next) next.addEventListener('click', function () { select(current() + 1, true); });
+
+    // Flechas del teclado mientras el foco está en la galería (miniaturas o
+    // botones). Arriba/izquierda = anterior; abajo/derecha = siguiente.
+    var gal = root.querySelector('.pdgal');
+    if (gal) {
+      gal.addEventListener('keydown', function (e) {
+        if (e.target.tagName === 'VIDEO' || e.target.tagName === 'IFRAME') return;
+        if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); select(current() - 1, true); }
+        else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); select(current() + 1, true); }
+      });
+    }
   }
 
   /* --- Selectores ---------------------------------------------------------

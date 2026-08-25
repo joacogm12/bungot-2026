@@ -146,6 +146,73 @@
   height: 100%;
   object-fit: cover;
 }
+/* Miniatura de video: el poster con un badge de play encima, para que se
+   distinga de una foto antes de tocarla. */
+.pdthumb--video { position: relative; }
+.pdthumb__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.pdthumb__play svg {
+  width: 30px;
+  height: 30px;
+  padding: 7px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--pd-green);
+  color: var(--pd-crema);
+}
+
+/* Navegación a la derecha del marco: flecha arriba, "n de total", flecha
+   abajo. Vertical como la tira de miniaturas; centrada contra el marco por
+   el align-items de .pdgal. Todo (flechas y contador) va en crema y solo
+   contorno, sin relleno, para no competir con la foto. */
+.pdnav {
+  --pd-nav-ink: var(--pd-crema);
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.pdnav__btn {
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 3px solid var(--pd-nav-ink);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--pd-nav-ink);
+  cursor: pointer;
+  transition: transform .18s ease, background-color .18s ease;
+}
+.pdnav__btn:hover { transform: scale(1.08); background: color-mix(in srgb, var(--pd-nav-ink) 14%, transparent); }
+.pdnav__btn:focus-visible { outline: 3px solid var(--pd-nav-ink); outline-offset: 3px; }
+.pdnav__count {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: .04em;
+  color: var(--pd-nav-ink);
+  text-align: center;
+  white-space: nowrap;
+}
+.pdnav__sep { margin: 0 5px; opacity: .65; }
+/* " de " es solo para el lector de pantalla; a la vista va la diagonal. */
+.pdnav__of {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
 
 /* El marco: la foto NUNCA va suelta sobre el color. El marco crema le da piso
    tanto a la bolsa recortada como a una foto de estudio con su propio fondo. */
@@ -156,6 +223,7 @@
   flex: 1;
   max-width: 520px;
   height: var(--pd-frame-h);
+  position: relative;
   border: 3px solid var(--pd-green);
   border-radius: 32px;
   background: var(--pd-crema);
@@ -178,6 +246,60 @@
   object-fit: cover;
   padding: 0;
 }
+/* El display: block de arriba le ganaría al atributo hidden que pone el JS al
+   alternar foto <-> video: se vuelve a bajar a mano. */
+.pdframe__img[hidden],
+.pdframe__media[hidden],
+.pdvideo[hidden],
+.pdvideo__poster[hidden] { display: none; }
+
+/* --- Video en el marco ------------------------------------------------------
+   El video se contiene dentro del marco (contain, nunca cover): un video
+   vertical o panorámico deja franjas crema a los lados, el mismo piso que ya
+   le damos a las fotos. El play es un botón propio sobre el poster; los
+   controles nativos aparecen hasta que arranca. */
+.pdframe__media {
+  width: 100%;
+  height: 100%;
+}
+.pdvideo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: var(--pd-crema);
+}
+.pdvideo__el,
+.pdvideo__embed,
+.pdvideo__poster {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: 0;
+  background: var(--pd-crema);
+}
+.pdvideo__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 88px;
+  height: 88px;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border: 3px solid var(--pd-crema);
+  border-radius: 50%;
+  background: var(--pd-green);
+  color: var(--pd-crema);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+  cursor: pointer;
+  transition: transform .18s ease;
+}
+.pdvideo__play svg { margin-left: 4px; }
+.pdvideo__play:hover { transform: translate(-50%, -50%) scale(1.06); }
+.pdvideo.is-playing .pdvideo__play { display: none; }
 
 /* El lote se queda abajo a la izquierda del panel. z-index: 1 porque .pdgal,
    al ser sticky, se pinta por encima del contenido normal y lo taparía al
@@ -893,10 +1015,19 @@
   /* En una columna la galería ocupa todo el ancho, así que el color de arriba
      también. */
   .pdpage::before { width: 100%; }
+  /* minmax(0, 1fr) y no 1fr: 1fr es minmax(auto, 1fr) y el track crecía al
+     min-content de la columna de compra, que rebasa un teléfono; con eso toda
+     la PDP desbordaba a lo ancho. */
   .pdsplit {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     min-height: 0;
   }
+  .pdsplit__buy { min-width: 0; }
+  /* Las tres cifras con separadores de 30+30px no caben en un teléfono y
+     eran los únicos 21px que desbordaban el documento (con scroll-into-view
+     la página se corría). Separador más angosto y, si aun así no cabe, parte. */
+  .pdstats { flex-wrap: wrap; row-gap: 14px; }
+  .pdstat { padding-right: 16px; margin-right: 16px; }
   .pdsplit__media {
     flex-direction: column;
     align-items: stretch;
@@ -912,8 +1043,31 @@
   }
   /* Las miniaturas y el lote salen del absoluto: en una columna no hay esquinas
      que ocupar. */
-  .pdthumbs { flex-direction: row; order: 1; }
+  /* La tira va en fila y se DESPLAZA: seis miniaturas de 92px suman más que
+     cualquier pantalla y, sin esto, el grid tomaba su ancho mínimo y toda la
+     PDP desbordaba a lo ancho. min-width: 0 en el panel es lo que le quita al
+     grid el derecho a crecer con ella. */
+  .pdsplit__media { min-width: 0; }
+  .pdthumbs {
+    flex-direction: row;
+    order: 1;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .pdthumb { flex: none; width: 76px; height: 76px; border-radius: 16px; scroll-snap-align: start; }
   .pdframe { order: 2; max-width: none; height: auto; aspect-ratio: 1; }
+  /* Con un video activo el marco toma SU proporción (la pone el JS desde el
+     data-ar de la miniatura): uno vertical se ve completo en lugar de quedar
+     chiquito dentro del cuadrado. El tope evita que un 9:16 rebase la
+     pantalla; si lo alcanza, contain deja franjas crema a los lados. */
+  .pdframe.is-video { aspect-ratio: var(--pd-frame-ar, 1); max-height: 78svh; }
+  /* La navegación se acuesta bajo el marco: las flechas giran para apuntar a
+     los lados (la tira de miniaturas también quedó horizontal). */
+  .pdnav { order: 3; flex-direction: row; justify-content: center; gap: 20px; }
+  .pdnav__btn svg { transform: rotate(-90deg); }
   .pdsplit__lote { position: static; order: 3; }
   .pdbuy__title { font-size: clamp(2.75rem, 11vw, 4rem); }
   .pdops { padding: 40px var(--pd-pad) 44px; }

@@ -163,23 +163,73 @@
     <div class="pdsplit__media">
       <div class="pdgal">
         {%- comment -%}
-          Miniaturas solo con dos o más fotos reales: con una sola no hay nada
-          que elegir y la tira sobraría.
+          La tira sale de product.media (fotos Y videos), no de product.images:
+          así un video subido al producto es una miniatura más. El marco ARRANCA
+          siempre con una foto (bag = featured_image, que es imagen aunque el
+          video vaya primero en el admin): el LCP sigue siendo un <img> con
+          fetchpriority y el video no pesa nada hasta que alguien le da play.
+          Por eso la foto principal va primera en la tira y el resto en el orden
+          del admin, saltando esa misma foto para no repetirla. Los modelos 3D
+          no se pintan: el marco no los sabe mostrar. Con una sola pieza no hay
+          nada que elegir y la tira sobra.
         {%- endcomment -%}
-        {%- if product.images.size > 1 -%}
+        {%- liquid
+          assign gal_count = product.media.size
+          if section.settings.bag_image != blank
+            assign gal_count = gal_count | plus: 1
+          endif
+        -%}
+        {%- if gal_count > 1 -%}
         <div class="pdthumbs" role="group" aria-label="{{ 'sections.producto.thumbs' | t }}">
-          {%- for shot in product.images -%}
+          {%- if bag != blank -%}
             <button
               type="button"
-              class="pdthumb{% if forloop.first %} is-active{% endif %}"
+              class="pdthumb is-active"
               data-pd-thumb
-              data-full="{{ shot | image_url: width: 1200 }}"
-              data-full-alt="{{ shot.alt | default: title | escape }}"
+              data-kind="image"
+              data-full="{{ bag_src }}"
+              data-full-alt="{{ bag_alt | escape }}"
               data-fit="cover"
-              aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+              aria-pressed="true"
             >
-              <img src="{{ shot | image_url: width: 200 }}" alt="{{ shot.alt | default: title | escape }}" width="92" height="92" loading="lazy">
+              <img src="{{ bag | image_url: width: 200 }}" alt="{{ bag_alt | escape }}" width="92" height="92" loading="lazy">
             </button>
+          {%- endif -%}
+          {%- for media in product.media -%}
+            {%- if media.media_type == 'image' -%}
+              {%- if media.preview_image.src == bag.src -%}{%- continue -%}{%- endif -%}
+              <button
+                type="button"
+                class="pdthumb"
+                data-pd-thumb
+                data-kind="image"
+                data-full="{{ media | image_url: width: 1200 }}"
+                data-full-alt="{{ media.alt | default: title | escape }}"
+                data-fit="cover"
+                aria-pressed="false"
+              >
+                <img src="{{ media | image_url: width: 200 }}" alt="{{ media.alt | default: title | escape }}" width="92" height="92" loading="lazy">
+              </button>
+            {%- elsif media.media_type == 'video' or media.media_type == 'external_video' -%}
+              {%- comment -%}
+                La miniatura es el poster del video con un badge de play. El
+                data-ar le dice al marco qué proporción tomar en móvil: un video
+                vertical se ve entero, no recortado a cuadrado.
+              {%- endcomment -%}
+              <button
+                type="button"
+                class="pdthumb pdthumb--video"
+                data-pd-thumb
+                data-kind="video"
+                data-media="{{ media.id }}"
+                data-ar="{{ media.aspect_ratio | default: 1 }}"
+                aria-pressed="false"
+                aria-label="{{ 'sections.producto.video_thumb' | t }}"
+              >
+                <img src="{{ media.preview_image | image_url: width: 200 }}" alt="" width="92" height="92" loading="lazy">
+                <span class="pdthumb__play" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+              </button>
+            {%- endif -%}
           {%- endfor -%}
         </div>
         {%- endif -%}
@@ -194,7 +244,90 @@
             data-pd-main
             fetchpriority="high"
           >
+          {%- comment -%}
+            Acá aterriza el video elegido: producto.js clona el <template> del
+            video al slot y esconde la foto (setupThumbs). Vacío y oculto
+            mientras la persona no elija un video.
+          {%- endcomment -%}
+          <div class="pdframe__media" data-pd-media-slot hidden></div>
         </div>
+
+        {%- comment -%}
+          Navegación a la derecha del marco: anterior / "n de total" / siguiente.
+          Va vertical porque la tira de miniaturas también lo es; en móvil se
+          acuesta bajo el marco. El total lo corrige producto.js con las
+          miniaturas reales (gal_count es una aproximación de Liquid).
+        {%- endcomment -%}
+        {%- if gal_count > 1 -%}
+        <div class="pdnav" data-pd-nav>
+          <button type="button" class="pdnav__btn" data-pd-prev aria-label="{{ 'sections.producto.gal_prev' | t }}">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <p class="pdnav__count" aria-live="polite">
+            <span data-pd-count-cur>1</span><span class="pdnav__sep" aria-hidden="true">/</span><span class="pdnav__of">{{ 'sections.producto.gal_of' | t }}</span><span data-pd-count-total>{{ gal_count }}</span>
+          </p>
+          <button type="button" class="pdnav__btn" data-pd-next aria-label="{{ 'sections.producto.gal_next' | t }}">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        {%- endif -%}
+
+        {%- comment -%}
+          Un <template> por video. Lo que hay adentro NO carga nada al abrir la
+          página (ni el poster, ni el mp4, ni el embed): el navegador solo lo
+          parsea. Al elegir la miniatura se clona; el archivo baja hasta que se
+          da play (preload="none"), y nunca arranca solo ni con sonido.
+        {%- endcomment -%}
+        {%- for media in product.media -%}
+          {%- if media.media_type == 'video' -%}
+            <template data-pd-media="{{ media.id }}">
+              <figure class="pdvideo" data-media-id="{{ media.id }}">
+                <video
+                  class="pdvideo__el"
+                  preload="none"
+                  playsinline
+                  poster="{{ media.preview_image | image_url: width: 1200 }}"
+                  aria-label="{{ media.alt | default: title | escape }}"
+                >
+                  {%- comment -%}
+                    Liquid solo expone dos fuentes: el HLS (m3u8) y el mp4
+                    ORIGINAL (las versiones 480p/720p existen en el CDN pero no
+                    llegan a media.sources). Por eso el orden es el mismo que el
+                    del video_tag de Shopify: HLS primero, que en Safari/iOS es
+                    adaptativo y baja solo la calidad que cabe en la conexión;
+                    Chrome/Firefox lo ignoran y caen al mp4.
+                  {%- endcomment -%}
+                  {%- for s in media.sources -%}
+                    {%- if s.format == 'm3u8' -%}
+                      <source src="{{ s.url }}" type="{{ s.mime_type }}">
+                    {%- endif -%}
+                  {%- endfor -%}
+                  {%- for s in media.sources -%}
+                    {%- if s.format == 'mp4' -%}
+                      <source src="{{ s.url }}" type="{{ s.mime_type }}">
+                    {%- endif -%}
+                  {%- endfor -%}
+                </video>
+                <button type="button" class="pdvideo__play" data-pd-play aria-label="{{ 'sections.producto.video_play' | t }}">
+                  <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+                </button>
+              </figure>
+            </template>
+          {%- elsif media.media_type == 'external_video' -%}
+            {%- comment -%}
+              YouTube/Vimeo: el iframe se crea hasta el play (un embed carga
+              cientos de KB solo por existir). Antes, solo el poster.
+            {%- endcomment -%}
+            <template data-pd-media="{{ media.id }}">
+              <figure class="pdvideo" data-media-id="{{ media.id }}" data-embed="{{ media | external_video_url: autoplay: true, playsinline: true }}">
+                <img class="pdvideo__poster" src="{{ media.preview_image | image_url: width: 1200 }}" alt="{{ media.alt | default: title | escape }}" width="1200" height="1200">
+                <button type="button" class="pdvideo__play" data-pd-play aria-label="{{ 'sections.producto.video_play' | t }}">
+                  <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+                </button>
+              </figure>
+            </template>
+          {%- endif -%}
+        {%- endfor -%}
       </div>
 
       {%- if section.settings.lote != blank -%}
