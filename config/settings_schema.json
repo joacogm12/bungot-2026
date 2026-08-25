@@ -104,7 +104,7 @@
       { "type": "header", "content": "Juguetes" },
       { "type": "collection", "id": "fam_juguetes_collection", "label": "Colección", "info": "Tiene prioridad sobre el tipo de producto." },
       { "type": "text", "id": "fam_juguetes_type", "label": "Tipo de producto", "info": "Alternativa a la colección: product_type exacto (ej. huesos, Juguete). Si hay colección, se ignora." },
-      { "type": "color", "id": "fam_juguetes_bg", "label": "Color de la familia", "default": "#2F7FA8" },
+      { "type": "color", "id": "fam_juguetes_bg", "label": "Color de la familia", "default": "#2E5FA0" },
       { "type": "color", "id": "fam_juguetes_fg", "label": "Color de texto (banda)", "default": "#013C3E" }
     ]
   },

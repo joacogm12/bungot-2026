@@ -23,7 +23,7 @@
     "fam_femur_fg": "#f7f1e3",
     "fam_juguetes_collection": "",
     "fam_juguetes_type": "Juguete",
-    "fam_juguetes_bg": "#2f7fa8",
+    "fam_juguetes_bg": "#2E5FA0",
     "fam_juguetes_fg": "#013c3e"
   },
   "presets": {
@@ -47,7 +47,7 @@
       "fam_femur_fg": "#f7f1e3",
       "fam_juguetes_collection": "",
       "fam_juguetes_type": "Juguete",
-      "fam_juguetes_bg": "#2f7fa8",
+      "fam_juguetes_bg": "#2E5FA0",
       "fam_juguetes_fg": "#013c3e"
     }
   }

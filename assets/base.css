@@ -1012,9 +1012,10 @@ shopify-account::part(signed-out-avatar) {
 .fav__cta:active { transform: translateY(1px); box-shadow: 0 2px 0 rgba(22, 60, 105, 0.35); }
 
 /* --- Panel de texto grande (bloques "panel": la tarjeta de Juguetes) --- */
-/* Respaldo mientras carga la foto: el azul de la banda Juguetes del catálogo
-   (mismo #2F7FA8 que collection-bandas; no sale de las hojas pantone). */
-.fav--panel { background: #2F7FA8; }
+/* Respaldo mientras carga la foto: el azul de la familia Juguetes del catálogo
+   (mismo #2E5FA0 del ajuste fam_juguetes_bg, el azul de bloque del bonche y la
+   despedida; lo pide la marca aparte de los pantones). */
+.fav--panel { background: #2E5FA0; }
 /* A diferencia de .fav--copy (caja chica + ::after aparte), acá el bloque ES el
    degradado: marino 654 pleno abajo que se apaga hacia arriba, y adentro van
    chip, título, párrafo y botón. Presenta una familia entera, así que pesa más
@@ -2479,50 +2480,88 @@ a.chip { text-decoration: none; }
   background: #FFFCF5;
   border: 2px solid rgba(1, 60, 62, .12);
   border-radius: 26px;
-  overflow: hidden;
+  position: relative;
+  /* visible y no hidden: el .card genérico de arriba pone overflow:hidden y
+     recortaría la sombra del hover (::after). Las esquinas las redondean
+     media y body por su cuenta. */
+  overflow: visible;
   display: flex;
   flex-direction: column;
   scroll-snap-align: start;
   text-decoration: none;
   /* Sombra y hover propios: si no, se cuela el .card:hover de más arriba (lift
-     de -6px + sombra azul dura) pensado para la otra tarjeta del tema. */
+     de -6px + sombra azul dura) pensado para la otra tarjeta del tema.
+
+     RENDIMIENTO del hover (se trababa mientras la página cargaba): el levantón
+     solo anima transform, y la tarjeta se promueve a su propia capa con
+     will-change para que ese transform corra en el compositor sin repintar
+     nada. Antes se animaba también box-shadow, y cada frame de la transición
+     repintaba la tarjeta entera — incluida la foto con su drop-shadow, que es
+     un blur caro — justo cuando el hilo principal está ocupado decodificando
+     las demás imágenes. La sombra grande del hover vive en el ::after de abajo
+     y solo cambia de opacidad, que también es del compositor. */
   box-shadow: 0 10px 24px rgba(1, 60, 62, .14);
-  transition: transform .2s ease, box-shadow .2s ease;
+  transition: transform .2s ease;
+  will-change: transform;
 }
-.cardset .card:hover {
-  transform: translateY(-6px);
+/* Sombra del hover: capa aparte que solo funde su opacidad. Va en el border
+   box (inset -2px = el borde) para que nazca del mismo contorno que la sombra
+   de reposo. Con z-index negativo queda debajo de media y body. */
+.cardset .card::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
   box-shadow: 0 18px 34px rgba(1, 60, 62, .20);
+  opacity: 0;
+  transition: opacity .2s ease;
+  pointer-events: none;
+  z-index: -1;
 }
+.cardset .card:hover { transform: translateY(-6px); }
+.cardset .card:hover::after { opacity: 1; }
 .cardset .card__media {
   height: 320px;
-  padding: 24px;
+  padding: 0;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Blanco fijo, sin color: la foto del producto manda arriba y el color de la
-     familia se va al pie (.card__body). Así el snack no compite con un fondo
-     saturado y todas las tarjetas se ven parejas. */
+  /* Blanco de respaldo mientras carga la foto (y detrás del placeholder): la
+     foto va a sangre y lo llena todo; el color de la familia vive en el pie
+     (.card__body), así el snack no compite con un fondo saturado. */
   background: var(--white, #FFFFFF);
+  /* La tarjeta ya no lleva overflow:hidden (ver arriba: la sombra del hover
+     vive en un ::after que saldría recortado), así que media y body redondean
+     sus propias esquinas: 24px = los 26px del borde menos los 2px de grosor.
+     La media sí recorta (overflow) para que la foto a sangre respete las
+     esquinas redondas. */
+  border-radius: 24px 24px 0 0;
+  overflow: hidden;
   text-decoration: none; /* la media puede ser un <a> al producto */
 }
 /* El título linkea al producto sin verse como link. */
 .cardset .card__title-link { text-decoration: none; color: inherit; display: block; }
 /* El form de "Agregar" no debe romper el layout del pie. */
 .cardset .card__addform { margin: 0; display: contents; }
-.cardset .card__media img,
-.cardset .card__media svg {
-  max-height: 100%;
-  max-width: 74%;
-  object-fit: contain;
-  filter: drop-shadow(0 14px 22px rgba(1, 60, 62, .32));
+/* La foto llena el área completa (a sangre): las fotos de producto ya traen su
+   propio fondo blanco de estudio, así que se recortan con cover en lugar de
+   flotar como packshot con padding. Sin drop-shadow: sobre una foto a sangre
+   no hay silueta que sombrear. */
+.cardset .card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 /* Recuadro de respaldo cuando el producto no trae foto (placeholder_svg_tag).
-   Ahora vive sobre blanco, así que sus líneas y su texto van en tinta y no en
-   crema: sobre blanco la crema desaparece. */
+   Vive sobre blanco, así que sus líneas y su texto van en tinta y no en
+   crema: sobre blanco la crema desaparece. Es lo único que conserva margen. */
 .cardset .card__ph {
   width: 74%;
-  height: 100%;
+  height: calc(100% - 48px);
+  margin: 24px 0;
   border: 2px dashed rgba(1, 60, 62, .22);
   border-radius: 18px;
   fill: rgba(1, 60, 62, .5);
@@ -2540,6 +2579,7 @@ a.chip { text-decoration: none; }
   flex: 1;
   background: var(--banda-bg, var(--card-media));
   color: #FFFFFF;
+  border-radius: 0 0 24px 24px;
 }
 /* CONTRASTE (es el motivo, no capricho): blanco chico sobre los corales
    saturados de las familias da ~3:1 y no llega a AA. Por eso el eyebrow no va
@@ -2604,6 +2644,7 @@ a.chip { text-decoration: none; }
 .cardset .card__add:active { transform: translateY(3px); }
 
 @media (prefers-reduced-motion: reduce) {
-  .cardset .card { transition: none; }
+  .cardset .card { transition: none; will-change: auto; }
+  .cardset .card::after { transition: none; }
   .cardset .card:hover { transform: none; }
 }

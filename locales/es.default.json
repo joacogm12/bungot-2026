@@ -63,9 +63,6 @@
     "producto": {
       "thumbs": "Fotos del producto",
       "shot_bag": "Bolsa del producto",
-      "shot_treat": "El premio fuera de la bolsa",
-      "shot_dog": "Un perro comiéndose el premio",
-      "shot_prod": "El premio en producción",
       "qty_less": "Quitar uno",
       "qty_more": "Agregar uno",
       "added": "¡Va en el carrito!",

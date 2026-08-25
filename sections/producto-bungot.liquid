@@ -103,26 +103,27 @@
   assign stat3_label = section.settings.stat3_label
 
   # --- Galería ---
-  # Assets de respaldo en el orden del diseño: bolsa, premio suelto, perro
-  # comiendo, producción. El "fit" va declarado por foto porque el marco crema
-  # trata distinto una imagen recortada (contain + padding) que una con fondo
-  # propio (cover a sangre).
-  assign fallback_shots = 'bungot-pulmon.webp,bungot-premio.webp,bungot-equipo-perro.webp,bungot-equipo-producto.webp' | split: ','
-  assign fallback_fits = 'contain,contain,cover,cover' | split: ','
-  assign shot_keys = 'bag,treat,dog,prod' | split: ','
+  # Solo las fotos que el producto trae en Shopify, a sangre (cover): las fotos
+  # de estudio ya vienen con su propio fondo, así que llenan el marco completo
+  # en lugar de flotar con padding. Ya NO se rellena con assets del tema hasta
+  # completar cuatro miniaturas (antes se colaban fotos que no estaban en el
+  # producto, como la del equipo). El único respaldo es la bolsa del tema, y
+  # solo cuando el producto no tiene ninguna foto (preview del customizer); esa
+  # sí es un recorte y respira dentro del marco (contain).
+  assign fallback_shot = 'bungot-pulmon.webp'
 
-  # Foto grande de arranque: la del producto, o el primer asset de respaldo.
+  # Foto grande de arranque: la del producto, o la bolsa de respaldo.
   # El src queda resuelto por Liquid en el HTML — nada de plantillas que el
   # navegador tenga que pedir sin resolver.
   assign bag = section.settings.bag_image | default: product.featured_image
   if bag != blank
     assign bag_src = bag | image_url: width: 1200
     assign bag_alt = bag.alt | default: title
-    assign bag_fit = 'contain'
+    assign bag_fit = 'cover'
   else
-    assign bag_src = fallback_shots[0] | asset_url
+    assign bag_src = fallback_shot | asset_url
     assign bag_alt = 'sections.producto.shot_bag' | t
-    assign bag_fit = fallback_fits[0]
+    assign bag_fit = 'contain'
   endif
 
   # --- Selectores ---
@@ -161,39 +162,27 @@
     {%- endcomment -%}
     <div class="pdsplit__media">
       <div class="pdgal">
+        {%- comment -%}
+          Miniaturas solo con dos o más fotos reales: con una sola no hay nada
+          que elegir y la tira sobraría.
+        {%- endcomment -%}
+        {%- if product.images.size > 1 -%}
         <div class="pdthumbs" role="group" aria-label="{{ 'sections.producto.thumbs' | t }}">
-          {%- for key in shot_keys -%}
-            {%- liquid
-              assign shot = product.images[forloop.index0]
-              if shot != blank
-                assign thumb_src = shot | image_url: width: 200
-                assign full_src = shot | image_url: width: 1200
-                assign shot_alt = shot.alt | default: title
-                # De una foto de la tienda no se sabe si viene recortada, así que
-                # contain: peor un margen de más que recortarle la cabeza al perro.
-                assign shot_fit = 'contain'
-              else
-                assign asset_name = fallback_shots[forloop.index0]
-                assign thumb_src = asset_name | asset_url
-                assign full_src = asset_name | asset_url
-                assign alt_key = 'sections.producto.shot_' | append: key
-                assign shot_alt = alt_key | t
-                assign shot_fit = fallback_fits[forloop.index0]
-              endif
-            -%}
+          {%- for shot in product.images -%}
             <button
               type="button"
               class="pdthumb{% if forloop.first %} is-active{% endif %}"
               data-pd-thumb
-              data-full="{{ full_src }}"
-              data-full-alt="{{ shot_alt | escape }}"
-              data-fit="{{ shot_fit }}"
+              data-full="{{ shot | image_url: width: 1200 }}"
+              data-full-alt="{{ shot.alt | default: title | escape }}"
+              data-fit="cover"
               aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
             >
-              <img src="{{ thumb_src }}" alt="{{ shot_alt | escape }}" width="92" height="92" loading="lazy">
+              <img src="{{ shot | image_url: width: 200 }}" alt="{{ shot.alt | default: title | escape }}" width="92" height="92" loading="lazy">
             </button>
           {%- endfor -%}
         </div>
+        {%- endif -%}
 
         <div class="pdframe">
           <img

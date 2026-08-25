@@ -162,8 +162,10 @@
   overflow: hidden;
   box-sizing: border-box;
 }
-/* Dos tratamientos: recortada respira dentro del marco; con fondo propio va a
-   sangre. El JS mueve is-cover al cambiar de miniatura. */
+/* Dos tratamientos: las fotos del producto (Shopify) van a sangre (is-cover);
+   contain + padding queda solo para la bolsa recortada de respaldo del tema,
+   cuando el producto no tiene fotos. El JS mueve is-cover al cambiar de
+   miniatura. */
 .pdframe__img {
   display: block;
   width: 100%;
