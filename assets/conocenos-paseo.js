@@ -215,6 +215,25 @@
     rollo.pista = root.querySelector('[data-rollo-pista]');
     if (!perro.atras || !perro.frente) return;
 
+    /* Teléfono y tablet vertical (≤900px): el recorrido no cabe — bajo el
+       `zoom` del lienzo el texto de las tarjetas queda a 5px — así que el
+       CSS lo re-maqueta en flujo (.paseo--movil) y aquí NO se arma nada: ni
+       cámara, ni anclas, ni arrastre del rollo (sin la clase paseo--js
+       aplica además el estado "sin JS": tarjetas visibles y tira abierta).
+       Si la ventana cruza el corte hacia escritorio se arma entonces, una
+       sola vez; de escritorio a móvil solo cambia la clase, y el CSS manda
+       con !important sobre lo que el JS ya escribió inline. */
+    var mq = window.matchMedia('(max-width: 900px)');
+    var armado = false;
+    function modoMovil() {
+      root.classList.toggle('paseo--movil', mq.matches);
+      if (!mq.matches && !armado) { armado = true; armar(); }
+    }
+    if (mq.addEventListener) mq.addEventListener('change', modoMovil);
+    modoMovil();
+  }
+
+  function armar() {
     root.classList.add('paseo--js');
     /* Gancho de depuración (solo lectura): dispatchEvent(new Event('paseo:debug'))
        sobre [data-paseo] deja el estado en data-paseo-debug. Va por evento y

@@ -547,3 +547,131 @@ img.pest,
 .paseo:not(.paseo--js) .paseo__dachs {
   display: none;
 }
+
+/* --- Móvil (≤900px): la historia en flujo, sin recorrido -----------------
+   El lienzo de 1582px escalado con zoom queda en miniatura en un teléfono
+   (zoom .25, texto de tarjeta a 5px), así que abajo de 900px el JS no arma el
+   paseo (pone .paseo--movil, ver conocenos-paseo.js) y aquí todo lo absoluto
+   pasa a flujo: una columna con cada estación (su dibujo y su tarjeta) en el
+   orden de lectura 3 → 1 → 5 → 2 → 4 y, al final, el rollo como tira negra
+   con scroll horizontal. Camino, perro, pelota, estela, plátano, agua, flash
+   y capas de animación se esconden: solo tienen sentido con el recorrido.
+   Los !important son para ganarle a lo que el JS escribe inline (zoom del
+   lienzo, alto de la ventana, transform de la escena y de la utilería,
+   left/top de las anclas, opacity de las tarjetas) cuando la ventana cruza
+   de escritorio a móvil sin recargar. */
+@media (max-width: 900px) {
+  .paseo--movil .paseo__lienzo { width: auto !important; zoom: 1 !important; }
+
+  .paseo--movil .paseo__intro { max-width: none; padding: 48px 24px 0; }
+  .paseo--movil .paseo__titulo { font-size: clamp(56px, 16vw, 128px); }
+  .paseo--movil .paseo__bajada { font-size: 18px; margin-top: 10px; }
+
+  .paseo--movil .paseo__riel { height: auto !important; margin-top: 20px; }
+  .paseo--movil .paseo__ventana { position: static; height: auto !important; overflow: visible; }
+  .paseo--movil .paseo__escena {
+    position: relative;
+    height: auto;
+    transform: none !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    padding: 0 24px 56px;
+  }
+  .paseo--movil .paseo__escena img { max-width: 100%; }
+
+  .paseo--movil .paseo__camino,
+  .paseo--movil .paseo__dachs,
+  .paseo--movil .pest--pelota,
+  .paseo--movil .pest--estela,
+  .paseo--movil .pest--platano,
+  .paseo--movil .pest--agua,
+  .paseo--movil .pest--flash,
+  .paseo--movil .pest__burbujas,
+  .paseo--movil .pest__humo { display: none; }
+
+  /* Todo lo que el JS posiciona o anima, a flujo y quieto. */
+  .paseo--movil .pest,
+  .paseo--movil .ptar,
+  .paseo--movil .prollo {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    margin: 0;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  /* Los grupos con hijos absolutos (bote + tapa, mesa + humo) conservan su
+     caja: relative y su tamaño de diseño; la mesa de 620px se encoge con
+     zoom para caber en el ancho. */
+  .paseo--movil .pest--bote { position: relative !important; }
+  /* La mesa: su caja de diseño es cuadrada (620) y el dibujo va abajo con
+     `contain`, así que a 480 de alto se recorta el aire de arriba sin mover
+     el dibujo. */
+  .paseo--movil .pest--pruebas { position: relative !important; height: 480px; zoom: .55; }
+  .paseo--movil .pest--casa { width: min(560px, 82vw); }
+  .paseo--movil .pest--hidrante { width: min(421px, 62vw); transform: scaleX(-1) !important; }
+  .paseo--movil .pest--camara { width: min(486px, 66vw); }
+
+  /* Orden de lectura: dibujo → tarjeta de cada estación → rollo. */
+  .paseo--movil .pest--casa     { order: 1; }
+  .paseo--movil .ptar--3        { order: 2; }
+  .paseo--movil .pest--bote     { order: 3; }
+  .paseo--movil .ptar--1        { order: 4; }
+  .paseo--movil .pest--pruebas  { order: 5; }
+  .paseo--movil .ptar--5        { order: 6; }
+  .paseo--movil .pest--hidrante { order: 7; }
+  .paseo--movil .ptar--2        { order: 8; }
+  .paseo--movil .pest--camara   { order: 9; }
+  .paseo--movil .ptar--4        { order: 10; }
+  .paseo--movil .prollo         { order: 11; }
+
+  .paseo--movil .ptar { width: min(560px, 100%); margin: 0 0 20px; }
+  .paseo--movil .ptar__titulo { font-size: clamp(38px, 11vw, 68px); }
+  .paseo--movil .ptar__foto { height: auto; aspect-ratio: 560 / 360; }
+  .paseo--movil .ptar__texto { font-size: 17px; }
+
+  /* El rollo: el bote quieto arriba y la tira como franja negra que se
+     desplaza a mano (scroll nativo, no el arrastre del JS). Sin máscara ni
+     dibujo de perforaciones: a este ancho la lengüeta y el bote a 2.05×
+     no caben. Las copias duplicadas del carrusel (aria-hidden) sobran. */
+  .paseo--movil .prollo {
+    width: 100%;
+    height: auto;
+    display: grid;
+    justify-items: start;
+    gap: 12px;
+  }
+  .paseo--movil .prollo__bote { position: static; width: 120px; }
+  .paseo--movil .prollo__salida {
+    position: static;
+    width: calc(100% + 48px);
+    height: auto;
+    margin: 0 -24px;
+    padding: 0 24px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+  .paseo--movil .prollo__salida::-webkit-scrollbar { display: none; }
+  .paseo--movil .prollo__tira {
+    position: static;
+    width: max-content;
+    height: auto;
+    padding: 28px 12px 26px;
+    border-radius: 6px;
+    background: #141414;
+    -webkit-mask: none;
+    mask: none;
+    overflow: visible;
+    transform: none !important;
+  }
+  .paseo--movil .prollo__pista {
+    position: static;
+    transform: none !important;
+    cursor: default;
+    touch-action: auto;
+  }
+  .paseo--movil .prollo__foto[aria-hidden="true"] { display: none; }
+}

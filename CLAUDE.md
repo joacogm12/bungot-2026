@@ -83,7 +83,7 @@ Las páginas grandes NO usan las secciones `main-*` genéricas: cada una es **un
 | PDP | `product.json`, `product.juguete.json` | `producto-bungot` (split fijo 50/50, cinturón, cruzada) | producto.css/js | `.pdpage` |
 | Carrito | `cart.json` | `cart-recibo` (recibo de papel, sugeridos, /cart/change.js) | carrito.css/js | `.rcpage` |
 | Contacto | `page.contacto.json` | `contacto` | contacto.css/js | `.ctpage` |
-| Conócenos | `page.conocenos.json` | `conocenos-paseo` (el paseo del salchicha: lienzo fijo 1582×5650 escalado con `zoom`, riel de 17000px + ventana sticky + escena que mueve JS; tres fases de scroll `FASE_*` — perro, remate del rollo, carrusel por scroll —; posiciones fijas en el CSS, anclajes al camino en el JS) | conocenos-paseo.css/js | `.paseo` |
+| Conócenos | `page.conocenos.json` | `conocenos-paseo` (el paseo del salchicha: lienzo fijo 1582×5650 escalado con `zoom`, riel de 17000px + ventana sticky + escena que mueve JS; tres fases de scroll `FASE_*` — perro, remate del rollo, carrusel por scroll —; posiciones fijas en el CSS, anclajes al camino en el JS; **abajo de 900px el JS no arma el recorrido** y el CSS lo re-maqueta en flujo bajo `.paseo--movil`: dibujo + tarjeta por estación en orden de lectura y el rollo como tira con scroll horizontal) | conocenos-paseo.css/js | `.paseo` |
 | Cuenta | `page.mi-perro/mis-pedidos/mis-direcciones/crear-cuenta.json` | `cuenta-perro`, `cuenta-pedidos`, `cuenta-direcciones`, `cuenta-registro`, `cuenta-login` | cuenta.css/js (**los carga el header** en todas las páginas) | `.cpage` |
 
 - De las secciones `main-*` genéricas solo quedan `main-page`, `main-search` y `main-404` (las usan `page.json`, `search.json` y `404.json`). `main-collection`, `main-product`, `main-cart`, `product-grid` y las secciones de landing que ya no se montaban (`announcement-marquee`, `benefits`, `cta-closer`, `newsletter`, `product-carousel`, `testimonials`, `wave`, `word-marquee`) se borraron junto con su CSS/JS. Antes de borrar cualquier otra, `grep` en `templates/`, `sections/*-group.json` y `config/settings_data.json`.
@@ -185,6 +185,7 @@ Datos de contacto sin hardcodear: WhatsApp del ajuste `whatsapp_numero`, Instagr
 - Respeta `prefers-reduced-motion` (ya se hace en el preloader y animaciones). Toda animación nueva debe tener su fallback.
 - Imágenes con `alt`, `width`/`height`, `loading="lazy"` y `srcset` responsivo (ver `product-card.liquid` como patrón).
 - Mantén el `skip-link` y los roles/landmarks del layout.
+- **Responsive:** cada página custom lleva sus media queries en su propia hoja (`productos.css`, `producto.css`, `conocenos-paseo.css`…) y las secciones de la landing en `base.css`; cortes usados: 900 (tablet/teléfono), 640 (teléfono) y algún 760/820 puntual. Verifica a 390×844 y 768×1024 con el skill `browser-automation` (viewport con `page.setViewportSize`) midiendo `scrollWidth` y capturando; ojo con las capturas *full page*: en secciones movidas por scroll (Favoritos, bonche, paseo) solo valen las capturas a viewport en varios puntos del scroll.
 - Ojo con `transform` en ancestros de un `position: sticky` (lo rompe) — conocenos-paseo.css lo documenta: el lienzo del paseo se escala con `zoom`, nunca con `transform: scale()`.
 
 ### Estilo de código
