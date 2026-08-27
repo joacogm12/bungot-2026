@@ -26,6 +26,20 @@
         "id": "pup_illustration",
         "label": "Ilustración del perrito (tarjetas)",
         "info": "Se muestra en cada tarjeta de producto. Si está vacío se usa el perrito SVG que viene con el tema."
+      },
+      {
+        "type": "checkbox",
+        "id": "pantalla_carga",
+        "label": "Pantalla de carga (repartidor en bici)",
+        "default": true,
+        "info": "Crema con el repartidor pedaleando mientras carga la página. Sale en la primera página de la sesión, en las plantillas de abajo y cuando una navegación interna tarda más de un tercio de segundo; se va sola al cargar (mínimo 1 s, máximo 3 s)."
+      },
+      {
+        "type": "text",
+        "id": "pantalla_carga_plantillas",
+        "label": "Plantillas donde siempre sale",
+        "default": "conocenos",
+        "info": "Separadas por coma. Vale el sufijo de la plantilla (conocenos, contacto), el nombre completo (page.conocenos) o el tipo (product, collection)."
       }
     ]
   },

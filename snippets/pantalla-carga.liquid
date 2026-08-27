@@ -1,0 +1,106 @@
+{%- comment -%}
+  Pantalla de carga mínima: crema de la marca y el repartidor pedaleando al
+  centro. Nada más. La renderiza layout/theme.liquid justo después del
+  skip-link, solo si el ajuste global `pantalla_carga` está activo.
+
+  El video (bungot-carga.mp4, loop de 2 cuadros a 2048) trae el fondo negro
+  horneado: pantalla-carga.js lo recorta cuadro por cuadro en el canvas, que
+  es lo único que se ve. Con prefers-reduced-motion se muestra el primer
+  cuadro fijo (bungot-repartidor-estatico.png, con transparencia).
+
+  Cuándo se ve — lo decide el script inline ANTES del primer pintado, para que
+  no haya flash de contenido ni de cortina en las páginas rápidas:
+  · sesion     — primera página de la sesión: siempre.
+  · pesada     — la plantilla está en el ajuste `pantalla_carga_plantillas`
+                 (Conócenos por default): siempre, aunque ya se haya visto.
+  · transicion — venimos de un clic interno que tardó más de 450 ms en traer
+                 esta página (pantalla-carga.js ya la mostró sobre la página
+                 anterior y guardó la hora del clic en sessionStorage): sigue
+                 puesta hasta que esta página cargue, para que no parpadee.
+  · oculta     — todo lo demás.
+  El resto de la lógica (mínimos, topes, gancho de los clics) va en
+  pantalla-carga.js. Todo es decorativo: role="presentation" y aria-hidden.
+{%- endcomment -%}
+
+{%- liquid
+  assign plantilla = template.name
+  if template.suffix != blank
+    assign plantilla = template.name | append: '.' | append: template.suffix
+  endif
+  assign pesada = false
+  assign lista = settings.pantalla_carga_plantillas | downcase | split: ','
+  for item in lista
+    assign clave = item | strip
+    if clave == blank
+      continue
+    endif
+    if clave == plantilla or clave == template.suffix or clave == template.name
+      assign pesada = true
+    endif
+  endfor
+-%}
+
+{{ 'pantalla-carga.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Sin JS no hay quién la quite: la cortina taparía la tienda para siempre.
+{%- endcomment -%}
+<noscript>
+  <style>.carga { display: none; }</style>
+</noscript>
+
+<div class="carga" data-carga data-carga-pesada="{{ pesada }}" role="presentation">
+  {%- comment -%}
+    El src lo pone el script inline solo cuando la cortina se va a ver: así
+    las páginas donde va oculta no piden el mp4 (y sin `autoplay` en el
+    markup el navegador tampoco lo descarga por su cuenta; lo arranca el JS).
+  {%- endcomment -%}
+  <video
+    class="carga__video"
+    data-carga-video
+    data-src="{{ 'bungot-carga.mp4' | asset_url }}"
+    muted
+    loop
+    playsinline
+    preload="auto"
+    aria-hidden="true"
+    tabindex="-1"
+  ></video>
+  <canvas class="carga__canvas" data-carga-canvas width="620" height="620" aria-hidden="true"></canvas>
+  <img
+    class="carga__estatico"
+    src="{{ 'bungot-repartidor-estatico.png' | asset_url }}"
+    alt=""
+    aria-hidden="true"
+    width="2048"
+    height="2048"
+    decoding="async"
+  >
+</div>
+<script>
+  /* Decide el modo antes del primer pintado (ver comentario de arriba). */
+  (function () {
+    var el = document.currentScript.previousElementSibling;
+    var pesada = el.getAttribute('data-carga-pesada') === 'true';
+    var modo = pesada ? 'pesada' : 'oculta';
+    try {
+      var ss = window.sessionStorage;
+      var ida = Number(ss.getItem('bungot:carga:ida')) || 0;
+      ss.removeItem('bungot:carga:ida');
+      if (ss.getItem('bungot:carga') !== '1') {
+        modo = 'sesion';
+      } else if (!pesada && ida) {
+        var hace = Date.now() - ida;
+        if (hace > 450 && hace < 15000) modo = 'transicion'; // mismo número que ESPERA_IDA en pantalla-carga.js
+      }
+    } catch (e) { /* sin sessionStorage: solo las plantillas pesadas */ }
+    el.setAttribute('data-carga-modo', modo);
+    if (modo === 'oculta') {
+      el.hidden = true;
+    } else if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var v = el.querySelector('video');
+      if (v) v.src = v.getAttribute('data-src');
+    }
+  })();
+</script>
+<script src="{{ 'pantalla-carga.js' | asset_url }}" defer></script>

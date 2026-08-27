@@ -112,6 +112,9 @@
 
   <body class="template-{{ template.name | handle }}">
     <a class="skip-link" href="#main">{{ 'accessibility.skip_to_content' | t }}</a>
+    {%- if settings.pantalla_carga -%}
+      {%- render 'pantalla-carga' -%}
+    {%- endif -%}
 
     {% sections 'header-group' %}
 

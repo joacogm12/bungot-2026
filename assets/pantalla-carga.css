@@ -1,0 +1,80 @@
+/* ==========================================================================
+   BUNGOT 2026 — pantalla-carga.css
+
+   Pantalla de carga mínima: crema de la marca y, al centro, el repartidor
+   pedaleando. Sin texto, sin barra, sin logo. El <video> trae el fondo negro
+   horneado, así que se esconde fuera de pantalla y lo que se ve es el
+   <canvas> donde JS recorta el negro cuadro por cuadro. Detalles y por qués
+   en pantalla-carga.js.
+   ========================================================================== */
+
+.carga {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: #F7F1E3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+  transition: opacity .5s ease, visibility .5s;
+}
+
+/* Oculta (lo decide el script inline del snippet antes de que pinte, o el JS
+   cuando ya se fue). `display: flex` le ganaría al atributo hidden. */
+.carga[hidden] { display: none; }
+
+.carga--fuera {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Entrada suave: cuando la cortina se pone sobre una página ya pintada
+   (clic en un link cuya página siguiente tarda). Con fill `both` para que no
+   parpadee al arrancar; el JS quita la clase antes de salir porque la
+   animación le ganaría a la transición de opacidad. */
+.carga--suave {
+  animation: carga-entra .25s ease both;
+}
+
+@keyframes carga-entra {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* El video no se ve nunca: solo alimenta al canvas. Chiquito y fuera de
+   pantalla, no display:none — con display:none algunos navegadores no
+   decodifican cuadros. */
+.carga__video {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 64px;
+  height: 64px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Se dibuja a 620×620 internos (atributos) y se muestra a máximo 380px:
+   chiquito y nítido en pantallas densas. */
+.carga__canvas,
+.carga__estatico {
+  display: block;
+  width: min(46vh, 52vw, 380px);
+  height: min(46vh, 52vw, 380px);
+}
+
+/* Primer cuadro fijo, solo para prefers-reduced-motion. */
+.carga__estatico {
+  display: none;
+  object-fit: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carga__video,
+  .carga__canvas { display: none; }
+  .carga__estatico { display: block; }
+  .carga--suave { animation: none; }
+}
