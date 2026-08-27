@@ -868,6 +868,22 @@ shopify-account::part(signed-out-avatar) {
   .hero__redes { left: 20px; bottom: 18px; }
 }
 
+/* Teléfono vertical: la ventana mide 94vw y el hero 100svh, y entre el claim
+   de arriba y el perro quedaban ~400px de crema vacía. Aquí el hero deja de
+   medir la pantalla y toma su alto del contenido: arriba el aire que ocupa el
+   claim (dos líneas de 11.7vw a .93 estiradas 1.42 ≈ 31vw) y abajo la ventana,
+   que pasa a medir EXACTAMENTE lo que se ve del perro — la figura de 112vw
+   menos los 22svh que se hunden — para que el copete arranque en su borde y
+   no haya crema arriba de él. El tope de 78svh sigue para pantallas cortas. */
+@media (max-width: 900px) and (max-aspect-ratio: 5 / 6) {
+  .hero {
+    height: auto;
+    min-height: 0;
+    padding-top: calc(24px + 31vw);
+  }
+  .hero__ventana { height: min(78svh, calc(112vw - 22svh)); }
+}
+
 /* --------------------------------------------------------------------------
    Favoritos — tres fotos a sangre que se revelan una sobre otra
 
@@ -2164,6 +2180,30 @@ a.chip { text-decoration: none; }
   padding: 6px 10px;
   font: 600 12px/1.4 var(--font-body);
   cursor: pointer;
+}
+
+/* Teléfono: el reparto libre de las fotos (fx/fy del customizer, pensado
+   para un viewport ancho) las dejaba encima del titular y del párrafo. Aquí
+   se ignoran esos destinos y las diez van en dos filas de cinco: las cinco
+   primeras arriba y las otras cinco abajo, repartidas de borde a borde, con
+   el texto del centro ensanchado y libre en medio. Las vars van con !important
+   porque fx/fy llegan en el style inline de cada tarjeta y una regla normal
+   no les gana; el montón inicial y la apertura por scroll siguen iguales
+   porque solo cambian los destinos. La primera hija del pile es el texto,
+   por eso las tarjetas cuentan desde nth-child(2). */
+@media (max-width: 640px) {
+  .bonche__copy { width: min(33rem, 86vw); }
+  .bonche__card,
+  .bonche__card--chica {
+    --w: calc(min(20vw, 18svh / var(--ar)) * var(--z, 1));
+  }
+  .bonche__card:nth-child(-n+6) { --fy: -1 !important; }
+  .bonche__card:nth-child(n+7)  { --fy:  1 !important; }
+  .bonche__card:nth-child(5n+2) { --fx: -1 !important; }
+  .bonche__card:nth-child(5n+3) { --fx: -0.5 !important; }
+  .bonche__card:nth-child(5n+4) { --fx:  0 !important; }
+  .bonche__card:nth-child(5n+5) { --fx:  0.5 !important; }
+  .bonche__card:nth-child(5n+6) { --fx:  1 !important; }
 }
 
 /* --------------------------------------------------------------------------
