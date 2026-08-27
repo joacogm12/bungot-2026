@@ -1,7 +1,8 @@
 /* ==========================================================================
    BUNGOT 2026 — productos.css
    Página de productos "bandas por familia". Reproduce el artboard de diseño
-   (1440–1582px, solo desktop por ahora).
+   (1440–1582px); abajo de 900px se re-maqueta en una columna (ver el bloque
+   Responsive al final).
 
    Todo va scopeado bajo .pgal a propósito: base.css ya define .card, .marquee
    y .rail para el resto del tema, y no queremos que se pisen. Los valores son
@@ -255,4 +256,63 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
   .pgal .rail { scroll-behavior: auto; }
   .pgal .phead__frame--a,
   .pgal .phead__frame--b { animation: none; }
+}
+
+/* --- Responsive -----------------------------------------------------------
+   El artboard es de escritorio; abajo de 900px no hay espacio para dos
+   columnas (titular + perro, título de banda + párrafo + flechas), así que
+   todo se apila. Los 63px de margen del spec bajan a --pg-gutter para que la
+   fila de tarjetas asome la siguiente y no quede una sola centrada. */
+@media (max-width: 900px) {
+  .pgal { --pg-gutter: 24px; }
+
+  .pgal .phead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 56px var(--pg-gutter) 20px;
+  }
+  /* 16vw: "SHOPPING" (la línea más larga) entra en un renglón a 390px con Anton.
+     Tope en los 128px del spec, piso para que no se vuelva texto corriente. */
+  .pgal .phead__title { font-size: clamp(56px, 16vw, 128px); }
+
+  /* El perro del carrito deja de colgar en 0 de alto (en escritorio se encoge
+     antes que el título y aquí desaparecería): va como bloque normal debajo
+     del titular, pegado a la derecha, con el cuadro A en flujo y el B encima. */
+  .pgal .phead__art {
+    width: min(62vw, 340px);
+    height: auto;
+    align-self: flex-end;
+    margin: -6px 0 0;
+  }
+  /* Selector con `img` para ganarle a `.pgal .phead__art img` de arriba, que
+     si no deja los dos cuadros en absoluto y el contenedor sigue midiendo 0. */
+  .pgal .phead__art img { bottom: auto; top: 0; }
+  .pgal .phead__art img.phead__frame--a { position: static; }
+
+  .pgal .pfilters { padding: 4px var(--pg-gutter) 28px; }
+
+  .pgal .banda { padding: 40px 0 44px; }
+  .pgal .banda__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 0 var(--pg-gutter);
+  }
+  .pgal .banda__title { font-size: clamp(40px, 11vw, 62px); }
+  .pgal .banda__right {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .pgal .banda__text { font-size: 16px; max-width: 52ch; }
+  .pgal .parrow { width: 44px; height: 44px; font-size: 19px; }
+
+  .pgal .rail {
+    gap: 16px;
+    margin-top: 20px;
+    padding: 12px var(--pg-gutter) 22px;
+    scroll-padding-left: var(--pg-gutter);
+  }
 }

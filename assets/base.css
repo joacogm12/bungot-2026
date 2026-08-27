@@ -2504,6 +2504,16 @@ a.chip { text-decoration: none; }
   transition: transform .2s ease;
   will-change: transform;
 }
+/* En teléfono la tarjeta se ata al ancho de la pantalla (80vw) para que en el
+   riel asome un pedazo de la siguiente y se entienda que se desliza; con los
+   344px fijos a 390px cabía una sola y parecía lista vertical. */
+@media (max-width: 640px) {
+  .cardset .card {
+    flex-basis: min(344px, 80vw);
+    width: min(344px, 80vw);
+  }
+  .cardset .card__media { height: min(320px, 82vw); }
+}
 /* Sombra del hover: capa aparte que solo funde su opacidad. Va en el border
    box (inset -2px = el borde) para que nazca del mismo contorno que la sombra
    de reposo. Con z-index negativo queda debajo de media y body. */

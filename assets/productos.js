@@ -7,7 +7,14 @@
 (function () {
   'use strict';
 
-  var STEP = 368; // 344 de tarjeta + 24 de gap
+  /* Paso de las flechas = ancho real de una tarjeta + el gap del riel. Se mide
+     y no se fija (antes 344 + 24) porque en móvil la tarjeta y el gap se
+     achican por CSS y un paso fijo saltaba tarjeta y media. */
+  function paso(rail) {
+    var card = rail.querySelector('.card');
+    var gap = parseFloat(getComputedStyle(rail).columnGap) || 24;
+    return card ? card.getBoundingClientRect().width + gap : 368;
+  }
 
   function init() {
     var roots = document.querySelectorAll('[data-productos]');
@@ -80,10 +87,10 @@
     var arrows = banda.querySelector('[data-arrows]');
 
     if (prev) prev.addEventListener('click', function () {
-      rail.scrollBy({ left: -STEP, behavior: 'smooth' });
+      rail.scrollBy({ left: -paso(rail), behavior: 'smooth' });
     });
     if (next) next.addEventListener('click', function () {
-      rail.scrollBy({ left: STEP, behavior: 'smooth' });
+      rail.scrollBy({ left: paso(rail), behavior: 'smooth' });
     });
 
     // Ocultar las flechas cuando todo cabe en la fila (nada que desplazar).
