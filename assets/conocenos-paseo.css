@@ -455,7 +455,10 @@ img.pest,
   top: 0;
   width: 722px;
   height: 218px;
-  background: #141414 var(--tira-img) 0 0 / 100% 100% no-repeat;
+  /* Solo la imagen, sin color de relleno: el dibujo ya es negro sólido y un
+     background-color pinta la caja entera, y en posiciones subpíxel asoma
+     1px fuera de la máscara como una línea a lo largo del borde superior. */
+  background: var(--tira-img) 0 0 / 100% 100% no-repeat;
   -webkit-mask: var(--tira-img) 0 0 / 100% 100% no-repeat;
   mask: var(--tira-img) 0 0 / 100% 100% no-repeat;
   overflow: hidden;
