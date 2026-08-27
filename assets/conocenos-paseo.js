@@ -57,6 +57,11 @@
   var sucio = true;       // hay que repintar aunque el scroll no se mueva
   var rafId = 0;
   var arrastre = { offScroll: 0, offMano: 0, escala: 2.05, activo: false, x0: 0, off0: 0 }; // escala = la del .prollo en CSS
+  /* Dónde termina la última foto cuando la cinta está en reposo, en px de la
+     tira (722 de ancho): la parte recta del dibujo acaba en x≈607 y de ahí
+     arranca la curva de la lengüeta. Con 575 la foto se queda un poco atrás
+     de la curva y la lengüeta sale del bote en negro, sin foto asomando. */
+  var FIN_FOTOS = 575;
 
   /* --- Utilería ----------------------------------------------------------- */
 
@@ -550,52 +555,53 @@
 
   /* --- 7. El remate: el rollo, atado al scroll (no a un reloj) -----------
      Corre sobre la fase del remate (rB, el 20% final del scroll), con el
-     perro ya escondido. Primero cae el rollo mientras la cámara termina de
-     bajar, sólo cuando terminó de caer crece el grupo, y la cinta sale al
-     final, con casi el 40% de la fase para ella sola. */
+     perro ya escondido. En la primera mitad solo baja la cámara hasta el
+     bote, que está quieto desde el CSS (tamaño final, visible, sin caída:
+     el bote no se anima a propósito, lo único que se mueve es la cinta), y
+     en la segunda mitad sale la cinta. */
   function remateRollo(r) {
     if (!rollo.grupo) return;
 
-    /* El grupo ya está a su tamaño final desde el CSS (×2.05, bajado 280px):
-       no crece. Solo cae el bote y después sale la cinta. */
-    var cae = clamp(r / 0.4, 0, 1);
-    var ec1 = 1 - Math.pow(1 - cae, 3);
-    if (rollo.bote) {
-      rollo.bote.style.opacity = Math.min(1, 2.4 * cae).toFixed(3);
-      rollo.bote.style.transform = 'translate(0,' + px(-130 * (1 - ec1)) + ') rotate(' + deg(-10 * (1 - ec1)) + ')';
-    }
-
     /* La cinta sale del bote con la lengüeta por delante: la tira entera se
-       desliza desde adentro (translateX) y el clip-path esconde la parte
-       que "sigue dentro" — el borde visible se queda fijo en la lengüeta
-       gris del bote mientras la punta curva avanza. */
+       desliza desde adentro (translateX) y la boca (.prollo__salida, un
+       overflow fijo en la tapa gris del bote) esconde la parte que "sigue
+       dentro". Nada de clip-path aquí: con él Chrome colgaba una raya negra
+       de 1px de la lengüeta en ciertas posiciones subpíxel (ver el CSS). */
     var des = clamp((r - 0.5) / 0.5, 0, 1);
     rollo.abierto = des >= 1;
     if (rollo.tira) {
       var dentro = 1 - suave5(des);
       rollo.tira.style.transform = 'translateX(' + px(-722 * dentro) + ')';
-      rollo.tira.style.clipPath = 'inset(0 0 0 ' + (100 * dentro).toFixed(2) + '%)';
     }
   }
 
   /* --- El carrusel del rollo ------------------------------------------------
      Lo mueve el scroll: en la tercera fase (rC) la escena está quieta y las
-     fotos van saliendo del bote hacia la derecha, una vuelta completa a lo
-     largo de la fase. El arrastre con mouse o dedo suma un ajuste manual
-     encima (offMano), sin inercia. El desplazamiento se envuelve con
-     módulo sobre una vuelta (la mitad del track: la serie está duplicada),
-     así el ciclo es invisible. Los deltas del puntero llegan en px de
+     fotos van saliendo del bote hacia la derecha, una vuelta (la mitad del
+     track) a lo largo de la fase. El arrastre con mouse o dedo suma un
+     ajuste manual encima (offMano), sin inercia.
+
+     La cinta es finita, como un rollo de verdad: en reposo el track está
+     corrido a la izquierda para que la ÚLTIMA foto termine en FIN_FOTOS y
+     la lengüeta salga del bote en negro — antes el track empezaba en el
+     bote y, como sigue hasta el infinito por la derecha, siempre había una
+     foto metida en la punta desde el primer píxel de cinta. Por eso ya no
+     se envuelve con módulo (un ciclo infinito no puede tener punta vacía):
+     el desplazamiento se acota entre el reposo (o = O0) y el track entero
+     pasado hacia la punta (o = 0). Los deltas del puntero llegan en px de
      pantalla: se dividen por el zoom del lienzo y la escala del grupo. */
   function initArrastre() {
     var pista = rollo.pista;
     if (!pista) return;
     var PASO_F = 240;          // 226 + 14
+    var LARGO = PASO_F * pista.children.length;
     var VUELTA = PASO_F * Math.max(1, Math.floor(pista.children.length / 2));
+    var O0 = Math.max(0, LARGO - FIN_FOTOS);
     rollo.vuelta = VUELTA;
 
     function aplica() {
       var off = arrastre.offScroll + arrastre.offMano;
-      var o = ((off % VUELTA) + VUELTA) % VUELTA;
+      var o = clamp(O0 + off, 0, O0);
       pista.style.transform = 'translate3d(' + px(-o) + ',0,0)';
     }
     rollo.aplica = aplica;
@@ -628,7 +634,8 @@
 
   /* Fase del carrusel: el scroll saca las fotos del bote. Un off negativo
      mueve el track a la derecha, así los fotogramas nuevos asoman por
-     debajo del bote y viajan hacia la punta. */
+     debajo del bote y viajan hacia la punta (y la lengüeta, que empezó
+     vacía, se va llenando conforme llegan). */
   function carruselPorScroll(rC) {
     if (!rollo.aplica) return;
     arrastre.offScroll = -rC * rollo.vuelta;

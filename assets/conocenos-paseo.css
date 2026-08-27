@@ -402,9 +402,10 @@ img.pest,
    (×2.05 desde la esquina superior izquierda, bajado 280px para centrarse
    en la última pantalla): el bote queda a la izquierda y la parte recta de
    la cinta llega al borde del lienzo — la lengüeta curva queda fuera y solo
-   se ve el rectángulo de negativos. No crece: JS solo anima la caída del
-   bote y la salida de la cinta. Si cambias la escala, cámbiala también en
-   `arrastre.escala` del JS (convierte los px del puntero al arrastrar). */
+   se ve el rectángulo de negativos. Ni el grupo ni el bote se animan (se
+   pidió así: lo único que se mueve es la cinta); JS solo anima la salida
+   de la tira. Si cambias la escala, cámbiala también en `arrastre.escala`
+   del JS (convierte los px del puntero al arrastrar). */
 .prollo {
   position: absolute;
   left: 80px;
@@ -422,35 +423,49 @@ img.pest,
   top: 0;
   width: 190px;
   z-index: 2;
-  opacity: 0;
   pointer-events: none;
 }
 
-/* La tira nace en la línea del doblez de la tapa gris del bote (x≈179; las
-   líneas del bote a media altura están en 132 unión, 179 doblez y 188 borde)
-   y pasa POR ENCIMA de la tapa (z 3 > z 2 del bote). El
-   dibujo es fondo y máscara a la vez: las perforaciones quedan caladas y la
-   lengüeta del final recorta los fotogramas. El desplazamiento y el
-   clip-path los escribe JS al desenrollar. */
-.prollo__tira {
+/* La boca del bote: la tira nace en la línea del doblez de la tapa gris
+   (x≈179; las líneas del bote a media altura están en 132 unión, 179 doblez
+   y 188 borde) y pasa POR ENCIMA de la tapa (z 3 > z 2 del bote). Este
+   envoltorio recorta con overflow lo que "sigue adentro" mientras la tira
+   se desliza. Es overflow y NO clip-path a propósito: con un clip-path en
+   la tira, Chrome pintaba una raya vertical negra de 1px colgando de la
+   lengüeta en ciertas posiciones subpíxel (5 de 25 en DPR 1, medido en la
+   página real; sin clip-path, 0). Va 8px más ancha que la tira para que el
+   borde del recorte no coincida con el borde de la caja de la tira. */
+.prollo__salida {
   position: absolute;
   left: 179px;
   top: 77px;
   z-index: 3;
+  width: 730px;
+  height: 218px;
+  overflow: hidden;
+}
+
+/* El dibujo es fondo y máscara a la vez: las perforaciones quedan caladas y
+   la lengüeta del final recorta los fotogramas. Empieza metida entera en el
+   bote: JS la desliza hacia afuera con la lengüeta por delante (translateX)
+   y la boca esconde el resto. */
+.prollo__tira {
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 722px;
   height: 218px;
   background: #141414 var(--tira-img) 0 0 / 100% 100% no-repeat;
   -webkit-mask: var(--tira-img) 0 0 / 100% 100% no-repeat;
   mask: var(--tira-img) 0 0 / 100% 100% no-repeat;
   overflow: hidden;
-  /* Empieza metida entera en el bote: JS la desliza hacia afuera con la
-     lengüeta por delante (translateX + clip-path del lado izquierdo). */
   transform: translateX(-722px);
-  clip-path: inset(0 0 0 100%);
 }
 
 /* Los fotogramas van entre las dos filas de perforaciones del dibujo
-   (≈28px arriba, ≈26px abajo). */
+   (≈28px arriba, ≈26px abajo). El track es más largo que la tira y JS lo
+   corre a la izquierda en reposo para que la última foto termine antes de
+   la curva de la lengüeta (FIN_FOTOS): la punta sale del bote en negro. */
 .prollo__pista {
   position: absolute;
   left: 0;
@@ -518,13 +533,12 @@ img.pest,
 
 /* Sin JS nadie coloca al perro ni abre el rollo: se muestran las tarjetas,
    la utilería quieta y la tira ya desenrollada. */
-.paseo:not(.paseo--js) .ptar,
-.paseo:not(.paseo--js) .prollo__bote {
+.paseo:not(.paseo--js) .ptar {
   opacity: 1;
 }
 
 .paseo:not(.paseo--js) .prollo__tira {
-  clip-path: none;
+  transform: none;
 }
 
 .paseo:not(.paseo--js) .paseo__dachs {

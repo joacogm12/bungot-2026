@@ -125,9 +125,10 @@
 
             {%- comment -%}
               7. El remate: el rollo cae, crece y desenrolla una tira de
-              negativos arrastrable. Ocho fotogramas: los cuatro huecos y
-              otra vez los mismos cuatro (aria-hidden) para que el arrastre
-              envuelva a la mitad del track.
+              negativos arrastrable. La serie va dos veces (la segunda,
+              aria-hidden): la cinta es finita y así hay una vuelta entera de
+              fotos que sacar con el scroll y todavía queda cinta para el
+              arrastre. La punta sale en negro: JS corre el track (FIN_FOTOS).
             {%- endcomment -%}
             <div class="prollo" data-rollo-grupo>
               <img class="prollo__bote" data-rollo src="{{ 'rollo-bote.png' | asset_url }}" alt="" aria-hidden="true" width="380" height="671" loading="lazy">
@@ -137,12 +138,13 @@
                 los fotogramas queden dentro de la silueta y la lengüeta del
                 final recorte al último.
               {%- endcomment -%}
+              <div class="prollo__salida">
               <div class="prollo__tira" data-tira style="--tira-img: url({{ 'rollo-tira.png' | asset_url }});">
                 {%- liquid
                   # Carrusel: las fotos puestas (hasta 8) o, si no hay ninguna, 4 huecos.
                   # La serie se repite hasta tener al menos 4 fotogramas y luego
-                  # se duplica entera: el arrastre y el avance automático
-                  # envuelven a la mitad del track y el ciclo es invisible.
+                  # se duplica entera: el scroll saca una vuelta (la mitad del
+                  # track) y la otra mitad queda para el arrastre.
                   assign n_fotos = 0
                   for i in (1..8)
                     assign rid = 'rollo_' | append: i
@@ -180,6 +182,7 @@
                     {%- endif -%}
                   {%- endfor -%}
                 </div>
+              </div>
               </div>
             </div>
 
