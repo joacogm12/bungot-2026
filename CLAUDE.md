@@ -79,7 +79,7 @@ Las páginas grandes NO usan las secciones `main-*` genéricas: cada una es **un
 | Página | Plantilla | Sección | Assets | Scope |
 |---|---|---|---|---|
 | Landing | `index.json` | hero, favoritos (foto + caja de texto "Ver producto"; el bloque "panel" de Juguetes lleva chip + párrafo + botón), statement, feature-panel, conocenos-bonche (bonche de 10 fotos que se dispersa + titular/CTA a Conócenos; se ajusta con ?acomodar), full-photo | base.css / theme.js | — |
-| Catálogo | `collection.json` | `collection-bandas` (bandas por familia, collection-driven) | productos.css/js | `.pgal` |
+| Catálogo | `collection.json` | `collection-bandas` (bandas por familia, collection-driven; padding lateral vía `--pg-pad` — 63/40/28/20 por corte —, en teléfono el perro del carrito sube arriba del título y en teléfono acostado las tarjetas se escalan al 62%) | productos.css/js | `.pgal` |
 | PDP | `product.json`, `product.juguete.json` | `producto-bungot` (split fijo 50/50, cinturón, cruzada) | producto.css/js | `.pdpage` |
 | Carrito | `cart.json` | `cart-recibo` (recibo de papel, sugeridos, /cart/change.js) | carrito.css/js | `.rcpage` |
 | Contacto | `page.contacto.json` | `contacto` | contacto.css/js | `.ctpage` |
@@ -135,6 +135,9 @@ La tienda usa **Shopify Subscriptions** (app gratis) para la Caja BUNGOT. El tem
 - Los links salen de los menús de Shopify (`main-menu` en el header y en la columna "Tienda" del footer, `footer` en "Ayuda"), no hardcodeados. Cambiar el menú en el admin lo cambia en todas las páginas — que es justo el punto.
 - Si de plano hace falta una variante (ej. pintar el marquee crema en el catálogo), hazla **con una CSS var o un modifier / `body:has(.scope)` sobre el mismo componente**, nunca con otro componente.
 - El botón de cuenta del header es el enlace de texto "Mi cuenta": sin sesión abre la hoja de acceso de Shopify (`<shopify-account>`), con sesión navega directo a Mis pedidos. **No revivas el dropdown de cuenta ni la pastilla con la carita** aunque un mockup o el handoff viejo los traigan.
+- **En celu/tablet (≤900) el menú es una tarjeta crema que se abate** desde la esquina (rotación con bisagra arriba-derecha, todo en `base.css`), por debajo de las pestañas de logo/carrito/hamburguesa que se quedan colgadas del techo (z-index 56). No congela el scroll y se cierra al tocar fuera. El link de carrito **dentro** de la tarjeta (`.header__link--cart`) queda apagado por CSS a propósito — se conserva en el markup como respaldo por si la hoja no carga; no lo borres ni lo reactives.
+- La pestaña del carrito en celu/tablet muestra el **ícono** en vez de la palabra: "Carrito ·" queda solo para el lector de pantalla (`.header__cart-label`, truco visually-hidden) y el contador es siempre el `<span data-cart-count>` que actualiza `theme.js` — no lo quites ni lo escondas. En escritorio la pestaña no cambia.
+- El footer **ya no lleva franja de disclaimer** (markup, setting y CSS se quitaron a pedido en el rediseño responsive de 2026-08; no la revivas) y el wordmark gigante usa tokens fluidos (`min(420px, (100vw − 24px)/3.25)`) para no desbordarse nunca; ≤900 va en una columna con el nav entre el alta y el wordmark.
 - El header sticky se sigue empujando por el footer vía `--nav-push` (`initFooterPushesNav()`, ver abajo). Cualquier cambio debe dejar ese comportamiento intacto.
 
 ### Footer: sube en flujo, SIN parallax
