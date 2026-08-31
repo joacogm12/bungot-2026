@@ -22,6 +22,11 @@
   --pg-naranja:  #EA4A27;
   --pg-crema:    #F7F1E3;
 
+  /* Padding lateral de TODA la página (cabecera, filtros, bandas y riel), por
+     variable y no por valores sueltos: baja a 40 (≤1024), 28 (≤900) y 20 (≤640)
+     en un solo lugar. */
+  --pg-pad: 63px;
+
   background: var(--pg-crema);
   color: var(--pg-navy);
   font-family: var(--font-body, 'Inter', sans-serif);
@@ -62,7 +67,7 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
   gap: 40px;
   /* Aire extra arriba: el encabezado ya no tiene nav propio encima, así que
      este padding es lo que lo separa del nav global del tema. */
-  padding: 96px 63px 46px;
+  padding: 96px var(--pg-pad) 46px;
 }
 .pgal .phead__title {
   margin: 0;
@@ -71,11 +76,18 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
      como en el hero (.93) y no el .82 que pedía Fredoka. */
   font-family: Anton, Bayon, sans-serif;
   font-weight: 400;
-  font-size: 128px;
+  font-size: clamp(80px, 9vw, 128px);
   line-height: .93;
   letter-spacing: -.005em;
   text-transform: uppercase;
   color: var(--pg-navy);
+  /* Se queda con el ancho sobrante en vez de encogerse a min-content: sin esto
+     el space-between del .phead convierte el aire libre en un hueco muerto
+     entre el texto y el perro. Y min-content (NO 0) como piso: con 0 el ítem
+     flex se encoge por debajo de su contenido y "tu peludo" (nowrap) se sale
+     de la caja. */
+  flex: 1 1 auto;
+  min-width: min-content;
 }
 /* La última línea ("tu peludo") en naranja intenso; nowrap para que nunca se parta. */
 .pgal .phead__title .phead__accent {
@@ -96,10 +108,11 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
    debajo del borde de la sección (96px de padding + las tres líneas del
    título ≈ 453px) sin asomar entre las pestañas del nav; de ~1450px para
    arriba el `bottom` negativo la baja más y por eso ahí puede crecer hasta
-   760px. Se encoge (flex-shrink 1) antes que el título si no caben los dos. */
+   760px. flex: none — su ancho ya es fluido por el clamp; el que absorbe el
+   sobrante es el título (flex: 1 1 auto), no este. */
 .pgal .phead__art {
   position: relative;
-  flex: 0 1 auto;
+  flex: none;
   min-width: 0;
   align-self: flex-end;
   width: clamp(360px, 46vw, 760px);
@@ -141,7 +154,7 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-  padding: 8px 63px 42px;
+  padding: 8px var(--pg-pad) 42px;
 }
 .pgal .pfilters__label {
   margin-right: 6px;
@@ -189,7 +202,7 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
   align-items: flex-end;
   justify-content: space-between;
   gap: 32px;
-  padding: 0 63px;
+  padding: 0 var(--pg-pad);
 }
 .pgal .banda__title {
   margin: 4px 0 0;
@@ -237,11 +250,11 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
      abajo es el aire para que el lift y la sombra del hover no se corten. El
      margin-top baja para compensar el nuevo padding-top y no separar de más. */
   margin-top: 28px;
-  padding: 16px 63px 26px;
+  padding: 16px var(--pg-pad) 26px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
-  scroll-padding-left: 63px; /* la primera tarjeta nunca se pega al borde */
+  scroll-padding-left: var(--pg-pad); /* la primera tarjeta nunca se pega al borde */
   scrollbar-width: none;
 }
 .pgal .rail::-webkit-scrollbar { display: none; }
@@ -259,45 +272,46 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
 }
 
 /* --- Responsive -----------------------------------------------------------
-   El artboard es de escritorio; abajo de 900px no hay espacio para dos
-   columnas (titular + perro, título de banda + párrafo + flechas), así que
-   todo se apila. Los 63px de margen del spec bajan a --pg-gutter para que la
-   fila de tarjetas asome la siguiente y no quede una sola centrada. */
+   El artboard es de escritorio. El padding lateral baja por --pg-pad; la
+   cabecera se reacomoda en dos pasos: en tablet (≤900) el perro se queda AL
+   LADO del título, sólo más chico; en teléfono (≤640) se sube ARRIBA del
+   título; y en teléfono acostado las tarjetas del riel se escalan enteras
+   (ver el último bloque). */
+@media (max-width: 1024px) {
+  .pgal { --pg-pad: 40px; }
+}
+
 @media (max-width: 900px) {
-  .pgal { --pg-gutter: 24px; }
+  .pgal { --pg-pad: 28px; }
 
+  /* Tablet: el perro se queda AL LADO del título, sólo más chico (sigue
+     colgando del contenedor de 0 de alto, igual que en escritorio). */
   .pgal .phead {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    padding: 56px var(--pg-gutter) 20px;
+    padding-top: 56px;
+    padding-bottom: 28px;
+    gap: 20px;
   }
-  /* 16vw: "SHOPPING" (la línea más larga) entra en un renglón a 390px con Anton.
-     Tope en los 128px del spec, piso para que no se vuelva texto corriente. */
-  .pgal .phead__title { font-size: clamp(56px, 16vw, 128px); }
-
-  /* El perro del carrito deja de colgar en 0 de alto (en escritorio se encoge
-     antes que el título y aquí desaparecería): va como bloque normal debajo
-     del titular, pegado a la derecha, con el cuadro A en flujo y el B encima. */
+  .pgal .phead__title { font-size: clamp(52px, 9.6vw, 88px); }
   .pgal .phead__art {
-    width: min(62vw, 340px);
-    height: auto;
-    align-self: flex-end;
-    margin: -6px 0 0;
+    width: clamp(280px, 42vw, 430px);
+    margin-right: -12px;
   }
-  /* Selector con `img` para ganarle a `.pgal .phead__art img` de arriba, que
-     si no deja los dos cuadros en absoluto y el contenedor sigue midiendo 0. */
-  .pgal .phead__art img { bottom: auto; top: 0; }
-  .pgal .phead__art img.phead__frame--a { position: static; }
 
-  .pgal .pfilters { padding: 4px var(--pg-gutter) 28px; }
+  /* Chips de filtro en tira deslizable y con piso táctil de 44px. */
+  .pgal .pfilters {
+    padding: 4px var(--pg-pad) 28px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .pgal .pfilters::-webkit-scrollbar { display: none; }
+  .pgal .pfilter { min-height: 44px; white-space: nowrap; }
 
   .pgal .banda { padding: 40px 0 44px; }
   .pgal .banda__head {
     flex-direction: column;
     align-items: flex-start;
     gap: 14px;
-    padding: 0 var(--pg-gutter);
   }
   .pgal .banda__title { font-size: clamp(40px, 11vw, 62px); }
   .pgal .banda__right {
@@ -312,7 +326,56 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
   .pgal .rail {
     gap: 16px;
     margin-top: 20px;
-    padding: 12px var(--pg-gutter) 22px;
-    scroll-padding-left: var(--pg-gutter);
+    padding: 12px var(--pg-pad) 22px;
   }
+}
+
+@media (max-width: 640px) {
+  .pgal { --pg-pad: 20px; }
+
+  /* Teléfono: el perro se sube ARRIBA del título y ocupa su propio alto. */
+  .pgal .phead {
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: 32px;
+    padding-bottom: 24px;
+    gap: 0;
+  }
+  .pgal .phead__title { font-size: clamp(56px, 17vw, 88px); }
+  .pgal .phead__art {
+    order: -1;
+    width: min(400px, 100%);
+    height: auto;
+    margin: 0 auto 6px;
+    align-self: center;
+  }
+  /* El cuadro A queda en flujo y le da alto al bloque; el B se encima. Si los
+     dos quedan absolutos el contenedor colapsa; si los dos quedan en flujo el
+     dibujo brinca (el cuadro visible alternaría entre el slot de arriba y el
+     de abajo). El selector de A lleva `img` (0,3,1) para ganarle a
+     `.pgal .phead__art img` (0,2,1); con menos especificidad pierde y el
+     perro desaparece. */
+  .pgal .phead__art img { position: absolute; inset: 0; bottom: auto; }
+  .pgal .phead__art img.phead__frame--a { position: static; }
+}
+
+/* Celular ACOSTADO: el ancho sobra pero el alto no llega a 400px, y la tarjeta
+   —dimensionada en vw— quedaba más alta que la pantalla. Acá se conserva la
+   PROPORCIÓN de escritorio (344 de ancho / 320 de foto, cuerpo de 22-24-26) y
+   sólo se escala todo al 62%: misma tarjeta, más chica. Las tres condiciones
+   son necesarias: el disparador real es el alto, y el max-width evita atrapar
+   ventanas de escritorio bajitas (tipo 1440×500). */
+@media (orientation: landscape) and (max-height: 520px) and (max-width: 1024px) {
+  .pgal .phead { padding-top: 36px; padding-bottom: 20px; }
+  .pgal .rail { gap: 16px; padding-top: 10px; padding-bottom: 16px; }
+  .pgal .rail .card { flex: 0 0 214px; width: 214px; border-radius: 16px; }
+  /* aspect-ratio en vez de alto fijo: la foto mantiene el 344:320 exacto. */
+  .pgal .rail .card__media { height: auto; aspect-ratio: 344 / 320; }
+  .pgal .rail .card__body { padding: 14px 15px 16px; }
+  .pgal .rail .card__title { font-size: 18px; min-height: 34px; margin-top: 5px; }
+  .pgal .rail .card__foot { padding-top: 12px; }
+  .pgal .rail .card__price { font-size: 15px; }
+  /* Se achica la letra y el padding, NO el alto: sigue siendo un dedo (los
+     44px táctiles del bloque de arriba no se pisan). */
+  .pgal .rail .card__add { font-size: 12px; min-height: 44px; padding: 0 14px; }
 }

@@ -14,8 +14,11 @@
     Shopify (<shopify-account>) sin salir de la tienda.
   · data-me / data-logged los lee cuenta.js para ofrecer iniciar sesión antes
     del checkout: se quedan aunque ya no haya pastilla con avatar.
-  · En celu la pestaña se esconde y el carrito vive DENTRO del panel del
-    burger (.header__link--cart): sin eso quedaría inalcanzable.
+  · En celu/tablet las pestañas de logo y carrito se quedan colgadas del techo
+    junto a la hamburguesa, y los enlaces viven en una tarjeta crema que se
+    abate desde la esquina (ver base.css). El link del carrito dentro de la
+    tarjeta (.header__link--cart) queda apagado por CSS — se conserva en el
+    markup como respaldo por si la hoja no carga.
 {%- endcomment -%}
 <header class="header">
   <div class="header__inner">

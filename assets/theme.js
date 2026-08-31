@@ -375,10 +375,10 @@
     };
   }
 
-  // La pastilla del carrito que se VE: la de escritorio (.header__cart) o el
-  // link del panel en celu. "Visible" = con caja y dentro del viewport, lo
-  // que descarta la de escritorio en celu (display: none) y la del panel con
-  // el burger cerrado (el panel vive corrido fuera de la pantalla).
+  // La pastilla del carrito que se VE. Desde el rediseño responsive la pestaña
+  // .header__cart cuelga del techo en TODOS los anchos (el link de la tarjeta
+  // del menú quedó apagado), pero el chequeo de visibilidad se queda por si
+  // alguna variante vuelve a esconder una de las dos.
   function pastillaCarrito() {
     var candidatas = document.querySelectorAll('.header__cart, .header__link--cart');
     for (var i = 0; i < candidatas.length; i++) {
@@ -402,7 +402,7 @@
     function setOpen(open) {
       nav.setAttribute('data-open', String(open));
       burger.setAttribute('aria-expanded', String(open));
-      document.body.style.overflow = open ? 'hidden' : '';
+      // La tarjeta no cubre la pantalla: no hay por qué congelar el scroll.
     }
 
     burger.addEventListener('click', function () {
@@ -418,6 +418,14 @@
 
     nav.addEventListener('click', function (e) {
       if (e.target.tagName === 'A') setOpen(false);
+    });
+
+    // Al ser una tarjeta chica, tocar fuera la cierra. La hamburguesa se
+    // excluye para no cerrar-y-reabrir en el mismo toque (su click ya alterna).
+    document.addEventListener('pointerdown', function (ev) {
+      if (nav.getAttribute('data-open') !== 'true') return;
+      if (nav.contains(ev.target) || burger.contains(ev.target)) return;
+      setOpen(false);
     });
   }
 

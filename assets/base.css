@@ -94,14 +94,23 @@
   /* Cuerpo y grosor del BUNGOT gigante. Viven acá arriba y no en cada sección
      porque la portada y el footer tienen que pintar EXACTAMENTE el mismo
      logotipo: un solo lugar donde cambiarlo, o se vuelven a separar. */
-  --wordmark-size: 420px;
+  /* "BUNGOT" en Brookline con este tracking mide 3.2× el cuerpo. La fórmula
+     reparte el ancho disponible (viewport menos el respiro lateral) entre esas
+     3.25 unidades, así que la palabra llena la línea y NUNCA se desborda en
+     ningún ancho; los 420px son el tope para que no crezca sin fin. */
+  --wordmark-size: min(420px, (100vw - 24px) / 3.25);
   /* Engorde. Brookline tiene un solo peso (400), así que no hay una versión más
      gorda que pedir: se engorda con un contorno del MISMO color, que suma trazo
      sin cambiar el cuerpo de la letra ni su ancho de layout —el contorno no
-     entra en las métricas, así que el sangrado lateral y el centrado quedan
-     igual—. Subirlo de más empieza a cerrar los huecos de la B, la U, la G y
-     la O. */
-  --wordmark-weight: 14px;
+     entra en las métricas para el layout, así que el sangrado lateral y el
+     centrado quedan igual—. Subirlo de más empieza a cerrar los huecos de la B,
+     la U, la G y la O.
+     PROPORCIONAL al cuerpo: 3.33% (los 14px históricos sobre los 420 del tope).
+     Fijo en px se veía correcto en escritorio y como una mancha en celular
+     —a 103px de cuerpo, 14px de pluma es el 13% de la letra— y además el
+     contorno pinta media pluma hacia afuera por lado, ancho que NO entra en
+     las métricas: por eso la palabra se salía. */
+  --wordmark-weight: calc(var(--wordmark-size) * 0.0333);
 
   /* --- Escala fluida --- */
   --step--1: clamp(0.83rem, 0.78rem + 0.22vw, 0.94rem);
@@ -127,13 +136,6 @@
   --shadow-soft: 0 12px 34px rgba(22, 60, 105, 0.12);
 
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Abajo de 900px el logotipo deja de ser un cuerpo fijo y se ata al ancho, para
-   que BUNGOT siga entrando de un solo renglón. Se pisa acá, en el token, y no en
-   cada sección: así la portada y el footer bajan juntos y no se despegan. */
-@media (max-width: 900px) {
-  :root { --wordmark-size: 21vw; }
 }
 
 /* --------------------------------------------------------------------------
@@ -448,49 +450,129 @@ shopify-account::part(signed-out-avatar) {
 }
 .header__burger:hover { background: var(--nav-tinta); border-color: var(--nav-tinta); }
 
-/* Celu: quedan logo a la izquierda y hamburguesa a la derecha; los enlaces se
-   van al panel lateral y la pestaña del carrito se esconde (el carrito vive
-   dentro del panel, ver .header__link--cart). */
+/* Celu/tablet: quedan las TRES piezas colgadas del techo — logo, pestaña del
+   carrito y hamburguesa — y los enlaces viven en una TARJETA crema que se abate
+   desde la esquina superior derecha (ya no una hoja lateral que cubre media
+   pantalla y congela el scroll). */
 @media (max-width: 900px) {
-  .header__cart { display: none; }
-  .header__burger { display: grid; }
-  /* Sin pestaña que colgar, el grupo vuelve al centro de la fila: si se queda
-     en flex-start la hamburguesa se pega al techo. */
-  .header__actions { align-self: center; }
+  /* La hamburguesa deja de ser el circulito de la hoja lateral: es una pestaña
+     más, colgada junto al carrito, con el mismo alto (52px) y las esquinas de
+     abajo redondeadas, para que las tres piezas alineen sus bordes. */
+  .header__burger {
+    display: grid;
+    width: 52px;
+    height: 52px;
+    margin-right: 0;
+    border: 0;
+    border-radius: 0 0 12px 12px;
+  }
+
+  /* Por encima de la tarjeta (z 55): el 60 del .shopify-section es del ancestro
+     común, así que adentro hay que declararlo pieza por pieza. */
+  .header__logo,
+  .header__actions { position: relative; z-index: 56; }
+  .header__actions { align-self: flex-start; margin-left: auto; gap: 6px; }
+
+  /* Sin crecer al hover en táctil: el alto extra despegaba las pestañas del
+     borde y las desalineaba entre sí. Sólo cambian de color. */
+  .header__burger:hover { height: 52px; background: var(--nav-tinta); }
+  .header__logo:hover,
+  .header__cart:hover { height: 52px; }
+
+  /* Ya no es una hoja que cubre media pantalla: es una TARJETA que se descuelga
+     del techo, ligeramente ladeada, como si hubiera caído desde atrás de las
+     pestañas. */
   .header__nav {
     margin: 0;
     position: fixed;
-    inset: 0 0 0 auto;
-    width: min(78vw, 320px);
+    /* Sangra por arriba y por la derecha: esa esquina queda cortada contra el
+       borde de la pantalla y el grupo de pestañas le pasa encima. */
+    top: -30px;
+    right: -26px;
+    /* Ancho por CONTENIDO, anclada a la derecha: con left+right fijos la caja
+       la dictaba el viewport y en iPad quedaban 500px muertos. */
+    left: auto;
+    width: max-content;
+    min-width: 240px;
+    max-width: min(calc(100vw - 150px), 400px);
+    bottom: auto;
     height: auto;
-    border-radius: 0;
-    background: var(--nav-tinta);
+    min-height: 0;
+    border-radius: 22px;
+    background: var(--cream);
+    box-shadow: 0 26px 60px rgba(22, 60, 105, 0.28);
     flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 2rem var(--gutter);
-    gap: 1.4rem;
-    transform: translateX(100%);
-    transition: transform 0.3s var(--ease-bounce);
-    z-index: 70;
+    justify-content: flex-start;
+    align-items: stretch;
+    /* El padding-top de 92px es para que el primer renglón no quede tapado por
+       las pestañas (52px de alto): si baja, "Inicio" desaparece tras el carrito. */
+    padding: 92px clamp(34px, 9vw, 56px) clamp(28px, 7vw, 40px) clamp(18px, 5vw, 30px);
+    gap: 0;
+    /* Bisagra en la esquina superior DERECHA: se abate como una tapa —arranca
+       parada arriba, fuera de cuadro, y gira hacia abajo hasta −1.4°. La
+       opacity se queda en 1 siempre; el estado cerrado se saca del flujo de
+       foco con visibility (la demora hace que cambie al FINAL al cerrar y al
+       INICIO al abrir). NO cambiar por display:none, que mata la transición. */
+    transform-origin: 100% 0;
+    transform: rotate(88deg);
+    opacity: 1;
+    visibility: hidden;
+    transition: transform 0.46s var(--ease-bounce), visibility 0s linear 0.46s;
+    z-index: 55;
   }
-  .header__nav[data-open='true'] { transform: translateX(0); }
-  /* En el panel los links sueltan el uniforme de pestaña (nada que colgar ni
-     que crecer) y recuperan cuerpo (mejor blanco de toque); el hover es solo
-     de color. */
+  .header__nav[data-open='true'] {
+    transform: rotate(-1.4deg);
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  /* Renglones tipo cartel: display en coral. (Coral y no --brand a propósito:
+     el verde no aparece en ninguna otra pieza del header y el coral da 3.24:1
+     sobre crema.) */
   .header__link {
     height: auto;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
     padding: 0;
     border-radius: 0;
-    font-size: var(--step-1);
-    color: var(--cream);
+    font-family: var(--font-display);
+    font-size: clamp(24px, 7vw, 40px);
+    line-height: 1.02;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--nav-coral);
   }
   .header__link:hover {
     height: auto;
     background: transparent;
-    color: var(--brand-yellow);
+    color: var(--nav-tinta);
   }
-  .header__link--cart { display: flex; }
+  /* El carrito ya tiene su propia pestaña colgada arriba: en la tarjeta sobra. */
+  .header__link--cart { display: none; }
+}
+
+/* iPad: la tarjeta se agranda y los renglones respiran — en teléfono el ancho
+   apretado es intencional, acá sobra pantalla. */
+@media (min-width: 641px) and (max-width: 900px) {
+  .header__nav {
+    min-width: 320px;
+    max-width: 460px;
+    border-radius: 26px;
+    padding: 104px 66px 46px 40px;
+  }
+  .header__link {
+    font-size: 46px;
+    min-height: 58px;
+  }
+}
+
+/* Teléfonos angostos: las mismas tres pestañas, con menos aire para que logo,
+   carrito y hamburguesa quepan sin empujar nada fuera de la pantalla. */
+@media (max-width: 380px) {
+  .header__inner { gap: 0.75rem; }
+  .header__logo,
+  .header__cart { padding: 0 0.8rem; }
 }
 
 /* --------------------------------------------------------------------------
@@ -2290,7 +2372,7 @@ a.chip { text-decoration: none; }
    Footer
    -------------------------------------------------------------------------- */
 /* Footer estilo "happly": tagline + alta arriba-izq, columnas de links a la
-   derecha, WORDMARK gigante a todo el ancho, barra legal y franja de disclaimer.
+   derecha, WORDMARK gigante a todo el ancho y barra legal.
 
    El footer scrollea en flujo normal (nada fijo, sin parallax): lo único que
    hace al entrar es empujar el nav sticky fuera de pantalla (initFooterPushesNav
@@ -2418,19 +2500,30 @@ a.chip { text-decoration: none; }
 .footer__policies { display: flex; gap: 1.5rem; }
 .footer__policies a { color: inherit; text-decoration: none; }
 .footer__policies a:hover { opacity: 0.68; }
-.footer__disclaimer { background: var(--cream); color: var(--ink); }
-.footer__disclaimer-inner {
-  display: grid;
-  grid-template-columns: minmax(0, 0.28fr) minmax(0, 1fr);
-  gap: clamp(1rem, 3vw, 3rem);
-  padding-block: clamp(1.1rem, 2.4vw, 1.9rem);
-  align-items: start;
-}
-.footer__disclaimer-label { font-family: var(--font-body); font-size: var(--step-0); }
-.footer__disclaimer-text { font-size: var(--step--1); margin: 0; color: var(--ink-soft); max-width: 72ch; }
-@media (max-width: 760px) {
+
+/* iPad y teléfono: el bloque de enlaces baja y se acomoda entre el formulario
+   y BUNGOT, en vez de convivir a un costado del lead. */
+@media (max-width: 900px) {
   .footer__top { grid-template-columns: 1fr; }
-  .footer__disclaimer-inner { grid-template-columns: 1fr; gap: 0.4rem; }
+  /* Las tres columnas se reparten A LO ANCHO (columnas de ancho automático +
+     space-between), no su texto: cada lista sigue alineada a la izquierda. */
+  .footer__nav {
+    grid-template-columns: repeat(3, auto);
+    justify-content: space-between;
+  }
+  /* Piso táctil de 44px para los enlaces y el botón del alta. */
+  .footer__links { gap: 0.2rem; }
+  .footer__links a { display: inline-flex; align-items: center; min-height: 44px; }
+  .footer__signup-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
+}
+
+/* iPad: la primera columna arranca en el margen (a plomo con el titular y el
+   formulario) y las tres se reparten en tercios iguales. */
+@media (min-width: 641px) and (max-width: 900px) {
+  .footer__nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-content: stretch;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -2697,6 +2790,11 @@ a.chip { text-decoration: none; }
    fetch, y ese parpadeo no debe verse. */
 .cardset .card__add--soldout { opacity: 0.55; cursor: not-allowed; }
 .cardset .card__add--soldout:active { transform: none; }
+
+/* Piso táctil bajo 900px: el "Agregar" se toca con el dedo, mínimo 44px. */
+@media (max-width: 900px) {
+  .cardset .card__add { min-height: 44px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .cardset .card { transition: none; will-change: auto; }

@@ -1,7 +1,8 @@
 {%- comment -%}
   Footer estilo "happly": arriba a la izquierda el tagline + alta al newsletter
   (con el 10%), a la derecha las columnas de links; en el medio el WORDMARK
-  gigante a todo el ancho; abajo la barra legal y una franja de disclaimer clara.
+  gigante a todo el ancho; abajo la barra legal. (La franja de disclaimer se
+  quitó a pedido en el rediseño responsive de 2026-08.)
 {%- endcomment -%}
 
 <footer
@@ -87,14 +88,6 @@
     </div>
   </div>
 
-  {%- if section.settings.disclaimer != blank -%}
-    <div class="footer__disclaimer">
-      <div class="wrap footer__disclaimer-inner">
-        <span class="footer__disclaimer-label">Disclaimer</span>
-        <p class="footer__disclaimer-text">{{ section.settings.disclaimer }}</p>
-      </div>
-    </div>
-  {%- endif -%}
 </footer>
 
 {% schema %}
@@ -118,12 +111,6 @@
     { "type": "text", "id": "signup_placeholder", "label": "Placeholder del email", "default": "tu@email.com" },
     { "type": "text", "id": "signup_button", "label": "Botón del alta", "default": "Suscribirme" },
     { "type": "link_list", "id": "policy_menu", "label": "Menú legal (abajo a la derecha)", "info": "Ej.: Política de privacidad, Términos. Opcional." },
-    {
-      "type": "text",
-      "id": "disclaimer",
-      "label": "Disclaimer (franja clara)",
-      "default": "Los snacks son un complemento, no reemplazan una dieta balanceada. Consultá con tu veterinario ante cualquier duda."
-    },
     { "type": "header", "content": "Colores" },
     { "type": "color", "id": "bg", "label": "Fondo", "default": "#E94925" },
     { "type": "color", "id": "fg", "label": "Texto", "default": "#F7F1E3" },
