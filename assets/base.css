@@ -420,6 +420,10 @@ shopify-account::part(signed-out-avatar) {
   /* El mismo respiro que el logo tiene a la izquierda. */
   margin-right: clamp(1rem, 2.5vw, 1.75rem);
 }
+/* El ícono de carrito solo sale en celu/tablet (ver el bloque ≤900): en
+   escritorio la pestaña dice la palabra completa. */
+.header__cart-icon { display: none; }
+
 .header__cart {
   display: flex;
   align-items: center;
@@ -478,6 +482,19 @@ shopify-account::part(signed-out-avatar) {
   .header__burger:hover { height: 52px; background: var(--nav-tinta); }
   .header__logo:hover,
   .header__cart:hover { height: 52px; }
+
+  /* La pestaña del carrito cambia la palabra por el ícono; la palabra no se
+     borra: queda solo para el lector de pantalla (mismo truco que
+     .visually-hidden), así el enlace sigue anunciando "Carrito · n". */
+  .header__cart { gap: 5px; padding: 0 0.95rem; }
+  .header__cart-icon { display: block; }
+  .header__cart-label {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0);
+    white-space: nowrap; border: 0;
+  }
 
   /* Ya no es una hoja que cubre media pantalla: es una TARJETA que se descuelga
      del techo, ligeramente ladeada, como si hubiera caído desde atrás de las

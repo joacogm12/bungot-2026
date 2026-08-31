@@ -78,13 +78,23 @@
     <div class="header__actions">
       {%- comment -%}
         Los &nbsp; evitan que el punto medio se quede solo al final de línea.
+        En celu/tablet la palabra se esconde (queda solo para lector de
+        pantalla) y en su lugar se pinta el ícono de carrito; el contador se ve
+        siempre — y su <span data-cart-count> lo actualiza theme.js, no lo
+        quites ni lo escondas.
       {%- endcomment -%}
       <a
         class="header__cart"
         href="{{ routes.cart_url }}"
         {% if request.page_type == 'cart' %}aria-current="page"{% endif %}
       >
-        {{- 'accessibility.cart' | t -}}&nbsp;·&nbsp;<span data-cart-count>{{ cart.item_count }}</span>
+        <span class="header__cart-label">{{- 'accessibility.cart' | t -}}&nbsp;·&nbsp;</span>
+        <svg class="header__cart-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 4.5h2.3l2 10.5h10.9l2.1-7.5H6.7"/>
+          <circle cx="9.3" cy="19.3" r="1.6"/>
+          <circle cx="16.7" cy="19.3" r="1.6"/>
+        </svg>
+        <span data-cart-count>{{ cart.item_count }}</span>
       </a>
 
       <button
