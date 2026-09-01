@@ -1,0 +1,35 @@
+{%- comment -%}
+  El perro repartidor en bici del panel destacado (.fpanel__bici). Es UN solo
+  snippet porque el panel se monta en dos lados —la portada (feature-panel) y
+  la entrada a la suscripción del catálogo (collection-bandas)— y los dos
+  tienen que servir exactamente la misma imagen con las mismas reglas:
+
+  NO es una animación de CSS: es un GIF de dos cuadros que ya trae el pedaleo
+  adentro, así que va como una sola <img> sin @keyframes ni steps(). Dos cosas
+  que no hay que hacerle:
+  - Convertirlo a MP4/WebM: el GIF tiene alfa real y el video lo pierde
+    (quedaría un rectángulo sólido encima del panel).
+  - Pasarlo por image_url / image_tag / srcset: el redimensionado de Shopify
+    tumba la animación y deja un solo cuadro congelado. Por eso va con
+    asset_url directo.
+  Con prefers-reduced-motion el <source> sirve el primer cuadro fijo
+  (bungot-repartidor-estatico.png): un GIF en loop no se pausa con CSS, así
+  que la única forma honesta de respetarlo es servir la imagen quieta.
+  Es decorativa: si no carga, la franja se ve completa y el CTA sigue.
+
+  El recorte MEDIDO del lienzo (--bici-x/y/w/h) vive en .fpanel__bici de
+  base.css; si se cambia el GIF hay que volver a medir esos cuatro números.
+{%- endcomment -%}
+<div class="fpanel__bici">
+  <picture>
+    <source media="(prefers-reduced-motion: reduce)" srcset="{{ 'bungot-repartidor-estatico.png' | asset_url }}">
+    <img
+      src="{{ 'bungot-repartidor.gif' | asset_url }}"
+      alt="{{ 'sections.feature_panel.bici_alt' | t }}"
+      width="2048"
+      height="2048"
+      loading="lazy"
+      decoding="async"
+    >
+  </picture>
+</div>

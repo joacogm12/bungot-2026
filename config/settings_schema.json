@@ -136,5 +136,20 @@
         "info": "Formato internacional sin signos, ej. 5214441234567. Con esto la página de contacto arma el enlace wa.me y muestra el número."
       }
     ]
+  },
+  {
+    "name": "Suscripción",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "La Caja BUNGOT se vende como un producto con plan de Shopify Subscriptions. Este ajuste es la única fuente de verdad de cuál es ese producto: los botones \"Empieza tu suscripción\" de la portada y del catálogo mandan a su página cuando su link está vacío."
+      },
+      {
+        "type": "product",
+        "id": "caja_product",
+        "label": "Producto de la Caja (suscripción)",
+        "info": "Sin producto, el botón del catálogo cae al panel de la portada (/#suscripcion) y el de la portada al catálogo."
+      }
+    ]
   }
 ]

@@ -379,3 +379,31 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
      44px táctiles del bloque de arriba no se pisan). */
   .pgal .rail .card__add { font-size: 12px; min-height: 44px; padding: 0 14px; }
 }
+
+/* --------------------------------------------------------------------------
+   Entrada a la suscripción (bloque "suscripcion" de collection-bandas)
+   Reusa .fpanel de base.css TAL CUAL: fondo, tipografía, CTA, hover y el
+   recorte MEDIDO de la bici vienen de allá y se ajustan allá. Acá solo se
+   cambia el marco: en la portada el panel es la sección que enmarca el cuadro
+   con crema (--fpanel-frame); entre las bandas la crema ya es el fondo de
+   .pgal, así que el marco se vuelve el mismo padding lateral que el
+   encabezado, los filtros, los títulos de banda y la primera tarjeta del riel
+   (--pg-pad, que ya baja sola por corte: 63 → 40 → 28 → 20).
+   Nada de colores ni tokens del catálogo aquí: --pg-naranja NO es el naranja
+   del panel, y el panel tiene que verse idéntico en las dos páginas.
+   -------------------------------------------------------------------------- */
+.pgal .fpanel--catalogo {
+  padding: 0;
+  margin: 24px var(--pg-pad) 40px;
+  background: transparent;
+}
+/* El padding lateral original del cuadro sigue el eje del .wrap de la portada
+   (para alinear con el statement). Adentro del catálogo ese eje no existe y
+   dejaría un hueco muerto a la izquierda del titular: vuelve al mínimo simple.
+   El resto del responsive (una columna y bici centrada <=640) lo trae .fpanel. */
+.pgal .fpanel--catalogo .fpanel__box {
+  padding-inline: clamp(1.5rem, 4vw, 3.5rem);
+}
+@media (max-width: 900px) {
+  .pgal .fpanel--catalogo { margin: 16px var(--pg-pad) 32px; }
+}

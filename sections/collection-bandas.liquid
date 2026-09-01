@@ -132,6 +132,69 @@
   </div>
 
   <div class="pbandas">
+    {%- comment -%}
+      Entrada a la suscripción, hasta arriba de las bandas. Es el MISMO
+      componente .fpanel de la portada (base.css: fondo, tipografía, CTA y el
+      recorte medido de la bici), no una copia: acá solo se le cambia el marco
+      lateral (productos.css, .fpanel--catalogo) para que arranque a plomo con
+      los títulos de banda y la primera tarjeta del riel (--pg-pad). Si hay
+      que tocar colores, escala o hover del panel, se tocan en .fpanel y
+      cambian en los dos lados.
+
+      order: -1 y no 0: las bandas van de 1 a 4 y el filtro de productos.js
+      sube la elegida poniéndole order 0. Con 0 el panel empataría con esa
+      banda y solo ganaría por ir antes en el DOM; con -1 queda arriba de
+      todas sin renumerar nada ni tocar el JS. No lleva data-banda, así que
+      el filtro nunca lo mueve ni lo esconde.
+    {%- endcomment -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type != 'suscripcion' -%}{%- continue -%}{%- endif -%}
+      {%- liquid
+        # Destino del CTA: la URL del bloque; si no hay, la PDP de la Caja
+        # (ajuste global caja_product, grupo Suscripción: la única fuente de
+        # verdad de cuál producto es la suscripción, el mismo que usa el
+        # panel de la portada); si tampoco hay Caja configurada, el panel de
+        # suscripción de la portada (feature-panel expone id="suscripcion").
+        assign susc_url = block.settings.cta_url
+        if susc_url == blank and settings.caja_product != blank
+          assign susc_url = settings.caja_product.url
+        endif
+        if susc_url == blank
+          assign susc_url = routes.root_url | append: '#suscripcion'
+        endif
+      -%}
+      <section
+        class="fpanel fpanel--catalogo"
+        style="order: -1;"
+        aria-label="{{ block.settings.title | strip_html | escape }}"
+        {{ block.shopify_attributes }}
+      >
+        <div
+          class="fpanel__box"
+          style="--fp-bg: {{ block.settings.bg }}; --fp-fg: {{ block.settings.fg }};"
+        >
+          <div class="fpanel__lead">
+            {%- if block.settings.title != blank -%}
+              <h2 class="fpanel__title">{{ block.settings.title }}</h2>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="fpanel__text">{{ block.settings.text }}</p>
+            {%- endif -%}
+            {%- if block.settings.cta_label != blank -%}
+              <a
+                class="fpanel__cta"
+                style="--fp-cta-bg: {{ block.settings.cta_bg }}; --fp-cta-fg: {{ block.settings.cta_fg }};"
+                href="{{ susc_url }}"
+              >{{ block.settings.cta_label }}</a>
+            {%- endif -%}
+          </div>
+          {%- if block.settings.show_art -%}
+            {%- render 'fpanel-bici' -%}
+          {%- endif -%}
+        </div>
+      </section>
+    {%- endfor -%}
+
     {%- assign fam_index = 0 -%}
     {%- for block in section.blocks -%}
       {%- if block.type != 'family' -%}{%- continue -%}{%- endif -%}
@@ -274,6 +337,24 @@
   ],
   "blocks": [
     {
+      "type": "suscripcion",
+      "name": "Entrada a la suscripción",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "Va hasta arriba de las bandas, con el perro repartidor. Es el mismo panel de la portada; aquí la bajada explica cómo funciona la suscripción, no un descuento." },
+        { "type": "textarea", "id": "title", "label": "Titular", "default": "Una cajita para chuparse las patas" },
+        { "type": "textarea", "id": "text", "label": "Bajada", "default": "Tú eliges los premios y cada cuándo llegan." },
+        { "type": "text", "id": "cta_label", "label": "Botón", "default": "Empieza tu suscripción" },
+        { "type": "url", "id": "cta_url", "label": "Link del botón", "info": "Vacío = la página de la Caja BUNGOT (Ajustes del tema → Suscripción → Producto de la Caja); sin ese ajuste, el panel de la portada (/#suscripcion)." },
+        { "type": "header", "content": "Colores" },
+        { "type": "color", "id": "bg", "label": "Fondo del panel", "default": "#E94925", "info": "Mismo naranja que el panel de la portada." },
+        { "type": "color", "id": "fg", "label": "Texto del panel", "default": "#FFFFFF" },
+        { "type": "color", "id": "cta_bg", "label": "Fondo del botón", "default": "#FED140", "info": "PANTONE 122 C" },
+        { "type": "color", "id": "cta_fg", "label": "Texto del botón", "default": "#163C69" },
+        { "type": "checkbox", "id": "show_art", "label": "Mostrar al perro repartidor en bici", "default": true }
+      ]
+    },
+    {
       "type": "family",
       "name": "Familia (banda)",
       "settings": [
@@ -299,6 +380,7 @@
     {
       "name": "Catálogo por bandas",
       "blocks": [
+        { "type": "suscripcion" },
         { "type": "family", "settings": { "title": "Premios deshidratados", "key": "deshidratados", "text": "Snacks 100% naturales, deshidratados a baja temperatura para que conserven todo su sabor y nutrientes. Sin conservadores ni colorantes." } },
         { "type": "product", "settings": { "title": "Hígado de cerdo", "eyebrow": "Sistema inmune · 80 g", "family": "deshidratados" } },
         { "type": "product", "settings": { "title": "Hígado de res", "eyebrow": "Sistema inmune · 80 g", "family": "deshidratados" } },

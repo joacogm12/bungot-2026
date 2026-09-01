@@ -12,6 +12,20 @@
     "catalogo": {
       "type": "collection-bandas",
       "blocks": {
+        "susc": {
+          "type": "suscripcion",
+          "settings": {
+            "title": "Una cajita para chuparse las patas",
+            "text": "Tú eliges los premios y cada cuándo llegan.",
+            "cta_label": "Empieza tu suscripción",
+            "cta_url": "",
+            "bg": "#e94925",
+            "fg": "#ffffff",
+            "cta_bg": "#fed140",
+            "cta_fg": "#163c69",
+            "show_art": true
+          }
+        },
         "fam_desh": {
           "type": "family",
           "settings": {
@@ -246,6 +260,7 @@
         }
       },
       "block_order": [
+        "susc",
         "fam_desh",
         "desh1",
         "desh1b",

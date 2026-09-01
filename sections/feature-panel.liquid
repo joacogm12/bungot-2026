@@ -3,19 +3,23 @@
   enorme centrado, píldora oscura y una fila de columnas cortas abajo.
   Estructura tomada del bloque "keep the feels flowing" de gethapply.com.
 
-  OJO CON EL COPY. Hoy este panel arma un pitch de suscripción con números
-  PLACEHOLDER (20% off, envío gratis). Verificado contra la Admin API:
-  `sellingPlanGroups` está vacío y los 13 productos tienen
-  `sellingPlanGroupsCount: 0` — la tienda NO vende suscripciones.
+  OJO CON EL COPY. Este panel es el pitch de la Caja BUNGOT: un producto con
+  plan de Shopify Subscriptions (mensual, 1 % de descuento porque la app no
+  acepta 0 %). Los números del texto los escribe el customizer, no salen de
+  Shopify: si el panel promete otro descuento o envío gratis, verifica que
+  exista de verdad en el admin antes de publicar.
 
-  O sea: el diseño está para verlo, pero esos números hoy son mentira y el
-  botón no puede suscribir a nadie. Antes de publicar hay que (a) montar los
-  selling plans en Shopify y (b) reemplazar los números por los reales.
-
-  Los defaults del schema, en cambio, van con contenido de marca verificable.
+  Los defaults del schema van con contenido de marca verificable.
 {%- endcomment -%}
 
-<section class="fpanel">
+{%- comment -%}
+  El id es el destino de respaldo del CTA "Empieza tu suscripción" del
+  catálogo (bloque "Entrada a la suscripción" de collection-bandas): cuando
+  no hay Caja configurada en Ajustes del tema → Suscripción, ese botón cae a
+  /#<ancla>. Sale de un ajuste para que dos instancias del panel no dupliquen
+  el id.
+{%- endcomment -%}
+<section class="fpanel"{% if section.settings.anchor != blank %} id="{{ section.settings.anchor | handleize }}"{% endif %}>
   <div
     class="fpanel__box"
     style="--fp-bg: {{ section.settings.bg }}; --fp-fg: {{ section.settings.fg }};"
@@ -52,10 +56,24 @@
       {%- endif -%}
 
       {%- if section.settings.cta_label != blank -%}
+        {%- liquid
+          # Destino del botón: la URL del ajuste; si está vacía, la PDP de la
+          # Caja (ajuste global caja_product, grupo Suscripción). Así el panel
+          # de la portada y la entrada del catálogo comparten destino sin
+          # duplicar la URL en dos templates. Sin Caja configurada, el
+          # catálogo completo.
+          assign fp_url = section.settings.cta_url
+          if fp_url == blank and settings.caja_product != blank
+            assign fp_url = settings.caja_product.url
+          endif
+          if fp_url == blank
+            assign fp_url = routes.all_products_collection_url
+          endif
+        -%}
         <a
           class="fpanel__cta"
           style="--fp-cta-bg: {{ section.settings.cta_bg }}; --fp-cta-fg: {{ section.settings.cta_fg }};"
-          href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}"
+          href="{{ fp_url }}"
         >{{ section.settings.cta_label }}</a>
       {%- endif -%}
 
@@ -66,32 +84,11 @@
 
     {%- if section.settings.show_art -%}
       {%- comment -%}
-        El perro repartidor en bici. NO es una animación de CSS: es un GIF de
-        dos cuadros que ya trae el pedaleo adentro, así que va como una sola
-        <img> sin @keyframes ni steps(). Dos cosas que no hay que hacerle:
-        - Convertirlo a MP4/WebM: el GIF tiene alfa real y el video lo pierde
-          (quedaría un rectángulo sólido encima del panel).
-        - Pasarlo por image_url / image_tag / srcset: el redimensionado de
-          Shopify tumba la animación y deja un solo cuadro congelado. Por eso
-          va con asset_url directo.
-        Con prefers-reduced-motion el <source> sirve el primer cuadro fijo
-        (bungot-repartidor-estatico.png): un GIF en loop no se pausa con CSS,
-        así que la única forma honesta de respetarlo es servir la imagen quieta.
-        Es decorativa: si no carga, la franja se ve completa y el CTA sigue.
+        El perro repartidor en bici. El markup y sus reglas (GIF con alfa vía
+        asset_url, PNG fijo con reduced-motion) viven en el snippet porque el
+        catálogo monta el mismo panel.
       {%- endcomment -%}
-      <div class="fpanel__bici">
-        <picture>
-          <source media="(prefers-reduced-motion: reduce)" srcset="{{ 'bungot-repartidor-estatico.png' | asset_url }}">
-          <img
-            src="{{ 'bungot-repartidor.gif' | asset_url }}"
-            alt="{{ 'sections.feature_panel.bici_alt' | t }}"
-            width="2048"
-            height="2048"
-            loading="lazy"
-            decoding="async"
-          >
-        </picture>
-      </div>
+      {%- render 'fpanel-bici' -%}
     {%- endif -%}
 
     {%- if section.blocks.size > 0 -%}
@@ -140,7 +137,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "⚠️ Si este panel promete descuentos, envíos gratis o suscripciones, verificá que existan de verdad en la tienda antes de publicar. Hoy BUNGOT no tiene planes de suscripción cargados en Shopify."
+      "content": "⚠️ Si este panel promete descuentos o envíos gratis, verifica que existan de verdad en la tienda antes de publicar. El botón sin link manda a la Caja BUNGOT (Ajustes del tema → Suscripción)."
     },
     {
       "type": "text",
@@ -168,12 +165,19 @@
       "info": "Separadas por coma. Se muestran como pastillas informativas — NO son un selector, no se pueden clickear."
     },
     { "type": "text", "id": "cta_label", "label": "Botón", "default": "Ver los productos" },
-    { "type": "url", "id": "cta_url", "label": "Link del botón" },
+    { "type": "url", "id": "cta_url", "label": "Link del botón", "info": "Vacío = la página de la Caja BUNGOT (Ajustes del tema → Suscripción → Producto de la Caja)." },
     {
       "type": "text",
       "id": "note",
       "label": "Letra chica",
       "info": "Debajo del botón. Para la tranquilidad del que duda (permanencia, cancelación)."
+    },
+    {
+      "type": "text",
+      "id": "anchor",
+      "label": "Ancla (id) de la sección",
+      "default": "suscripcion",
+      "info": "Para enlazar directo al panel desde otras páginas (el botón de suscripción del catálogo cae a /#suscripcion si no hay Caja configurada)."
     },
     { "type": "header", "content": "Colores" },
     {

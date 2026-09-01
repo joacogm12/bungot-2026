@@ -1717,6 +1717,15 @@ a.chip { text-decoration: none; }
   grid-template-columns: 1fr auto;
   gap: clamp(1.5rem, 4vw, 3rem);
   align-items: center;
+  /* La <img> de la bici se agranda a propósito más allá de su contenedor
+     (ver .fpanel__bici): lo que sobresale es transparente, pero en anchos
+     chicos su borde derecho pasa del viewport y el documento queda con
+     scrollWidth > clientWidth (el body lo tapa con overflow-x: clip, pero en
+     el catálogo, donde el panel va sangrado a --pg-pad, esa medida tiene que
+     dar limpia). Se recorta aquí y no en .fpanel__bici porque el dibujo llena
+     su contenedor al ras: el cuadro tiene padding de sobra y no le come ni un
+     pixel. Nada de lo visible del cuadro se sale de él. */
+  overflow: clip;
 }
 @media (max-width: 640px) {
   .fpanel__box { grid-template-columns: 1fr; text-align: center; }
