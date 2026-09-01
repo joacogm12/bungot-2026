@@ -1849,6 +1849,29 @@ a.chip { text-decoration: none; }
   .fpanel__bici { justify-self: center; width: min(62vw, 280px); }
 }
 
+/* Alternativa a la bici: un sticker quieto (lo usa la entrada a la suscripción
+   del catálogo). El PNG ya viene recortado a alfa y padeado a cuadrado, así
+   que acá no hay lienzo que recortar: la <img> mide lo que se ve. Va un poco
+   más chico que la bici porque el círculo llena su caja al ras y la bici no.
+   Sin data-peel a propósito: ver el comentario en collection-bandas.liquid. */
+.fpanel__sticker {
+  justify-self: end;
+  /* Grande a propósito: el círculo tiene que llenar el alto del cuadro, no
+     quedar como un sello en la esquina. El cuadro mide lo que el texto de la
+     izquierda (titular de 4 renglones + bajada + botón) y el sticker se le
+     come la mayor parte del padding vertical con el margen negativo, sin
+     salirse: el cuadro lleva overflow: clip. Quieto: sin giro ni animación,
+     a pedido. */
+  width: clamp(220px, 31vw, 450px);
+  height: auto;
+  margin-block: calc(-0.4 * clamp(1.6rem, 3.5vw, 2.8rem));
+  /* Nunca le roba el clic al botón. */
+  pointer-events: none;
+}
+@media (max-width: 640px) {
+  .fpanel__sticker { justify-self: center; width: min(66vw, 290px); margin-block: 0; }
+}
+
 .fpanel__items {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));

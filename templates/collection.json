@@ -19,11 +19,12 @@
             "text": "Tú eliges los premios y cada cuándo llegan.",
             "cta_label": "Empieza tu suscripción",
             "cta_url": "",
-            "bg": "#e94925",
+            "bg": "#2e5fa0",
             "fg": "#ffffff",
             "cta_bg": "#fed140",
             "cta_fg": "#163c69",
-            "show_art": true
+            "show_art": true,
+            "art": "sticker"
           }
         },
         "fam_desh": {

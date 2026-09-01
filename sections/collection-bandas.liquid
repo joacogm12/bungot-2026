@@ -162,6 +162,24 @@
         if susc_url == blank
           assign susc_url = routes.root_url | append: '#suscripcion'
         endif
+
+        # Gráfico del panel: la bici del repartidor (snippet compartido con la
+        # portada) o un sticker quieto. El sticker sale del image_picker si hay
+        # uno; si no, del PNG del tema (el perro en el kayak, recortado a alfa
+        # y padeado a cuadrado). Las medidas solo fijan la proporción
+        # intrínseca para que no salte el layout; el ancho real lo manda el CSS.
+        assign susc_sticker = ''
+        assign susc_sticker_w = 1200
+        assign susc_sticker_h = 1200
+        if block.settings.art == 'sticker'
+          if block.settings.sticker != blank
+            assign susc_sticker = block.settings.sticker | image_url: width: 800
+            assign susc_sticker_w = block.settings.sticker.width
+            assign susc_sticker_h = block.settings.sticker.height
+          else
+            assign susc_sticker = 'bungot-sticker-kayak.png' | asset_url
+          endif
+        endif
       -%}
       <section
         class="fpanel fpanel--catalogo"
@@ -188,7 +206,26 @@
               >{{ block.settings.cta_label }}</a>
             {%- endif -%}
           </div>
-          {%- if block.settings.show_art -%}
+          {%- if block.settings.show_art and susc_sticker != blank -%}
+            {%- comment -%}
+              Decorativo (alt vacío + aria-hidden): lo que dice el sticker ya
+              lo dice el texto de al lado. A propósito SIN el despegado de
+              .bg-sticker (data-peel): ese va con el scroll (view()) y este
+              panel es lo primero del catálogo, así que en la primera pantalla
+              se vería medio tapado de gris y solo se destaparía al pasar de
+              largo. Aquí el sticker ya está pegado.
+            {%- endcomment -%}
+            <img
+              class="fpanel__sticker"
+              src="{{ susc_sticker }}"
+              alt=""
+              aria-hidden="true"
+              width="{{ susc_sticker_w }}"
+              height="{{ susc_sticker_h }}"
+              loading="lazy"
+              decoding="async"
+            >
+          {%- elsif block.settings.show_art -%}
             {%- render 'fpanel-bici' -%}
           {%- endif -%}
         </div>
@@ -347,11 +384,23 @@
         { "type": "text", "id": "cta_label", "label": "Botón", "default": "Empieza tu suscripción" },
         { "type": "url", "id": "cta_url", "label": "Link del botón", "info": "Vacío = la página de la Caja BUNGOT (Ajustes del tema → Suscripción → Producto de la Caja); sin ese ajuste, el panel de la portada (/#suscripcion)." },
         { "type": "header", "content": "Colores" },
-        { "type": "color", "id": "bg", "label": "Fondo del panel", "default": "#E94925", "info": "Mismo naranja que el panel de la portada." },
+        { "type": "color", "id": "bg", "label": "Fondo del panel", "default": "#2E5FA0", "info": "Azul del panel del catálogo (el mismo del bonche de la portada). El panel de la portada sigue en naranja." },
         { "type": "color", "id": "fg", "label": "Texto del panel", "default": "#FFFFFF" },
         { "type": "color", "id": "cta_bg", "label": "Fondo del botón", "default": "#FED140", "info": "PANTONE 122 C" },
         { "type": "color", "id": "cta_fg", "label": "Texto del botón", "default": "#163C69" },
-        { "type": "checkbox", "id": "show_art", "label": "Mostrar al perro repartidor en bici", "default": true }
+        { "type": "header", "content": "Gráfico" },
+        { "type": "checkbox", "id": "show_art", "label": "Mostrar el gráfico", "default": true },
+        {
+          "type": "select",
+          "id": "art",
+          "label": "Qué gráfico",
+          "default": "sticker",
+          "options": [
+            { "value": "sticker", "label": "Sticker (el perro en el kayak)" },
+            { "value": "bici", "label": "Perro repartidor en bici (el de la portada)" }
+          ]
+        },
+        { "type": "image_picker", "id": "sticker", "label": "Sticker", "info": "PNG con fondo transparente, de preferencia cuadrado. Vacío = el perro en el kayak que trae el tema." }
       ]
     },
     {
