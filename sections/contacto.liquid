@@ -69,7 +69,7 @@
             assign enviado = true
             assign ok_correo = form.email
           endif
-          # Si Shopify devolvió el form con errores, respetamos la pastilla
+          # Si Shopify devolvió el form con errores, respetamos el asunto
           # que el visitante ya había elegido; si no, arranca en "Mi pedido".
           assign asunto_actual = asunto_pedido
           if enviado == false and form['Asunto'] != blank
@@ -116,20 +116,20 @@
           </div>
         </div>
 
-        <fieldset class="ct-asunto">
-          <legend class="ct-label">{{ 'contacto.form.asunto_label' | t }}</legend>
-          {%- comment -%}
-            Pastillas de opción única: botones de verdad (foco + teclado), el
-            valor viaja en el hidden como un campo más del correo de contacto.
-          {%- endcomment -%}
-          <input type="hidden" name="contact[Asunto]" value="{{ asunto_actual }}" data-ct-asunto>
-          <div class="ct-asunto__fila">
+        {%- comment -%}
+          Desplegable nativo (antes eran pastillas): el name viaja en el propio
+          select, así que no hace falta ningún input oculto. data-ct-asunto lo
+          usa contacto.js para regresarlo a "Mi pedido" al mandar otro mensaje.
+        {%- endcomment -%}
+        <div class="ct-campo ct-asunto">
+          <label class="ct-label" for="ct-asunto">{{ 'contacto.form.asunto_label' | t }}</label>
+          <select class="ct-input ct-select" id="ct-asunto" name="contact[Asunto]" data-ct-asunto>
             {%- assign asuntos = asunto_pedido | append: '|' | append: asunto_producto | append: '|' | append: asunto_mayoreo | append: '|' | append: asunto_otro | split: '|' -%}
             {%- for asunto in asuntos -%}
-              <button class="ct-pill" type="button" data-ct-pill aria-pressed="{% if asunto == asunto_actual %}true{% else %}false{% endif %}">{{ asunto }}</button>
+              <option{% if asunto == asunto_actual %} selected{% endif %}>{{ asunto }}</option>
             {%- endfor -%}
-          </div>
-        </fieldset>
+          </select>
+        </div>
 
         <div class="ct-campo">
           <label class="ct-label" for="ct-mensaje">{{ 'contacto.form.mensaje_label' | t }} <span aria-hidden="true">·</span></label>

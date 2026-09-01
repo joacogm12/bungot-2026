@@ -221,43 +221,20 @@
   color: var(--ct-naranja);
 }
 
-/* Pastillas de asunto (fieldset sin chrome del navegador). */
 .ct-asunto {
   margin: 26px 0 0;
   padding: 0;
   border: 0;
 }
 
-.ct-asunto legend {
-  padding: 0;
-}
-
-.ct-asunto__fila {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.ct-pill {
-  padding: 11px 22px;
-  font-family: var(--font-body, 'Inter', sans-serif);
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--ct-tinta);
-  background: transparent;
-  border: 2px solid var(--ct-tinta);
-  border-radius: 999px;
-  cursor: pointer;
-}
-
-.ct-pill[aria-pressed='true'] {
-  background: var(--ct-tinta);
-  color: var(--ct-crema);
-}
-
-.ct-pill:focus-visible {
-  outline: 3px solid var(--ct-teal);
-  outline-offset: 2px;
+/* Desplegable nativo: hereda la caja del .ct-input y sólo cambia la flecha (la
+   propia del navegador se ve ajena a la tarjeta) y el aire de la derecha. */
+.ct-select {
+  appearance: none; -webkit-appearance: none;
+  padding-right: 46px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23013C3E' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
 }
 
 .ct-form__pie {
@@ -588,37 +565,72 @@ a.ct-dato__valor:focus-visible {
    tramos de escala pierde la cascada y el transform se sigue aplicando. */
 
 @media (max-width: 900px) {
-  .ct-hero {
-    height: auto;
-    padding-top: 56px;
-  }
-
+  /* --ct-k es una LONGITUD (el tamaño de una unidad del diseño en esta
+     pantalla), no un factor: en CSS no se puede dividir entre una longitud ni
+     meter una en scale(), pero número × longitud sí es válido. Cada medida del
+     diseño se reescribe como <número> * var(--ct-k), así que la fila entera es
+     fluida y conserva EXACTAMENTE las proporciones de escritorio —los width
+     del diseño no siguen la proporción nativa de los PNG, por eso no sirve
+     darle a cada perro un alto suelto con width auto—.
+     1600 = 1425px de fila natural / 0.89, la proporción que ocupa en escritorio.
+     Vive en .ctpage y no en .ct-hero: el cuadro (.ct-card) es hermano del hero,
+     no descendiente, y también la necesita para su traslape. */
+  .ctpage { --ct-k: calc(100vw / 1600); }
+  .ct-hero { height: auto; padding-top: 56px; }
   .ct-hero__titulo {
     position: static;
-    margin-bottom: 26px;
-    /* En flujo ya no hay clip parejo a los lados: se baja el cuerpo para que
-       la palabra completa quepa incluso con el respaldo Anton/Impact. */
-    font-size: 14vw;
-    -webkit-text-stroke: 0.46vw currentColor;
+    /* El diseño de escritorio deja que los perros sangren por arriba de su caja
+       porque el título está detrás, en absoluto. Acá el título está en flujo: el
+       margen absorbe ese sangrado y escala con la manada. */
+    margin-bottom: calc(26px + 130 * var(--ct-k));
+    font-size: 14vw; -webkit-text-stroke: .46vw currentColor;
   }
+  .ct-hero__fila { transform: none; }
+  .ct-hero__pups { height: calc(650 * var(--ct-k)); }   /* alto natural de la fila */
+  .ct-pup { flex: none; margin-left: calc(-46 * var(--ct-k)); margin-right: calc(-46 * var(--ct-k)); }
+  .ct-pup--guion  { width: calc(304 * var(--ct-k)); height: calc(372 * var(--ct-k)); }
+  .ct-pup--greta  { width: calc(241 * var(--ct-k)); height: calc(712 * var(--ct-k)); margin-right: calc(-30 * var(--ct-k)); }
+  .ct-pup--manolo { width: calc(378 * var(--ct-k)); height: calc(573 * var(--ct-k)); margin-right: calc(-120 * var(--ct-k)); }
+  .ct-pup--ramona { width: calc(293 * var(--ct-k)); height: calc(725 * var(--ct-k)); }
+  .ct-pup--pecas  { width: calc(264 * var(--ct-k)); height: calc(508 * var(--ct-k)); }
+  .ct-pup--mac    { width: auto; height: calc(470 * var(--ct-k)); }
+  /* El cuadro vuelve a montarse sobre las patas, como en escritorio: sin el
+     traslape los perros se ven flotando sobre un hueco de crema. El valor va
+     en unidades del diseño para que crezca y se encoja con la manada. */
+  .ct-card { margin-top: calc(-40 * var(--ct-k)); }
+}
+@media (max-width: 640px) {
+  /* Con seis perros la fila mide 1425px de natural y quedan diminutos. Se
+     retira el último (el del extremo, que ya entraba cortado por el clip del
+     lienzo) y la manada crece: 1032px de fila / 0.86 ≈ 1200. */
+  .ct-pup--mac { display: none; }
+  .ctpage { --ct-k: calc(100vw / 1200); }
+}
 
-  .ct-hero__pups {
-    height: 180px;
-  }
+/* Piso táctil de 44px, el mismo criterio que el resto del sitio: desde 900,
+   que es donde la hamburguesa ya está activa y el contexto es de dedo. Los
+   enlaces de correo y teléfono eran una sola línea de texto de 22px. */
+@media (max-width: 900px) {
+  a.ct-dato__valor { display: inline-flex; align-items: center; min-height: 44px; }
+  .ct-select { min-height: 48px; }
+  .ct-form__enviar { min-height: 52px; }
+  .ct-ok__otro { min-height: 48px; }
+}
 
-  .ct-hero__fila {
-    transform: none;
-  }
-
-  .ct-pup {
-    /* Fluido: a 900px quedan en 260px y en un teléfono angosto bajan hasta
-       150px, para que la fila completa siga cabiendo sin cortar a nadie. */
-    height: clamp(150px, 30vw, 260px);
-    width: auto;
-    margin: 0 -24px;
-  }
-
-  .ct-card {
-    margin-top: 0;
-  }
+/* Teléfono: el cuadro deja de ser una tarjeta con aire y se vuelve casi la
+   pantalla completa; el textarea baja de 190 a 150 para que el botón de enviar
+   quepa sin scrollear todo el formulario. */
+@media (max-width: 640px) {
+  .ct-main, .ct-hero { padding-left: 20px; padding-right: 20px; }
+  .ct-card { padding: 28px 20px 30px; border-radius: 26px; }
+  .ct-card__titulo { font-size: 30px; }
+  .ct-card__bajada { font-size: 16px; }
+  .ct-card__nota { font-size: 15px; }
+  .ct-form { margin-top: 26px; }
+  .ct-form__fila { gap: 16px; }
+  .ct-input--area { min-height: 150px; }
+  .ct-form__pie { gap: 12px; }
+  .ct-form__enviar { width: 100%; justify-content: center; }
+  .ct-ok { padding: 32px 20px; }
+  .ct-ok__texto { font-size: 16px; margin-top: 18px; }
 }

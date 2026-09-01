@@ -215,22 +215,17 @@
     rollo.pista = root.querySelector('[data-rollo-pista]');
     if (!perro.atras || !perro.frente) return;
 
-    /* Teléfono y tablet vertical (≤900px): el recorrido no cabe — bajo el
-       `zoom` del lienzo el texto de las tarjetas queda a 5px — así que el
-       CSS lo re-maqueta en flujo (.paseo--movil) y aquí NO se arma nada: ni
-       cámara, ni anclas, ni arrastre del rollo (sin la clase paseo--js
-       aplica además el estado "sin JS": tarjetas visibles y tira abierta).
-       Si la ventana cruza el corte hacia escritorio se arma entonces, una
-       sola vez; de escritorio a móvil solo cambia la clase, y el CSS manda
-       con !important sobre lo que el JS ya escribió inline. */
-    var mq = window.matchMedia('(max-width: 900px)');
-    var armado = false;
-    function modoMovil() {
-      root.classList.toggle('paseo--movil', mq.matches);
-      if (!mq.matches && !armado) { armado = true; armar(); }
-    }
-    if (mq.addEventListener) mq.addEventListener('change', modoMovil);
-    modoMovil();
+    /* El recorrido se arma SIEMPRE, también en tablet (641–900, donde corre
+       encogido con zoom). En teléfono (marco ≤640) medirPista() pone
+       .paseo--vertical: la clase activa el modo plano (la escena se pinta en
+       su estado final) y el CSS re-maqueta la columna con !important sobre
+       lo que este script escribió inline. La clase se deriva de la MEDICIÓN
+       (marco.clientWidth) y no de un listener de matchMedia: el callback no
+       corre fiable dentro de iframes/embebidos (la clase se quedaba pegada
+       al girar, con el lienzo a zoom .24 y el texto a 5px) y además el media
+       query mide el viewport CON barra de scroll, así que entre 641 y ~655px
+       convivirían las dos maquetas. */
+    armar();
   }
 
   function armar() {
@@ -271,11 +266,15 @@
     }
     var mm = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (mm.addEventListener) mm.addEventListener('change', decidir);
+    // Sólo como refuerzo: la clase paseo--vertical la pone medirPista().
+    var mqAngosto = window.matchMedia('(max-width: 640px)');
+    if (mqAngosto.addEventListener) mqAngosto.addEventListener('change', decidir);
   }
 
   function decidir() {
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    plano = reduce || root.hasAttribute('data-sin-animar');
+    plano = reduce || root.hasAttribute('data-sin-animar') ||
+            root.classList.contains('paseo--vertical');
     root.classList.toggle('paseo--plano', plano);
     if (plano) {
       if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
@@ -293,7 +292,23 @@
      offsetHeight bajo zoom) y topDoc; y de paso el centro de cada tarjeta,
      que es donde aterriza al brotar. */
   function medirPista() {
-    lienzo.style.zoom = Math.min(1, marco.clientWidth / W);
+    var anchoMarco = marco.clientWidth || W;
+    /* La maqueta vertical se deriva de la MEDICIÓN, no de un listener suelto:
+       así entra y sale con cada resize, rotación y ResizeObserver. Si el
+       estado cambió, decidir() rehace el modo plano (rAF, transforms) y
+       vuelve a entrar aquí ya con la clase puesta. */
+    var vertical = anchoMarco <= 640;
+    if (root.classList.contains('paseo--vertical') !== vertical) {
+      root.classList.toggle('paseo--vertical', vertical);
+      decidir();
+      return;
+    }
+    var zoom = Math.min(1, anchoMarco / W);
+    lienzo.style.zoom = zoom;
+    /* Se publica para que el CSS pueda CONTRAESCALAR el texto: a 820px el
+       zoom es .51 y la copia de 22px caería a 11px. El dibujo se encoge, las
+       letras no. */
+    lienzo.style.setProperty('--paseo-zoom', zoom);
 
     geo.altoPista = riel.offsetHeight || 1;
     var rect = riel.getBoundingClientRect();

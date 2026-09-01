@@ -2,12 +2,14 @@
    BUNGOT 2026 — conocenos-paseo.css  (la historia como un paseo)
 
    El escenario es un lienzo fijo de 1582px con todo en absoluto sobre una
-   escena de 5650px. En pantallas angostas NO se recorta ni se re-maqueta:
+   escena de 5650px. Hasta 641px de marco NO se recorta ni se re-maqueta:
    .paseo__lienzo se escala completo con `zoom` (lo escribe JS:
-   min(1, marco/1582)). Tiene que ser `zoom` y no transform: scale() — un
-   transform en el ancestro rompe el position: sticky de la ventana (la fija
-   contra el lienzo en vez de contra la pantalla) y el recorrido entero deja
-   de funcionar.
+   min(1, marco/1582), publicado además en --paseo-zoom para contraescalar
+   la copia). Tiene que ser `zoom` y no transform: scale() — un transform en
+   el ancestro rompe el position: sticky de la ventana (la fija contra el
+   lienzo en vez de contra la pantalla) y el recorrido entero deja de
+   funcionar. Abajo de 640 el JS pone .paseo--vertical y el paseo se vuelve
+   una columna (ver el final de la hoja).
 
    Capas:
      .paseo__marco    recorta el zoom
@@ -548,130 +550,127 @@ img.pest,
   display: none;
 }
 
-/* --- Móvil (≤900px): la historia en flujo, sin recorrido -----------------
-   El lienzo de 1582px escalado con zoom queda en miniatura en un teléfono
-   (zoom .25, texto de tarjeta a 5px), así que abajo de 900px el JS no arma el
-   paseo (pone .paseo--movil, ver conocenos-paseo.js) y aquí todo lo absoluto
-   pasa a flujo: una columna con cada estación (su dibujo y su tarjeta) en el
-   orden de lectura 3 → 1 → 5 → 2 → 4 y, al final, el rollo como tira negra
-   con scroll horizontal. Camino, perro, pelota, estela, plátano, agua, flash
-   y capas de animación se esconden: solo tienen sentido con el recorrido.
-   Los !important son para ganarle a lo que el JS escribe inline (zoom del
-   lienzo, alto de la ventana, transform de la escena y de la utilería,
-   left/top de las anclas, opacity de las tarjetas) cuando la ventana cruza
-   de escritorio a móvil sin recargar. */
-@media (max-width: 900px) {
-  .paseo--movil .paseo__lienzo { width: auto !important; zoom: 1 !important; }
-
-  .paseo--movil .paseo__intro { max-width: none; padding: 48px 24px 0; }
-  .paseo--movil .paseo__titulo { font-size: clamp(56px, 16vw, 128px); }
-  .paseo--movil .paseo__bajada { font-size: 18px; margin-top: 10px; }
-
-  .paseo--movil .paseo__riel { height: auto !important; margin-top: 20px; }
-  .paseo--movil .paseo__ventana { position: static; height: auto !important; overflow: visible; }
-  .paseo--movil .paseo__escena {
-    position: relative;
-    height: auto;
-    transform: none !important;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 28px;
-    padding: 0 24px 56px;
+/* --- Responsive: el encabezado, fluido ------------------------------------
+   El intro vive DENTRO del lienzo con zoom (a diferencia del prototipo), así
+   que sus px ya se encogen con el dibujo: el título queda en ~65–75px reales
+   entre 641 y 1024, que es justo lo que se buscaba, pero la bajada caería a
+   10–13px. Se contraescala sólo la bajada con --paseo-zoom (misma técnica que
+   la copia de las tarjetas, ver el bloque de iPad): 19px reales a cualquier
+   zoom, con su ancho de línea contraescalado igual para conservar ~56ch. */
+@media (max-width: 1024px) {
+  .paseo:not(.paseo--vertical) .paseo__bajada {
+    font-size: calc(19px / var(--paseo-zoom, 1));
+    max-width: calc(560px / var(--paseo-zoom, 1));
   }
-  .paseo--movil .paseo__escena img { max-width: 100%; }
-
-  .paseo--movil .paseo__camino,
-  .paseo--movil .paseo__dachs,
-  .paseo--movil .pest--pelota,
-  .paseo--movil .pest--estela,
-  .paseo--movil .pest--platano,
-  .paseo--movil .pest--agua,
-  .paseo--movil .pest--flash,
-  .paseo--movil .pest__burbujas,
-  .paseo--movil .pest__humo { display: none; }
-
-  /* Todo lo que el JS posiciona o anima, a flujo y quieto. */
-  .paseo--movil .pest,
-  .paseo--movil .ptar,
-  .paseo--movil .prollo {
-    position: static !important;
-    left: auto !important;
-    top: auto !important;
-    margin: 0;
-    transform: none !important;
-    opacity: 1 !important;
-  }
-  /* Los grupos con hijos absolutos (bote + tapa, mesa + humo) conservan su
-     caja: relative y su tamaño de diseño; la mesa de 620px se encoge con
-     zoom para caber en el ancho. */
-  .paseo--movil .pest--bote { position: relative !important; }
-  /* La mesa: su caja de diseño es cuadrada (620) y el dibujo va abajo con
-     `contain`, así que a 480 de alto se recorta el aire de arriba sin mover
-     el dibujo. */
-  .paseo--movil .pest--pruebas { position: relative !important; height: 480px; zoom: .55; }
-  .paseo--movil .pest--casa { width: min(560px, 82vw); }
-  .paseo--movil .pest--hidrante { width: min(421px, 62vw); transform: scaleX(-1) !important; }
-  .paseo--movil .pest--camara { width: min(486px, 66vw); }
-
-  /* Orden de lectura: dibujo → tarjeta de cada estación → rollo. */
-  .paseo--movil .pest--casa     { order: 1; }
-  .paseo--movil .ptar--3        { order: 2; }
-  .paseo--movil .pest--bote     { order: 3; }
-  .paseo--movil .ptar--1        { order: 4; }
-  .paseo--movil .pest--pruebas  { order: 5; }
-  .paseo--movil .ptar--5        { order: 6; }
-  .paseo--movil .pest--hidrante { order: 7; }
-  .paseo--movil .ptar--2        { order: 8; }
-  .paseo--movil .pest--camara   { order: 9; }
-  .paseo--movil .ptar--4        { order: 10; }
-  .paseo--movil .prollo         { order: 11; }
-
-  .paseo--movil .ptar { width: min(560px, 100%); margin: 0 0 20px; }
-  .paseo--movil .ptar__titulo { font-size: clamp(38px, 11vw, 68px); }
-  .paseo--movil .ptar__foto { height: auto; aspect-ratio: 560 / 360; }
-  .paseo--movil .ptar__texto { font-size: 17px; }
-
-  /* El rollo: el bote quieto arriba y la tira como franja negra que se
-     desplaza a mano (scroll nativo, no el arrastre del JS). Sin máscara ni
-     dibujo de perforaciones: a este ancho la lengüeta y el bote a 2.05×
-     no caben. Las copias duplicadas del carrusel (aria-hidden) sobran. */
-  .paseo--movil .prollo {
-    width: 100%;
-    height: auto;
-    display: grid;
-    justify-items: start;
-    gap: 12px;
-  }
-  .paseo--movil .prollo__bote { position: static; width: 120px; }
-  .paseo--movil .prollo__salida {
-    position: static;
-    width: calc(100% + 48px);
-    height: auto;
-    margin: 0 -24px;
-    padding: 0 24px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
-  }
-  .paseo--movil .prollo__salida::-webkit-scrollbar { display: none; }
-  .paseo--movil .prollo__tira {
-    position: static;
-    width: max-content;
-    height: auto;
-    padding: 28px 12px 26px;
-    border-radius: 6px;
-    background: #141414;
-    -webkit-mask: none;
-    mask: none;
-    overflow: visible;
-    transform: none !important;
-  }
-  .paseo--movil .prollo__pista {
-    position: static;
-    transform: none !important;
-    cursor: default;
-    touch-action: auto;
-  }
-  .paseo--movil .prollo__foto[aria-hidden="true"] { display: none; }
 }
+/* El teléfono NO se decide por viewport sino por la clase: el JS mide
+   marco.clientWidth (sin barra de scroll) y el media query mide el viewport
+   (con ella), así que entre 641 y ~655px convivían las dos maquetas. Un solo
+   interruptor: .paseo--vertical, que pone medirPista() en conocenos-paseo.js. */
+.paseo--vertical .paseo__intro { padding: 32px 20px 0; max-width: none; }
+.paseo--vertical .paseo__titulo { font-size: clamp(46px, 13vw, 72px); }
+.paseo--vertical .paseo__bajada { font-size: 17px; max-width: none; }
+
+/* --- iPad (641–900): el recorrido corre encogido, la copia se contraescala --
+   El JS encoge el lienzo con zoom (a 820px queda en .51) y publica el factor
+   en --paseo-zoom. El título NO se contraescala: 68 × .51 = 35px reales, que ya
+   se leen, y agrandarlo estiraba la tarjeta un 33% sobre un sistema de
+   coordenadas afinado a mano contra el camino. Sólo suben la copia y el pie de
+   foto, y la foto cede los ~34px de lienzo que eso agrega: la tarjeta conserva
+   su alto y ninguna invade a su vecina ni al camino. El :not(.paseo--vertical)
+   es obligatorio por lo mismo de la barra de scroll: sin él, en la banda de
+   641–655 las reglas de iPad y las de teléfono aplicarían a la vez. */
+@media (min-width: 641px) and (max-width: 900px) {
+  .paseo:not(.paseo--vertical) .ptar__texto { font-size: calc(15px / var(--paseo-zoom, 1)); }
+  .paseo:not(.paseo--vertical) .ptar__hueco { font-size: calc(11px / var(--paseo-zoom, 1)); }
+  .paseo:not(.paseo--vertical) .ptar__foto { height: 326px; }
+}
+
+/* --- Teléfono: maqueta vertical -------------------------------------------
+   ≤640 de marco: abajo de este ancho el lienzo se encogería al 25% y la copia
+   caería a 5px. El JS activa .paseo--vertical (y con ella el modo plano, que
+   congela la animación en su estado final) y acá el paseo deja de ser un mapa:
+   se vuelve una columna de tarjetas en el orden narrativo del DOM (3 → 1 → 5 →
+   2 → 4). Los !important son contra los estilos EN LÍNEA que escribe paseo.js
+   en cada cuadro (transform, opacity, left/top, height). */
+.paseo--vertical .paseo__marco { overflow: visible; }
+.paseo--vertical .paseo__lienzo { zoom: 1 !important; width: auto; overflow: visible; }
+.paseo--vertical .paseo__riel { height: auto; margin-top: 0; }
+.paseo--vertical .paseo__ventana { position: static; height: auto !important; overflow: visible; }
+.paseo--vertical .paseo__escena {
+  position: static;
+  width: auto;
+  height: auto;
+  transform: none !important;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+  padding: 28px 20px 8px;
+}
+/* El camino, el perro y toda la utilería son piezas de un mapa que ya no
+   existe: en columna sobran. Las fotos y el texto sí viajan. */
+.paseo--vertical .paseo__camino,
+.paseo--vertical .paseo__dachs,
+.paseo--vertical .pest { display: none !important; }
+
+.paseo--vertical .ptar {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  width: auto !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+.paseo--vertical .ptar__titulo { font-size: clamp(30px, 8.5vw, 44px); }
+.paseo--vertical .ptar__foto { height: min(56vw, 240px); border-radius: 18px; }
+.paseo--vertical .ptar__texto { font-size: 17px; }
+.paseo--vertical .ptar__hueco { font-size: 14px; }
+
+/* El rollo pierde el bote y el arrastre a mano: en táctil una tira con scroll
+   nativo hace exactamente lo mismo y sin JS. */
+.paseo--vertical .prollo {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  transform: none !important;
+}
+.paseo--vertical .prollo__bote { display: none; }
+/* El envoltorio intermedio también es absoluto: al pasar la escena a static
+   perdía su bloque contenedor, volaba a coordenadas sueltas y dejaba a .prollo
+   con alto 0 (todos sus hijos fuera de flujo). */
+.paseo--vertical .prollo__salida {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible;
+}
+.paseo--vertical .prollo__tira {
+  position: static;
+  width: auto !important;
+  height: auto;
+  overflow-x: auto;
+  background: none;
+  /* En el tema el dibujo de la tira también es la máscara: sin quitarla,
+     recortaría las fotos sueltas de la columna. */
+  -webkit-mask: none;
+  mask: none;
+  transform: none !important;
+  scrollbar-width: none;
+}
+.paseo--vertical .prollo__tira::-webkit-scrollbar { display: none; }
+.paseo--vertical .prollo__pista {
+  position: static;
+  width: max-content;
+  height: auto;
+  transform: none !important;
+  cursor: auto;
+  /* La base pone pan-y para el arrastre del carrusel; aquí el paneo
+     horizontal es del scroll nativo. */
+  touch-action: auto;
+}
+.paseo--vertical .prollo__foto { flex: 0 0 200px; height: 140px; scroll-snap-align: start; }
+/* Los duplicados existen sólo para que el arrastre no tenga fin: sin arrastre,
+   sobran y se verían como fotos repetidas. */
+.paseo--vertical .prollo__foto[aria-hidden='true'] { display: none; }

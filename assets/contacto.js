@@ -1,5 +1,5 @@
 /* ==========================================================================
-   BUNGOT 2026 — contacto.js  (pastillas de asunto, envío por fetch y panel)
+   BUNGOT 2026 — contacto.js  (envío por fetch y panel de confirmación)
 
    El form se manda por fetch al endpoint de contacto de Shopify y, al
    resolver, se destapa el panel .ct-ok encima del formulario. La animación
@@ -24,7 +24,6 @@
   var correo = root.querySelector('#ct-correo');
   var mensaje = root.querySelector('#ct-mensaje');
   var asunto = root.querySelector('[data-ct-asunto]');
-  var pills = root.querySelectorAll('[data-ct-pill]');
   var panel = root.querySelector('[data-ct-ok]');
   var otro = root.querySelector('[data-ct-otro]');
   var correoOk = root.querySelector('[data-ct-ok-correo]');
@@ -32,17 +31,12 @@
 
   var campos = [nombre, correo, mensaje];
 
-  /* --- Pastillas de opción única -------------------------------------------
-     Son botones (foco y teclado gratis); el valor elegido viaja como un campo
-     más del correo en el hidden. */
-  function eligePill(pill) {
-    for (var j = 0; j < pills.length; j++) {
-      pills[j].setAttribute('aria-pressed', pills[j] === pill ? 'true' : 'false');
-    }
-    if (asunto) asunto.value = pill.textContent.trim();
-  }
-  for (var i = 0; i < pills.length; i++) {
-    pills[i].addEventListener('click', function () { eligePill(this); });
+  /* --- 1. Asunto ---------------------------------------------------------
+     Antes eran pastillas de opción única con un input oculto; ahora es un
+     <select> nativo que ya lleva el name, así que sólo hay que saber
+     devolverlo a su primera opción al reiniciar el formulario. */
+  function reiniciaAsunto() {
+    if (asunto && asunto.options) asunto.selectedIndex = 0;
   }
 
   /* --- Habilitar el envío ---------------------------------------------------
@@ -83,7 +77,7 @@
   otro.addEventListener('click', function () {
     oculta();
     mensaje.value = '';
-    if (pills.length) eligePill(pills[0]);
+    reiniciaAsunto();
     revisa();
     mensaje.focus();
   });
