@@ -164,6 +164,9 @@ body {
      scroll y rompería position:sticky en los descendientes — que es la base
      del stacking de Favoritos y del header pegajoso. clip recorta igual. */
   overflow-x: clip;
+  /* Sin pull-to-refresh ni rebote al pasarse del borde en celu: el rebote se
+     suma al vaivén de la barra del navegador y la página se siente trabada. */
+  overscroll-behavior-y: contain;
 }
 
 h1, h2, h3, h4 {

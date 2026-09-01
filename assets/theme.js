@@ -452,9 +452,17 @@
       // panel nunca llega a verse solo.
       var total = n * hold + (n - 1) * trans;
 
+      // Alto del viewport CACHEADO: en celu, esconder/mostrar la barra del
+      // navegador dispara resize y cambia innerHeight, y si se re-lee en cada
+      // frame el avance p brinca a mitad de scroll. Solo se re-mide cuando
+      // cambia el ANCHO (rotación) — la misma lógica que svh en el CSS del
+      // riel, que es contra lo que tiene que cuadrar este cálculo.
+      var vh = window.innerHeight;
+      var lastW = window.innerWidth;
+
       function render() {
         var rect = root.getBoundingClientRect();
-        var travel = rect.height - window.innerHeight;
+        var travel = rect.height - vh;
         var p = travel > 0 ? -rect.top / travel : 0;
         p = Math.max(0, Math.min(1, p));
 
@@ -484,7 +492,12 @@
       }
 
       window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
+      window.addEventListener('resize', function () {
+        if (window.innerWidth === lastW) return; // la barra del navegador no cuenta
+        lastW = window.innerWidth;
+        vh = window.innerHeight;
+        onScroll();
+      });
       render();
     });
   }
@@ -532,7 +545,16 @@
     }
 
     place();
-    window.addEventListener('resize', place);
+    // Solo el resize que cambia el ancho: el alto del hero va en svh, así que
+    // la barra del navegador de celu (que dispara resize sin mover el ancho)
+    // no cambia ninguna medida — re-calcar ahí es trabajo tirado a mitad de
+    // scroll.
+    var lastW = window.innerWidth;
+    window.addEventListener('resize', function () {
+      if (window.innerWidth === lastW) return;
+      lastW = window.innerWidth;
+      place();
+    });
     // Anton entra tarde y puede recolocar el layout: se vuelve a medir.
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
   }
@@ -610,7 +632,12 @@
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    // El recorrido depende del alto de la barra, no del viewport: el resize
+    // de la barra del navegador en celu (mismo ancho) no cambia nada.
+    var lastW = window.innerWidth;
     window.addEventListener('resize', function () {
+      if (window.innerWidth === lastW) return;
+      lastW = window.innerWidth;
       measure();
       onScroll();
     });
@@ -691,11 +718,15 @@
       // apertura (0.5 = a medio camino, 1.6 = empujadas hacia los bordes).
       var DISP = parseFloat(root.dataset.dispersion) || 1;
 
+      // Cacheado por lo mismo que en Favoritos: la barra del navegador de
+      // celu cambia innerHeight a mitad de scroll y el montón brincaría.
+      var vh = window.innerHeight;
+      var lastW = window.innerWidth;
+
       function clamp01(v) { return Math.max(0, Math.min(1, v)); }
 
       function render() {
         var rect = root.getBoundingClientRect();
-        var vh = window.innerHeight;
         // 0 = borde superior entrando por abajo, 1 = la sección ya pasó entera.
         var p = (vh - rect.top) / (vh + rect.height);
         var s = clamp01(p / SPAN);
@@ -715,7 +746,12 @@
         requestAnimationFrame(function () { render(); ticking = false; });
       }
       window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
+      window.addEventListener('resize', function () {
+        if (window.innerWidth === lastW) return; // la barra del navegador no cuenta
+        lastW = window.innerWidth;
+        vh = window.innerHeight;
+        onScroll();
+      });
       render();
     });
   }

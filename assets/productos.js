@@ -101,7 +101,14 @@
     }
 
     measure();
-    window.addEventListener('resize', measure);
+    // Solo el resize que cambia el ancho: la barra del navegador de celu
+    // dispara resize sin mover ninguna medida horizontal.
+    var lastW = window.innerWidth;
+    window.addEventListener('resize', function () {
+      if (window.innerWidth === lastW) return;
+      lastW = window.innerWidth;
+      measure();
+    });
     // Guardado para re-medir tras un cambio de filtro (una banda oculta pasa a
     // clientWidth 0 y hay que recalcular cuando vuelve a mostrarse).
     banda._pgMeasure = measure;

@@ -781,7 +781,10 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   position: relative;
   width: 100%;
   max-width: 720px;
+  /* svh: que la hoja no se estire/encoja cuando la barra del navegador de
+     celu aparece o se esconde. La línea vh queda de respaldo. */
   max-height: 90vh;
+  max-height: 90svh;
   overflow: auto;
   border-radius: 28px;
   border: 3px solid var(--cta-ink);
@@ -1113,6 +1116,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
     width: 100%;
     max-width: 100%;
     max-height: 92vh;
+    max-height: 92svh;
     border-radius: 28px 28px 0 0;
     border-width: 3px 0 0;
   }

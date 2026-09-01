@@ -255,7 +255,18 @@
     initArrastre();
     decidir();
 
-    window.addEventListener('resize', function () { medirPista(); pintar(); });
+    /* Solo el resize que cambia el ANCHO (rotación, ventana de escritorio):
+       en celu la barra del navegador dispara resize sin mover el ancho, y
+       re-medir ahí cambia altoVent (sale de innerHeight) → la ventana sticky
+       y la escena brincan a mitad de scroll. Congelarlo deja el alto medido
+       con barra visible, que es justo lo que hace svh en el CSS. El
+       ResizeObserver del marco ya cubre los cambios de maqueta. */
+    var anchoVent = window.innerWidth;
+    window.addEventListener('resize', function () {
+      if (window.innerWidth === anchoVent) return;
+      anchoVent = window.innerWidth;
+      medirPista(); pintar();
+    });
     window.addEventListener('scroll', function () { if (!plano) pintar(); }, { passive: true });
     window.addEventListener('load', function () { medirPista(); pintar(); });
     if (document.fonts && document.fonts.ready) {
