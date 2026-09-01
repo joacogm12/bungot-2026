@@ -101,7 +101,10 @@
   margin: 0;
   font-family: var(--rc-font-cifra);
   font-weight: 400;
-  font-size: 74px;
+  /* Fluido y no escalonado por media query: Bayon a 74px pide 330px de tinta
+     y es lo primero que se desborda al angostar; con tres escalones el título
+     saltaba 20px de golpe entre 431 y 470. */
+  font-size: clamp(44px, 8.6vw, 74px);
   line-height: 0.84;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -186,6 +189,10 @@
   font-size: 14px;
   color: rgba(1, 60, 62, 0.65);
 }
+/* "· $180.00 c/u" viaja entero: el nowrap va en un envoltorio propio (con
+   &nbsp; en el markup) porque carrito.js reescribe [data-rc-unit] al
+   recalcular y el "·" quedaba huérfano al final del renglón. */
+.rlinea__unit { white-space: nowrap; }
 
 /* Plan de suscripción bajo el precio unitario: chiquito y en verde, para que
    se lea como aviso y no como otro dato de la etiqueta. */
@@ -303,7 +310,7 @@
 .rtotal strong {
   font-family: var(--rc-font-cifra);
   font-weight: 400;
-  font-size: 56px;
+  font-size: clamp(44px, 10vw, 56px);
   line-height: 1;
   color: var(--rc-naranja);
 }
@@ -512,28 +519,209 @@
 .rvacio__ghost:hover { background: var(--rc-ambar); }
 
 /* --------------------------------------------------------------------------
-   Responsive
+   Responsive — cortes del sistema: 900 · 760 · 430 · 389.
    (Lo de ≤900px del header —esconder enlaces, mostrar burger— ya vive en
    base.css: acá solo se adapta el recibo.)
-   -------------------------------------------------------------------------- */
-@media (max-width: 760px) {
-  .recibo__cuerpo { padding: 40px 24px 36px; }
-  .recibo__h1 { font-size: 52px; }
 
+   900 es la frontera táctil: de ahí para abajo todo control tiene piso de
+   44px. El título y el total NO se tocan acá (van en clamp en la base). La
+   miniatura se queda en 92px en TODOS los anchos: hubo anulaciones de 84 y
+   76 en tableta que la dejaban más chica que en teléfono. Si vuelves a meter
+   un width a .rlinea__mini en un media query, revisa que la serie CREZCA con
+   el ancho.
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .rcpage { padding: 40px 20px 72px; }
+  .recibo__cuerpo { padding: 48px 40px 44px; }
+  .recibo__reglas .recibo__regla--3 { margin-top: 30px; }
+
+  /* La columna del importe desaparece y los controles caen a su propia fila
+     bajo el nombre, repartidos de borde a borde. iPad también es táctil: los
+     40×44 del stepper y los 34 de la ✕ son medidas de puntero fino, y en esa
+     fila sobran ~250px. */
   .rlinea {
-    grid-template-columns: 76px minmax(0, 1fr);
-    gap: 16px 18px;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 18px 20px;
+    padding: 22px 0;
   }
-  .rlinea__mini {
-    width: 76px;
-    height: 76px;
-  }
-  /* Los controles caen a su propia línea, de borde a borde. */
   .rlinea__ctrl {
     grid-column: 2 / -1;
     justify-content: space-between;
   }
+  .rlinea__step { width: 44px; }
+  .rlinea__x {
+    width: 44px;
+    height: 44px;
+  }
+  .rupsell__btn { height: 52px; }
+
+  .rvacio { padding: 56px 32px; }
+  .rupsell { padding: 24px 24px; }
+}
+
+@media (max-width: 760px) {
+  .recibo__cuerpo { padding: 40px 24px 36px; }
+
+  .rlinea {
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 16px 18px;
+  }
 
   .rvacio { padding: 52px 24px; }
-  .rupsell { padding: 22px 20px; }
+  /* El upsell deja de repartirse a los lados: el texto arriba, los botones
+     abajo alineados a la izquierda. */
+  .rupsell {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 22px 20px;
+  }
+}
+
+@media (max-width: 430px) {
+  /* La sombra de 12 caía exactamente en x = 0, pegada al borde de la
+     pantalla: con 14 de respiro y 8 de sombra queda a 6px del borde. Si la
+     sombra vuelve a 12 o el padding baja a 12, vuelve a tocar el borde. */
+  .rcpage { padding-inline: 14px; }
+  .recibo { filter: drop-shadow(-8px 8px 0 rgba(1, 60, 62, 0.6)); }
+  .recibo__cuerpo { padding: 32px 18px 30px; }
+
+  /* El folio deja de ir a la derecha. */
+  .recibo__cab {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .recibo__folio {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .recibo__reglas .recibo__regla--3 { margin-top: 26px; }
+
+  /* Retícula de dos renglones con áreas: foto y datos arriba, stepper e
+     importe a la derecha de la foto, ✕ arrinconada. Antes la fila de
+     controles se llevaba el ancho completo bajo la miniatura y los botones
+     pesaban más que el producto. */
+  .rlinea {
+    grid-template-columns: 92px minmax(0, 1fr) auto;
+    grid-template-areas:
+      "mini datos datos"
+      "mini ctrl  ctrl";
+    align-items: start;
+    gap: 14px 12px;
+    padding: 18px 0;
+    position: relative;
+  }
+  .rlinea__mini {
+    grid-area: mini;
+    align-self: start;
+    width: 92px;
+    height: 92px;
+    padding: 8px;
+  }
+  .rlinea__datos { grid-area: datos; }
+  /* El hueco para la ✕ va SOLO en el renglón del nombre, que es el único al
+     lado del que la ✕ se posa: en todo el bloque le robaba 40px a la meta. */
+  .rlinea__nombre {
+    display: block;
+    padding-right: 40px;
+    font-size: 20px;
+  }
+  /* wrap + row-gap: con un importe de cuatro cifras la cifra baja sola en vez
+     de desbordarse. */
+  .rlinea__ctrl {
+    grid-area: ctrl;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+  }
+  /* 36 de ancho, 44 de alto y filete de 1.5: el objetivo táctil se conserva
+     en la dirección del pulgar y el stepper baja de 136 a 106 — deja de
+     competir con la foto, que se queda en los 92 de escritorio. El alto NO
+     baja de 44 en ningún ancho bajo 900. */
+  .rlinea__stepper { border-width: 1.5px; }
+  .rlinea__step {
+    width: 36px;
+    height: 44px;
+    font-size: 16px;
+  }
+  .rlinea__qty {
+    min-width: 34px;
+    font-size: 15px;
+    border-left-width: 1.5px;
+    border-right-width: 1.5px;
+  }
+  /* El min-width: 0 es obligatorio: los 104 de base, con flex-wrap activo,
+     forzaban el salto de renglón en cuanto la columna bajaba de 220. */
+  .rlinea__importe {
+    min-width: 0;
+    margin-left: auto;
+    flex: none;
+    font-size: 21px;
+  }
+  /* La ✕ sale del flujo y se va a la esquina: en el renglón robaba 44px al
+     stepper y competía con el importe. */
+  .rlinea__x {
+    position: absolute;
+    top: 12px;
+    right: -6px;
+    width: 44px;
+    height: 44px;
+  }
+
+  /* El sello girado ocupaba media pantalla al lado del botón: pasa abajo,
+     centrado, y el botón se lleva el renglón completo. */
+  .recibo__cta {
+    gap: 18px;
+    justify-content: center;
+  }
+  .recibo__pagar-form { flex: 1 1 100%; }
+  .recibo__sello {
+    width: 108px;
+    height: 108px;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  /* La etiqueta y la cifra conservan el renglón con la línea de puntos, pero
+     la cifra manda: sin flex:none la comía el flex:1 de los puntos. */
+  .rtot__cifra { flex: none; }
+  .rtotal { gap: 12px; }
+
+  /* Asimetría deliberada (ya se revirtió una vez por "inconsistente"): las
+     acciones de la nota en blanco SÍ se estiran —son dos, y sueltas se ven
+     como sobras—; las fichas del upsell NO —son tres cortas, y apiladas a
+     ancho completo se leían como tres tablones. */
+  .rvacio__acciones {
+    /* align-self: .rvacio centra a sus hijos, y sin él el bloque de acciones
+       se encoge al ancho de los botones y el stretch de adentro no tiene
+       contra qué estirar. */
+    align-self: stretch;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .rvacio__cta,
+  .rvacio__ghost { justify-content: center; }
+
+  .rupsell__botones { gap: 10px; }
+  .rupsell__btn {
+    height: 48px;
+    padding: 0 14px;
+    gap: 8px;
+  }
+}
+
+/* NO es redundante con el de 430 (se borró una vez y el defecto volvió a
+   360): la columna al lado de la foto deja 177px REALES, no 192 —el cuerpo
+   deja 296 menos foto 92 menos gap 12 menos el padding-right que arrastra la
+   retícula—; el stepper (108) más el hueco (12) y el importe (66) piden 186,
+   y la cifra se caía sola de renglón hasta en el estado por defecto (el
+   bloque de controles pasaba de 46 a 87.6px de alto y el precio quedaba
+   huérfano bajo el stepper). Con la línea completa hay 281px y entra hasta
+   un importe de cuatro cifras (78.3). */
+@media (max-width: 389px) {
+  .rlinea {
+    grid-template-areas:
+      "mini datos datos"
+      "ctrl ctrl  ctrl";
+  }
 }

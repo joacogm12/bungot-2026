@@ -47,9 +47,15 @@
 
   <div class="rlinea__datos">
     <a class="rlinea__nombre" href="{{ item.url }}">{{ item.product.title }}</a>
+    {%- comment -%}
+      "· $180.00 c/u" viaja entero: el "·" y el sufijo van en .rlinea__unit
+      (nowrap + &nbsp;) y FUERA de [data-rc-unit], porque carrito.js
+      reescribe ese nodo al recalcular y el separador quedaba huérfano al
+      final del renglón en teléfono.
+    {%- endcomment -%}
     <p class="rlinea__meta">
-      {%- if linea_eyebrow != blank -%}{{ linea_eyebrow }} · {% endif -%}
-      <span data-rc-unit>{{ item.final_price | money }}</span> {{ 'cart.unit_suffix' | t }}
+      {%- if linea_eyebrow != blank -%}{{ linea_eyebrow }} {% endif -%}
+      <span class="rlinea__unit">{% if linea_eyebrow != blank %}&middot;&nbsp;{% endif %}<span data-rc-unit>{{ item.final_price | money }}</span>&nbsp;{{ 'cart.unit_suffix' | t }}</span>
     </p>
     {%- comment -%}
       Línea con plan de suscripción (Shopify Subscriptions): se dice aquí
