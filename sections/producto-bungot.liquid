@@ -457,11 +457,19 @@
         {%- endif -%}
 
         <div class="pdbuyrow">
+          {%- comment -%}
+            El stepper se apaga por ajuste en la plantilla de suscripción
+            (product.suscripcion.json): una caja por contrato, no hay "dos
+            cajas al mes". Sin él, el input oculto quantity se queda en 1 y
+            producto.js se salta setupStepper (chequea que exista).
+          {%- endcomment -%}
+          {%- if section.settings.show_stepper -%}
           <div class="pdstepper" data-pd-stepper>
             <button type="button" class="pdstepper__btn" data-pd-step="-1" aria-label="{{ 'sections.producto.qty_less' | t }}">−</button>
             <span class="pdstepper__val" data-pd-qty aria-live="polite">1</span>
             <button type="button" class="pdstepper__btn" data-pd-step="1" aria-label="{{ 'sections.producto.qty_more' | t }}">+</button>
           </div>
+          {%- endif -%}
 
           {%- comment -%}
             La etiqueta viva del CTA la arma el JS: prefijo + lo que esté elegido.
@@ -862,7 +870,13 @@
     </script>
   </div>
 
-  {%- comment -%} ---------- 4. Venta cruzada ---------- {%- endcomment -%}
+  {%- comment -%}
+    ---------- 4. Venta cruzada ----------
+    Se apaga por ajuste en la plantilla de suscripción: a una caja que se
+    renueva sola no se le "agregan" más productos, y las tarjetas con
+    "Agregar" confunden en esa página.
+  {%- endcomment -%}
+  {%- if section.settings.show_cross -%}
   <div class="pdcross">
     <div class="pdcross__inner">
       <div class="pdcross__head">
@@ -972,6 +986,7 @@
       </div>
     </div>
   </div>
+  {%- endif -%}
 
   {%- comment -%} Variantes reales para el JS (precio/id/disponibilidad). {%- endcomment -%}
   {%- if use_real_options -%}
@@ -1003,6 +1018,7 @@
     { "type": "text", "id": "cta_prefix", "label": "Texto del botón", "default": "Agregar", "info": "Al lado se agrega solo lo que esté elegido." },
     { "type": "text", "id": "cta_prefix_plan", "label": "Texto del botón con suscripción", "default": "Suscribirme", "info": "Se usa cuando el cliente elige un plan de suscripción (Shopify Subscriptions)." },
     { "type": "text", "id": "note", "label": "Línea debajo del botón", "default": "Precio por confirmar · envío gratis desde $500" },
+    { "type": "checkbox", "id": "show_stepper", "label": "Mostrar selector de cantidad", "default": true, "info": "Apágalo en la Caja BUNGOT: una suscripción es una caja por mes." },
 
     { "type": "header", "content": "Cifras" },
     { "type": "text", "id": "stat1_value", "label": "Cifra 1", "default": "62%" },
@@ -1016,6 +1032,7 @@
     { "type": "text", "id": "reviews_title", "label": "Título", "default": "Opiniones de los clientes", "info": "Las opiniones se cargan como bloques \"Opinión\". Sin ninguno, la sección invita a dejar la primera." },
 
     { "type": "header", "content": "Venta cruzada" },
+    { "type": "checkbox", "id": "show_cross", "label": "Mostrar la venta cruzada", "default": true, "info": "Apágalo en la Caja BUNGOT: no hay que agregar más productos a una suscripción." },
     { "type": "text", "id": "cross_title", "label": "Título", "default": "La manada también se lleva" },
     { "type": "text", "id": "cross_link_label", "label": "Link", "default": "Ver todos los productos" },
     { "type": "url", "id": "cross_link_url", "label": "Destino del link", "info": "Vacío = todos los productos." },

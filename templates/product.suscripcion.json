@@ -1,0 +1,59 @@
+{
+  "sections": {
+    "main": {
+      "type": "producto-bungot",
+      "settings": {
+        "lote": "Se arma cada mes · México",
+        "eyebrow": "Suscripción mensual",
+        "title": "",
+        "lead": "",
+        "cta_prefix": "Suscribirme",
+        "cta_prefix_plan": "Suscribirme",
+        "note": "Cada caja llega en 2 a 4 días hábiles",
+        "show_stepper": false,
+        "stat1_value": "3",
+        "stat1_label": "Premios",
+        "stat2_value": "1",
+        "stat2_label": "Caja al mes",
+        "stat3_value": "0",
+        "stat3_label": "Conservadores",
+        "reviews_title": "Opiniones de la manada",
+        "show_cross": false,
+        "cross_title": "La manada también se lleva",
+        "cross_link_label": ""
+      },
+      "blocks": {
+        "acc-1": {
+          "type": "acordeon",
+          "settings": {
+            "title": "¿Cómo funciona?",
+            "source": "manual",
+            "body": "<p>Te suscribes hoy y cada mes te llega una caja con 3 premios naturales de nuestro catálogo. El cobro se hace solo, cada mes, a la tarjeta con la que pagaste la primera caja: no tienes que volver a entrar a comprar.</p>"
+          }
+        },
+        "acc-2": {
+          "type": "acordeon",
+          "settings": {
+            "title": "¿Qué trae la caja?",
+            "source": "manual",
+            "body": "<p>3 premios 100% naturales y sin conservadores, como todo lo de BUNGOT. Tú eliges cuáles; cuando quieras cambiarlos, el cambio aplica para tu siguiente caja.</p>"
+          }
+        },
+        "acc-3": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Pausar, cambiar o cancelar",
+            "source": "manual",
+            "body": "<p>Desde <strong>Mi cuenta</strong> puedes pausar tu suscripción, saltarte un mes, cambiar la dirección o la tarjeta, o cancelar cuando quieras. Sin plazos forzosos ni penalizaciones.</p>"
+          }
+        },
+        "ben-1": { "type": "beneficio", "settings": { "title": "Tú eliges los premios" } },
+        "ben-2": { "type": "beneficio", "settings": { "title": "Llega cada mes a tu puerta" } },
+        "ben-3": { "type": "beneficio", "settings": { "title": "100% natural, sin conservadores" } },
+        "ben-4": { "type": "beneficio", "settings": { "title": "Cancela cuando quieras" } }
+      },
+      "block_order": ["acc-1", "acc-2", "acc-3", "ben-1", "ben-2", "ben-3", "ben-4"]
+    }
+  },
+  "order": ["main"]
+}
