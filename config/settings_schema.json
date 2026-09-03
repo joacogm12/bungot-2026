@@ -123,7 +123,7 @@
       { "type": "header", "content": "Cajas prearmadas" },
       { "type": "collection", "id": "fam_cajas_collection", "label": "Colección", "info": "Los paquetes de premios armados por BUNGOT (compra única). Además de su banda, esta colección es el destino de los paneles \"Ver las cajas\" de la portada y del catálogo." },
       { "type": "text", "id": "fam_cajas_type", "label": "Tipo de producto", "info": "Alternativa a la colección: product_type exacto (ej. Caja). Si hay colección, se ignora." },
-      { "type": "color", "id": "fam_cajas_bg", "label": "Color de la familia", "default": "#EB5F7A", "info": "PANTONE 709 C, el rosa de la paleta." },
+      { "type": "color", "id": "fam_cajas_bg", "label": "Color de la familia", "default": "#619AC5", "info": "PANTONE 2170 C, el azul medio de la paleta (a pedido, 2026-09-03; antes era el rosa 709 C)." },
       { "type": "color", "id": "fam_cajas_fg", "label": "Color de texto (banda)", "default": "#F7F1E3" }
     ]
   },
