@@ -12,21 +12,6 @@
     "catalogo": {
       "type": "collection-bandas",
       "blocks": {
-        "susc": {
-          "type": "suscripcion",
-          "settings": {
-            "title": "Una cajita para chuparse las patas",
-            "text": "Paquetes de premios armados por nosotros. Elige el tuyo y nosotros lo empacamos.",
-            "cta_label": "Ver los paquetes",
-            "cta_url": "",
-            "bg": "#2e5fa0",
-            "fg": "#ffffff",
-            "cta_bg": "#fed140",
-            "cta_fg": "#163c69",
-            "show_art": true,
-            "art": "sticker"
-          }
-        },
         "fam_cajas": {
           "type": "family",
           "settings": {
@@ -269,7 +254,6 @@
         }
       },
       "block_order": [
-        "susc",
         "fam_cajas",
         "fam_desh",
         "desh1",
