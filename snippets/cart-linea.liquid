@@ -64,6 +64,17 @@
     {%- if item.selling_plan_allocation -%}
       <p class="rlinea__plan">{{ 'cart.plan_prefix' | t }} {{ item.selling_plan_allocation.selling_plan.name }}</p>
     {%- endif -%}
+    {%- comment -%}
+      Propiedades visibles de la línea (hoy solo "Premios" de la Caja, puestas
+      por el picker de la PDP). Lo que empieza con guión bajo es maquinaria
+      (_caja_picks, _perro_*) y no se pinta — misma convención que el
+      checkout. Reusa .rlinea__plan: mismo renglón chico, cero CSS nuevo.
+    {%- endcomment -%}
+    {%- for prop in item.properties -%}
+      {%- assign prop_inicial = prop.first | slice: 0, 1 -%}
+      {%- if prop.last == blank or prop_inicial == '_' -%}{%- continue -%}{%- endif -%}
+      <p class="rlinea__plan">{{ prop.first }} · {{ prop.last }}</p>
+    {%- endfor -%}
   </div>
 
   <div class="rlinea__ctrl">

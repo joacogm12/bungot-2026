@@ -16,6 +16,10 @@
     setupOptions(root);
     setupPlans(root);
     setupStepper(root);
+    // Antes de setupAddToCart A PROPÓSITO: los dos escuchan el submit del
+    // mismo form y el guardián del picker (caja incompleta = no se agrega)
+    // solo puede frenar al de agregar si se registró primero.
+    setupCajaPicker(root);
     setupAddToCart(root);
     setupCrossSell();
     setupReviews(root);
@@ -321,6 +325,120 @@
         if (qtyInput) qtyInput.value = q;
       });
     });
+  }
+
+  /* --- Arma tu caja (solo la PDP de la Caja BUNGOT) -----------------------
+     El fieldset [data-pd-caja] lo pinta Liquid solo cuando el producto es el
+     del ajuste global caja_product. Un desplegable por lugar de la caja
+     ("Premio 1/2/3", se puede repetir premio) y el CTA se bloquea hasta
+     llenar todos. Lo elegido viaja en las propiedades de línea que Liquid
+     dejó disabled ("Premios" legible + _caja_picks en JSON) — se habilitan
+     solo llenas, así una caja sin elección jamás manda propiedades vacías.
+     Con sesión además se guarda AL MOMENTO en el metafield custom.caja_picks
+     vía la ruta /caja del worker de la ficha (misma firma HMAC de
+     window.BUNGOT.fichaApi): así "cambiar mis premios" es volver a esta
+     página y mover los desplegables, sin volver a comprar. Sin red o sin
+     sesión no pasa nada: las propiedades de línea son el camino de respaldo
+     (Flow las copia del pedido). */
+  function setupCajaPicker(root) {
+    var box = root.querySelector('[data-pd-caja]');
+    var form = root.querySelector('[data-pd-form]');
+    if (!box || !form) return;
+
+    var addBtn = root.querySelector('[data-pd-add]');
+    var propVis = form.querySelector('[data-caja-prop]');
+    var propJson = form.querySelector('[data-caja-prop-json]');
+    var contador = box.querySelector('[data-caja-count]');
+    var plantilla = (contador && contador.getAttribute('data-plantilla')) || '[x] de [n]';
+    var api = window.BUNGOT && window.BUNGOT.fichaApi;
+    var timerServidor;
+
+    var slots = toArray(box.querySelectorAll('[data-caja-slot]'));
+    if (!slots.length) return;
+    // Los lugares son los que Liquid pintó, no el atributo data-caja-n: si
+    // algún día difieren, manda lo que de verdad se puede llenar.
+    var n = slots.length;
+
+    function total() {
+      return slots.reduce(function (t, s) { return t + (s.value ? 1 : 0); }, 0);
+    }
+
+    function pinta() {
+      var t = total();
+      var completa = t === n;
+      slots.forEach(function (s) {
+        var fila = s.closest('[data-caja-slot-row]');
+        var mini = fila && fila.querySelector('[data-caja-mini]');
+        var opt = s.options[s.selectedIndex];
+        var img = (opt && opt.getAttribute('data-img')) || '';
+        if (mini) mini.style.backgroundImage = img ? 'url("' + img + '")' : '';
+        if (fila) fila.classList.toggle('is-elegido', s.value !== '');
+      });
+      if (contador) {
+        contador.textContent = plantilla.replace('[x]', t).replace('[n]', n);
+      }
+      box.classList.toggle('is-completa', completa);
+      // El CTA no se pinta disabled desde Liquid (sin JS no habría quién lo
+      // soltara); aquí sí: caja incompleta = no hay qué agregar.
+      if (addBtn) addBtn.disabled = !completa;
+
+      if (completa) {
+        // Mismo formato que siempre viaj\u00f3: repetidos agregados ("T\u00edtulo \u00d72"),
+        // en el orden en que aparecen por primera vez.
+        var mapa = {};
+        var orden = [];
+        slots.forEach(function (s) {
+          var opt = s.options[s.selectedIndex];
+          if (!mapa[s.value]) {
+            mapa[s.value] = 0;
+            orden.push({ handle: s.value, titulo: (opt && opt.text) || s.value });
+          }
+          mapa[s.value] += 1;
+        });
+        var legible = orden.map(function (o) {
+          return mapa[o.handle] > 1 ? o.titulo + ' \u00d7' + mapa[o.handle] : o.titulo;
+        }).join(' \u00b7 ');
+        if (propVis) { propVis.value = legible; propVis.disabled = false; }
+        if (propJson) { propJson.value = JSON.stringify(mapa); propJson.disabled = false; }
+        guardaServidor(mapa);
+      } else {
+        if (propVis) { propVis.value = ''; propVis.disabled = true; }
+        if (propJson) { propJson.value = ''; propJson.disabled = true; }
+      }
+    }
+
+    // Solo elecciones completas se guardan (una a medio mover no es una
+    // elección), con un respiro para no bombardear al worker stepper a
+    // stepper. Silencioso a propósito: si falla, el respaldo ya viaja en la
+    // línea del carrito.
+    function guardaServidor(mapa) {
+      if (!api || !api.url) return;
+      clearTimeout(timerServidor);
+      timerServidor = setTimeout(function () {
+        fetch(api.url + '/caja', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: api.id, firma: api.firma, picks: mapa })
+        }).catch(function () {});
+      }, 900);
+    }
+
+    box.addEventListener('change', function (e) {
+      if (e.target.closest('[data-caja-slot]')) pinta();
+    });
+
+    // Cinturón y tirantes del CTA bloqueado (Enter en un input, un submit()
+    // programático): incompleta, ni bolita ni POST — y que se note dónde falta.
+    form.addEventListener('submit', function (e) {
+      if (total() === n) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      box.classList.remove('is-falta');
+      void box.offsetWidth; // reinicia la animación si ya estaba puesta
+      box.classList.add('is-falta');
+    });
+
+    pinta();
   }
 
   /* --- Agregar al carrito -------------------------------------------------

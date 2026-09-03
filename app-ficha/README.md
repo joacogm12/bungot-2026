@@ -5,6 +5,12 @@ picar "Guardar" y escribe los metafields del cliente **al momento** vía la
 Admin API (con sesión iniciada). El camino de respaldo — atributos de carrito
 + workflow de Flow — sigue activo y cubre a quien compra sin sesión.
 
+También guarda los premios de la Caja BUNGOT: la ruta `/caja` (mismo POST
+firmado) recibe lo que el suscriptor eligió en "Arma tu caja" (PDP de la
+Caja) y lo escribe en el metafield `custom.caja_picks` (JSON handle →
+cantidad). El respaldo sin sesión son las propiedades de la línea del
+carrito (`Premios` legible + `_caja_picks`).
+
 Ver `worker.js` para la arquitectura y el modelo de seguridad (HMAC).
 
 ## Qué necesita para vivir (una sola vez)

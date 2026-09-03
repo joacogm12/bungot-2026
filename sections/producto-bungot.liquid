@@ -456,6 +456,80 @@
           </fieldset>
         {%- endif -%}
 
+        {%- liquid
+          # ---------- Arma tu caja ----------
+          # Solo en la PDP de la Caja BUNGOT: el producto del ajuste global
+          # caja_product (grupo Suscripción, la única fuente de verdad de cuál
+          # es la Caja) — nada de handles a mano. La lista de premios sale de
+          # la colección del ajuste de la sección y cae a la de la familia
+          # "Premios deshidratados" (fam_deshidratados_collection), la misma
+          # que pinta la primera banda del catálogo.
+          assign es_caja = false
+          if settings.caja_product != blank and product.id == settings.caja_product.id
+            assign es_caja = true
+          endif
+          assign caja_coll = section.settings.caja_collection | default: settings.fam_deshidratados_collection
+          assign caja_n = section.settings.caja_count | default: 3
+        -%}
+        {%- if es_caja and caja_coll != blank and caja_coll.products.size > 0 -%}
+          <fieldset class="pdcaja" data-pd-caja data-caja-n="{{ caja_n }}">
+            <legend class="pdopt__label">{{ 'sections.producto.caja_legend' | t }}</legend>
+            <div class="pdcaja__head">
+              <p class="pdcaja__help" data-caja-help>{{ 'sections.producto.caja_help' | t: count: caja_n }}</p>
+              {%- comment -%}
+                El contador lo arma el JS con la plantilla "[x] de [n]" —
+                corchetes, no llaves: una llave literal dentro de {{ }} truena
+                el upload del tema (ver CLAUDE.md, Fallas de upload).
+              {%- endcomment -%}
+              <span class="pdcaja__count" data-caja-count data-plantilla="{{ 'sections.producto.caja_count' | t }}" aria-live="polite">0 · {{ caja_n }}</span>
+            </div>
+            {%- comment -%}
+              Un desplegable por lugar de la caja ("Premio 1/2/3"), no la
+              lista completa hacia abajo: se pidió así. Las opciones son las
+              mismas en todos, así que se arman una vez en un capture. Fuera
+              lo que no es un premio suelto: la propia Caja (u otra
+              suscripción) y lo agotado — los premios no rastrean inventario,
+              así que available casi siempre es true. El data-img lo usa
+              producto.js para pintar la miniatura del lugar al elegir.
+            {%- endcomment -%}
+            {%- capture caja_opts -%}
+              {%- for cp in caja_coll.products limit: 24 -%}
+                {%- if cp.requires_selling_plan or cp.available != true -%}{%- continue -%}{%- endif -%}
+                <option value="{{ cp.handle }}"{% if cp.featured_image %} data-img="{{ cp.featured_image | image_url: width: 96 }}"{% endif %}>{{ cp.title }}</option>
+              {%- endfor -%}
+            {%- endcapture -%}
+            <div class="pdcaja__slots">
+              {%- for i in (1..caja_n) -%}
+                <label class="pdcaja__slot" data-caja-slot-row>
+                  <span class="pdcaja__mini" data-caja-mini aria-hidden="true"></span>
+                  <span class="pdcaja__slotlabel">{{ 'sections.producto.caja_slot' | t }} {{ i }}</span>
+                  {%- comment -%}
+                    Sin name a propósito: lo elegido viaja en las propiedades
+                    de línea de abajo, no como campo suelto del form.
+                  {%- endcomment -%}
+                  <select class="pdcaja__select" data-caja-slot>
+                    <option value="" selected>{{ 'sections.producto.caja_placeholder' | t }}</option>
+                    {{ caja_opts }}
+                  </select>
+                </label>
+              {%- endfor -%}
+            </div>
+            {%- comment -%}
+              Lo elegido viaja como propiedades de línea: "Premios" legible
+              (se ve en carrito, checkout y pedido — y Shopify Subscriptions
+              lo copia al contrato, así que también llega en las renovaciones)
+              y _caja_picks con los handles en JSON para maquinaria (Flow,
+              lista de empaque). La clave "Premios" es dato, no UI: no se
+              traduce ni se cambia sin cambiar también lo que la lea.
+              Arrancan disabled: sin JS no hay picker y una caja sin elección
+              no debe mandar propiedades vacías; producto.js los habilita al
+              llenarlos.
+            {%- endcomment -%}
+            <input type="hidden" name="properties[Premios]" value="" data-caja-prop disabled>
+            <input type="hidden" name="properties[_caja_picks]" value="" data-caja-prop-json disabled>
+          </fieldset>
+        {%- endif -%}
+
         <div class="pdbuyrow">
           {%- comment -%}
             El stepper se apaga por ajuste en la plantilla de suscripción
@@ -1019,6 +1093,9 @@
     { "type": "text", "id": "cta_prefix_plan", "label": "Texto del botón con suscripción", "default": "Suscribirme", "info": "Se usa cuando el cliente elige un plan de suscripción (Shopify Subscriptions)." },
     { "type": "text", "id": "note", "label": "Línea debajo del botón", "default": "Precio por confirmar · envío gratis desde $500" },
     { "type": "checkbox", "id": "show_stepper", "label": "Mostrar selector de cantidad", "default": true, "info": "Apágalo en la Caja BUNGOT: una suscripción es una caja por mes." },
+    { "type": "header", "content": "Arma tu caja", "info": "Solo aparece en el producto de la Caja (Ajustes del tema → Suscripción)." },
+    { "type": "range", "id": "caja_count", "min": 1, "max": 6, "step": 1, "label": "Premios por caja", "default": 3 },
+    { "type": "collection", "id": "caja_collection", "label": "Premios para elegir", "info": "Vacío = la colección de la familia Premios deshidratados (Ajustes del tema → Familias del catálogo)." },
 
     { "type": "header", "content": "Cifras" },
     { "type": "text", "id": "stat1_value", "label": "Cifra 1", "default": "62%" },

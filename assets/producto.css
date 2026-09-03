@@ -550,6 +550,111 @@
   color: rgba(1, 60, 62, .72);
 }
 
+/* --- Arma tu caja (solo la PDP de la Caja) -------------------------------
+   Un desplegable nativo por lugar de la caja ("Premio 1/2/3"), no la lista
+   completa: se pidió así. Fluye normal en la columna (misma regla que el
+   acordeón: nada de scroll interno). El select es pariente del .ct-select
+   de contacto (misma flecha propia), pero con el filete verde de la PDP. */
+.pdcaja {
+  margin: 0 0 18px;
+  padding: 0;
+  border: 0;
+}
+.pdcaja__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.pdcaja__help {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(1, 60, 62, .72);
+}
+.pdcaja__count {
+  flex: none;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: var(--pd-green);
+  border: 2px solid var(--pd-green);
+}
+.pdcaja.is-completa .pdcaja__count {
+  color: var(--pd-crema);
+  background: var(--pd-green);
+}
+.pdcaja__slots {
+  display: grid;
+  gap: 12px;
+}
+/* La fila es un <label> (clic en cualquier lado = foco al select): miniatura
+   a la izquierda a lo alto de los dos renglones, etiqueta chica arriba y el
+   desplegable abajo. */
+.pdcaja__slot {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 12px;
+  cursor: pointer;
+}
+/* La miniatura del premio elegido la pinta producto.js como background (del
+   data-img de la opción); vacía queda el cuadrito gris de siempre. */
+.pdcaja__mini {
+  grid-row: 1 / 3;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background-color: rgba(1, 60, 62, .08);
+  background-size: cover;
+  background-position: center;
+}
+.pdcaja__slotlabel {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(1, 60, 62, .6);
+  margin-bottom: 4px;
+}
+.pdcaja__select {
+  appearance: none; -webkit-appearance: none;
+  width: 100%;
+  min-height: 44px; /* piso táctil, en todos los anchos */
+  padding: 0 44px 0 14px;
+  border: 2px solid var(--pd-green);
+  border-radius: 12px;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23013C3E' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--pd-green);
+  cursor: pointer;
+}
+.pdcaja__slot.is-elegido .pdcaja__select { font-weight: 600; }
+/* Intentaron agregar con la caja incompleta: sacudida corta del contador. */
+@keyframes pdcaja-falta {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+.pdcaja.is-falta .pdcaja__count {
+  animation: pdcaja-falta 0.18s ease 2;
+  color: var(--pd-crema);
+  background: var(--pd-naranja);
+  border-color: var(--pd-naranja);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdcaja.is-falta .pdcaja__count { animation: none; }
+}
+
 /* --- Acordeón ------------------------------------------------------------
    Bloque normal en el flujo: sin alto propio ni scroll interno. Abrir una
    entrada estira la columna y con ella toda la fila (por eso el split es

@@ -18,6 +18,13 @@
    Secretos (wrangler secret put):
      SHOPIFY_TOKEN  token Admin API de la app custom (scope write_customers)
      FIRMA_SECRET   el mismo secreto del hmac_sha256 en layout/theme.liquid
+
+   Rutas (mismo POST firmado en las dos):
+     /       la ficha del perro (metafields custom.perro_* / dog_avatar)
+     /caja   los premios elegidos para la Caja BUNGOT (metafield
+             custom.caja_picks, JSON handle → cantidad). Lo manda el picker
+             "Arma tu caja" de la PDP; el respaldo sin sesión viaja como
+             propiedades de la línea del carrito.
    ========================================================================== */
 
 const TIENDA = 'e30306-22.myshopify.com';
@@ -86,6 +93,25 @@ function limpiar(ficha) {
   };
 }
 
+// Picks de la Caja: objeto handle → cantidad. Mismo criterio que la ficha
+// (validar y descartar, nunca regañar), pero aquí un envío sin nada válido sí
+// es error: no hay "caja vacía" que guardar, y borrar la elección no es algo
+// que el tema haga (se pisa con la siguiente elección completa).
+function limpiarPicks(crudo) {
+  if (!crudo || typeof crudo !== 'object' || Array.isArray(crudo)) return null;
+  const picks = {};
+  let total = 0;
+  for (const handle of Object.keys(crudo).slice(0, 24)) {
+    if (!/^[a-z0-9-]{1,80}$/.test(handle)) continue;
+    const qty = Number(crudo[handle]);
+    if (!Number.isInteger(qty) || qty < 1 || qty > 12) continue;
+    picks[handle] = qty;
+    total += qty;
+  }
+  if (!Object.keys(picks).length || total > 24) return null;
+  return picks;
+}
+
 async function shopify(env, query, variables) {
   const res = await fetch(API, {
     method: 'POST',
@@ -126,8 +152,28 @@ export default {
       return json(origen, { error: 'firma inválida' }, 403);
     }
 
-    const ficha = limpiar(cuerpo.ficha);
     const dueno = `gid://shopify/Customer/${id}`;
+
+    // ---------- /caja: los premios elegidos ----------
+    if (new URL(request.url).pathname === '/caja') {
+      const picks = limpiarPicks(cuerpo.picks);
+      if (!picks) return json(origen, { error: 'picks inválidos' }, 400);
+      const respuestaCaja = await shopify(
+        env,
+        `mutation GuardarCaja($mf: [MetafieldsSetInput!]!) { metafieldsSet(metafields: $mf) { userErrors { field message } } }`,
+        { mf: [{ ownerId: dueno, namespace: 'custom', key: 'caja_picks', type: 'json', value: JSON.stringify(picks) }] }
+      );
+      const erroresCaja = []
+        .concat(respuestaCaja.data?.metafieldsSet?.userErrors || [])
+        .concat(respuestaCaja.errors || []);
+      if (erroresCaja.length) {
+        console.error('GuardarCaja errores:', JSON.stringify(erroresCaja));
+        return json(origen, { ok: false }, 502);
+      }
+      return json(origen, { ok: true });
+    }
+
+    const ficha = limpiar(cuerpo.ficha);
 
     // EL CANDADO DEL CUMPLEAÑOS: se escribe UNA vez. Con esa fecha va el
     // regalo de cumpleaños del cliente, así que un cumpleaños ya guardado ni
