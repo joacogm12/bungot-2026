@@ -16,8 +16,8 @@
           "type": "suscripcion",
           "settings": {
             "title": "Una cajita para chuparse las patas",
-            "text": "Cajas de premios armadas por nosotros. Elige la tuya y nosotros la empacamos.",
-            "cta_label": "Ver las cajas",
+            "text": "Paquetes de premios armados por nosotros. Elige el tuyo y nosotros lo empacamos.",
+            "cta_label": "Ver los paquetes",
             "cta_url": "",
             "bg": "#2e5fa0",
             "fg": "#ffffff",
@@ -30,9 +30,9 @@
         "fam_cajas": {
           "type": "family",
           "settings": {
-            "title": "CAJAS BUNGOT",
+            "title": "PAQUETES BUNGOT",
             "key": "cajas",
-            "text": "Paquetes de premios armados por nosotros: cajas temáticas de compra única, listas para consentir o regalar."
+            "text": "Paquetes de premios armados por nosotros: combos temáticos de compra única, listos para consentir o regalar."
           }
         },
         "fam_desh": {

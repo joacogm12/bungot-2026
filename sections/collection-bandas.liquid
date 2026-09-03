@@ -132,7 +132,7 @@
       <button type="button" class="pfilter" data-filter="femur" data-target="femur">Fémur ahumado · {{ femur_n }}</button>
       <button type="button" class="pfilter" data-filter="juguetes" data-target="juguetes">Juguetes · {{ jug_n }}</button>
       {%- if cajas_n > 0 -%}
-        <button type="button" class="pfilter" data-filter="cajas" data-target="cajas">Cajas · {{ cajas_n }}</button>
+        <button type="button" class="pfilter" data-filter="cajas" data-target="cajas">Paquetes · {{ cajas_n }}</button>
       {%- endif -%}
     </div>
   </div>
@@ -397,7 +397,7 @@
         { "type": "paragraph", "content": "Va hasta arriba de las bandas. Es el mismo panel de la portada; hoy anuncia las cajas prearmadas (la suscripción está en pausa — el tipo del bloque conserva el nombre viejo a propósito, para no perder lo configurado)." },
         { "type": "textarea", "id": "title", "label": "Titular", "default": "Una cajita para chuparse las patas" },
         { "type": "textarea", "id": "text", "label": "Bajada", "default": "Paquetes de premios armados por nosotros, listos para apapachar." },
-        { "type": "text", "id": "cta_label", "label": "Botón", "default": "Ver las cajas" },
+        { "type": "text", "id": "cta_label", "label": "Botón", "default": "Ver los paquetes" },
         { "type": "url", "id": "cta_url", "label": "Link del botón", "info": "Vacío = la banda de cajas prearmadas de esta misma página (#banda-cajas); sin cajas, la Caja BUNGOT de suscripción (Ajustes del tema → Suscripción) y al final el panel de la portada." },
         { "type": "header", "content": "Colores" },
         { "type": "color", "id": "bg", "label": "Fondo del panel", "default": "#2E5FA0", "info": "Azul del panel del catálogo (el mismo del bonche de la portada). El panel de la portada sigue en naranja." },
@@ -446,7 +446,7 @@
       "name": "Catálogo por bandas",
       "blocks": [
         { "type": "suscripcion" },
-        { "type": "family", "settings": { "title": "Cajas BUNGOT", "key": "cajas", "text": "Paquetes de premios armados por nosotros: cajas temáticas de compra única, listas para consentir o regalar." } },
+        { "type": "family", "settings": { "title": "PAQUETES BUNGOT", "key": "cajas", "text": "Paquetes de premios armados por nosotros: combos temáticos de compra única, listos para consentir o regalar." } },
         { "type": "family", "settings": { "title": "Premios deshidratados", "key": "deshidratados", "text": "Snacks 100% naturales, deshidratados a baja temperatura para que conserven todo su sabor y nutrientes. Sin conservadores ni colorantes." } },
         { "type": "product", "settings": { "title": "Hígado de cerdo", "eyebrow": "Sistema inmune · 80 g", "family": "deshidratados" } },
         { "type": "product", "settings": { "title": "Hígado de res", "eyebrow": "Sistema inmune · 80 g", "family": "deshidratados" } },
