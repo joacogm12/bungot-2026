@@ -196,6 +196,9 @@ body:has(.pgal) .marquee { background: #F7F1E3; color: #EA4A27; }
   background: var(--pg-crema);
   color: var(--pg-navy);
   border-top: 2px solid rgba(1, 60, 62, .13);
+  /* Las bandas son ancla (#banda-<clave>, la usan los paneles "Ver las
+     cajas"): sin este margen el header sticky taparía el título al llegar. */
+  scroll-margin-top: calc(var(--nav-h, 72px) + var(--nav-gap, 0px));
 }
 .pgal .banda__head {
   display: flex;

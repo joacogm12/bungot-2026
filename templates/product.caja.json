@@ -1,0 +1,61 @@
+{
+  "sections": {
+    "main": {
+      "type": "producto-bungot",
+      "settings": {
+        "lote": "Armada a mano · México",
+        "eyebrow": "Caja de premios",
+        "title": "",
+        "lead": "",
+        "cta_prefix": "Agregar",
+        "cta_prefix_plan": "Suscribirme",
+        "note": "Envío gratis desde $500 · llega en 2 a 4 días",
+        "show_stepper": true,
+        "stat1_value": "100%",
+        "stat1_label": "Natural",
+        "stat2_value": "0",
+        "stat2_label": "Conservadores",
+        "stat3_value": "",
+        "stat3_label": "",
+        "reviews_title": "Opiniones de la manada",
+        "show_cross": true,
+        "cross_title": "Complétala con más premios",
+        "cross_link_label": "Ver todos los productos",
+        "cross_link_url": "",
+        "cross_collection": "snacks-favoritos"
+      },
+      "blocks": {
+        "acc-1": {
+          "type": "acordeon",
+          "settings": {
+            "title": "¿Qué trae esta caja?",
+            "source": "manual",
+            "body": "<p>Cada caja es un paquete armado por nosotros con premios 100% naturales, sin conservadores ni colorantes. Lo que trae exactamente viene en la descripción de cada caja.</p>"
+          }
+        },
+        "acc-2": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Cuidados y conservación",
+            "source": "instrucciones",
+            "body": "<p>En un lugar fresco y seco, no necesita refrigeración. Cierra bien cada bolsa para que conserve el sabor.</p>"
+          }
+        },
+        "acc-3": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Envíos y devoluciones",
+            "source": "manual",
+            "body": "<p>Enviamos a todo México en 2 a 4 días hábiles. Envío gratis en pedidos desde $500.</p><p>Si la caja llegó abierta, rota o algo no está bien, escríbenos dentro de los primeros 15 días y te la reponemos sin vueltas. Sin formularios eternos, sin letras chiquitas.</p><p>¿Dudas antes de comprar? Escríbenos a bungot.contacto@gmail.com o por Instagram @bungot_mx y te contestamos nosotros, no un bot.</p>"
+          }
+        },
+        "ben-1": { "type": "beneficio", "settings": { "title": "Armada por nosotros" } },
+        "ben-2": { "type": "beneficio", "settings": { "title": "100% natural, sin conservadores" } },
+        "ben-3": { "type": "beneficio", "settings": { "title": "Lista para regalar" } },
+        "ben-4": { "type": "beneficio", "settings": { "title": "Compra única, sin suscripción" } }
+      },
+      "block_order": ["acc-1", "acc-2", "acc-3", "ben-1", "ben-2", "ben-3", "ben-4"]
+    }
+  },
+  "order": ["main"]
+}

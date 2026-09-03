@@ -57,12 +57,17 @@
 
       {%- if section.settings.cta_label != blank -%}
         {%- liquid
-          # Destino del botón: la URL del ajuste; si está vacía, la PDP de la
-          # Caja (ajuste global caja_product, grupo Suscripción). Así el panel
-          # de la portada y la entrada del catálogo comparten destino sin
-          # duplicar la URL en dos templates. Sin Caja configurada, el
-          # catálogo completo.
+          # Destino del botón: la URL del ajuste; si está vacía, la banda de
+          # cajas prearmadas del catálogo (la colección de la familia "cajas"
+          # + el ancla #banda-cajas que expone collection-bandas). Así el
+          # panel de la portada y la entrada del catálogo comparten destino
+          # sin duplicar la URL en dos templates. Después cae a la PDP de la
+          # Caja de suscripción (caja_product — hoy en pausa: el producto está
+          # en borrador y el ajuste resuelve a blank) y al catálogo completo.
           assign fp_url = section.settings.cta_url
+          if fp_url == blank and settings.fam_cajas_collection != blank and settings.fam_cajas_collection.products.size > 0
+            assign fp_url = settings.fam_cajas_collection.url | append: '#banda-cajas'
+          endif
           if fp_url == blank and settings.caja_product != blank
             assign fp_url = settings.caja_product.url
           endif
@@ -137,7 +142,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "⚠️ Si este panel promete descuentos o envíos gratis, verifica que existan de verdad en la tienda antes de publicar. El botón sin link manda a la Caja BUNGOT (Ajustes del tema → Suscripción)."
+      "content": "⚠️ Si este panel promete descuentos o envíos gratis, verifica que existan de verdad en la tienda antes de publicar. El botón sin link manda a la banda de cajas prearmadas del catálogo (Familias del catálogo → Cajas prearmadas); sin cajas, a la Caja BUNGOT de suscripción (Ajustes del tema → Suscripción)."
     },
     {
       "type": "text",
@@ -165,7 +170,7 @@
       "info": "Separadas por coma. Se muestran como pastillas informativas — NO son un selector, no se pueden clickear."
     },
     { "type": "text", "id": "cta_label", "label": "Botón", "default": "Ver los productos" },
-    { "type": "url", "id": "cta_url", "label": "Link del botón", "info": "Vacío = la página de la Caja BUNGOT (Ajustes del tema → Suscripción → Producto de la Caja)." },
+    { "type": "url", "id": "cta_url", "label": "Link del botón", "info": "Vacío = la banda de cajas prearmadas del catálogo; sin cajas, la Caja BUNGOT de suscripción (Ajustes del tema → Suscripción)." },
     {
       "type": "text",
       "id": "note",

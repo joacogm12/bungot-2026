@@ -9,7 +9,7 @@
        en la página de productos (Familias del catálogo en los ajustes del
        tema: colección o product_type + color). Si el producto cae en varias
        familias (ej. Patas de pollo está en perro y en gato) gana la primera
-       en el orden del catálogo: deshidratados · gato · femur · juguetes.
+       en el orden del catálogo: cajas · deshidratados · gato · femur · juguetes.
     3. rotación de la paleta por posición — solo para lo que no está en
        ninguna familia (ej. la Caja BUNGOT, que no va en colecciones).
 
@@ -31,7 +31,7 @@
 
   # Familia del catálogo. Mismas reglas que collection-bandas.liquid: si la
   # familia tiene colección, manda la colección; si no, el product_type exacto.
-  assign fams = 'deshidratados,gato,femur,juguetes' | split: ','
+  assign fams = 'cajas,deshidratados,gato,femur,juguetes' | split: ','
   for k in fams
     assign id_coll = 'fam_' | append: k | append: '_collection'
     assign id_type = 'fam_' | append: k | append: '_type'

@@ -21,7 +21,7 @@
     · Si no hay colección, cae a los productos MANUALES (bloques) — así nada se
       rompe hasta que asignes la colección.
 
-  Claves de familia (filtros y ajustes): deshidratados · gato · femur · juguetes.
+  Claves de familia (filtros y ajustes): cajas · deshidratados · gato · femur · juguetes.
 {%- endcomment -%}
 
 {{ 'productos.css' | asset_url | stylesheet_tag }}
@@ -33,6 +33,7 @@
   assign gato_n = 0
   assign femur_n = 0
   assign jug_n = 0
+  assign cajas_n = 0
   for block in section.blocks
     if block.type != 'family'
       continue
@@ -63,10 +64,12 @@
         assign femur_n = c
       when 'juguetes'
         assign jug_n = c
+      when 'cajas'
+        assign cajas_n = c
     endcase
   endfor
-  # "Para perro" = todo menos la línea gato.
-  assign perro_n = total | minus: gato_n
+  # "Para perro" = todo menos la línea gato y las cajas (que tienen su chip).
+  assign perro_n = total | minus: gato_n | minus: cajas_n
 
   assign cta = section.settings.cta_text | default: 'Agregar'
   assign title_mid = section.settings.title_line2 | default: 'para'
@@ -128,6 +131,9 @@
       <button type="button" class="pfilter" data-filter="gato" data-target="gato">Para gato · {{ gato_n }}</button>
       <button type="button" class="pfilter" data-filter="femur" data-target="femur">Fémur ahumado · {{ femur_n }}</button>
       <button type="button" class="pfilter" data-filter="juguetes" data-target="juguetes">Juguetes · {{ jug_n }}</button>
+      {%- if cajas_n > 0 -%}
+        <button type="button" class="pfilter" data-filter="cajas" data-target="cajas">Cajas · {{ cajas_n }}</button>
+      {%- endif -%}
     </div>
   </div>
 
@@ -150,12 +156,16 @@
     {%- for block in section.blocks -%}
       {%- if block.type != 'suscripcion' -%}{%- continue -%}{%- endif -%}
       {%- liquid
-        # Destino del CTA: la URL del bloque; si no hay, la PDP de la Caja
-        # (ajuste global caja_product, grupo Suscripción: la única fuente de
-        # verdad de cuál producto es la suscripción, el mismo que usa el
-        # panel de la portada); si tampoco hay Caja configurada, el panel de
-        # suscripción de la portada (feature-panel expone id="suscripcion").
+        # Destino del CTA: la URL del bloque; si no hay, la banda de cajas
+        # prearmadas de ESTA misma página (ancla #banda-cajas — la familia
+        # "cajas" de los ajustes del tema); sin cajas, la PDP de la Caja de
+        # suscripción (ajuste global caja_product — hoy en pausa, el producto
+        # está en borrador y el ajuste resuelve a blank); y como último
+        # respaldo, el panel de la portada (feature-panel expone su ancla).
         assign susc_url = block.settings.cta_url
+        if susc_url == blank and settings.fam_cajas_collection != blank and settings.fam_cajas_collection.products.size > 0
+          assign susc_url = '#banda-cajas'
+        endif
         if susc_url == blank and settings.caja_product != blank
           assign susc_url = settings.caja_product.url
         endif
@@ -249,8 +259,14 @@
         assign fam_fg = settings[id_fg] | default: '#F7F1E3'
       -%}
 
+      {%- comment -%}
+        El id ancla (#banda-<clave>) es el destino de los paneles "Ver las
+        cajas" (este catálogo y la portada); sirve para cualquier banda. El
+        scroll-margin-top que lo separa del header sticky vive en productos.css.
+      {%- endcomment -%}
       <section
         class="banda"
+        id="banda-{{ fam_key }}"
         data-banda="{{ fam_key }}"
         data-order="{{ fam_index }}"
         style="order: {{ fam_index }}; --banda-bg: {{ fam_bg }}; --banda-fg: {{ fam_fg }};"
@@ -375,14 +391,14 @@
   "blocks": [
     {
       "type": "suscripcion",
-      "name": "Entrada a la suscripción",
+      "name": "Panel de entrada (cajas)",
       "limit": 1,
       "settings": [
-        { "type": "paragraph", "content": "Va hasta arriba de las bandas, con el perro repartidor. Es el mismo panel de la portada; aquí la bajada explica cómo funciona la suscripción, no un descuento." },
+        { "type": "paragraph", "content": "Va hasta arriba de las bandas. Es el mismo panel de la portada; hoy anuncia las cajas prearmadas (la suscripción está en pausa — el tipo del bloque conserva el nombre viejo a propósito, para no perder lo configurado)." },
         { "type": "textarea", "id": "title", "label": "Titular", "default": "Una cajita para chuparse las patas" },
-        { "type": "textarea", "id": "text", "label": "Bajada", "default": "Tú eliges los premios y cada cuándo llegan." },
-        { "type": "text", "id": "cta_label", "label": "Botón", "default": "Empieza tu suscripción" },
-        { "type": "url", "id": "cta_url", "label": "Link del botón", "info": "Vacío = la página de la Caja BUNGOT (Ajustes del tema → Suscripción → Producto de la Caja); sin ese ajuste, el panel de la portada (/#suscripcion)." },
+        { "type": "textarea", "id": "text", "label": "Bajada", "default": "Paquetes de premios armados por nosotros, listos para apapachar." },
+        { "type": "text", "id": "cta_label", "label": "Botón", "default": "Ver las cajas" },
+        { "type": "url", "id": "cta_url", "label": "Link del botón", "info": "Vacío = la banda de cajas prearmadas de esta misma página (#banda-cajas); sin cajas, la Caja BUNGOT de suscripción (Ajustes del tema → Suscripción) y al final el panel de la portada." },
         { "type": "header", "content": "Colores" },
         { "type": "color", "id": "bg", "label": "Fondo del panel", "default": "#2E5FA0", "info": "Azul del panel del catálogo (el mismo del bonche de la portada). El panel de la portada sigue en naranja." },
         { "type": "color", "id": "fg", "label": "Texto del panel", "default": "#FFFFFF" },
@@ -408,7 +424,7 @@
       "name": "Familia (banda)",
       "settings": [
         { "type": "text", "id": "title", "label": "Título", "default": "Premios deshidratados" },
-        { "type": "text", "id": "key", "label": "Clave", "default": "deshidratados", "info": "deshidratados, gato, femur o juguetes. La colección, el tipo de producto y los colores de cada familia se editan en Configuración del tema → Familias del catálogo (así el producto lleva el mismo color en su página)." },
+        { "type": "text", "id": "key", "label": "Clave", "default": "deshidratados", "info": "cajas, deshidratados, gato, femur o juguetes. La colección, el tipo de producto y los colores de cada familia se editan en Configuración del tema → Familias del catálogo (así el producto lleva el mismo color en su página)." },
         { "type": "textarea", "id": "text", "label": "Párrafo de la familia" }
       ]
     },
@@ -419,7 +435,7 @@
         { "type": "image_picker", "id": "image", "label": "Imagen" },
         { "type": "text", "id": "title", "label": "Nombre", "default": "Producto" },
         { "type": "text", "id": "eyebrow", "label": "Eyebrow", "info": "Ej: Sistema inmune · 80 g" },
-        { "type": "text", "id": "family", "label": "Familia (clave)", "default": "deshidratados", "info": "deshidratados, gato, femur o juguetes." },
+        { "type": "text", "id": "family", "label": "Familia (clave)", "default": "deshidratados", "info": "cajas, deshidratados, gato, femur o juguetes." },
         { "type": "text", "id": "price", "label": "Precio", "info": "Déjalo vacío para mostrar \"Precio por confirmar\"." },
         { "type": "product", "id": "link_product", "label": "Producto (link)", "info": "Opcional. Si eliges uno, la tarjeta abre su página de producto y toma su precio real." }
       ]
@@ -430,6 +446,7 @@
       "name": "Catálogo por bandas",
       "blocks": [
         { "type": "suscripcion" },
+        { "type": "family", "settings": { "title": "Cajas BUNGOT", "key": "cajas", "text": "Paquetes de premios armados por nosotros: cajas temáticas de compra única, listas para consentir o regalar." } },
         { "type": "family", "settings": { "title": "Premios deshidratados", "key": "deshidratados", "text": "Snacks 100% naturales, deshidratados a baja temperatura para que conserven todo su sabor y nutrientes. Sin conservadores ni colorantes." } },
         { "type": "product", "settings": { "title": "Hígado de cerdo", "eyebrow": "Sistema inmune · 80 g", "family": "deshidratados" } },
         { "type": "product", "settings": { "title": "Hígado de res", "eyebrow": "Sistema inmune · 80 g", "family": "deshidratados" } },

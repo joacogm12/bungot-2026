@@ -119,7 +119,12 @@
       { "type": "collection", "id": "fam_juguetes_collection", "label": "Colección", "info": "Tiene prioridad sobre el tipo de producto." },
       { "type": "text", "id": "fam_juguetes_type", "label": "Tipo de producto", "info": "Alternativa a la colección: product_type exacto (ej. huesos, Juguete). Si hay colección, se ignora." },
       { "type": "color", "id": "fam_juguetes_bg", "label": "Color de la familia", "default": "#2E5FA0" },
-      { "type": "color", "id": "fam_juguetes_fg", "label": "Color de texto (banda)", "default": "#013C3E" }
+      { "type": "color", "id": "fam_juguetes_fg", "label": "Color de texto (banda)", "default": "#013C3E" },
+      { "type": "header", "content": "Cajas prearmadas" },
+      { "type": "collection", "id": "fam_cajas_collection", "label": "Colección", "info": "Los paquetes de premios armados por BUNGOT (compra única). Además de su banda, esta colección es el destino de los paneles \"Ver las cajas\" de la portada y del catálogo." },
+      { "type": "text", "id": "fam_cajas_type", "label": "Tipo de producto", "info": "Alternativa a la colección: product_type exacto (ej. Caja). Si hay colección, se ignora." },
+      { "type": "color", "id": "fam_cajas_bg", "label": "Color de la familia", "default": "#EB5F7A", "info": "PANTONE 709 C, el rosa de la paleta." },
+      { "type": "color", "id": "fam_cajas_fg", "label": "Color de texto (banda)", "default": "#F7F1E3" }
     ]
   },
   {
@@ -142,7 +147,7 @@
     "settings": [
       {
         "type": "paragraph",
-        "content": "La Caja BUNGOT se vende como un producto con plan de Shopify Subscriptions. Este ajuste es la única fuente de verdad de cuál es ese producto: los botones \"Empieza tu suscripción\" de la portada y del catálogo mandan a su página cuando su link está vacío."
+        "content": "⏸️ La suscripción está EN PAUSA desde 2026-09: la Caja BUNGOT quedó en borrador y los paneles de portada y catálogo hoy anuncian las cajas prearmadas (ver Familias del catálogo → Cajas prearmadas). Este ajuste se conserva como la única fuente de verdad de cuál producto es la suscripción, para revivirla sin rearmar nada: basta regresar la Caja a activo."
       },
       {
         "type": "product",
