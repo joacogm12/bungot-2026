@@ -2429,12 +2429,14 @@ a.chip { text-decoration: none; }
   filter: drop-shadow(0 6px 10px rgba(11, 32, 58, 0.35));
 }
 @media (max-width: 640px) {
-  /* El sticker baja debajo del texto, alineado a la izquierda del flujo. */
+  /* El sticker baja debajo del texto y va CENTRADO (a pedido, 2026-09-07):
+     pegado a la izquierda se veía suelto bajo un titular que ocupa todo el
+     ancho. */
   .despedida__inner {
     grid-template-columns: 1fr;
     align-items: start;
   }
-  .despedida__sticker { justify-self: start; }
+  .despedida__sticker { justify-self: center; }
 }
 /* --------------------------------------------------------------------------
    Footer

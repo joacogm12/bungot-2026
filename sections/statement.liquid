@@ -20,7 +20,7 @@
 
 <section
   class="statement"
-  style="--st-bg: {{ section.settings.bg }}; --st-accent: {{ section.settings.accent }}; --st-img-h: {{ section.settings.image_height }}svh; --st-sticker-w: {{ section.settings.sticker_size }}%; --st-sticker-b: {{ section.settings.sticker_bottom }}%; --st-peel: {{ section.settings.sticker_peel }}%; --st-peel-from: {{ section.settings.peel_start }}%; --st-peel-to: {{ section.settings.peel_end }}%; --st-outline: {{ section.settings.outline }}; --st-cta-bg: {{ section.settings.cta_bg }}; --st-cta-fg: {{ section.settings.cta_fg }};"
+  style="--st-bg: {{ section.settings.bg }}; --st-accent: {{ section.settings.accent }}; --st-img-h: calc({{ section.settings.image_height }} * var(--svh)); --st-sticker-w: {{ section.settings.sticker_size }}%; --st-sticker-b: {{ section.settings.sticker_bottom }}%; --st-peel: {{ section.settings.sticker_peel }}%; --st-peel-from: {{ section.settings.peel_start }}%; --st-peel-to: {{ section.settings.peel_end }}%; --st-outline: {{ section.settings.outline }}; --st-cta-bg: {{ section.settings.cta_bg }}; --st-cta-fg: {{ section.settings.cta_fg }};"
 >
   <div class="wrap statement__inner">
     <div class="statement__copy">

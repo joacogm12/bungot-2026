@@ -38,7 +38,7 @@
 {%- if photo != blank -%}
   <section
     class="fphoto"
-    style="--fphoto-h: {{ section.settings.height }}svh; --fphoto-focus: {{ section.settings.focus }}; --fphoto-bg: {{ section.settings.bg }}; --fphoto-frame: {{ section.settings.frame_bg }};"
+    style="--fphoto-h: calc({{ section.settings.height }} * var(--svh)); --fphoto-focus: {{ section.settings.focus }}; --fphoto-bg: {{ section.settings.bg }}; --fphoto-frame: {{ section.settings.frame_bg }};"
   >
     <img
       class="fphoto__img"
