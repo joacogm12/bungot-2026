@@ -27,8 +27,9 @@
 
   /* --- Miniaturas ---------------------------------------------------------
      Cambian lo que muestra el marco. Una foto cambia el src del <img> y su
-     tratamiento (el "fit" viaja en data-fit: una recortada respira con
-     contain + padding, una con fondo propio va a sangre). Un video se clona
+     tratamiento (el "fit" viaja en data-fit: la principal va a sangre, las
+     demás se contienen completas; la bolsa recortada de respaldo del tema,
+     que no tiene miniatura, respira con padding). Un video se clona
      desde su <template> al slot del marco y la foto se esconde; entra con
      preload="none" y solo su poster, y el archivo no baja hasta que la persona
      le da play. Cada video se clona UNA vez, así regresar a él no lo vuelve a
@@ -63,6 +64,7 @@
       main.src = thumb.getAttribute('data-full');
       main.alt = thumb.getAttribute('data-full-alt') || main.alt;
       main.classList.toggle('is-cover', thumb.getAttribute('data-fit') === 'cover');
+      main.classList.remove('is-recorte');
       frame.classList.remove('is-video');
     }
 

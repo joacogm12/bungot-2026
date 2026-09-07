@@ -199,22 +199,22 @@
   overflow: hidden;
   box-sizing: border-box;
 }
-/* Dos tratamientos: las fotos del producto (Shopify) van a sangre (is-cover);
-   contain + padding queda solo para la bolsa recortada de respaldo del tema,
-   cuando el producto no tiene fotos. El JS mueve is-cover al cambiar de
-   miniatura. */
+/* Tres tratamientos. Por defecto la foto se CONTIENE completa sobre el crema
+   del marco: el marco tiene una proporción propia (la de la pantalla en
+   escritorio, la del video en celu) y las fotos son cuadradas; a sangre se
+   cortaban infografías y textos. Solo la foto principal (la bolsa) va a
+   sangre (is-cover): tolera el recorte y se ve grande. La bolsa recortada
+   de respaldo del tema (is-recorte, cuando el producto no tiene fotos)
+   respira con padding. El JS mueve las clases al cambiar de miniatura. */
 .pdframe__img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 46px;
   box-sizing: border-box;
 }
-.pdframe__img.is-cover {
-  object-fit: cover;
-  padding: 0;
-}
+.pdframe__img.is-cover { object-fit: cover; }
+.pdframe__img.is-recorte { padding: 46px; }
 /* El display: block de arriba le ganaría al atributo hidden que pone el JS al
    alternar foto <-> video: se vuelve a bajar a mano. */
 .pdframe__img[hidden],
@@ -1146,7 +1146,13 @@
     flex: none;
     width: 100%;
     aspect-ratio: var(--pd-frame-ar, 1);
-    max-height: calc(78 * var(--svh));
+    /* Tope de alto: que marco + tira quepan en la pantalla. Se resta el
+       header, los paddings del panel (28 + 32), el gap (20) y la tira
+       (76 + 6). --svh es el alto ESTABLE medido al cargar: en Chrome de iOS
+       eso es con su barra de abajo puesta, que es justo la que tapaba las
+       miniaturas. El mínimo evita un marco aplastado en pantallas muy bajas
+       (ahí la galería rebasa y ni modo). */
+    max-height: max(300px, calc(100 * var(--svh) - var(--nav-h, 72px) - var(--nav-gap, 0px) - 162px));
   }
   .pdsplit__lote { position: static; order: 3; }
   .pdbuy__title { font-size: clamp(2.75rem, 11vw, 4rem); }

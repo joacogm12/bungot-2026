@@ -204,7 +204,7 @@
 
         <div class="pdframe">
           <img
-            class="pdframe__img{% if bag_fit == 'cover' %} is-cover{% endif %}"
+            class="pdframe__img{% if bag_fit == 'cover' %} is-cover{% else %} is-recorte{% endif %}"
             src="{{ bag_src }}"
             alt="{{ bag_alt | escape }}"
             width="1200"
@@ -239,6 +239,12 @@
           {%- for media in product.media -%}
             {%- if media.media_type == 'image' -%}
               {%- if media.preview_image.src == bag.src -%}{%- continue -%}{%- endif -%}
+              {%- comment -%}
+                Solo la foto principal (la bolsa, arriba) va a sangre: tolera
+                el recorte a la proporción del marco. Las demás —infografías,
+                fotos con el perro— se CONTIENEN completas sobre crema: a
+                sangre se les cortaban los textos y las orillas (2026-09-07).
+              {%- endcomment -%}
               <button
                 type="button"
                 class="pdthumb"
@@ -246,7 +252,7 @@
                 data-kind="image"
                 data-full="{{ media | image_url: width: 1200 }}"
                 data-full-alt="{{ media.alt | default: title | escape }}"
-                data-fit="cover"
+                data-fit="contain"
                 aria-pressed="false"
               >
                 <img src="{{ media | image_url: width: 200 }}" alt="{{ media.alt | default: title | escape }}" width="92" height="92" loading="lazy">
