@@ -22,9 +22,16 @@
   --pd-max: 1582px;
   --pd-pad: 63px;
   --pd-split-h: 960px;
-  --pd-frame-h: 700px;
+  /* El marco es CUADRADO (las fotos de producto son 1200×1200): mide
+     --pd-frame-h por lado. Debajo va la tira de miniaturas; --pd-gal-h es el
+     alto de las dos piezas juntas (marco + gap + miniaturas) y es con lo que
+     se centra la galería en pantalla. */
+  --pd-frame-h: 580px;
+  --pd-thumb: 84px;
+  --pd-gal-gap: 18px;
+  --pd-gal-h: calc(var(--pd-frame-h) + var(--pd-gal-gap) + var(--pd-thumb));
   /* Dónde se pega la galería, medido desde el borde de la VENTANA: centrada en
-     la pantalla (mitad del viewport menos mitad del marco), pero nunca más
+     la pantalla (mitad del viewport menos mitad de la galería), pero nunca más
      arriba de la base del header más un respiro, para que en pantallas bajas
      el marco no se meta debajo de la barra. La misma var pone el padding de
      arriba del panel (ver .pdsplit__media): así la galería ARRANCA ya en su
@@ -32,7 +39,7 @@
      que primero sube y luego se frena. */
   --pd-gal-top: max(
     calc(var(--nav-h, 72px) + var(--nav-gap, 0px) + 24px),
-    calc(calc(50 * var(--svh)) - var(--pd-frame-h) / 2)
+    calc(calc(50 * var(--svh)) - var(--pd-gal-h) / 2)
   );
   /* El padding de arriba del panel sale de --pd-gal-top restándole el header,
      que está en flujo por encima de la página. */
@@ -46,19 +53,17 @@
   position: relative;
 }
 
-/* El color del panel de la galería se estira hacia ARRIBA, por detrás del
-   header transparente y sticky del tema, para que la barra quede sobre el
-   panel y no sobre una franja crema. Solo la MITAD izquierda: la derecha ya es
-   crema, la misma del body, así que no hace falta pintarla. El alto es solo la
-   franja del header (72px fijos del navbar v2 más su gap, hoy 0). Va en el
-   ::before y no en el panel porque .pdsplit__media lleva overflow: hidden
-   para sostener la fila fija. */
+/* El color de la familia se estira hacia ARRIBA, por detrás del header
+   transparente y sticky del tema, para que la barra quede sobre el color y no
+   sobre una franja crema. A todo lo ancho: desde 2026-09-07 el split entero va
+   del color del producto (la compra es una tarjeta crema encima). El alto es
+   solo la franja del header (72px fijos del navbar v2 más su gap, hoy 0). */
 .pdpage::before {
   content: '';
   position: absolute;
   bottom: 100%; /* justo pegado al borde de arriba de la página */
   left: 0;
-  width: 50%;
+  width: 100%;
   height: calc(var(--nav-h, 72px) + var(--nav-gap, 0px));
   background: var(--pd-fam, var(--pd-naranja));
 }
@@ -79,12 +84,16 @@
    La fila arranca en 960px y CRECE con el contenido: abrir los desplegables de
    la derecha estira la columna, no scrollea adentro. Las dos columnas quedan
    stretch para que el panel de color acompañe siempre a la más alta.
+   El color de la familia lo pinta el split ENTERO (las dos columnas): la
+   galería va directo sobre él y la compra es una tarjeta crema encima. Así el
+   color del producto cubre la pantalla completa, no solo la mitad.
    -------------------------------------------------------------------------- */
 .pdsplit {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: stretch;
   min-height: var(--pd-split-h);
+  background: var(--pd-fam, var(--pd-naranja));
 }
 
 /* --- Panel de la galería ------------------------------------------------- */
@@ -98,13 +107,12 @@
   align-items: flex-start;
   gap: 26px;
   padding: var(--pd-gal-pad) 44px 60px;
-  background: var(--pd-fam, var(--pd-naranja));
   box-sizing: border-box;
 }
 
-/* La galería entera —miniaturas + marco— es UNA sola pieza: el sticky va acá y
-   no en cada parte, así viajan en conjunto y nunca se descuelgan entre sí.
-   Las miniaturas quedan centradas contra el marco (align-items: center).
+/* La galería entera —marco + miniaturas debajo— es UNA sola pieza: el sticky
+   va acá y no en cada parte, así viajan en conjunto y nunca se descuelgan
+   entre sí. Es una columna: el marco arriba y la tira centrada debajo.
 
    El top es --pd-gal-top (ver :root de .pdpage): la pieza centrada en la
    PANTALLA y el mismo valor que el padding de arriba del panel, así no hay
@@ -114,23 +122,30 @@
 .pdgal {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 26px;
+  gap: var(--pd-gal-gap);
   min-width: 0;
   position: sticky;
   top: var(--pd-gal-top);
 }
 
-/* Tira vertical de miniaturas. */
+/* Tira horizontal de miniaturas, centrada bajo el marco y nunca más ancha que
+   él; si el producto trae más piezas de las que caben en un renglón, la tira
+   parte en dos (la galería crece un poco y el centrado queda aproximado, no
+   pasa nada). */
 .pdthumbs {
   flex: none;
   display: flex;
-  flex-direction: column;
-  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: var(--pd-frame-h);
 }
 .pdthumb {
-  width: 92px;
-  height: 92px;
+  width: var(--pd-thumb);
+  height: var(--pd-thumb);
   padding: 0;
   border: 3px solid transparent;
   border-radius: 20px;
@@ -166,63 +181,17 @@
   color: var(--pd-crema);
 }
 
-/* Navegación a la derecha del marco: flecha arriba, "n de total", flecha
-   abajo. Vertical como la tira de miniaturas; centrada contra el marco por
-   el align-items de .pdgal. Todo (flechas y contador) va en crema y solo
-   contorno, sin relleno, para no competir con la foto. */
-.pdnav {
-  --pd-nav-ink: var(--pd-crema);
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-.pdnav__btn {
-  width: 52px;
-  height: 52px;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  border: 3px solid var(--pd-nav-ink);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--pd-nav-ink);
-  cursor: pointer;
-  transition: transform .18s ease, background-color .18s ease;
-}
-.pdnav__btn:hover { transform: scale(1.08); background: color-mix(in srgb, var(--pd-nav-ink) 14%, transparent); }
-.pdnav__btn:focus-visible { outline: 3px solid var(--pd-nav-ink); outline-offset: 3px; }
-.pdnav__count {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 22px;
-  line-height: 1;
-  letter-spacing: .04em;
-  color: var(--pd-nav-ink);
-  text-align: center;
-  white-space: nowrap;
-}
-.pdnav__sep { margin: 0 5px; opacity: .65; }
-/* " de " es solo para el lector de pantalla; a la vista va la diagonal. */
-.pdnav__of {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-
 /* El marco: la foto NUNCA va suelta sobre el color. El marco crema le da piso
    tanto a la bolsa recortada como a una foto de estudio con su propio fondo. */
-/* Alto FIJO: el marco mide lo mismo con los desplegables abiertos y cerrados.
-   De acá sale el alto de .pdgal, y por eso su centrado se calcula con
-   --pd-frame-h. Quien acompaña el scroll es .pdgal, no el marco solo. */
+/* Tamaño FIJO y cuadrado: el marco mide lo mismo con los desplegables abiertos
+   y cerrados y muestra la foto 1200×1200 completa, sin recorte. De acá sale el
+   alto de .pdgal (--pd-gal-h), y por eso su centrado se calcula con
+   --pd-frame-h. Quien acompaña el scroll es .pdgal, no el marco solo. El
+   min() deja que encoja si la columna es más angosta que el marco. */
 .pdframe {
-  flex: 1;
-  max-width: 520px;
-  height: var(--pd-frame-h);
+  flex: none;
+  width: min(100%, var(--pd-frame-h));
+  aspect-ratio: 1;
   position: relative;
   border: 3px solid var(--pd-green);
   border-radius: 32px;
@@ -319,11 +288,21 @@
 }
 
 /* --- Panel de compra ----------------------------------------------------- */
+/* Tarjeta crema sobre el color de la familia, con el mismo borde y radio del
+   marco de la foto: dos objetos flotando sobre el mismo color. Arranca en la
+   misma línea que la galería (--pd-gal-pad) para que los dos queden alineados
+   arriba; el margen de abajo empata con el del panel de la galería. Todo lo
+   de adentro sigue pintado para leerse sobre crema, por eso la tarjeta y no
+   el texto directo sobre el color (el vino y el azul de algunas familias no
+   dejan leer el verde). */
 .pdsplit__buy {
   display: flex;
   flex-direction: column;
+  margin: var(--pd-gal-pad) 44px 60px 0;
   padding: 40px 56px 52px;
   background: var(--pd-crema);
+  border: 3px solid var(--pd-green);
+  border-radius: 32px;
   box-sizing: border-box;
 }
 
@@ -1107,16 +1086,17 @@
   .pdpage {
     --pd-pad: 40px;
     --pd-split-h: 900px;
-    --pd-frame-h: 620px;
+    --pd-frame-h: 500px;
+    --pd-thumb: 72px;
   }
   .pdsplit__media { padding: var(--pd-gal-pad) 32px 48px; gap: 20px; }
-  .pdsplit__buy { padding: 32px 40px 40px; }
+  .pdsplit__buy { margin: var(--pd-gal-pad) 32px 48px 0; padding: 32px 40px 40px; }
   .pdbuy__title { font-size: 58px; }
   .pdsplit__lote { left: 32px; }
 }
 
 @media (max-width: 1000px) {
-  .pdpage { --pd-pad: 22px; --pd-frame-h: auto; }
+  .pdpage { --pd-pad: 22px; }
   /* En una columna la galería ocupa todo el ancho, así que el color de arriba
      también. */
   .pdpage::before { width: 100%; }
@@ -1127,7 +1107,9 @@
     grid-template-columns: minmax(0, 1fr);
     min-height: 0;
   }
-  .pdsplit__buy { min-width: 0; }
+  /* La tarjeta de compra toma el mismo margen lateral que el panel de la
+     galería y se pega a ella (el gap lo pone el padding de abajo del panel). */
+  .pdsplit__buy { min-width: 0; margin: 0 22px 32px; padding: 32px 24px 36px; }
   /* Las tres cifras con separadores de 30+30px no caben en un teléfono y
      eran los únicos 21px que desbordaban el documento (con scroll-into-view
      la página se corría). Separador más angosto y, si aun así no cabe, parte. */
@@ -1146,16 +1128,17 @@
     gap: 20px;
     position: static;
   }
-  /* Las miniaturas y el lote salen del absoluto: en una columna no hay esquinas
-     que ocupar. */
-  /* La tira va en fila y se DESPLAZA: seis miniaturas de 92px suman más que
-     cualquier pantalla y, sin esto, el grid tomaba su ancho mínimo y toda la
-     PDP desbordaba a lo ancho. min-width: 0 en el panel es lo que le quita al
-     grid el derecho a crecer con ella. */
+  /* El lote sale del absoluto: en una columna no hay esquinas que ocupar. */
+  /* La tira sigue debajo del marco pero acá NO parte: va en un solo renglón
+     y se DESPLAZA. Seis miniaturas suman más que un teléfono y, sin esto, el
+     grid tomaba su ancho mínimo y toda la PDP desbordaba a lo ancho.
+     min-width: 0 en el panel es lo que le quita al grid el derecho a crecer
+     con ella. */
   .pdsplit__media { min-width: 0; }
   .pdthumbs {
-    flex-direction: row;
-    order: 1;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    max-width: none;
     overflow-x: auto;
     padding-bottom: 6px;
     scroll-snap-type: x proximity;
@@ -1163,16 +1146,12 @@
     scrollbar-width: thin;
   }
   .pdthumb { flex: none; width: 76px; height: 76px; border-radius: 16px; scroll-snap-align: start; }
-  .pdframe { order: 2; max-width: none; height: auto; aspect-ratio: 1; }
+  .pdframe { width: 100%; }
   /* Con un video activo el marco toma SU proporción (la pone el JS desde el
      data-ar de la miniatura): uno vertical se ve completo en lugar de quedar
      chiquito dentro del cuadrado. El tope evita que un 9:16 rebase la
      pantalla; si lo alcanza, contain deja franjas crema a los lados. */
   .pdframe.is-video { aspect-ratio: var(--pd-frame-ar, 1); max-height: calc(78 * var(--svh)); }
-  /* La navegación se acuesta bajo el marco: las flechas giran para apuntar a
-     los lados (la tira de miniaturas también quedó horizontal). */
-  .pdnav { order: 3; flex-direction: row; justify-content: center; gap: 20px; }
-  .pdnav__btn svg { transform: rotate(-90deg); }
   .pdsplit__lote { position: static; order: 3; }
   .pdbuy__title { font-size: clamp(2.75rem, 11vw, 4rem); }
   .pdops { padding: 40px var(--pd-pad) 44px; }
