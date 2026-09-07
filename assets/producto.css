@@ -1137,14 +1137,16 @@
   .pdthumb { flex: none; width: 76px; height: 76px; border-radius: 16px; scroll-snap-align: start; }
   /* Acá el marco sí toma la proporción del primer video (--pd-frame-ar, la
      escribe Liquid en .pdpage; sin video cae a 1): fotos y video miden lo
-     mismo y a lo ancho del panel, con un tope de alto para que un 9:16 no
-     rebase la pantalla: si lo alcanza, el marco se angosta (el ancho sale
-     del alto tope × proporción) y queda centrado. */
+     mismo. SIEMPRE a todo lo ancho del panel, el mismo que la tira de
+     miniaturas; el tope de alto evita que un 9:16 rebase la pantalla y, si
+     lo alcanza, solo recorta el alto (el marco NO se angosta: se probó y
+     quedaba más flaco que la tira). Las fotos van a sangre y el video se
+     contiene con franjas crema chicas. */
   .pdframe {
     flex: none;
-    align-self: center;
-    width: min(100%, calc(78 * var(--svh) * var(--pd-frame-ar, 1)));
+    width: 100%;
     aspect-ratio: var(--pd-frame-ar, 1);
+    max-height: calc(78 * var(--svh));
   }
   .pdsplit__lote { position: static; order: 3; }
   .pdbuy__title { font-size: clamp(2.75rem, 11vw, 4rem); }
