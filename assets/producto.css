@@ -53,17 +53,17 @@
   position: relative;
 }
 
-/* El color de la familia se estira hacia ARRIBA, por detrás del header
-   transparente y sticky del tema, para que la barra quede sobre el color y no
-   sobre una franja crema. A todo lo ancho: desde 2026-09-07 el split entero va
-   del color del producto (la compra es una tarjeta crema encima). El alto es
-   solo la franja del header (72px fijos del navbar v2 más su gap, hoy 0). */
+/* El color del panel de la galería se estira hacia ARRIBA, por detrás del
+   header transparente y sticky del tema, para que la barra quede sobre el
+   panel y no sobre una franja crema. Solo la MITAD izquierda: la derecha ya es
+   crema, la misma del body, así que no hace falta pintarla. El alto es solo la
+   franja del header (72px fijos del navbar v2 más su gap, hoy 0). */
 .pdpage::before {
   content: '';
   position: absolute;
   bottom: 100%; /* justo pegado al borde de arriba de la página */
   left: 0;
-  width: 100%;
+  width: 50%;
   height: calc(var(--nav-h, 72px) + var(--nav-gap, 0px));
   background: var(--pd-fam, var(--pd-naranja));
 }
@@ -84,16 +84,16 @@
    La fila arranca en 960px y CRECE con el contenido: abrir los desplegables de
    la derecha estira la columna, no scrollea adentro. Las dos columnas quedan
    stretch para que el panel de color acompañe siempre a la más alta.
-   El color de la familia lo pinta el split ENTERO (las dos columnas): la
-   galería va directo sobre él y la compra es una tarjeta crema encima. Así el
-   color del producto cubre la pantalla completa, no solo la mitad.
+   Izquierda el color de la familia (lo pinta .pdsplit__media), derecha la
+   compra sobre crema a todo lo ancho de su columna — se probó pintar el split
+   entero de color con la compra en tarjeta crema (2026-09-07) y se regresó a
+   pedido: la compra va crema, sin tarjeta.
    -------------------------------------------------------------------------- */
 .pdsplit {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: stretch;
   min-height: var(--pd-split-h);
-  background: var(--pd-fam, var(--pd-naranja));
 }
 
 /* --- Panel de la galería ------------------------------------------------- */
@@ -107,6 +107,7 @@
   align-items: flex-start;
   gap: 26px;
   padding: var(--pd-gal-pad) 44px 60px;
+  background: var(--pd-fam, var(--pd-naranja));
   box-sizing: border-box;
 }
 
@@ -288,21 +289,11 @@
 }
 
 /* --- Panel de compra ----------------------------------------------------- */
-/* Tarjeta crema sobre el color de la familia, con el mismo borde y radio del
-   marco de la foto: dos objetos flotando sobre el mismo color. Arranca en la
-   misma línea que la galería (--pd-gal-pad) para que los dos queden alineados
-   arriba; el margen de abajo empata con el del panel de la galería. Todo lo
-   de adentro sigue pintado para leerse sobre crema, por eso la tarjeta y no
-   el texto directo sobre el color (el vino y el azul de algunas familias no
-   dejan leer el verde). */
 .pdsplit__buy {
   display: flex;
   flex-direction: column;
-  margin: var(--pd-gal-pad) 44px 60px 0;
   padding: 40px 56px 52px;
   background: var(--pd-crema);
-  border: 3px solid var(--pd-green);
-  border-radius: 32px;
   box-sizing: border-box;
 }
 
@@ -1090,7 +1081,7 @@
     --pd-thumb: 72px;
   }
   .pdsplit__media { padding: var(--pd-gal-pad) 32px 48px; gap: 20px; }
-  .pdsplit__buy { margin: var(--pd-gal-pad) 32px 48px 0; padding: 32px 40px 40px; }
+  .pdsplit__buy { padding: 32px 40px 40px; }
   .pdbuy__title { font-size: 58px; }
   .pdsplit__lote { left: 32px; }
 }
@@ -1107,9 +1098,7 @@
     grid-template-columns: minmax(0, 1fr);
     min-height: 0;
   }
-  /* La tarjeta de compra toma el mismo margen lateral que el panel de la
-     galería y se pega a ella (el gap lo pone el padding de abajo del panel). */
-  .pdsplit__buy { min-width: 0; margin: 0 22px 32px; padding: 32px 24px 36px; }
+  .pdsplit__buy { min-width: 0; }
   /* Las tres cifras con separadores de 30+30px no caben en un teléfono y
      eran los únicos 21px que desbordaban el documento (con scroll-into-view
      la página se corría). Separador más angosto y, si aun así no cabe, parte. */
