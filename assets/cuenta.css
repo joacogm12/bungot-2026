@@ -614,7 +614,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
      Así Mi perro, Mis pedidos y Mis direcciones ocupan toda la pantalla y el
      footer arranca fuera de la vista. svh y no vh: en celu la barra del
      navegador se come la diferencia. */
-  min-height: calc(100svh - var(--nav-h, 72px) - var(--nav-gap, 0px));
+  min-height: calc(calc(100 * var(--svh)) - var(--nav-h, 72px) - var(--nav-gap, 0px));
 }
 
 /* --- Barra lateral --- */
@@ -784,7 +784,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   /* svh: que la hoja no se estire/encoja cuando la barra del navegador de
      celu aparece o se esconde. La línea vh queda de respaldo. */
   max-height: 90vh;
-  max-height: 90svh;
+  max-height: calc(90 * var(--svh));
   overflow: auto;
   border-radius: 28px;
   border: 3px solid var(--cta-ink);
@@ -1116,7 +1116,7 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
     width: 100%;
     max-width: 100%;
     max-height: 92vh;
-    max-height: 92svh;
+    max-height: calc(92 * var(--svh));
     border-radius: 28px 28px 0 0;
     border-width: 3px 0 0;
   }

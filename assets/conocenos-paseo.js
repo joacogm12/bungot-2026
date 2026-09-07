@@ -325,7 +325,10 @@
     var rect = riel.getBoundingClientRect();
     geo.escV = (rect.height / geo.altoPista) || 1;
     geo.topDoc = rect.top + window.scrollY;
-    geo.altoVent = window.innerHeight / geo.escV;
+    // El alto estable que también usa el CSS (--svh, ver theme.liquid), no
+    // innerHeight: en Chrome/Firefox de iOS este último cambia con la barra.
+    var altoVista = (window.BUNGOT && window.BUNGOT.altoVista) ? window.BUNGOT.altoVista() : window.innerHeight;
+    geo.altoVent = altoVista / geo.escV;
     geo.esc = (escena.offsetWidth || W) / W;
 
     /* La ventana debe medir exactamente la pantalla en px del lienzo; se

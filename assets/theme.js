@@ -8,6 +8,15 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* Alto ESTABLE del viewport en px: el mismo que el CSS usa vía --svh (lo
+     mide el script inline de theme.liquid una vez al cargar y solo lo re-mide
+     si cambia el ancho). Nunca innerHeight directo para medir pantallas: en
+     Chrome/Firefox de iOS cambia cuando la barra se esconde y las rutinas de
+     scroll brincan. Cae a innerHeight solo si el inline no corrió. */
+  function altoVista() {
+    return (window.BUNGOT && window.BUNGOT.altoVista) ? window.BUNGOT.altoVista() : window.innerHeight;
+  }
+
   /* --- Preloader: "armando el premio perfecto" ------------------------- */
   function initPreloader() {
     var el = document.querySelector('[data-preloader]');
@@ -455,9 +464,10 @@
       // Alto del viewport CACHEADO: en celu, esconder/mostrar la barra del
       // navegador dispara resize y cambia innerHeight, y si se re-lee en cada
       // frame el avance p brinca a mitad de scroll. Solo se re-mide cuando
-      // cambia el ANCHO (rotación) — la misma lógica que svh en el CSS del
-      // riel, que es contra lo que tiene que cuadrar este cálculo.
-      var vh = window.innerHeight;
+      // cambia el ANCHO (rotación). Sale de altoVista() y no de innerHeight
+      // porque es el MISMO número con el que el CSS mide el riel (--svh, ver
+      // theme.liquid): si no cuadran, el último panel se corta antes o después.
+      var vh = altoVista();
       var lastW = window.innerWidth;
 
       function render() {
@@ -495,7 +505,7 @@
       window.addEventListener('resize', function () {
         if (window.innerWidth === lastW) return; // la barra del navegador no cuenta
         lastW = window.innerWidth;
-        vh = window.innerHeight;
+        vh = altoVista();
         onScroll();
       });
       render();
@@ -720,7 +730,7 @@
 
       // Cacheado por lo mismo que en Favoritos: la barra del navegador de
       // celu cambia innerHeight a mitad de scroll y el montón brincaría.
-      var vh = window.innerHeight;
+      var vh = altoVista();
       var lastW = window.innerWidth;
 
       function clamp01(v) { return Math.max(0, Math.min(1, v)); }
@@ -749,7 +759,7 @@
       window.addEventListener('resize', function () {
         if (window.innerWidth === lastW) return; // la barra del navegador no cuenta
         lastW = window.innerWidth;
-        vh = window.innerHeight;
+        vh = altoVista();
         onScroll();
       });
       render();

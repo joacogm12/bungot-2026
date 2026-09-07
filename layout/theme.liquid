@@ -63,6 +63,38 @@
     </style>
 
     {%- comment -%}
+      --svh: 1% del alto ESTABLE del viewport, en px, medido una sola vez.
+      Todo el alto de pantalla del CSS sale de esta variable (ver :root en
+      base.css). Va inline y en el head para que ya esté puesta en el primer
+      pintado. Se re-mide solo si cambia el ANCHO (rotación) — la barra del
+      navegador de celu dispara resize sin mover el ancho y justo ESO es lo que
+      no debe mover nada — o en escritorio (puntero fino), donde no hay barra
+      que se esconda y sí se quiere que siga a la ventana.
+      window.BUNGOT.altoVista() da el mismo número a los scripts que cachean
+      el alto (Favoritos, bonche, paseo), para que cuadren con el CSS.
+    {%- endcomment -%}
+    <script>
+      (function () {
+        var raiz = document.documentElement;
+        var ancho = window.innerWidth;
+        var fino = window.matchMedia('(pointer: fine)');
+        function mide() {
+          raiz.style.setProperty('--svh', window.innerHeight / 100 + 'px');
+        }
+        mide();
+        window.addEventListener('resize', function () {
+          if (window.innerWidth === ancho && !fino.matches) return;
+          ancho = window.innerWidth;
+          mide();
+        });
+        window.BUNGOT = window.BUNGOT || {};
+        window.BUNGOT.altoVista = function () {
+          return parseFloat(raiz.style.getPropertyValue('--svh')) * 100 || window.innerHeight;
+        };
+      })();
+    </script>
+
+    {%- comment -%}
       Quién tiene la sesión, para que la ficha del perro se guarde POR USUARIO
       (theme.js arma la clave del localStorage con este id). Y si la cuenta ya
       trae la ficha en metafields (la escribió el workflow de Flow con un

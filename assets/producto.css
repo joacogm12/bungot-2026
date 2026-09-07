@@ -32,7 +32,7 @@
      que primero sube y luego se frena. */
   --pd-gal-top: max(
     calc(var(--nav-h, 72px) + var(--nav-gap, 0px) + 24px),
-    calc(50svh - var(--pd-frame-h) / 2)
+    calc(calc(50 * var(--svh)) - var(--pd-frame-h) / 2)
   );
   /* El padding de arriba del panel sale de --pd-gal-top restándole el header,
      que está en flujo por encima de la página. */
@@ -930,7 +930,7 @@
   max-width: 100%;
   /* En pantallas bajas el cuadro scrollea adentro y no se le corta el botón de
      publicar. La que nunca scrollea es la sección, no el popup. */
-  max-height: calc(100svh - 48px);
+  max-height: calc(calc(100 * var(--svh)) - 48px);
   overflow-y: auto;
   box-sizing: border-box;
   padding: 38px 40px 36px;
@@ -1168,7 +1168,7 @@
      data-ar de la miniatura): uno vertical se ve completo en lugar de quedar
      chiquito dentro del cuadrado. El tope evita que un 9:16 rebase la
      pantalla; si lo alcanza, contain deja franjas crema a los lados. */
-  .pdframe.is-video { aspect-ratio: var(--pd-frame-ar, 1); max-height: 78svh; }
+  .pdframe.is-video { aspect-ratio: var(--pd-frame-ar, 1); max-height: calc(78 * var(--svh)); }
   /* La navegación se acuesta bajo el marco: las flechas giran para apuntar a
      los lados (la tira de miniaturas también quedó horizontal). */
   .pdnav { order: 3; flex-direction: row; justify-content: center; gap: 20px; }

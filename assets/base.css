@@ -5,6 +5,19 @@
    ========================================================================== */
 
 :root {
+  /* --svh es "1% del alto estable del viewport" y es la ÚNICA unidad de alto
+     de pantalla que usa el tema (nada de svh/dvh sueltos en las reglas; las
+     líneas en vh que quedan son solo respaldo).
+     Por qué no svh a secas: Safari sí la deja fija, pero Chrome y Firefox en
+     iOS la tratan como dvh — cuando la barra del navegador se esconde al
+     scrollear, el viewport crece y todo lo medido en svh crece con él (la
+     tarjeta de Favoritos, el hero, la foto a lo ancho…), y la página se ve
+     como trabada, subiendo y bajando. El script inline de theme.liquid la
+     pisa con un valor en px medido UNA vez al cargar y solo la re-mide cuando
+     cambia el ANCHO (rotación) — la misma regla que usan los JS que cachean
+     innerHeight. Este valor es solo el respaldo sin JS. */
+  --svh: 1vh;
+
   /* UN SOLO marco de crema para todos los bloques de color que van de borde a
      borde: el escenario de Favoritos, el panel de suscripción y la foto a lo
      ancho. Un solo número para los tres, o se ve que uno es más ancho que el
@@ -136,6 +149,9 @@
   --shadow-soft: 0 12px 34px rgba(22, 60, 105, 0.12);
 
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@supports (height: 1svh) {
+  :root { --svh: 1svh; }
 }
 
 /* --------------------------------------------------------------------------
@@ -706,7 +722,7 @@ shopify-account::part(signed-out-avatar) {
   /* Ancho que ocupa la figura: el perro es cuadrado y mide 142% del alto de
      su ventana, con tope en su max-width (94vw). 146px = 72 del nav + 74 del
      headroom de la ventana. Contra esto se dimensiona el claim. */
-  --figura: min(94vw, calc(1.42 * (100svh - 146px)));
+  --figura: min(94vw, calc(1.42 * (calc(100 * var(--svh)) - 146px)));
 
   position: relative;
   /* Por encima de la sección siguiente (que se queda sin z-index): así las
@@ -714,7 +730,7 @@ shopify-account::part(signed-out-avatar) {
   z-index: 5;
   box-sizing: border-box;
   /* 72px = el alto fijo de la barra transparente del theme. */
-  height: calc(100svh - 72px);
+  height: calc(calc(100 * var(--svh)) - 72px);
   min-height: 440px;
   padding: 8px 44px 0;
   display: flex;
@@ -836,7 +852,7 @@ shopify-account::part(signed-out-avatar) {
   width: auto;
   aspect-ratio: 1 / 1;
   max-width: 94vw;
-  margin-bottom: -30svh;
+  margin-bottom: calc(-30 * var(--svh));
   transform-origin: 50% 100%;
   animation: perro-breath 3.7s ease-in-out infinite;
 }
@@ -945,22 +961,22 @@ shopify-account::part(signed-out-avatar) {
 @media (max-width: 900px) {
   .hero {
     padding: 20px 20px 0;
-    height: calc(100svh - 72px);
+    height: calc(calc(100 * var(--svh)) - 72px);
     justify-content: flex-end;
   }
   .hero__ventana {
-    height: min(78svh, 94vw);
+    height: min(calc(78 * var(--svh)), 94vw);
     margin: 0 -20px;
   }
   .hero__interior { height: 100%; }
   .hero__perro {
-    width: min(112vw, 112svh);
+    width: min(112vw, calc(112 * var(--svh)));
     /* Sin el tope de escritorio: acá la figura DEBE llenar el ancho (112vw se
        sale por los costados a propósito; la ventana recorta). Con el tope, el
        min() de arriba jamás ganaría. */
     max-width: none;
     height: auto;
-    margin-bottom: -22svh;
+    margin-bottom: calc(-22 * var(--svh));
   }
   /* 11.7vw = los 13vw del diseño con el mismo 0.9 del claim de escritorio. */
   .hero__claim-top,
@@ -983,7 +999,7 @@ shopify-account::part(signed-out-avatar) {
     min-height: 0;
     padding-top: calc(24px + 31vw);
   }
-  .hero__ventana { height: min(78svh, calc(112vw - 22svh)); }
+  .hero__ventana { height: min(calc(78 * var(--svh)), calc(112vw - calc(22 * var(--svh)))); }
 }
 
 /* --------------------------------------------------------------------------
@@ -1036,7 +1052,7 @@ shopify-account::part(signed-out-avatar) {
   /* Solo se ve el instante que tarda la foto en cargar: tinta y no crema para
      que el marco crema de alrededor siga leyéndose como marco. */
   background: var(--ink);
-  height: 70svh;
+  height: calc(70 * var(--svh));
   overflow: hidden;
 }
 
@@ -1149,7 +1165,7 @@ shopify-account::part(signed-out-avatar) {
   justify-items: start;
   /* El padding de arriba es aire del degradado: el texto arranca donde el
      marino ya cubre, para que el primer renglón no caiga sobre foto limpia. */
-  padding: clamp(3.5rem, 9svh, 6rem) clamp(1.25rem, 3vw, 2.5rem) clamp(1.5rem, 3.5vw, 2.75rem);
+  padding: clamp(3.5rem, calc(9 * var(--svh)), 6rem) clamp(1.25rem, 3vw, 2.5rem) clamp(1.5rem, 3.5vw, 2.75rem);
   background: linear-gradient(to top, rgba(22, 60, 105, 0.78), rgba(22, 60, 105, 0.34) 46%, rgba(22, 60, 105, 0));
   color: var(--white);
 }
@@ -1211,7 +1227,7 @@ shopify-account::part(signed-out-avatar) {
      par, y la pantalla que ocupa el escenario pineado. Esta cuenta es la misma
      que hace theme.js — si se tocan, se tocan las dos. */
   height: calc(
-    (var(--fav-count) * var(--fav-hold) + (var(--fav-count) - 1) * var(--fav-trans) + 1) * 100svh
+    (var(--fav-count) * var(--fav-hold) + (var(--fav-count) - 1) * var(--fav-trans) + 1) * calc(100 * var(--svh))
   );
 }
 .favs[data-enhanced='true'] .favs__stage {
@@ -1222,7 +1238,7 @@ shopify-account::part(signed-out-avatar) {
      abajo sigue siendo --favs-frame, igual que antes. */
   --favs-top: 82px;
   top: var(--favs-top);
-  height: calc(100svh - var(--favs-top) - var(--favs-frame));
+  height: calc(calc(100 * var(--svh)) - var(--favs-top) - var(--favs-frame));
   margin-inline: var(--favs-frame);
   border-radius: var(--radius-lg);
   /* overflow hidden hace dos cosas acá: recorta las fotos al radio (si no, las
@@ -1509,7 +1525,7 @@ shopify-account::part(signed-out-avatar) {
   /* El alto se ata a la pantalla, no al ancho de la columna: con aspect-ratio
      la foto crecía junto con el monitor (en 1920 daba ~1016px y se comía la
      pantalla entera). object-fit recorta lo que sobra. */
-  height: var(--st-img-h, 80svh);
+  height: var(--st-img-h, calc(80 * var(--svh)));
   object-fit: cover;
   /* 45% y no centro: sube el encuadre para no perder la mano con el premio. */
   object-position: center 45%;
@@ -1911,7 +1927,7 @@ a.chip { text-decoration: none; }
      inline: sin eso queda una franja de fondo abajo del marco. */
   display: block;
   line-height: 0;
-  height: var(--fphoto-h, 80svh);
+  height: var(--fphoto-h, calc(80 * var(--svh)));
   /* Mismo encuadre que el escenario de Favoritos: marco de crema del mismo
      ancho por los cuatro lados, así las dos piezas se leen como la misma
      familia. Va como padding (y no como margen de la img) para que el alto de
@@ -1926,7 +1942,7 @@ a.chip { text-decoration: none; }
 /* En celular la pantalla es más alta que ancha: el mismo porcentaje se come
    media pantalla de foto recortada. Se baja el alto y se ve más de la escena. */
 @media (max-width: 640px) {
-  .fphoto { height: calc(var(--fphoto-h, 80svh) * 0.7); }
+  .fphoto { height: calc(var(--fphoto-h, calc(80 * var(--svh))) * 0.7); }
 }
 
 /* Si abajo viene una ola, esta sección es la que se congela (ver la regla del
@@ -1938,7 +1954,7 @@ a.chip { text-decoration: none; }
    max() y no un valor fijo: el ajuste del customizer sigue mandando para
    agrandarla, nunca para achicarla abajo del mínimo que el efecto necesita. */
 .shopify-section:has(+ .shopify-section .wave-edge) .fphoto {
-  height: max(var(--fphoto-h, 80svh), 100svh);
+  height: max(var(--fphoto-h, calc(80 * var(--svh))), calc(100 * var(--svh)));
 }
 
 .fphoto__img {
@@ -1988,7 +2004,7 @@ a.chip { text-decoration: none; }
 
      Bastante MÁS que el alto de la ola: los primeros ~200px de pausa se los
      come la cresta, que vive por encima del borde de la sección siguiente. */
-  margin-bottom: 60svh;
+  margin-bottom: calc(60 * var(--svh));
 }
 
 /* La sección de la ola y todo lo que venga después tienen que pintarse ENCIMA
@@ -2135,7 +2151,7 @@ a.chip { text-decoration: none; }
   /* El color con el que se pinta la ola de arriba (snippets/wave-edge.liquid):
      el mismo de la sección, o el borde curvo se despega del fondo. */
   --wave-edge-color: var(--bonche-bg, #2E5FA0);
-  height: 100svh;
+  height: calc(100 * var(--svh));
   /* El aire de arriba (la ola vive ahí) lo pone el envoltorio de Shopify:
      ver .shopify-section:has(.wave-edge). */
 }
@@ -2234,7 +2250,7 @@ a.chip { text-decoration: none; }
      30svh / --ar). El tope por svh es indispensable: hay tres tarjetas por
      columna y sin él se traslapan o se recortan en ventanas bajas. --z es la
      escala global de la sección. */
-  --w: calc(min(clamp(130px, 19vw, 350px), 30svh / var(--ar)) * var(--z, 1));
+  --w: calc(min(clamp(130px, 19vw, 350px), calc(30 * var(--svh)) / var(--ar)) * var(--z, 1));
   /* Medio ancho/alto DEL TAMAÑO FINAL: al abrirse la tarjeta baja a escala
      0.9, así que el 0.9 se descuenta acá para que fx/fy = ±1 sea "pegado al
      borde" con sus 24px de aire, sin salirse. */
@@ -2243,7 +2259,7 @@ a.chip { text-decoration: none; }
   /* Interpolación montón → destino. Con --s: 0 todas al centro (desfase
      --ox/--oy en vmin); con --s: 1 cada una en su lugar, sin tocar el borde. */
   --dx: calc(var(--ox, 0) * (1 - var(--s, 0)) * 1vmin + var(--fx, 0) * var(--s, 0) * (50vw - var(--hw) - 24px));
-  --dy: calc(var(--oy, 0) * (1 - var(--s, 0)) * 1vmin + var(--fy, 0) * var(--s, 0) * (50svh - var(--hh) - 24px));
+  --dy: calc(var(--oy, 0) * (1 - var(--s, 0)) * 1vmin + var(--fy, 0) * var(--s, 0) * (calc(50 * var(--svh)) - var(--hh) - 24px));
   position: absolute;
   left: 50%;
   top: 50%;
@@ -2264,7 +2280,7 @@ a.chip { text-decoration: none; }
   will-change: transform;
 }
 .bonche__card--chica {
-  --w: calc(min(clamp(102px, 14.5vw, 255px), 20svh / var(--ar)) * var(--z, 1));
+  --w: calc(min(clamp(102px, 14.5vw, 255px), calc(20 * var(--svh)) / var(--ar)) * var(--z, 1));
 }
 .bonche__photo {
   display: block;
@@ -2298,7 +2314,7 @@ a.chip { text-decoration: none; }
   font: 12px/1.6 ui-monospace, Consolas, monospace;
   padding: 10px 12px;
   border-radius: 10px;
-  max-height: 60svh;
+  max-height: calc(60 * var(--svh));
   max-width: min(320px, 80vw);
   overflow: auto;
   white-space: pre;
@@ -2329,7 +2345,7 @@ a.chip { text-decoration: none; }
   .bonche__copy { width: min(33rem, 86vw); }
   .bonche__card,
   .bonche__card--chica {
-    --w: calc(min(20vw, 18svh / var(--ar)) * var(--z, 1));
+    --w: calc(min(20vw, calc(18 * var(--svh)) / var(--ar)) * var(--z, 1));
   }
   .bonche__card:nth-child(-n+6) { --fy: -1 !important; }
   .bonche__card:nth-child(n+7)  { --fy:  1 !important; }
@@ -2435,7 +2451,7 @@ a.chip { text-decoration: none; }
 .footer {
   position: relative;
   z-index: 20;
-  min-height: 100svh;
+  min-height: calc(100 * var(--svh));
   display: flex;
   flex-direction: column;
   background: var(--ft-bg, var(--p-172));

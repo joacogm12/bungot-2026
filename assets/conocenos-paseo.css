@@ -89,7 +89,7 @@
 .paseo__ventana {
   position: sticky;
   top: 0;
-  height: 100svh;
+  height: calc(100 * var(--svh));
   overflow: clip;
 }
 

@@ -66,9 +66,9 @@
      transición) y con vh el repartidor cambiaría de tamaño cuando la barra
      del navegador se esconde. La línea vh queda de respaldo. */
   width: min(46vh, 52vw, 380px);
-  width: min(46svh, 52vw, 380px);
+  width: min(calc(46 * var(--svh)), 52vw, 380px);
   height: min(46vh, 52vw, 380px);
-  height: min(46svh, 52vw, 380px);
+  height: min(calc(46 * var(--svh)), 52vw, 380px);
 }
 
 /* Primer cuadro fijo, solo para prefers-reduced-motion. */
