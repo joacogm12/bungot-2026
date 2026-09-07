@@ -23,6 +23,14 @@
   --rc-arena: #E7DECA;
   --rc-mini: #EFE7D6;
 
+  /* Sombra del recibo. SÓLIDA a propósito: es rgba(1,60,62,.6) ya aplanada
+     sobre --rc-arena. Como la sombra se arma en tres piezas (cuerpo + dos
+     dientes) que se empalman 1px para no dejar costuras, con alfa el empalme
+     se vería como una raya más oscura; sólida es invisible. Si cambia la
+     arena, vuelve a aplanar el color. */
+  --rc-sombra: #5D7D76;
+  --rc-sombra-d: 12px;
+
   /* Bayon solo trae 400; Anton es la condensada de respaldo que ya se sirve. */
   --rc-font-cifra: 'Bayon', 'Anton', Impact, sans-serif;
 
@@ -52,31 +60,63 @@
 
 /* --------------------------------------------------------------------------
    El papel: diente + cuerpo + diente dentro de UN envoltorio.
-   La sombra va en drop-shadow y no en box-shadow a propósito: box-shadow
-   pinta la caja rectangular y taparía los picos; drop-shadow sigue el
-   contorno recortado por los clip-path.
+
+   La sombra se COMPONE en tres piezas y no con un filter en .recibo: iOS
+   rasteriza los elementos con filter por mosaicos y en un elemento tan alto
+   como el recibo el drop-shadow salía troceado (la barra de sombra se partía
+   en segmentos con huecos a media pantalla). Nada de box-shadow directo sobre
+   los dientes —pintaría la caja rectangular y taparía los picos—: cada diente
+   pinta su sombra como una copia de su propio zigzag (::before recortado con
+   el mismo clip-path y desplazado), y el cuerpo, que sí es un rectángulo puro,
+   usa box-shadow. Las piezas se empalman 1px (por eso la sombra es sólida,
+   ver --rc-sombra) para que no quede costura ni al escalar en DPR fraccional.
    -------------------------------------------------------------------------- */
-.recibo {
-  filter: drop-shadow(-12px 12px 0 rgba(1, 60, 62, 0.6));
-}
+/* El isolate repone el stacking context que antes creaba el filter: sin él,
+   el z-index -1 de las sombras de los dientes se hunde hasta detrás del
+   fondo arena de .rcpage y desaparecen. */
+.recibo { isolation: isolate; }
 .recibo[hidden] { display: none; }
 
+/* El diente ya no lleva el clip-path él mismo: recortaría también a su
+   ::before de sombra. El zigzag vive en la var --zig y lo usan los dos
+   pseudos: ::after es el papel, ::before la sombra desplazada. */
 .recibo__diente {
+  position: relative;
   height: 16px;
-  background: var(--rc-papel);
 }
+.recibo__diente::before,
+.recibo__diente::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  clip-path: var(--zig);
+}
+.recibo__diente::after { background: var(--rc-papel); }
+.recibo__diente::before {
+  background: var(--rc-sombra);
+  transform: translate(calc(-1 * var(--rc-sombra-d)), var(--rc-sombra-d));
+  /* Detrás del cuerpo y del otro diente: la copia desplazada invade su zona. */
+  z-index: -1;
+}
+/* El empalme de 1px con la sombra del cuerpo: el diente de arriba estira su
+   caja 1px hacia abajo y el de abajo 1px hacia arriba, por el lado donde el
+   zigzag es borde recto, así ninguna redondez subpixel abre un hueco. */
+.recibo__diente--top::before { bottom: -1px; }
+.recibo__diente--bottom::before { top: -1px; }
+
 /* Zigzag de 30 picos (paso 3.33%): arriba los valles bajan al 40% del alto… */
 .recibo__diente--top {
-  clip-path: polygon(0 100%, 0 0, 3.33% 40%, 6.67% 0, 10% 40%, 13.33% 0, 16.67% 40%, 20% 0, 23.33% 40%, 26.67% 0, 30% 40%, 33.33% 0, 36.67% 40%, 40% 0, 43.33% 40%, 46.67% 0, 50% 40%, 53.33% 0, 56.67% 40%, 60% 0, 63.33% 40%, 66.67% 0, 70% 40%, 73.33% 0, 76.67% 40%, 80% 0, 83.33% 40%, 86.67% 0, 90% 40%, 93.33% 0, 96.67% 40%, 100% 0, 100% 100%);
+  --zig: polygon(0 100%, 0 0, 3.33% 40%, 6.67% 0, 10% 40%, 13.33% 0, 16.67% 40%, 20% 0, 23.33% 40%, 26.67% 0, 30% 40%, 33.33% 0, 36.67% 40%, 40% 0, 43.33% 40%, 46.67% 0, 50% 40%, 53.33% 0, 56.67% 40%, 60% 0, 63.33% 40%, 66.67% 0, 70% 40%, 73.33% 0, 76.67% 40%, 80% 0, 83.33% 40%, 86.67% 0, 90% 40%, 93.33% 0, 96.67% 40%, 100% 0, 100% 100%);
 }
 /* …y abajo el mismo zigzag invertido, con los valles al 60%. */
 .recibo__diente--bottom {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 96.67% 60%, 93.33% 100%, 90% 60%, 86.67% 100%, 83.33% 60%, 80% 100%, 76.67% 60%, 73.33% 100%, 70% 60%, 66.67% 100%, 63.33% 60%, 60% 100%, 56.67% 60%, 53.33% 100%, 50% 60%, 46.67% 100%, 43.33% 60%, 40% 100%, 36.67% 60%, 33.33% 100%, 30% 60%, 26.67% 100%, 23.33% 60%, 20% 100%, 16.67% 60%, 13.33% 100%, 10% 60%, 6.67% 100%, 3.33% 60%, 0 100%);
+  --zig: polygon(0 0, 100% 0, 100% 100%, 96.67% 60%, 93.33% 100%, 90% 60%, 86.67% 100%, 83.33% 60%, 80% 100%, 76.67% 60%, 73.33% 100%, 70% 60%, 66.67% 100%, 63.33% 60%, 60% 100%, 56.67% 60%, 53.33% 100%, 50% 60%, 46.67% 100%, 43.33% 60%, 40% 100%, 36.67% 60%, 33.33% 100%, 30% 60%, 26.67% 100%, 23.33% 60%, 20% 100%, 16.67% 60%, 13.33% 100%, 10% 60%, 6.67% 100%, 3.33% 60%, 0 100%);
 }
 
 .recibo__cuerpo {
   background: var(--rc-papel);
   padding: 64px 72px 60px;
+  box-shadow: calc(-1 * var(--rc-sombra-d)) var(--rc-sombra-d) 0 var(--rc-sombra);
 }
 
 /* --- Cabecera ------------------------------------------------------------ */
@@ -581,8 +621,10 @@
   /* La sombra de 12 caía exactamente en x = 0, pegada al borde de la
      pantalla: con 14 de respiro y 8 de sombra queda a 6px del borde. Si la
      sombra vuelve a 12 o el padding baja a 12, vuelve a tocar el borde. */
-  .rcpage { padding-inline: 14px; }
-  .recibo { filter: drop-shadow(-8px 8px 0 rgba(1, 60, 62, 0.6)); }
+  .rcpage {
+    padding-inline: 14px;
+    --rc-sombra-d: 8px;
+  }
   .recibo__cuerpo { padding: 32px 18px 30px; }
 
   /* El folio deja de ir a la derecha. */
