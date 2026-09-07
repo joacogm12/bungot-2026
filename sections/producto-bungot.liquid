@@ -151,24 +151,14 @@
 -%}
 
 {%- comment -%}
-  Proporción del marco de la galería EN CELU/TABLET (≤1000): la del PRIMER
-  video del producto, para que fotos y video midan exactamente lo mismo y el
-  marco no brinque al cambiar de pieza (las fotos van a sangre y se recortan
-  a esa proporción). Sin video queda vacía y el CSS cae a 1 (cuadrado, como
-  las fotos). En escritorio el marco no usa proporción: mide lo que la tira
-  de miniaturas a lo ancho y lo que quepa en la pantalla a lo alto.
+  La proporción del marco de la galería en celu/tablet (≤1000) ya NO sale del
+  producto: es la misma 9:16 para todos (--pd-frame-ar en producto.css). Antes
+  la escribía Liquid con el primer video y los productos sin video caían a
+  cuadrado, así que una PDP con video y una sin él medían distinto; a pedido
+  (2026-09-07) todas se ven igual. Los 14 videos de la tienda son 9:16.
 {%- endcomment -%}
-{%- liquid
-  assign gal_ar = blank
-  for media in product.media
-    if media.media_type == 'video' or media.media_type == 'external_video'
-      assign gal_ar = media.aspect_ratio | default: 1
-      break
-    endif
-  endfor
--%}
 
-<section class="pdpage" data-pdp style="--pd-fam: {{ fam }};{% if gal_ar != blank %} --pd-frame-ar: {{ gal_ar }};{% endif %}">
+<section class="pdpage" data-pdp style="--pd-fam: {{ fam }};">
 
   {%- comment -%} ---------- 1. El split (fila de 960px mínimo) ---------- {%- endcomment -%}
   <div class="pdsplit">
@@ -260,8 +250,8 @@
             {%- elsif media.media_type == 'video' or media.media_type == 'external_video' -%}
               {%- comment -%}
                 La miniatura es el poster del video con un badge de play. El
-                data-ar queda como dato (la proporción del marco ya la fija
-                --pd-frame-ar en .pdpage con el primer video).
+                data-ar queda como dato (la proporción del marco es fija,
+                --pd-frame-ar en producto.css, la misma para todos).
               {%- endcomment -%}
               <button
                 type="button"

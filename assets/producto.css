@@ -1135,17 +1135,21 @@
     scrollbar-width: thin;
   }
   .pdthumb { flex: none; width: 76px; height: 76px; border-radius: 16px; scroll-snap-align: start; }
-  /* Acá el marco sí toma la proporción del primer video (--pd-frame-ar, la
-     escribe Liquid en .pdpage; sin video cae a 1): fotos y video miden lo
-     mismo. SIEMPRE a todo lo ancho del panel, el mismo que la tira de
-     miniaturas; el tope de alto evita que un 9:16 rebase la pantalla y, si
+  /* Acá el marco sí lleva proporción, y es UNA para todos los productos: la
+     de los videos de la tienda (9:16), tengan video o no. Antes la escribía
+     Liquid con el primer video del producto y los que no tenían caían a
+     cuadrado, así que las fotos de un paquete o un juguete medían distinto
+     que las de un premio con video; a pedido (2026-09-07) todas las PDP se
+     ven igual. SIEMPRE a todo lo ancho del panel, el mismo que la tira de
+     miniaturas; el tope de alto evita que el 9:16 rebase la pantalla y, si
      lo alcanza, solo recorta el alto (el marco NO se angosta: se probó y
      quedaba más flaco que la tira). Las fotos van a sangre y el video se
      contiene con franjas crema chicas. */
   .pdframe {
+    --pd-frame-ar: 9 / 16;
     flex: none;
     width: 100%;
-    aspect-ratio: var(--pd-frame-ar, 1);
+    aspect-ratio: var(--pd-frame-ar);
     /* Tope de alto: que marco + tira quepan en la pantalla. Se resta el
        header, los paddings del panel (28 + 32), el gap (20) y la tira
        (76 + 6). --svh es el alto ESTABLE medido al cargar: en Chrome de iOS

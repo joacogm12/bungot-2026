@@ -93,8 +93,8 @@
       slot.querySelectorAll('.pdvideo').forEach(function (f) { f.hidden = f !== fig; });
       slot.hidden = false;
       main.hidden = true;
-      // El marco NO cambia de tamaño: su proporción es la del video desde
-      // Liquid (--pd-frame-ar en .pdpage), la misma para fotos y video.
+      // El marco NO cambia de tamaño: en celu su proporción es fija (9:16,
+      // --pd-frame-ar en producto.css), la misma para fotos y video.
       frame.classList.add('is-video');
     }
 
