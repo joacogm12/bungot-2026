@@ -161,7 +161,18 @@
 *::before,
 *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Va en html Y en body a propósito (2026-09-07). Con el html en visible, el
+     overflow-x del body se PROPAGA al viewport y el body queda como visible:
+     Chrome no deja scrollear pero iOS/iPad sí panea de lado si algo se sale
+     (las patas del hero, una solapa de sticker). Con el html también en clip,
+     el viewport toma el del html y el body recorta de verdad a sus
+     descendientes, así que nada suma ancho a la página. clip y no hidden,
+     por lo mismo que abajo: hidden lo volvería contenedor de scroll y mataría
+     los sticky del header y de Favoritos. */
+  overflow-x: clip;
+}
 
 body {
   margin: 0;
@@ -737,6 +748,13 @@ shopify-account::part(signed-out-avatar) {
   flex-direction: column;
   justify-content: flex-end;
   background: var(--cream);
+  /* Las patas (.hero__patas) van fuera de la ventana recortada y calcan la
+     caja del perro, que en celu mide 112vw: sin esto se salían por los
+     costados y en iPad/teléfono la página paneaba de lado. Solo en X — por
+     abajo tienen que seguir asomando sobre la sección siguiente — y clip, no
+     hidden: hidden recortaría también en Y. */
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 /* --- El claim, en dos bloques diagonales ---------------------------------- */
@@ -1267,8 +1285,13 @@ shopify-account::part(signed-out-avatar) {
 .statement {
   background: var(--st-bg, var(--cream));
   /* Sin overflow:hidden a propósito: recortaba el sticker cuando cuelga por
-     debajo de la foto. Nada acá se sale de ancho (la foto termina justo en el
-     borde) y el body ya tiene overflow-x: clip. */
+     debajo de la foto. En X sí se recorta (clip, que no toca la Y): la solapa
+     del sticker (.bg-sticker > [data-peel^="flap"]) es la esquina reflejada
+     con transform y su caja girada asoma por la derecha de la sección —
+     invisible, pero sumaba ancho al documento y en iPad la página paneaba de
+     lado. */
+  overflow-x: clip;
+  overflow-y: visible;
 }
 .statement__inner {
   display: grid;
