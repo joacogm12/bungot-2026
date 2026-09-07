@@ -151,10 +151,12 @@
 -%}
 
 {%- comment -%}
-  Proporción del marco de la galería: la del PRIMER video del producto, para
-  que fotos y video midan exactamente lo mismo y el marco no brinque al
-  cambiar de pieza (las fotos van a sangre y se recortan a esa proporción).
-  Sin video queda vacía y el CSS cae a 1 (cuadrado, como las fotos).
+  Proporción del marco de la galería EN CELU/TABLET (≤1000): la del PRIMER
+  video del producto, para que fotos y video midan exactamente lo mismo y el
+  marco no brinque al cambiar de pieza (las fotos van a sangre y se recortan
+  a esa proporción). Sin video queda vacía y el CSS cae a 1 (cuadrado, como
+  las fotos). En escritorio el marco no usa proporción: mide lo que la tira
+  de miniaturas a lo ancho y lo que quepa en la pantalla a lo alto.
 {%- endcomment -%}
 {%- liquid
   assign gal_ar = blank

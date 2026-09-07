@@ -22,34 +22,26 @@
   --pd-max: 1582px;
   --pd-pad: 63px;
   --pd-split-h: 960px;
-  /* El marco tiene UNA sola proporción para fotos y video: --pd-frame-ar, la
-     del primer video del producto (la pone Liquid en el style de .pdpage;
-     sin video no existe y cae a 1, cuadrado como las fotos). Así el marco
-     nunca brinca al cambiar de pieza y las fotos miden lo mismo que el video.
-     Cabe en una caja de --pd-frame-max-w × --pd-frame-max-h: el alto es el
-     que permita el ancho tope, sin pasar del alto tope. Debajo va la tira de
-     miniaturas; --pd-gal-h es el alto de las dos piezas juntas (marco + gap +
-     miniaturas) y es con lo que se centra la galería en pantalla. */
-  --pd-frame-max-w: 580px;
-  --pd-frame-max-h: 660px;
-  --pd-frame-h: min(var(--pd-frame-max-h), calc(var(--pd-frame-max-w) / var(--pd-frame-ar, 1)));
-  --pd-thumb: 72px;
+  /* La galería (marco + tira de miniaturas) CABE EN LA PANTALLA: mide
+     --pd-gal-h, que es el alto del viewport menos el header y un respiro
+     arriba y abajo (--pd-gal-pad). El marco es lo que estira: toma el alto
+     que sobra después de la tira. A lo ancho, marco y tira miden lo MISMO
+     (--pd-frame-w, o la columna si es más angosta): las miniaturas se
+     reparten ese ancho. La proporción del marco sale de ahí, no de las
+     fotos ni del video: las fotos van a sangre y el video se contiene con
+     franjas crema. El alto de pantalla es --svh (nunca svh/dvh directo, ver
+     CLAUDE.md). El mínimo evita un marco ridículo en ventanas muy bajas: ahí
+     la galería rebasa la pantalla y ni modo. */
+  --pd-frame-w: 580px;
   --pd-gal-gap: 18px;
-  --pd-gal-h: calc(var(--pd-frame-h) + var(--pd-gal-gap) + var(--pd-thumb));
-  /* Dónde se pega la galería, medido desde el borde de la VENTANA: centrada en
-     la pantalla (mitad del viewport menos mitad de la galería), pero nunca más
-     arriba de la base del header más un respiro, para que en pantallas bajas
-     el marco no se meta debajo de la barra. La misma var pone el padding de
+  --pd-gal-pad: 24px;
+  --pd-gal-h: max(480px, calc(100 * var(--svh) - var(--nav-h, 72px) - var(--nav-gap, 0px) - 2 * var(--pd-gal-pad)));
+  /* Dónde se pega la galería, medido desde el borde de la VENTANA: justo
+     debajo del header más el respiro. Es el mismo valor que el padding de
      arriba del panel (ver .pdsplit__media): así la galería ARRANCA ya en su
      sitio y se pega desde el primer pixel de scroll, sin ese tramo corto en
      que primero sube y luego se frena. */
-  --pd-gal-top: max(
-    calc(var(--nav-h, 72px) + var(--nav-gap, 0px) + 24px),
-    calc(calc(50 * var(--svh)) - var(--pd-gal-h) / 2)
-  );
-  /* El padding de arriba del panel sale de --pd-gal-top restándole el header,
-     que está en flujo por encima de la página. */
-  --pd-gal-pad: calc(var(--pd-gal-top) - var(--nav-h, 72px) - var(--nav-gap, 0px));
+  --pd-gal-top: calc(var(--nav-h, 72px) + var(--nav-gap, 0px) + var(--pd-gal-pad));
 
   font-family: var(--font-body, 'Inter', sans-serif);
   color: var(--pd-green);
@@ -119,40 +111,41 @@
 
 /* La galería entera —marco + miniaturas debajo— es UNA sola pieza: el sticky
    va acá y no en cada parte, así viajan en conjunto y nunca se descuelgan
-   entre sí. Es una columna: el marco arriba y la tira centrada debajo.
+   entre sí. Es una columna de alto FIJO (--pd-gal-h, cabe en la pantalla):
+   el marco arriba estirándose y la tira debajo.
 
-   El top es --pd-gal-top (ver :root de .pdpage): la pieza centrada en la
-   PANTALLA y el mismo valor que el padding de arriba del panel, así no hay
-   tramo en que primero suba y luego se pegue. Es sticky puro, sin transform,
-   para que el borde de abajo de la banda de color la siga frenando donde
-   corresponde. */
+   El top es --pd-gal-top (ver :root de .pdpage): el mismo valor que el
+   padding de arriba del panel, así no hay tramo en que primero suba y luego
+   se pegue. Es sticky puro, sin transform, para que el borde de abajo de la
+   banda de color la siga frenando donde corresponde. */
 .pdgal {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--pd-gal-gap);
+  height: var(--pd-gal-h);
   min-width: 0;
   position: sticky;
   top: var(--pd-gal-top);
 }
 
-/* Tira horizontal de miniaturas, centrada bajo el marco. Puede ser más ancha
-   que el marco (con un video vertical el marco es angosto y seis miniaturas
-   no caben debajo en un renglón); si tampoco cabe en la columna, parte en
-   dos (la galería crece un poco y el centrado queda aproximado, no pasa
-   nada). */
+/* Tira de miniaturas: del MISMO ancho que el marco, con las miniaturas
+   repartiéndose ese ancho (cuadradas, crecen hasta un tope; con más piezas
+   de las que caben, parten en otro renglón y el marco cede ese alto). */
 .pdthumbs {
   flex: none;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  width: 100%;
+  width: min(100%, var(--pd-frame-w));
 }
 .pdthumb {
-  width: var(--pd-thumb);
-  height: var(--pd-thumb);
+  flex: 1 1 0;
+  min-width: 56px;
+  max-width: 140px;
+  aspect-ratio: 1;
   padding: 0;
   border: 3px solid transparent;
   border-radius: 20px;
@@ -191,18 +184,14 @@
 /* El marco: la foto NUNCA va suelta sobre el color. El marco crema le da piso
    tanto a la bolsa recortada como a una foto de estudio con su propio fondo. */
 /* Tamaño FIJO: el marco mide lo mismo con los desplegables abiertos y
-   cerrados, y lo mismo con una foto que con el video (proporción única, ver
-   --pd-frame-ar arriba). Alto definido + ancho auto: el ancho sale de la
-   proporción. De acá sale el alto de .pdgal (--pd-gal-h), y por eso su
-   centrado se calcula con --pd-frame-h. Quien acompaña el scroll es .pdgal,
-   no el marco solo. El max-width deja que encoja si la columna es más
-   angosta que el marco. */
+   cerrados, y lo mismo con una foto que con el video. Ancho = el de la tira
+   (--pd-frame-w); alto = lo que sobra de la galería (flex: 1 dentro de la
+   columna de alto fijo). Quien acompaña el scroll es .pdgal, no el marco
+   solo. */
 .pdframe {
-  flex: none;
-  width: auto;
-  max-width: 100%;
-  height: var(--pd-frame-h);
-  aspect-ratio: var(--pd-frame-ar, 1);
+  flex: 1 1 auto;
+  min-height: 0;
+  width: min(100%, var(--pd-frame-w));
   position: relative;
   border: 3px solid var(--pd-green);
   border-radius: 32px;
@@ -1087,9 +1076,7 @@
   .pdpage {
     --pd-pad: 40px;
     --pd-split-h: 900px;
-    --pd-frame-max-w: 500px;
-    --pd-frame-max-h: 580px;
-    --pd-thumb: 64px;
+    --pd-frame-w: 500px;
   }
   .pdsplit__media { padding: var(--pd-gal-pad) 32px 48px; gap: 20px; }
   .pdsplit__buy { padding: 32px 40px 40px; }
@@ -1121,11 +1108,13 @@
     padding: 28px 22px 32px;
   }
   /* La galería se apila igual que el resto y deja el sticky: acá la banda de
-     color mide lo mismo que ella, no hay nada que recorrer. */
+     color mide lo mismo que ella, no hay nada que recorrer. El alto vuelve a
+     ser el del contenido: en una columna no hay que caber en la pantalla. */
   .pdgal {
     flex-direction: column;
     align-items: stretch;
     gap: 20px;
+    height: auto;
     position: static;
   }
   /* El lote sale del absoluto: en una columna no hay esquinas que ocupar. */
@@ -1138,7 +1127,7 @@
   .pdthumbs {
     flex-wrap: nowrap;
     justify-content: flex-start;
-    max-width: none;
+    width: 100%;
     overflow-x: auto;
     padding-bottom: 6px;
     scroll-snap-type: x proximity;
@@ -1146,14 +1135,16 @@
     scrollbar-width: thin;
   }
   .pdthumb { flex: none; width: 76px; height: 76px; border-radius: 16px; scroll-snap-align: start; }
-  /* Misma proporción que en escritorio (la del video). A lo ancho del panel,
-     pero con un tope de alto para que un 9:16 no rebase la pantalla: si lo
-     alcanza, el marco se angosta (el ancho sale del alto tope × proporción)
-     y queda centrado. */
+  /* Acá el marco sí toma la proporción del primer video (--pd-frame-ar, la
+     escribe Liquid en .pdpage; sin video cae a 1): fotos y video miden lo
+     mismo y a lo ancho del panel, con un tope de alto para que un 9:16 no
+     rebase la pantalla: si lo alcanza, el marco se angosta (el ancho sale
+     del alto tope × proporción) y queda centrado. */
   .pdframe {
+    flex: none;
     align-self: center;
     width: min(100%, calc(78 * var(--svh) * var(--pd-frame-ar, 1)));
-    height: auto;
+    aspect-ratio: var(--pd-frame-ar, 1);
   }
   .pdsplit__lote { position: static; order: 3; }
   .pdbuy__title { font-size: clamp(2.75rem, 11vw, 4rem); }
