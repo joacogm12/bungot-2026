@@ -22,12 +22,18 @@
   --pd-max: 1582px;
   --pd-pad: 63px;
   --pd-split-h: 960px;
-  /* El marco es CUADRADO (las fotos de producto son 1200×1200): mide
-     --pd-frame-h por lado. Debajo va la tira de miniaturas; --pd-gal-h es el
-     alto de las dos piezas juntas (marco + gap + miniaturas) y es con lo que
-     se centra la galería en pantalla. */
-  --pd-frame-h: 580px;
-  --pd-thumb: 84px;
+  /* El marco tiene UNA sola proporción para fotos y video: --pd-frame-ar, la
+     del primer video del producto (la pone Liquid en el style de .pdpage;
+     sin video no existe y cae a 1, cuadrado como las fotos). Así el marco
+     nunca brinca al cambiar de pieza y las fotos miden lo mismo que el video.
+     Cabe en una caja de --pd-frame-max-w × --pd-frame-max-h: el alto es el
+     que permita el ancho tope, sin pasar del alto tope. Debajo va la tira de
+     miniaturas; --pd-gal-h es el alto de las dos piezas juntas (marco + gap +
+     miniaturas) y es con lo que se centra la galería en pantalla. */
+  --pd-frame-max-w: 580px;
+  --pd-frame-max-h: 660px;
+  --pd-frame-h: min(var(--pd-frame-max-h), calc(var(--pd-frame-max-w) / var(--pd-frame-ar, 1)));
+  --pd-thumb: 72px;
   --pd-gal-gap: 18px;
   --pd-gal-h: calc(var(--pd-frame-h) + var(--pd-gal-gap) + var(--pd-thumb));
   /* Dónde se pega la galería, medido desde el borde de la VENTANA: centrada en
@@ -131,10 +137,11 @@
   top: var(--pd-gal-top);
 }
 
-/* Tira horizontal de miniaturas, centrada bajo el marco y nunca más ancha que
-   él; si el producto trae más piezas de las que caben en un renglón, la tira
-   parte en dos (la galería crece un poco y el centrado queda aproximado, no
-   pasa nada). */
+/* Tira horizontal de miniaturas, centrada bajo el marco. Puede ser más ancha
+   que el marco (con un video vertical el marco es angosto y seis miniaturas
+   no caben debajo en un renglón); si tampoco cabe en la columna, parte en
+   dos (la galería crece un poco y el centrado queda aproximado, no pasa
+   nada). */
 .pdthumbs {
   flex: none;
   display: flex;
@@ -142,7 +149,6 @@
   justify-content: center;
   gap: 12px;
   width: 100%;
-  max-width: var(--pd-frame-h);
 }
 .pdthumb {
   width: var(--pd-thumb);
@@ -184,15 +190,19 @@
 
 /* El marco: la foto NUNCA va suelta sobre el color. El marco crema le da piso
    tanto a la bolsa recortada como a una foto de estudio con su propio fondo. */
-/* Tamaño FIJO y cuadrado: el marco mide lo mismo con los desplegables abiertos
-   y cerrados y muestra la foto 1200×1200 completa, sin recorte. De acá sale el
-   alto de .pdgal (--pd-gal-h), y por eso su centrado se calcula con
-   --pd-frame-h. Quien acompaña el scroll es .pdgal, no el marco solo. El
-   min() deja que encoja si la columna es más angosta que el marco. */
+/* Tamaño FIJO: el marco mide lo mismo con los desplegables abiertos y
+   cerrados, y lo mismo con una foto que con el video (proporción única, ver
+   --pd-frame-ar arriba). Alto definido + ancho auto: el ancho sale de la
+   proporción. De acá sale el alto de .pdgal (--pd-gal-h), y por eso su
+   centrado se calcula con --pd-frame-h. Quien acompaña el scroll es .pdgal,
+   no el marco solo. El max-width deja que encoja si la columna es más
+   angosta que el marco. */
 .pdframe {
   flex: none;
-  width: min(100%, var(--pd-frame-h));
-  aspect-ratio: 1;
+  width: auto;
+  max-width: 100%;
+  height: var(--pd-frame-h);
+  aspect-ratio: var(--pd-frame-ar, 1);
   position: relative;
   border: 3px solid var(--pd-green);
   border-radius: 32px;
@@ -1077,8 +1087,9 @@
   .pdpage {
     --pd-pad: 40px;
     --pd-split-h: 900px;
-    --pd-frame-h: 500px;
-    --pd-thumb: 72px;
+    --pd-frame-max-w: 500px;
+    --pd-frame-max-h: 580px;
+    --pd-thumb: 64px;
   }
   .pdsplit__media { padding: var(--pd-gal-pad) 32px 48px; gap: 20px; }
   .pdsplit__buy { padding: 32px 40px 40px; }
@@ -1135,12 +1146,15 @@
     scrollbar-width: thin;
   }
   .pdthumb { flex: none; width: 76px; height: 76px; border-radius: 16px; scroll-snap-align: start; }
-  .pdframe { width: 100%; }
-  /* Con un video activo el marco toma SU proporción (la pone el JS desde el
-     data-ar de la miniatura): uno vertical se ve completo en lugar de quedar
-     chiquito dentro del cuadrado. El tope evita que un 9:16 rebase la
-     pantalla; si lo alcanza, contain deja franjas crema a los lados. */
-  .pdframe.is-video { aspect-ratio: var(--pd-frame-ar, 1); max-height: calc(78 * var(--svh)); }
+  /* Misma proporción que en escritorio (la del video). A lo ancho del panel,
+     pero con un tope de alto para que un 9:16 no rebase la pantalla: si lo
+     alcanza, el marco se angosta (el ancho sale del alto tope × proporción)
+     y queda centrado. */
+  .pdframe {
+    align-self: center;
+    width: min(100%, calc(78 * var(--svh) * var(--pd-frame-ar, 1)));
+    height: auto;
+  }
   .pdsplit__lote { position: static; order: 3; }
   .pdbuy__title { font-size: clamp(2.75rem, 11vw, 4rem); }
   .pdops { padding: 40px var(--pd-pad) 44px; }

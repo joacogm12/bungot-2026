@@ -64,7 +64,6 @@
       main.alt = thumb.getAttribute('data-full-alt') || main.alt;
       main.classList.toggle('is-cover', thumb.getAttribute('data-fit') === 'cover');
       frame.classList.remove('is-video');
-      frame.style.removeProperty('--pd-frame-ar');
     }
 
     function showVideo(thumb) {
@@ -92,9 +91,9 @@
       slot.querySelectorAll('.pdvideo').forEach(function (f) { f.hidden = f !== fig; });
       slot.hidden = false;
       main.hidden = true;
+      // El marco NO cambia de tamaño: su proporción es la del video desde
+      // Liquid (--pd-frame-ar en .pdpage), la misma para fotos y video.
       frame.classList.add('is-video');
-      // En móvil el marco toma la proporción del video (vertical incluido).
-      frame.style.setProperty('--pd-frame-ar', thumb.getAttribute('data-ar') || '1');
     }
 
     /* El botón de play es el único disparador de la descarga. Con un <video>

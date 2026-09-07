@@ -150,7 +150,23 @@
   endif
 -%}
 
-<section class="pdpage" data-pdp style="--pd-fam: {{ fam }};">
+{%- comment -%}
+  Proporción del marco de la galería: la del PRIMER video del producto, para
+  que fotos y video midan exactamente lo mismo y el marco no brinque al
+  cambiar de pieza (las fotos van a sangre y se recortan a esa proporción).
+  Sin video queda vacía y el CSS cae a 1 (cuadrado, como las fotos).
+{%- endcomment -%}
+{%- liquid
+  assign gal_ar = blank
+  for media in product.media
+    if media.media_type == 'video' or media.media_type == 'external_video'
+      assign gal_ar = media.aspect_ratio | default: 1
+      break
+    endif
+  endfor
+-%}
+
+<section class="pdpage" data-pdp style="--pd-fam: {{ fam }};{% if gal_ar != blank %} --pd-frame-ar: {{ gal_ar }};{% endif %}">
 
   {%- comment -%} ---------- 1. El split (fila de 960px mínimo) ---------- {%- endcomment -%}
   <div class="pdsplit">
@@ -236,8 +252,8 @@
             {%- elsif media.media_type == 'video' or media.media_type == 'external_video' -%}
               {%- comment -%}
                 La miniatura es el poster del video con un badge de play. El
-                data-ar le dice al marco qué proporción tomar en móvil: un video
-                vertical se ve entero, no recortado a cuadrado.
+                data-ar queda como dato (la proporción del marco ya la fija
+                --pd-frame-ar en .pdpage con el primer video).
               {%- endcomment -%}
               <button
                 type="button"
