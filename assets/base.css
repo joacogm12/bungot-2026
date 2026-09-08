@@ -1252,11 +1252,14 @@ shopify-account::part(signed-out-avatar) {
   position: sticky;
   /* Se pega DEBAJO del navbar (72px fijos) más un respiro, no a la altura del
      marco: la barra es transparente y con el marco solo (~40px) la foto
-     quedaba pegada a los links. El recorte es solo por arriba — el marco de
-     abajo sigue siendo --favs-frame, igual que antes. */
+     quedaba pegada a los links. */
   --favs-top: 82px;
   top: var(--favs-top);
-  height: calc(calc(100 * var(--svh)) - var(--favs-top) - var(--favs-frame));
+  /* Abajo deja el MISMO aire que arriba (a pedido, 2026-09-07): con solo el
+     marco de --favs-frame la tarjeta quedaba casi pegada al borde de abajo de
+     la pantalla y arriba le sobraban 82px; así queda centrada en la pantalla.
+     El marco de los lados sigue siendo --favs-frame. */
+  height: calc(calc(100 * var(--svh)) - var(--favs-top) * 2);
   margin-inline: var(--favs-frame);
   border-radius: var(--radius-lg);
   /* overflow hidden hace dos cosas acá: recorta las fotos al radio (si no, las
