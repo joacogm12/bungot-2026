@@ -12,14 +12,18 @@
   se pueden leer los bloques de esta sección, pero settings sí.
 
   De dónde salen las tarjetas de cada banda:
-    · Si la familia tiene una COLECCIÓN asignada, se listan sus productos reales
+    · Si la familia tiene COLECCIÓN y TIPO, se listan los productos de esa
+      colección con ese product_type (ej. productos-perros + snacks).
+    · Si la familia tiene solo una COLECCIÓN asignada, se listan sus productos reales
       (imagen, título, precio y link salen solos; agregar producto en Shopify =
       tarjeta nueva). El eyebrow sale de custom.card_eyebrow si existe.
       El color de la tarjeta NO se pasa: el pie toma --banda-bg de su .banda,
       así todas las tarjetas de una familia comparten el color de su título
       (acá no aplica custom.card_color, eso es para fuera del catálogo).
-    · Si no hay colección, cae a los productos MANUALES (bloques) — así nada se
-      rompe hasta que asignes la colección.
+    · Si solo hay TIPO, se listan los productos de todo el catálogo con ese tipo.
+    · Si no hay nada (o la colección ya no existe en el admin), cae a los
+      productos MANUALES (bloques) — tarjetas sin foto ni link, solo para que
+      la banda no quede vacía hasta que asignes la colección.
 
   Claves de familia (filtros y ajustes): cajas · deshidratados · gato · femur · juguetes.
 {%- endcomment -%}
@@ -44,7 +48,15 @@
     assign coll = settings[id_coll]
     assign ptype = settings[id_type] | strip
     assign c = 0
-    if coll != blank and coll.all_products_count > 0
+    if coll != blank and ptype != blank
+      # Colección Y tipo: la familia son los productos de la colección con ese
+      # tipo (ej. productos-perros + snacks = los premios de perro, sin huesos
+      # ni juguetes). Así ninguna familia depende de una colección "de apoyo"
+      # que en el admin puedan borrar (2026-09-10: borraron snacks-favoritos y
+      # cajas-bungot y el catálogo se quedó sin premios ni paquetes).
+      assign matched = coll.products | where: 'type', ptype
+      assign c = matched.size
+    elsif coll != blank and coll.all_products_count > 0
       assign c = coll.all_products_count
     elsif ptype != blank
       assign matched = collections.all.products | where: 'type', ptype
@@ -291,10 +303,13 @@
         {%- comment -%} .cardset: activa los estilos de la tarjeta (base.css). {%- endcomment -%}
         <div class="rail cardset" data-rail>
           {%- liquid
-            # Fuente de la banda, por prioridad: colección de la familia → tipo
-            # de producto → tarjetas manuales. where: 'type' filtra el catálogo.
+            # Fuente de la banda, por prioridad: colección Y tipo (los de la
+            # colección con ese tipo) → colección → tipo de producto → tarjetas
+            # manuales. where: 'type' filtra la colección o el catálogo entero.
             assign items = null
-            if fam_coll != blank and fam_coll.products.size > 0
+            if fam_coll != blank and fam_type != blank
+              assign items = fam_coll.products | where: 'type', fam_type
+            elsif fam_coll != blank and fam_coll.products.size > 0
               assign items = fam_coll.products
             elsif fam_type != blank
               assign items = collections.all.products | where: 'type', fam_type

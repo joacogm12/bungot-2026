@@ -130,10 +130,13 @@
       }
     }
 
-    /* Una sola ruta para cambiar de pieza: la usan las miniaturas y el
-       teclado (ya no hay flechas en pantalla). Deja la miniatura activa a la
-       vista en la tira (en móvil se desplaza). */
+    /* Una sola ruta para cambiar de pieza: la usan las miniaturas, las flechas
+       y el teclado. Mantiene el contador y deja la miniatura activa a la vista
+       en la tira (en móvil se desplaza). */
     var list = Array.prototype.slice.call(thumbs);
+    var countCur = root.querySelector('[data-pd-count-cur]');
+    var countTotal = root.querySelector('[data-pd-count-total]');
+    if (countTotal) countTotal.textContent = String(list.length);
 
     function current() {
       var i = list.findIndex(function (t) { return t.classList.contains('is-active'); });
@@ -149,6 +152,7 @@
       });
       thumb.classList.add('is-active');
       thumb.setAttribute('aria-pressed', 'true');
+      if (countCur) countCur.textContent = String(i + 1);
       if (viaNav && thumb.scrollIntoView) {
         thumb.scrollIntoView({ block: 'nearest', inline: 'nearest' });
       }
@@ -160,8 +164,13 @@
       thumb.addEventListener('click', function () { select(i, false); });
     });
 
-    // Flechas del teclado mientras el foco está en la galería (miniaturas).
-    // Arriba/izquierda = anterior; abajo/derecha = siguiente.
+    var prev = root.querySelector('[data-pd-prev]');
+    var next = root.querySelector('[data-pd-next]');
+    if (prev) prev.addEventListener('click', function () { select(current() - 1, true); });
+    if (next) next.addEventListener('click', function () { select(current() + 1, true); });
+
+    // Flechas del teclado mientras el foco está en la galería (miniaturas o
+    // botones). Arriba/izquierda = anterior; abajo/derecha = siguiente.
     var gal = root.querySelector('.pdgal');
     if (gal) {
       gal.addEventListener('keydown', function (e) {

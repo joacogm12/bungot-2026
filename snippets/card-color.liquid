@@ -29,8 +29,9 @@
   assign slot = i | modulo: palette.size
   assign c = palette[slot] | strip
 
-  # Familia del catálogo. Mismas reglas que collection-bandas.liquid: si la
-  # familia tiene colección, manda la colección; si no, el product_type exacto.
+  # Familia del catálogo. Mismas reglas que collection-bandas.liquid: con
+  # colección Y tipo, el producto tiene que estar en la colección y ser de ese
+  # tipo; con solo colección, manda la colección; si no, el product_type exacto.
   assign fams = 'cajas,deshidratados,gato,femur,juguetes' | split: ','
   for k in fams
     assign id_coll = 'fam_' | append: k | append: '_collection'
@@ -51,6 +52,9 @@
           break
         endif
       endfor
+      if hit and f_type != blank and product.type != f_type
+        assign hit = false
+      endif
     elsif f_type != blank and product.type == f_type
       assign hit = true
     endif

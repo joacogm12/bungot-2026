@@ -165,11 +165,13 @@
 
     {%- comment -%}
       Panel de la galería. La fila arranca en 960px y crece con los desplegables
-      de la derecha; el marco y, debajo, la tira de miniaturas viven juntos
-      dentro de .pdgal, que es UNA sola pieza sticky: se mueven en conjunto y
-      quedan centrados en la pantalla mientras dura la banda de color (ver el
-      CSS de .pdgal). No hay flechas: se cambia de foto tocando la miniatura
-      (o con las flechas del teclado, ver producto.js).
+      de la derecha; la tira de miniaturas, el marco y las flechas viven
+      juntos dentro de .pdgal, que es UNA sola pieza sticky: se mueven en
+      conjunto y quedan centrados en la pantalla mientras dura la banda de
+      color (ver el CSS de .pdgal). En escritorio la fila es miniaturas
+      (izquierda) | marco | flechas (derecha); en ≤1000 el marco va arriba y la
+      tira debajo, sin flechas. El markup es el mismo: el CSS reordena con
+      order.
     {%- endcomment -%}
     <div class="pdsplit__media">
       <div class="pdgal">
@@ -183,7 +185,8 @@
           del admin, saltando esa misma foto para no repetirla. Los modelos 3D
           no se pintan: el marco no los sabe mostrar. Con una sola pieza no hay
           nada que elegir y la tira sobra. La tira va DESPUÉS del marco en el
-          markup porque también va debajo de él a la vista.
+          markup (así queda debajo de él en celu); en escritorio el CSS la
+          manda a la izquierda con order: -1.
         {%- endcomment -%}
         {%- liquid
           assign gal_count = product.media.size
@@ -268,6 +271,29 @@
               </button>
             {%- endif -%}
           {%- endfor -%}
+        </div>
+        {%- endif -%}
+
+        {%- comment -%}
+          Navegación: anterior / "n de total" / siguiente. En escritorio va
+          VERTICAL a la derecha del marco (la tira de miniaturas va vertical a
+          la izquierda; ver .pdgal en producto.css) — a pedido, 2026-09-10: se
+          había quitado el 09-07 y se extrañaba. En ≤1000 no se pinta: ahí la
+          tira horizontal con scroll ya hace ese trabajo. El total lo corrige
+          producto.js con las miniaturas reales (gal_count es una aproximación
+          de Liquid).
+        {%- endcomment -%}
+        {%- if gal_count > 1 -%}
+        <div class="pdnav" data-pd-nav>
+          <button type="button" class="pdnav__btn" data-pd-prev aria-label="{{ 'sections.producto.gal_prev' | t }}">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <p class="pdnav__count" aria-live="polite">
+            <span data-pd-count-cur>1</span><span class="pdnav__sep" aria-hidden="true">/</span><span class="pdnav__of">{{ 'sections.producto.gal_of' | t }}</span><span data-pd-count-total>{{ gal_count }}</span>
+          </p>
+          <button type="button" class="pdnav__btn" data-pd-next aria-label="{{ 'sections.producto.gal_next' | t }}">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
         {%- endif -%}
 
@@ -468,6 +494,12 @@
             assign es_caja = true
           endif
           assign caja_coll = section.settings.caja_collection | default: settings.fam_deshidratados_collection
+          # Si cae a la familia y esta filtra por tipo (productos-perros +
+          # snacks), acá también: sin esto entrarían huesos y juguetes.
+          assign caja_type = ''
+          if section.settings.caja_collection == blank
+            assign caja_type = settings.fam_deshidratados_type | strip
+          endif
           assign caja_n = section.settings.caja_count | default: 3
         -%}
         {%- if es_caja and caja_coll != blank and caja_coll.products.size > 0 -%}
@@ -494,6 +526,7 @@
             {%- capture caja_opts -%}
               {%- for cp in caja_coll.products limit: 24 -%}
                 {%- if cp.requires_selling_plan or cp.available != true -%}{%- continue -%}{%- endif -%}
+                {%- if caja_type != blank and cp.type != caja_type -%}{%- continue -%}{%- endif -%}
                 <option value="{{ cp.handle }}"{% if cp.featured_image %} data-img="{{ cp.featured_image | image_url: width: 96 }}"{% endif %}>{{ cp.title }}</option>
               {%- endfor -%}
             {%- endcapture -%}
