@@ -513,6 +513,37 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
   outline-offset: 1px;
   border-color: var(--cta-ink);
 }
+/* iOS (Safari y Chrome en iPhone/iPad, que también es WebKit): el <select> y
+   el <input type="date"> se pintan con su chrome nativo y se saltan el alto
+   mínimo, el ancho y el centrado de arriba, así que nombre, tamaño y
+   cumpleaños salían cada uno de un tamaño. Se les quita la apariencia nativa
+   y se les fija la misma caja; la flecha del select se dibuja a mano (es la
+   misma del contacto). El bloque va bajo `-webkit-touch-callout` a propósito:
+   solo existe en iOS, así escritorio se queda tal cual. */
+@supports (-webkit-touch-callout: none) {
+  .cuenta__field input,
+  .cuenta__field select {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    height: 52px;
+    /* 16px: con menos, iOS hace zoom a la página al enfocar el campo. */
+    font-size: 16px;
+  }
+  .cuenta__field select {
+    padding-right: 42px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23013C3E' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+  /* El texto de la fecha vive en un pseudo interno que iOS pega arriba;
+     se centra con el alto del campo menos los bordes. */
+  .cuenta__field input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+    line-height: 48px;
+  }
+}
 /* --- Selector de avatar --- */
 .cuenta__pick { display: flex; flex-direction: column; gap: 10px; }
 .cuenta__pick-label {
