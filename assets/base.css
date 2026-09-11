@@ -17,6 +17,11 @@
      cambia el ANCHO (rotación) — la misma regla que usan los JS que cachean
      innerHeight. Este valor es solo el respaldo sin JS. */
   --svh: 1vh;
+  /* --lvh es "1% del alto MÁS GRANDE del viewport" (barra del navegador
+     escondida): la usa solo el footer, que es lo que se ve con la barra ya
+     ida. El mismo inline la mantiene como el máximo visto (ver theme.liquid);
+     esto es el respaldo sin JS. */
+  --lvh: 1vh;
 
   /* UN SOLO marco de crema para todos los bloques de color que van de borde a
      borde: el escenario de Favoritos, el panel de suscripción y la foto a lo
@@ -151,7 +156,7 @@
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 @supports (height: 1svh) {
-  :root { --svh: 1svh; }
+  :root { --svh: 1svh; --lvh: 1lvh; }
 }
 
 /* --------------------------------------------------------------------------
@@ -2479,7 +2484,10 @@ a.chip { text-decoration: none; }
 .footer {
   position: relative;
   z-index: 20;
-  min-height: calc(100 * var(--svh));
+  /* Alto de pantalla con la barra del navegador ESCONDIDA (--lvh, no --svh):
+     cuando se llega al footer en el celu la barra ya se fue y lo visible es
+     más alto; con --svh quedaba corto y asomaba la sección de arriba. */
+  min-height: calc(100 * var(--lvh, var(--svh)));
   display: flex;
   flex-direction: column;
   background: var(--ft-bg, var(--p-172));

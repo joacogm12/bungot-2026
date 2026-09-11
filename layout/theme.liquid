@@ -72,18 +72,36 @@
       que se esconda y sí se quiere que siga a la ventana.
       window.BUNGOT.altoVista() da el mismo número a los scripts que cachean
       el alto (Favoritos, bonche, paseo), para que cuadren con el CSS.
+
+      --lvh: 1% del alto MÁS GRANDE que ha tenido el viewport (con la barra
+      del navegador escondida), para lo que se ve cuando ya se scrolleó hasta
+      abajo: el footer. Con --svh el footer quedaba más chico que la pantalla
+      en el celu, porque al llegar a él la barra ya se fue y lo visible creció.
+      En celu solo crece (la barra que se esconde dispara resize con el mismo
+      ancho: ahí se toma el máximo) y se reinicia con la rotación; en
+      escritorio sigue a la ventana igual que --svh. Como el footer es lo
+      último de la página, que crezca a media bajada no mueve nada de arriba.
     {%- endcomment -%}
     <script>
       (function () {
         var raiz = document.documentElement;
         var ancho = window.innerWidth;
         var fino = window.matchMedia('(pointer: fine)');
+        var mayor = 0;
         function mide() {
-          raiz.style.setProperty('--svh', window.innerHeight / 100 + 'px');
+          mayor = window.innerHeight;
+          raiz.style.setProperty('--svh', mayor / 100 + 'px');
+          raiz.style.setProperty('--lvh', mayor / 100 + 'px');
         }
         mide();
         window.addEventListener('resize', function () {
-          if (window.innerWidth === ancho && !fino.matches) return;
+          if (window.innerWidth === ancho && !fino.matches) {
+            if (window.innerHeight > mayor) {
+              mayor = window.innerHeight;
+              raiz.style.setProperty('--lvh', mayor / 100 + 'px');
+            }
+            return;
+          }
           ancho = window.innerWidth;
           mide();
         });
