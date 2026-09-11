@@ -1270,8 +1270,13 @@ shopify-account::part(signed-out-avatar) {
   /* Abajo deja el MISMO aire que arriba (a pedido, 2026-09-07): con solo el
      marco de --favs-frame la tarjeta quedaba casi pegada al borde de abajo de
      la pantalla y arriba le sobraban 82px; así queda centrada en la pantalla.
-     El marco de los lados sigue siendo --favs-frame. */
-  height: calc(calc(100 * var(--svh)) - var(--favs-top) * 2);
+     El marco de los lados sigue siendo --favs-frame.
+     Se mide con --lvh (la pantalla con la barra del navegador ESCONDIDA, la
+     misma del footer), no con --svh: la tarjeta se ve ya scrolleando, cuando
+     la barra se fue y lo visible creció, y con --svh ese crecimiento quedaba
+     todo abajo como crema sobrante (2026-09-11). Solo crece, nunca encoge,
+     así que no brinca; con la barra de vuelta asoma 2–3px bajo el borde. */
+  height: calc(calc(100 * var(--lvh, var(--svh))) - var(--favs-top) * 2);
   margin-inline: var(--favs-frame);
   border-radius: var(--radius-lg);
   /* overflow hidden hace dos cosas acá: recorta las fotos al radio (si no, las
