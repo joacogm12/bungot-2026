@@ -969,20 +969,20 @@ shopify-account::part(signed-out-avatar) {
 }
 
 /* Pantalla más angosta que 4:3 (teléfono vertical): la figura llena el ancho
-   y no queda rincón crema, así que el claim pasa DELANTE del perro y cambia a
-   tinta — sobre el pelo la tinta da 6.2:1 de contraste y el coral daría
-   1.7:1. Color y z-index van en la MISMA regla a propósito: si se separan se
-   desincronizan y el claim queda coral ilegible encima del perro. */
+   y no queda rincón crema, así que el claim pasa DELANTE del perro (atrás
+   quedaría tapado por el pelo). Sigue en coral, igual que en compu: se probó
+   voltearlo a tinta por contraste y se regresó a pedido el 2026-09-11 — el
+   claim es el mismo color en todos los anchos. */
 @media (max-aspect-ratio: 4 / 3) {
   .hero__claim-top,
-  .hero__claim-holder {
-    z-index: 4;
-    color: var(--hero-tinta);
-  }
+  .hero__claim-holder { z-index: 4; }
 }
 
 @media (max-width: 900px) {
   .hero {
+    /* Lo que mide la figura en celu/tablet: 112vw, con tope en 112svh para el
+       teléfono acostado. Contra esto se hunde el perro y se mide la ventana. */
+    --figura-m: min(112vw, calc(112 * var(--svh)));
     padding: 20px 20px 0;
     height: calc(calc(100 * var(--svh)) - 72px);
     justify-content: flex-end;
@@ -993,13 +993,19 @@ shopify-account::part(signed-out-avatar) {
   }
   .hero__interior { height: 100%; }
   .hero__perro {
-    width: min(112vw, calc(112 * var(--svh)));
+    width: var(--figura-m);
     /* Sin el tope de escritorio: acá la figura DEBE llenar el ancho (112vw se
        sale por los costados a propósito; la ventana recorta). Con el tope, el
-       min() de arriba jamás ganaría. */
+       min() de --figura-m jamás ganaría. */
     max-width: none;
     height: auto;
-    margin-bottom: calc(-22 * var(--svh));
+    /* El hundimiento va en proporción a la FIGURA, no a la pantalla: en compu
+       el perro se hunde ~25% de su alto y el corte cae al 75% del lienzo, justo
+       donde nacen las patas (que en el PNG van del 68% al 94%), así que salen
+       pegadas al pecho. Con los -22svh de antes, en un teléfono se hundía ~43%
+       de la figura, el corte quedaba en el cuello y las patas flotaban sueltas
+       sobre Favoritos (2026-09-11). Mismo 0.255 en la ventana de abajo. */
+    margin-bottom: calc(-0.255 * var(--figura-m));
   }
   /* 11.7vw = los 13vw del diseño con el mismo 0.9 del claim de escritorio. */
   .hero__claim-top,
@@ -1013,16 +1019,17 @@ shopify-account::part(signed-out-avatar) {
    de arriba y el perro quedaban ~400px de crema vacía. Aquí el hero deja de
    medir la pantalla y toma su alto del contenido: arriba el aire que ocupa el
    claim (dos líneas de 11.7vw a .93 estiradas 1.42 ≈ 31vw) y abajo la ventana,
-   que pasa a medir EXACTAMENTE lo que se ve del perro — la figura de 112vw
-   menos los 22svh que se hunden — para que el copete arranque en su borde y
-   no haya crema arriba de él. El tope de 78svh sigue para pantallas cortas. */
+   que pasa a medir EXACTAMENTE lo que se ve del perro — la figura menos el
+   25.5% que se hunde (ver .hero__perro arriba) — para que el copete arranque
+   en su borde y no haya crema arriba de él. El tope de 78svh sigue para
+   pantallas cortas. */
 @media (max-width: 900px) and (max-aspect-ratio: 5 / 6) {
   .hero {
     height: auto;
     min-height: 0;
     padding-top: calc(24px + 31vw);
   }
-  .hero__ventana { height: min(calc(78 * var(--svh)), calc(112vw - calc(22 * var(--svh)))); }
+  .hero__ventana { height: min(calc(78 * var(--svh)), calc(0.745 * var(--figura-m))); }
 }
 
 /* --------------------------------------------------------------------------
