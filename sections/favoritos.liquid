@@ -25,9 +25,13 @@
   ven como tres fotos normales, una abajo de la otra. Se ve todo.
 
   Prioridad de la foto: imagen subida a Shopify (con srcset real) > asset del
-  tema. Hoy mandan los assets: las tres fotos viven en assets/ como
+  tema. Hoy mandan los assets en tres bloques: las fotos viven en assets/ como
   bungot-fav-*.webp, en dos anchos (1000 para celular, el grande para
-  escritorio) porque un asset no admite los filtros de image_url.
+  escritorio) porque un asset no admite los filtros de image_url. El bloque
+  de Juguetes usa foto del admin. Para celular (≤900) cada bloque puede traer
+  una foto DISTINTA — "Foto para celular" del admin (image_sm) o el asset
+  chico (image_asset_sm) — que se sirve con <source> de <picture>; el foco
+  del recorte es el mismo para las dos.
 {%- endcomment -%}
 
 {%- liquid
@@ -85,20 +89,38 @@
           {{ block.shopify_attributes }}
         >
           {%- if block.settings.image != blank -%}
-            <img
-              class="fav__img"
-              src="{{ block.settings.image | image_url: width: 1800 }}"
-              srcset="
-                {{ block.settings.image | image_url: width: 800 }} 800w,
-                {{ block.settings.image | image_url: width: 1200 }} 1200w,
-                {{ block.settings.image | image_url: width: 1800 }} 1800w,
-                {{ block.settings.image | image_url: width: 2400 }} 2400w"
-              sizes="100vw"
-              alt="{{ block.settings.image.alt | default: alt }}"
-              width="{{ block.settings.image.width }}"
-              height="{{ block.settings.image.height }}"
-              loading="{% if i == 1 %}eager{% else %}lazy{% endif %}"
-            >
+            {%- comment -%}
+              Foto del admin. Si el bloque trae "Foto para celular", un
+              <picture> la sirve hasta 900 px de ancho de pantalla (el mismo
+              corte del CSS) con su propio srcset; en escritorio sigue la
+              grande. El foco del recorte es el mismo para las dos.
+            {%- endcomment -%}
+            <picture>
+              {%- if block.settings.image_sm != blank -%}
+                <source
+                  media="(max-width: 900px)"
+                  srcset="
+                    {{ block.settings.image_sm | image_url: width: 800 }} 800w,
+                    {{ block.settings.image_sm | image_url: width: 1200 }} 1200w,
+                    {{ block.settings.image_sm | image_url: width: 1600 }} 1600w"
+                  sizes="100vw"
+                >
+              {%- endif -%}
+              <img
+                class="fav__img"
+                src="{{ block.settings.image | image_url: width: 1800 }}"
+                srcset="
+                  {{ block.settings.image | image_url: width: 800 }} 800w,
+                  {{ block.settings.image | image_url: width: 1200 }} 1200w,
+                  {{ block.settings.image | image_url: width: 1800 }} 1800w,
+                  {{ block.settings.image | image_url: width: 2400 }} 2400w"
+                sizes="100vw"
+                alt="{{ block.settings.image.alt | default: alt }}"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+                loading="{% if i == 1 %}eager{% else %}lazy{% endif %}"
+              >
+            </picture>
           {%- else -%}
             {%- comment -%}
               Asset del tema: sin image_url no hay srcset por ancho, así que el
@@ -109,7 +131,20 @@
               aplica a tres fotos con proporciones distintas.
             {%- endcomment -%}
             <picture>
-              {%- if block.settings.image_asset_sm != blank -%}
+              {%- comment -%}
+                En celu manda la "Foto para celular" del admin si la hay; si
+                no, el asset chico.
+              {%- endcomment -%}
+              {%- if block.settings.image_sm != blank -%}
+                <source
+                  media="(max-width: 900px)"
+                  srcset="
+                    {{ block.settings.image_sm | image_url: width: 800 }} 800w,
+                    {{ block.settings.image_sm | image_url: width: 1200 }} 1200w,
+                    {{ block.settings.image_sm | image_url: width: 1600 }} 1600w"
+                  sizes="100vw"
+                >
+              {%- elsif block.settings.image_asset_sm != blank -%}
                 <source media="(max-width: 900px)" srcset="{{ block.settings.image_asset_sm | asset_url }}">
               {%- endif -%}
               {%- # theme-check-disable ImgWidthAndHeight -%}
@@ -208,6 +243,12 @@
           "info": "Tiene prioridad sobre el asset del tema. Como se sirve a pantalla completa, súbela de 2400 px de ancho para arriba."
         },
         {
+          "type": "image_picker",
+          "id": "image_sm",
+          "label": "Foto para celular (subida a Shopify)",
+          "info": "Opcional. Reemplaza a la foto de arriba hasta 900 px de ancho de pantalla: conviene vertical, de unos 1200 × 1800 px, con la esquina inferior izquierda libre para el texto. En compu no se usa."
+        },
+        {
           "type": "text",
           "id": "image_asset",
           "label": "Foto (asset del tema)",
@@ -289,6 +330,12 @@
           "id": "image",
           "label": "Foto (subida a Shopify)",
           "info": "Tiene prioridad sobre el asset del tema. Como se sirve a pantalla completa, súbela de 2400 px de ancho para arriba."
+        },
+        {
+          "type": "image_picker",
+          "id": "image_sm",
+          "label": "Foto para celular (subida a Shopify)",
+          "info": "Opcional. Reemplaza a la foto de arriba hasta 900 px de ancho de pantalla: conviene vertical, de unos 1200 × 1800 px, con la esquina inferior izquierda libre para el texto. En compu no se usa."
         },
         {
           "type": "text",
