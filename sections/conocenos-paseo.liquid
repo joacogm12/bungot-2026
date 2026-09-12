@@ -129,9 +129,20 @@
               </article>
             {%- endfor -%}
 
-            {%- if section.settings.gracias_texto != blank -%}
-              {%- comment -%} La despedida, entre el final de la línea del perro y el rollo. {%- endcomment -%}
-              <p class="paseo__gracias">{{ section.settings.gracias_texto }}</p>
+            {%- if section.settings.gracias_titulo != blank or section.settings.gracias_texto != blank -%}
+              {%- comment -%}
+                La despedida, entre el final de la línea del perro y el rollo:
+                título con la letra de las tarjetas (los saltos de renglón del
+                ajuste se respetan, por eso newline_to_br) y remate en chico.
+              {%- endcomment -%}
+              <div class="paseo__gracias">
+                {%- if section.settings.gracias_titulo != blank -%}
+                  <p class="paseo__gracias-titulo">{{ section.settings.gracias_titulo | newline_to_br }}</p>
+                {%- endif -%}
+                {%- if section.settings.gracias_texto != blank -%}
+                  <p class="paseo__gracias-texto">{{ section.settings.gracias_texto }}</p>
+                {%- endif -%}
+              </div>
             {%- endif -%}
 
             {%- comment -%}
@@ -349,10 +360,17 @@
     },
     {
       "type": "textarea",
+      "id": "gracias_titulo",
+      "label": "Título",
+      "default": "Gracias por ser parte\nde esta historia",
+      "info": "Va entre el final de la línea del perro y el rollo, con la letra de los títulos. Los saltos de renglón se respetan. Vacío = no se pinta."
+    },
+    {
+      "type": "text",
       "id": "gracias_texto",
-      "label": "Texto",
-      "default": "Gracias por ser parte de esta historia que todavía tiene cuerda para rato.",
-      "info": "Va entre el final de la línea del perro y el rollo, con la letra de los títulos. Vacío = no se pinta."
+      "label": "Remate",
+      "default": "que todavía tiene cuerda para un rato...",
+      "info": "En letra chica, debajo del título."
     },
     {
       "type": "header",

@@ -406,19 +406,31 @@ img.pest,
 .paseo__gracias {
   position: absolute;
   left: 120px;
-  top: 4610px;
+  top: 4570px;
   width: 1342px;
-  margin: 0;
   z-index: 4;
+  text-align: center;
+}
+
+.paseo__gracias-titulo {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 400;
   font-size: 68px;
   line-height: .92;
   letter-spacing: -.01em;
   text-transform: uppercase;
-  text-align: center;
-  text-wrap: balance;
   color: #00968F;
+}
+
+/* El remate, con la letra del texto de las tarjetas. */
+.paseo__gracias-texto {
+  margin: 14px 0 0;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.35;
+  color: #013C3E;
 }
 
 /* --- El rollo de fotos ---------------------------------------------------- */
@@ -648,11 +660,9 @@ img.pest,
 .paseo--vertical .ptar__foto { height: min(56vw, 240px); border-radius: 18px; }
 .paseo--vertical .ptar__texto { font-size: 17px; }
 .paseo--vertical .ptar__hueco { font-size: 14px; }
-.paseo--vertical .paseo__gracias {
-  position: static;
-  width: auto;
-  font-size: clamp(30px, 8.5vw, 44px);
-}
+.paseo--vertical .paseo__gracias { position: static; width: auto; }
+.paseo--vertical .paseo__gracias-titulo { font-size: clamp(30px, 8.5vw, 44px); }
+.paseo--vertical .paseo__gracias-texto { font-size: 17px; }
 
 /* El rollo pierde el bote y el arrastre a mano: en táctil una tira con scroll
    nativo hace exactamente lo mismo y sin JS. */
