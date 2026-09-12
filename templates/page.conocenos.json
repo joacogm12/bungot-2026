@@ -1,23 +1,36 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "paseo": {
       "type": "conocenos-paseo",
       "settings": {
-        "titulo": "Conócenos",
-        "bajada": "La historia completa cabe en un paseo. Baja.",
+        "titulo": "ESTO SE NOS SALIÓ DE LAS PATAS...",
+        "bajada": "...Y así nació Bungot. Baja, te contamos el chisme.",
         "animar": true,
         "casa_titulo": "TODO EMPEZÓ CON ELLOS",
         "casa_texto": "Antes que una marca, fueron dos peludos: Greta y Bache.",
-        "bote_titulo": "NADA NOS CONVENCÍA",
-        "bote_texto": "Buscábamos algo bueno para ellos y solo encontrábamos etiquetas larguísimas llenas de cosas impronunciables. Así que dejamos de buscar y nos pusimos manos a la obra: así nació BUNGOT.",
+        "img_casa": "shopify://shop_images/bonche-1N0A0620.jpg",
+        "bote_titulo": "MUCHOS PRODUCTOS POCA CONFIANZA",
+        "bote_texto": "Buscábamos algo bueno para ellos, pero leer las etiquetas nos dejaba con más y más dudas. Así que nos pusimos manos a la obra y así nació BUNGOT.",
         "pruebas_titulo": "PRUEBAS, PRUEBAS Y MÁS PRUEBAS",
-        "pruebas_texto": "Un ingrediente. Nada más. Nos tomó años, y todas las etiquetas pegadas a mano.",
+        "pruebas_texto": "Queríamos hacerlo simple: un solo ingrediente y nada de más. Entre prueba y prueba, Bungot fue tomando forma.",
         "hidrante_titulo": "SE CORRIÓ LA VOZ",
         "hidrante_texto": "De dos peludos a cientos: en el barrio las noticias vuelan. Empezamos con dos clientes muy exigentes y hoy ya somos una manada.",
-        "manada_titulo": "LA MANADA CRECE",
-        "manada_texto": "Greta, Manolo, Ramona y cientos más: la manada nos fue diciendo qué premio seguía."
+        "manada_titulo": "Y SI, ESTO APENAS EMPIEZA",
+        "manada_texto": "Sin querer queriendo se nos salió de las patas... Seguimos creciendo, aprendiendo y poniendo el mismo cariño desde el primer día.",
+        "img_manada": "shopify://shop_images/03CAC555-515D-403D-875F-53E278F2173C.jpg"
       }
     }
   },
-  "order": ["paseo"]
+  "order": [
+    "paseo"
+  ]
 }
