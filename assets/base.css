@@ -2379,47 +2379,56 @@ a.chip { text-decoration: none; }
    para un viewport ancho) las dejaba encima del titular y del párrafo. Aquí
    se ignoran esos destinos y se acomodan a mano. Hasta el 2026-09-11 iban las
    diez en dos filas de cinco, pegaditas y alineadas; a pedido son SEIS
-   (cuatro grandes y dos chicas, las otras cuatro se esconden), más grandes y
-   desalineadas: tres arriba y tres abajo del texto, cada una a su altura,
-   para que no se lean como una fila. Las vars van con !important porque
-   fx/fy llegan en el style inline de cada tarjeta y una regla normal no les
-   gana; el montón inicial y la apertura por scroll siguen iguales porque solo
-   cambian los destinos. La primera hija del pile es el texto, por eso las
-   tarjetas cuentan desde nth-child(2): 2–7 son las seis grandes del layout
-   de escritorio y 8–11 las cuatro chicas (ver el orden de bloques en
-   templates/index.json).
+   (cuatro grandes y dos chicas, las otras cuatro se esconden), más grandes,
+   tres arriba y tres abajo del texto, y PEGADAS al texto: en vertical ya no
+   usan --fy (fracción de la pantalla, que dejaba la separación al azar del
+   teléfono) sino que cada una se cuelga del borde del bloque de texto a una
+   separación fija --sep, distinta por foto para que no se lean como fila.
+   El medio alto del texto lo mide initBonche() (theme.js) y lo publica en
+   --copy-hh sobre el pile; sin JS cae a 150px. --lado dice si va arriba (-1)
+   o abajo (1). El montón inicial (--s: 0) y la apertura por scroll siguen
+   iguales: solo cambia el destino. --fx sí sigue con !important porque
+   llega en el style inline de cada tarjeta y una regla normal no le gana.
+   La primera hija del pile es el texto, por eso las tarjetas cuentan desde
+   nth-child(2): 2–7 son las seis grandes del layout de escritorio y 8–11
+   las cuatro chicas (ver el orden de bloques en templates/index.json).
 
-   Cuáles se ven y dónde (fx: -1 borde izq … 1 borde der; fy: -1 arriba …
-   1 abajo, siempre con 24px de aire):
-     arriba: grande 3:4 en la esquina izq · chica 4:3 al centro, más abajo ·
-             grande 2:3 en la esquina der
-     abajo:  chica 2:3 a la izq, arriba · grande 4:3 al centro, hasta abajo ·
-             grande 3:4 a la der, a media altura
+   Cuáles se ven y dónde (fx: -1 borde izq … 1 borde der):
+     arriba: grande 3:4 en la esquina izq · chica 4:3 al centro, la más
+             pegada · grande 2:3 en la esquina der
+     abajo:  chica 2:3 a la izq · grande 4:3 al centro, la más separada ·
+             grande 3:4 a la der
    Se esconden la 2ª y 5ª grandes y la 1ª y 4ª chicas. Si cambian las fotos
    del customizer, el acomodo sigue siendo por posición de bloque. */
 @media (max-width: 640px) {
   .bonche__copy { width: min(33rem, 86vw); }
-  /* Con seis fotos caben más grandes: 30vw las grandes y 23vw las chicas,
-     capadas por svh para que en teléfono acostado no se coman el texto. */
+  /* Con seis fotos caben más grandes: 30vw las grandes y 23vw las chicas.
+     El tope por svh (18 / 14) es el que deja que en un teléfono corto
+     (740 de alto) las de arriba libren las pestañas del navbar (72px). */
   .bonche__card {
-    --w: calc(min(30vw, calc(22 * var(--svh)) / var(--ar)) * var(--z, 1));
+    --w: calc(min(30vw, calc(18 * var(--svh)) / var(--ar)) * var(--z, 1));
+    --lado: -1;
+    --sep: 16px;
+    --dy: calc(
+      var(--oy, 0) * (1 - var(--s, 0)) * 1vmin
+      + var(--s, 0) * var(--lado) * (var(--copy-hh, 150px) + var(--sep) + var(--hh))
+    );
   }
   .bonche__card--chica {
-    --w: calc(min(23vw, calc(17 * var(--svh)) / var(--ar)) * var(--z, 1));
+    --w: calc(min(23vw, calc(14 * var(--svh)) / var(--ar)) * var(--z, 1));
   }
   .bonche__card:nth-child(3),
   .bonche__card:nth-child(6),
   .bonche__card:nth-child(8),
   .bonche__card:nth-child(11) { display: none; }
-  /* Arriba del texto. Las de las esquinas no llegan a fy -1: con eso se
-     metían debajo de las pestañas del navbar (72px), que es sticky. */
-  .bonche__card:nth-child(2)  { --fx: -1    !important; --fy: -0.85 !important; }
-  .bonche__card:nth-child(9)  { --fx:  0.1  !important; --fy: -0.58 !important; }
-  .bonche__card:nth-child(5)  { --fx:  1    !important; --fy: -0.84 !important; }
+  /* Arriba del texto */
+  .bonche__card:nth-child(2)  { --fx: -1    !important; --sep: 28px; }
+  .bonche__card:nth-child(9)  { --fx:  0.1  !important; --sep: 12px; }
+  .bonche__card:nth-child(5)  { --fx:  1    !important; --sep: 20px; }
   /* Abajo del texto */
-  .bonche__card:nth-child(10) { --fx: -0.95 !important; --fy:  0.7  !important; }
-  .bonche__card:nth-child(4)  { --fx:  0.05 !important; --fy:  1    !important; }
-  .bonche__card:nth-child(7)  { --fx:  1    !important; --fy:  0.78 !important; }
+  .bonche__card:nth-child(10) { --fx: -0.95 !important; --lado: 1; --sep: 14px; }
+  .bonche__card:nth-child(4)  { --fx:  0.05 !important; --lado: 1; --sep: 44px; }
+  .bonche__card:nth-child(7)  { --fx:  1    !important; --lado: 1; --sep: 22px; }
 }
 
 /* --------------------------------------------------------------------------

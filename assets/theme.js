@@ -706,6 +706,26 @@
       var pile = root.querySelector('[data-pile]');
       if (!pile) return;
 
+      // Medio alto del bloque de texto, en px, para que en celu las fotos se
+      // cuelguen de su borde a una separación fija (ver el @media de .bonche
+      // en base.css). offsetHeight ignora el scale/blur de la entrada del
+      // texto, así que la medida es de maqueta. Se re-mide cuando entra Anton
+      // (cambia el alto del titular) y solo con resize que cambie el ANCHO:
+      // la barra del navegador de celu dispara resize sin mover el ancho y
+      // ahí re-medir es mover fotos a mitad de scroll.
+      var copy = root.querySelector('.bonche__copy');
+      function mideCopy() {
+        if (copy) pile.style.setProperty('--copy-hh', (copy.offsetHeight / 2) + 'px');
+      }
+      mideCopy();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(mideCopy);
+      var anchoCopy = window.innerWidth;
+      window.addEventListener('resize', function () {
+        if (window.innerWidth === anchoCopy) return;
+        anchoCopy = window.innerWidth;
+        mideCopy();
+      });
+
       // Modo acomodar (checkbox de la sección o ?acomodar en la URL):
       // herramienta de maqueta, no UI de la tienda. Dispersión clavada al
       // 100% y fotos arrastrables; el HUD lista los fx/fy para copiarlos.
