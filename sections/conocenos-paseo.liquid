@@ -38,7 +38,7 @@
     <div class="paseo__lienzo" data-lienzo>
 
       <header class="paseo__intro">
-        <h1 class="paseo__titulo">{{ section.settings.titulo }}</h1>
+        <h1 class="paseo__titulo">{{ section.settings.titulo | newline_to_br }}</h1>
         <p class="paseo__bajada">{{ section.settings.bajada }}</p>
       </header>
 
@@ -226,10 +226,11 @@
   "limit": 1,
   "settings": [
     {
-      "type": "text",
+      "type": "textarea",
       "id": "titulo",
       "label": "Título",
-      "default": "Conócenos"
+      "default": "Conócenos",
+      "info": "Los saltos de renglón se respetan."
     },
     {
       "type": "text",

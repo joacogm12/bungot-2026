@@ -12,7 +12,7 @@
     "paseo": {
       "type": "conocenos-paseo",
       "settings": {
-        "titulo": "ESTO SE NOS SALIÓ DE LAS PATAS...",
+        "titulo": "ESTO SE NOS\nSALIÓ DE\nLAS PATAS...",
         "bajada": "...Y así nació Bungot. Baja, te contamos el chisme.",
         "animar": true,
         "casa_titulo": "TODO EMPEZÓ CON ELLOS",
