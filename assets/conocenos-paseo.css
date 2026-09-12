@@ -410,8 +410,8 @@ img.pest,
    puede (el título de dos líneas + remate acaban en ≈4860): en una laptop
    no caben este bloque y el rollo entero en una pantalla, así que la cámara
    llega con el bloque bajo el navbar y termina de bajar hasta el pie del
-   lienzo durante el carrusel (ver camara() en el JS). Cada px que el bloque
-   sube es un px más de ese paneo. */
+   lienzo mientras sale la cinta, antes del carrusel (ver camara() en el
+   JS). Cada px que el bloque sube es un px más de ese paneo. */
 .paseo__gracias {
   position: absolute;
   left: 120px;

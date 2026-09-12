@@ -394,7 +394,7 @@
     var sCam = sCerca('camAncla', 1260, 3612) + 140;
 
     dibujarPerro(fin, L, sCasa);
-    if (!plano) camara(fin, rB, rC);
+    if (!plano) camara(fin, rB);
 
     estacionCasa(fin, sCasa, ahora);
     estacionBote(fin, sVuelta, ahora);
@@ -451,7 +451,7 @@
      el vaivén de las vueltas horizontales sacude el encuadre). En la primera
      mitad de la fase del remate baja hasta el pie de la escena para que el
      rollo quede en cuadro. */
-  function camara(fin, rB, rC) {
+  function camara(fin, rB) {
     var suma = 0, n = 0;
     for (var k = -900; k <= 900; k += 150) { suma += pt(fin + k).y; n++; }
     var yPerro = (suma / n) * geo.esc;
@@ -469,11 +469,12 @@
          (72px fijos del theme, en px de pantalla → del lienzo con escV). En
          una pantalla alta cabe junto con el rollo y el pie manda. En una
          laptop no caben los dos: la cámara llega al rollo con el gracias
-         a la vista (techo) y, mientras el carrusel corre, baja lo que falta
-         hasta el pie; el gracias se va bajo la barra cuando ya se leyó y
-         al final el rollo queda completo, sin nada recortado. */
+         a la vista (techo) y, mientras sale la cinta (segunda mitad del
+         remate), baja lo que falta hasta el pie. Tiene que quedar quieta
+         ANTES del carrusel: si el paneo corría durante el carrusel, el
+         scroll ya no "se detenía" en el rollo (2026-09-11). */
       var techo = NAV_AIRE / geo.escV - geo.gracias;
-      if (techo > pie) piso = techo + (pie - techo) * smoothstep(rC);
+      if (techo > pie) piso = techo + (pie - techo) * smoothstep(clamp((rB - 0.5) / 0.5, 0, 1));
     }
     var cola = smoothstep(clamp(rB / 0.5, 0, 1));
     meta += (piso - meta) * cola;
@@ -648,10 +649,9 @@
   }
 
   /* --- El carrusel del rollo ------------------------------------------------
-     Lo mueve el scroll: en la tercera fase (rC) la escena está quieta (en
-     laptop solo termina de bajar al pie, ver camara()) y las fotos van
-     saliendo del bote hacia la derecha, una vuelta (la mitad del track) a
-     lo largo de la fase. El arrastre con mouse o dedo suma un
+     Lo mueve el scroll: en la tercera fase (rC) la escena está quieta y las
+     fotos van saliendo del bote hacia la derecha, una vuelta (la mitad del
+     track) a lo largo de la fase. El arrastre con mouse o dedo suma un
      ajuste manual encima (offMano), sin inercia.
 
      La cinta es finita, como un rollo de verdad: en reposo el track está
