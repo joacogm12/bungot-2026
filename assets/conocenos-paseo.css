@@ -356,8 +356,7 @@ img.pest,
 .ptar__foto {
   position: relative;
   height: 360px;
-  border-radius: 24px;
-  border: 3px solid #013C3E;
+  border-radius: 24px; /* sin marco a pedido (2026-09-11): solo el redondeo */
   overflow: hidden;
   background: #EFE7D6;
 }
