@@ -37,7 +37,7 @@
      quieta, el carrusel: el scroll saca las fotos del bote hacia la derecha. */
   var FASE_PERRO = 0.68;
   var FASE_REMATE = 0.84;  // el remate va de FASE_PERRO a aquí; de aquí a 1 es el carrusel
-  var PIE_UTIL = 5600;     // pie útil del lienzo: bajo el botón de compra (acaba en ≈5574 con sombra) no hay nada hasta H; la cámara no baja a enseñar esa nada
+  var PIE_UTIL = 5600;     // pie útil del lienzo: bajo el bote del rollo (acaba en 5569) no hay nada hasta H; la cámara no baja a enseñar esa nada
   var NAV_AIRE = 72 + 28;  // navbar del theme (72px fijos) + aire, en px de pantalla: lo que el bloque de gracias deja arriba en la última pantalla
   var PI = Math.PI;
   var DOSPI = PI * 2;
@@ -457,8 +457,8 @@
     for (var k = -900; k <= 900; k += 150) { suma += pt(fin + k).y; n++; }
     var yPerro = (suma / n) * geo.esc;
     var meta = Math.min(-80, geo.altoVent * 0.72 - yPerro);
-    /* El pie: PIE_UTIL del lienzo a ras de la ventana, con el rollo y el
-       botón enteros en cuadro (lo que sigue hasta H es lienzo vacío; cada
+    /* El pie: PIE_UTIL del lienzo a ras de la ventana, con el rollo entero
+       en cuadro (lo que sigue hasta H es lienzo vacío; cada
        px de esa nada que se enseñara sería un px del gracias bajo el
        navbar en laptop). Es donde la cámara tiene que TERMINAR sí o sí: la
        ventana recorta (overflow: clip) todo lo que se salga por abajo, y

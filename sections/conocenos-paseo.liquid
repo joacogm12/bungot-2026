@@ -209,24 +209,6 @@
               </div>
             </div>
 
-            {%- if section.settings.compra_texto != blank -%}
-              {%- comment -%}
-                El botón de compra, debajo de la cinta (a pedido 2026-09-11).
-                Link vacío = todos los productos. Va después del rollo en el
-                markup para que en la columna de celular caiga debajo de la
-                tira.
-              {%- endcomment -%}
-              {%- liquid
-                assign compra_url = section.settings.compra_url
-                if compra_url == blank
-                  assign compra_url = routes.all_products_collection_url
-                endif
-              -%}
-              <div class="paseo__compra">
-                <a class="btn btn--brand paseo__compra-cta" href="{{ compra_url }}">{{ section.settings.compra_texto }}</a>
-              </div>
-            {%- endif -%}
-
           </div>
         </div>
       </div>
@@ -391,19 +373,6 @@
       "label": "Remate",
       "default": "que todavía tiene cuerda para un rato...",
       "info": "En letra chica, debajo del título."
-    },
-    {
-      "type": "text",
-      "id": "compra_texto",
-      "label": "Botón de compra",
-      "default": "Ir a comprar",
-      "info": "Debajo de la cinta del rollo. Vacío = no se pinta."
-    },
-    {
-      "type": "url",
-      "id": "compra_url",
-      "label": "Link del botón",
-      "info": "Vacío = todos los productos."
     },
     {
       "type": "header",

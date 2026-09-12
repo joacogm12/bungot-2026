@@ -403,10 +403,11 @@ img.pest,
   line-height: 1.5;
 }
 
-/* --- La despedida y el botón de compra ------------------------------------
-   Los dos viven en la última pantalla, la del rollo (a pedido 2026-09-11):
-   el bloque de gracias en el hueco de arriba de la cinta, a la derecha del
-   bote, y el botón debajo de la cinta. Las cotas salen del rollo: .prollo
+/* --- La despedida ---------------------------------------------------------
+   Vive en la última pantalla, la del rollo (a pedido 2026-09-11): en el
+   hueco de arriba de la cinta, a la derecha del bote. (Hubo un botón de
+   compra debajo de la cinta; se quitó a pedido el mismo día.) Las cotas
+   salen del rollo: .prollo
    arranca en 4880 (top 4600 + translateY 280) y escala ×2.05, así que la
    cinta va de 5038 (77 × 2.05) a 5485 y el bote acaba en 5569. El título de
    dos líneas + remate miden ≈169, y terminan 12px arriba de la cinta; el
@@ -441,23 +442,6 @@ img.pest,
   font-size: 22px;
   line-height: 1.35;
   color: #013C3E;
-}
-
-/* El botón, centrado bajo la cinta, con el pie a ras del bote (5569). Sobre
-   el rollo (z 6) por si la lengüeta le pasa encima. Tamaños en px, no en
-   --step-0: el lienzo va con zoom y aquí todo se mide en px del lienzo. */
-.paseo__compra {
-  position: absolute;
-  left: 120px;
-  top: 5500px;
-  width: 1342px;
-  z-index: 7;
-  text-align: center;
-}
-
-.paseo__compra-cta {
-  font-size: 22px;
-  padding: 0.8em 1.9em;
 }
 
 /* --- El rollo de fotos ---------------------------------------------------- */
@@ -690,10 +674,6 @@ img.pest,
 .paseo--vertical .paseo__gracias { position: static; width: auto; }
 .paseo--vertical .paseo__gracias-titulo { font-size: clamp(30px, 8.5vw, 44px); }
 .paseo--vertical .paseo__gracias-texto { font-size: 17px; }
-/* La columna reparte 44px entre bloques: el botón se acerca a la tira y deja
-   aire antes del footer (la escena solo trae 8px de padding abajo). */
-.paseo--vertical .paseo__compra { position: static; width: auto; margin: -14px 0 36px; }
-.paseo--vertical .paseo__compra-cta { font-size: 17px; }
 
 /* El rollo pierde el bote y el arrastre a mano: en táctil una tira con scroll
    nativo hace exactamente lo mismo y sin JS. */
