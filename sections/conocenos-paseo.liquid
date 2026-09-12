@@ -75,8 +75,14 @@
             <div class="pest pest--pruebas" data-est="pruebas" aria-hidden="true">
               <img class="pest__base" data-est="base" src="{{ 'pruebas-anim1.png' | asset_url }}" alt="" width="558" height="768" loading="lazy">
               <img class="pest__burbujas" data-est="burbujas" src="{{ 'pruebas-anim2.png' | asset_url }}" alt="" width="593" height="768" loading="lazy">
-              <img class="pest__humo" data-est="humo" src="{{ 'pruebas-humo.png' | asset_url }}" alt="" width="625" height="768" loading="lazy">
             </div>
+            {%- comment -%}
+              El humo va FUERA del grupo de la mesa a propósito: el grupo rota
+              con transform (contexto de apilamiento propio, z 3) y ahí adentro
+              el humo quedaba debajo del camino (z 5). Suelto, se ancla al
+              mismo punto en el JS y pasa por encima de la línea del perro.
+            {%- endcomment -%}
+            <img class="pest pest--humo" data-est="humo" src="{{ 'pruebas-humo.png' | asset_url }}" alt="" aria-hidden="true" width="625" height="768" loading="lazy">
 
             {%- comment -%} 6.3 El hidrante (tarjeta 2) {%- endcomment -%}
             <img class="pest pest--hidrante" data-est="hidrante" src="{{ 'hidrante-solido.png' | asset_url }}" alt="" aria-hidden="true" width="768" height="689" loading="lazy">
@@ -122,6 +128,11 @@
                 <p class="ptar__texto">{{ texto }}</p>
               </article>
             {%- endfor -%}
+
+            {%- if section.settings.gracias_texto != blank -%}
+              {%- comment -%} La despedida, entre el final de la línea del perro y el rollo. {%- endcomment -%}
+              <p class="paseo__gracias">{{ section.settings.gracias_texto }}</p>
+            {%- endif -%}
 
             {%- comment -%}
               7. El remate: el rollo cae, crece y desenrolla una tira de
@@ -331,6 +342,17 @@
       "id": "img_manada",
       "label": "Foto",
       "info": "Si se deja vacía se usa la foto del equipo con el perro (bungot-equipo-perro.webp)."
+    },
+    {
+      "type": "header",
+      "content": "Despedida"
+    },
+    {
+      "type": "textarea",
+      "id": "gracias_texto",
+      "label": "Texto",
+      "default": "Gracias por ser parte de esta historia que todavía tiene cuerda para rato.",
+      "info": "Va entre el final de la línea del perro y el rollo, con la letra de los títulos. Vacío = no se pinta."
     },
     {
       "type": "header",

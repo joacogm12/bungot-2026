@@ -537,6 +537,7 @@
 
   function estacionPruebas(fin, sPru, ahora) {
     var P = ancla(est.pruebas, sPru, 926);
+    ancla(est.humo, sPru, 926); // hermano del grupo (para pasar sobre el camino), mismo punto
     var t = reloj('pruebas', fin >= sPru - 150, ahora);
     var e = smoothstep(t);
 
