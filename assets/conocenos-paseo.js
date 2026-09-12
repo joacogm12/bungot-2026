@@ -37,6 +37,7 @@
      quieta, el carrusel: el scroll saca las fotos del bote hacia la derecha. */
   var FASE_PERRO = 0.68;
   var FASE_REMATE = 0.84;  // el remate va de FASE_PERRO a aquí; de aquí a 1 es el carrusel
+  var NAV_AIRE = 72 + 28;  // navbar del theme (72px fijos) + aire, en px de pantalla: lo que el bloque de gracias deja arriba en la última pantalla
   var PI = Math.PI;
   var DOSPI = PI * 2;
 
@@ -50,7 +51,7 @@
   var memoS = {};   // 'clave@x,y' → s del punto más cercano del camino
   var estado = {};  // relojes por estación
 
-  var geo = { listo: false, altoPista: 0, escV: 1, topDoc: 0, altoVent: 0, finScroll: 1, esc: 1, centros: {} };
+  var geo = { listo: false, altoPista: 0, escV: 1, topDoc: 0, altoVent: 0, finScroll: 1, esc: 1, gracias: 0, centros: {} };
   var plano = false;      // sin recorrido: reduced-motion o "Animar" apagado
   var pPrev = -1;
   var enVuelo = false;    // algún reloj con 0 < u < 1
@@ -343,6 +344,10 @@
       var c = tar[k];
       geo.centros[k] = { x: c.offsetLeft + c.offsetWidth / 2, y: c.offsetTop + c.offsetHeight / 2 };
     });
+    // Techo del bloque de gracias en px del lienzo, para el piso de la cámara
+    // en el remate (0 = no hay bloque, la cámara baja al pie del lienzo).
+    var gracias = root.querySelector('.paseo__gracias');
+    geo.gracias = gracias ? gracias.offsetTop * geo.esc : 0;
 
     geo.listo = true;
     sucio = true;
@@ -451,7 +456,19 @@
     for (var k = -900; k <= 900; k += 150) { suma += pt(fin + k).y; n++; }
     var yPerro = (suma / n) * geo.esc;
     var meta = Math.min(-80, geo.altoVent * 0.72 - yPerro);
+    /* El piso del remate no es el pie del lienzo (5650): abajo del bote
+       sobran ~80px de nada y ese tanto se lo comía el bloque de gracias por
+       arriba, que en una laptop quedaba metido debajo del navbar. La cámara
+       baja hasta donde el bloque conserva NAV_AIRE de aire bajo la barra
+       (72px fijos del theme, en px de pantalla → del lienzo con escV), y no
+       más. En pantallas altas el pie del lienzo sigue mandando (no se deja
+       hueco vacío abajo); en una de 768 de alto lo que se sale por abajo es
+       la última fila de perforaciones de la cinta, nunca el texto. */
     var piso = geo.altoVent - H;
+    if (geo.gracias > 0) {
+      var techo = NAV_AIRE / geo.escV - geo.gracias;
+      if (techo > piso) piso = techo;
+    }
     var cola = smoothstep(clamp(rB / 0.5, 0, 1));
     meta += (piso - meta) * cola;
     if (meta < piso) meta = piso;

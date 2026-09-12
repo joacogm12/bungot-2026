@@ -349,11 +349,15 @@ img.pest,
   text-wrap: balance;
 }
 
-.ptar--1 .ptar__titulo { color: #E24E2E; }
-.ptar--5 .ptar__titulo { color: #00968F; }
-.ptar--2 .ptar__titulo { color: #C2721A; }
-.ptar--3 .ptar__titulo { color: #013C3E; }
-.ptar--4 .ptar__titulo { color: #00968F; }
+/* Cada título toma el color de la utilería de su estación (muestreado de
+   los PNG, a pedido 2026-09-11): el plátano del bote, la mesa se queda en
+   el verde de marca, la sombra roja del hidrante, la casita y el lente de
+   la cámara. */
+.ptar--1 .ptar__titulo { color: #E0B91C; } /* bote: amarillo oscuro del plátano */
+.ptar--5 .ptar__titulo { color: #00968F; } /* mesa de pruebas: se queda */
+.ptar--2 .ptar__titulo { color: #A91801; } /* hidrante: su rojo oscuro */
+.ptar--3 .ptar__titulo { color: #E2520E; } /* casita: su naranja */
+.ptar--4 .ptar__titulo { color: #5989BC; } /* cámara: el azul del lente */
 
 .ptar__foto {
   position: relative;
@@ -402,11 +406,15 @@ img.pest,
 /* --- La despedida ---------------------------------------------------------
    Entre el último tramo del camino (termina en y≈4490) y el rollo (arranca
    en 4880: top 4600 + translateY 280). Misma letra que los títulos de las
-   tarjetas; centrada a lo ancho del lienzo. */
+   tarjetas; centrada a lo ancho del lienzo. Va lo más pegada al bote que se
+   puede (el título de dos líneas + remate acaban en ≈4860): en la última
+   pantalla la cámara frena donde este bloque queda debajo del navbar (ver
+   camara() en el JS), y cada px que el bloque sube es un px de cinta que se
+   sale por abajo en una laptop de 900 de alto. */
 .paseo__gracias {
   position: absolute;
   left: 120px;
-  top: 4570px;
+  top: 4690px;
   width: 1342px;
   z-index: 4;
   text-align: center;
