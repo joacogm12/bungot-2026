@@ -394,7 +394,7 @@
     var sCam = sCerca('camAncla', 1260, 3612) + 140;
 
     dibujarPerro(fin, L, sCasa);
-    if (!plano) camara(fin, rB);
+    if (!plano) camara(fin, rB, rC);
 
     estacionCasa(fin, sCasa, ahora);
     estacionBote(fin, sVuelta, ahora);
@@ -451,23 +451,29 @@
      el vaivén de las vueltas horizontales sacude el encuadre). En la primera
      mitad de la fase del remate baja hasta el pie de la escena para que el
      rollo quede en cuadro. */
-  function camara(fin, rB) {
+  function camara(fin, rB, rC) {
     var suma = 0, n = 0;
     for (var k = -900; k <= 900; k += 150) { suma += pt(fin + k).y; n++; }
     var yPerro = (suma / n) * geo.esc;
     var meta = Math.min(-80, geo.altoVent * 0.72 - yPerro);
-    /* El piso del remate no es el pie del lienzo (5650): abajo del bote
-       sobran ~80px de nada y ese tanto se lo comía el bloque de gracias por
-       arriba, que en una laptop quedaba metido debajo del navbar. La cámara
-       baja hasta donde el bloque conserva NAV_AIRE de aire bajo la barra
-       (72px fijos del theme, en px de pantalla → del lienzo con escV), y no
-       más. En pantallas altas el pie del lienzo sigue mandando (no se deja
-       hueco vacío abajo); en una de 768 de alto lo que se sale por abajo es
-       la última fila de perforaciones de la cinta, nunca el texto. */
-    var piso = geo.altoVent - H;
+    /* El pie: la escena a ras de la ventana, con el rollo entero en cuadro.
+       Es donde la cámara tiene que TERMINAR sí o sí: la ventana recorta
+       (overflow: clip) todo lo que se salga por abajo, y al pasar del riel
+       al footer lo recortado se ve como "el rollo detrás del footer"
+       (2026-09-11). Por eso lo que se sale por abajo nunca es un piso
+       válido, ni una fila de perforaciones. */
+    var pie = geo.altoVent - H;
+    var piso = pie;
     if (geo.gracias > 0) {
+      /* El techo: el bloque de gracias con NAV_AIRE de aire bajo el navbar
+         (72px fijos del theme, en px de pantalla → del lienzo con escV). En
+         una pantalla alta cabe junto con el rollo y el pie manda. En una
+         laptop no caben los dos: la cámara llega al rollo con el gracias
+         a la vista (techo) y, mientras el carrusel corre, baja lo que falta
+         hasta el pie; el gracias se va bajo la barra cuando ya se leyó y
+         al final el rollo queda completo, sin nada recortado. */
       var techo = NAV_AIRE / geo.escV - geo.gracias;
-      if (techo > piso) piso = techo;
+      if (techo > pie) piso = techo + (pie - techo) * smoothstep(rC);
     }
     var cola = smoothstep(clamp(rB / 0.5, 0, 1));
     meta += (piso - meta) * cola;
@@ -642,9 +648,10 @@
   }
 
   /* --- El carrusel del rollo ------------------------------------------------
-     Lo mueve el scroll: en la tercera fase (rC) la escena está quieta y las
-     fotos van saliendo del bote hacia la derecha, una vuelta (la mitad del
-     track) a lo largo de la fase. El arrastre con mouse o dedo suma un
+     Lo mueve el scroll: en la tercera fase (rC) la escena está quieta (en
+     laptop solo termina de bajar al pie, ver camara()) y las fotos van
+     saliendo del bote hacia la derecha, una vuelta (la mitad del track) a
+     lo largo de la fase. El arrastre con mouse o dedo suma un
      ajuste manual encima (offMano), sin inercia.
 
      La cinta es finita, como un rollo de verdad: en reposo el track está

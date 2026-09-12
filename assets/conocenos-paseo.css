@@ -407,10 +407,11 @@ img.pest,
    Entre el último tramo del camino (termina en y≈4490) y el rollo (arranca
    en 4880: top 4600 + translateY 280). Misma letra que los títulos de las
    tarjetas; centrada a lo ancho del lienzo. Va lo más pegada al bote que se
-   puede (el título de dos líneas + remate acaban en ≈4860): en la última
-   pantalla la cámara frena donde este bloque queda debajo del navbar (ver
-   camara() en el JS), y cada px que el bloque sube es un px de cinta que se
-   sale por abajo en una laptop de 900 de alto. */
+   puede (el título de dos líneas + remate acaban en ≈4860): en una laptop
+   no caben este bloque y el rollo entero en una pantalla, así que la cámara
+   llega con el bloque bajo el navbar y termina de bajar hasta el pie del
+   lienzo durante el carrusel (ver camara() en el JS). Cada px que el bloque
+   sube es un px más de ese paneo. */
 .paseo__gracias {
   position: absolute;
   left: 120px;
