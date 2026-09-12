@@ -403,19 +403,20 @@ img.pest,
   line-height: 1.5;
 }
 
-/* --- La despedida ---------------------------------------------------------
-   Entre el último tramo del camino (termina en y≈4490) y el rollo (arranca
-   en 4880: top 4600 + translateY 280). Misma letra que los títulos de las
-   tarjetas; centrada a lo ancho del lienzo. Va lo más pegada al bote que se
-   puede (el título de dos líneas + remate acaban en ≈4860): en una laptop
-   no caben este bloque y el rollo entero en una pantalla, así que la cámara
-   llega con el bloque bajo el navbar y termina de bajar hasta el pie del
-   lienzo mientras sale la cinta, antes del carrusel (ver camara() en el
-   JS). Cada px que el bloque sube es un px más de ese paneo. */
+/* --- La despedida y el botón de compra ------------------------------------
+   Los dos viven en la última pantalla, la del rollo (a pedido 2026-09-11):
+   el bloque de gracias en el hueco de arriba de la cinta, a la derecha del
+   bote, y el botón debajo de la cinta. Las cotas salen del rollo: .prollo
+   arranca en 4880 (top 4600 + translateY 280) y escala ×2.05, así que la
+   cinta va de 5038 (77 × 2.05) a 5485 y el bote acaba en 5569. El título de
+   dos líneas + remate miden ≈169, y terminan 12px arriba de la cinta; el
+   bote llega hasta x≈478 y el título centrado empieza en ≈500. Con esto
+   todo cabe en una pantalla: en laptop la cámara solo baja unos px extra
+   mientras sale la cinta (ver camara() en el JS). */
 .paseo__gracias {
   position: absolute;
   left: 120px;
-  top: 4690px;
+  top: 4857px;
   width: 1342px;
   z-index: 4;
   text-align: center;
@@ -440,6 +441,23 @@ img.pest,
   font-size: 22px;
   line-height: 1.35;
   color: #013C3E;
+}
+
+/* El botón, centrado bajo la cinta, con el pie a ras del bote (5569). Sobre
+   el rollo (z 6) por si la lengüeta le pasa encima. Tamaños en px, no en
+   --step-0: el lienzo va con zoom y aquí todo se mide en px del lienzo. */
+.paseo__compra {
+  position: absolute;
+  left: 120px;
+  top: 5500px;
+  width: 1342px;
+  z-index: 7;
+  text-align: center;
+}
+
+.paseo__compra-cta {
+  font-size: 22px;
+  padding: 0.8em 1.9em;
 }
 
 /* --- El rollo de fotos ---------------------------------------------------- */
@@ -672,6 +690,10 @@ img.pest,
 .paseo--vertical .paseo__gracias { position: static; width: auto; }
 .paseo--vertical .paseo__gracias-titulo { font-size: clamp(30px, 8.5vw, 44px); }
 .paseo--vertical .paseo__gracias-texto { font-size: 17px; }
+/* La columna reparte 44px entre bloques: el botón se acerca a la tira y deja
+   aire antes del footer (la escena solo trae 8px de padding abajo). */
+.paseo--vertical .paseo__compra { position: static; width: auto; margin: -14px 0 36px; }
+.paseo--vertical .paseo__compra-cta { font-size: 17px; }
 
 /* El rollo pierde el bote y el arrastre a mano: en táctil una tira con scroll
    nativo hace exactamente lo mismo y sin JS. */

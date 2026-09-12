@@ -37,6 +37,7 @@
      quieta, el carrusel: el scroll saca las fotos del bote hacia la derecha. */
   var FASE_PERRO = 0.68;
   var FASE_REMATE = 0.84;  // el remate va de FASE_PERRO a aquí; de aquí a 1 es el carrusel
+  var PIE_UTIL = 5600;     // pie útil del lienzo: bajo el botón de compra (acaba en ≈5574 con sombra) no hay nada hasta H; la cámara no baja a enseñar esa nada
   var NAV_AIRE = 72 + 28;  // navbar del theme (72px fijos) + aire, en px de pantalla: lo que el bloque de gracias deja arriba en la última pantalla
   var PI = Math.PI;
   var DOSPI = PI * 2;
@@ -456,13 +457,15 @@
     for (var k = -900; k <= 900; k += 150) { suma += pt(fin + k).y; n++; }
     var yPerro = (suma / n) * geo.esc;
     var meta = Math.min(-80, geo.altoVent * 0.72 - yPerro);
-    /* El pie: la escena a ras de la ventana, con el rollo entero en cuadro.
-       Es donde la cámara tiene que TERMINAR sí o sí: la ventana recorta
-       (overflow: clip) todo lo que se salga por abajo, y al pasar del riel
-       al footer lo recortado se ve como "el rollo detrás del footer"
-       (2026-09-11). Por eso lo que se sale por abajo nunca es un piso
-       válido, ni una fila de perforaciones. */
-    var pie = geo.altoVent - H;
+    /* El pie: PIE_UTIL del lienzo a ras de la ventana, con el rollo y el
+       botón enteros en cuadro (lo que sigue hasta H es lienzo vacío; cada
+       px de esa nada que se enseñara sería un px del gracias bajo el
+       navbar en laptop). Es donde la cámara tiene que TERMINAR sí o sí: la
+       ventana recorta (overflow: clip) todo lo que se salga por abajo, y
+       al pasar del riel al footer lo recortado se ve como "el rollo detrás
+       del footer" (2026-09-11). Por eso lo que se sale por abajo nunca es
+       un piso válido, ni una fila de perforaciones. */
+    var pie = geo.altoVent - PIE_UTIL;
     var piso = pie;
     if (geo.gracias > 0) {
       /* El techo: el bloque de gracias con NAV_AIRE de aire bajo el navbar
