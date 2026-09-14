@@ -76,6 +76,64 @@
   color: rgba(1, 60, 62, .82);
 }
 
+/* --- Stickers de la esquina (kayak + logo) --------------------------------
+   Posiciones en px del lienzo (1582), como todo lo del paseo: se encogen con
+   el zoom. El intro mide por lo menos lo que ocupan (min-height) para que el
+   logo, que cuelga más abajo que la bajada, no se meta en el riel: el riel
+   arranca donde el intro termina y ahí ya vive la escena sticky. El de
+   adelante (logo) pisa al kayak por la esquina inferior derecha, como en el
+   mockup, y va ladeado un pelo para que no se vean pegados con regla.
+   OJO: el intro NO lleva position: relative a propósito. Su max-width es
+   1100px y con él de contenedor los stickers caían sobre el título; se
+   posicionan contra el lienzo (1582, ya relativo), que es el ancho de verdad. */
+.paseo__intro {
+  box-sizing: border-box;
+  min-height: 600px;
+}
+.paseo__stickers {
+  position: absolute;
+  top: 88px;
+  right: 126px;
+  width: 554px;
+  height: 480px;
+  pointer-events: none;
+}
+.paseo__sticker {
+  position: absolute;
+  display: block;
+  width: 340px;
+  height: 340px;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: transform .18s var(--ease-bounce, ease-out);
+}
+.paseo__sticker img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.paseo__sticker--kayak {
+  top: 0;
+  left: 0;
+  transform: rotate(-3deg);
+  filter: drop-shadow(0 4px 10px rgba(1, 60, 62, .18));
+}
+.paseo__sticker--logo {
+  top: 140px;
+  right: 0;
+  z-index: 1;
+  transform: rotate(4deg);
+  filter: drop-shadow(0 6px 12px rgba(1, 60, 62, .22));
+}
+a.paseo__sticker--logo:hover,
+a.paseo__sticker--logo:focus-visible { transform: rotate(0deg) scale(1.05); }
+@media (prefers-reduced-motion: reduce) {
+  .paseo__sticker { transition: none; }
+  a.paseo__sticker--logo:hover,
+  a.paseo__sticker--logo:focus-visible { transform: rotate(4deg); }
+}
+
 /* --- La pista, la ventana y la escena ------------------------------------ */
 
 /* 17000px = las tres fases de scroll (paseo del perro, remate del rollo y
@@ -616,6 +674,21 @@ img.pest,
 .paseo--vertical .paseo__intro { padding: 32px 20px 0; max-width: none; }
 .paseo--vertical .paseo__titulo { font-size: clamp(46px, 13vw, 72px); }
 .paseo--vertical .paseo__bajada { font-size: 17px; max-width: none; }
+/* En columna no hay "a la derecha del título": los stickers bajan a un
+   renglón debajo de la bajada, chicos y encimados, pegados a la derecha. */
+.paseo--vertical .paseo__intro { min-height: 0; }
+.paseo--vertical .paseo__stickers {
+  position: relative;
+  top: auto;
+  right: auto;
+  width: auto;
+  height: 176px;
+  margin: 12px 0 0 auto;
+  max-width: 300px;
+}
+.paseo--vertical .paseo__sticker { width: 150px; height: 150px; }
+.paseo--vertical .paseo__sticker--kayak { left: auto; right: 118px; }
+.paseo--vertical .paseo__sticker--logo { top: 26px; right: 0; }
 
 /* --- iPad (641–900): el recorrido corre encogido, la copia se contraescala --
    El JS encoge el lienzo con zoom (a 820px queda en .51) y publica el factor

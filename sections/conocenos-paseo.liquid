@@ -40,6 +40,34 @@
       <header class="paseo__intro">
         <h1 class="paseo__titulo">{{ section.settings.titulo | newline_to_br }}</h1>
         <p class="paseo__bajada">{{ section.settings.bajada }}</p>
+
+        {%- comment -%}
+          Los dos stickers de la esquina (el perro en el kayak y el logo
+          amarillo con el @). Viven DENTRO del intro, que está en el lienzo con
+          zoom, así que sus px se encogen junto con el título y siempre quedan
+          a la derecha de él sin medir nada; en teléfono (.paseo--vertical)
+          bajan a un renglón debajo de la bajada. Sin data-peel a propósito:
+          son lo primero de la página y el peel por scroll los dejaría medio
+          tapados de gris en la primera pantalla (mismo criterio que el panel
+          del catálogo). El del logo lleva el @ de Instagram, así que con el
+          ajuste social_instagram cargado es un link; el kayak es adorno.
+        {%- endcomment -%}
+        {%- if section.settings.show_stickers -%}
+          <div class="paseo__stickers" aria-hidden="{% if settings.social_instagram == blank %}true{% else %}false{% endif %}">
+            {%- if section.settings.sticker_kayak != blank -%}
+              <img class="paseo__sticker paseo__sticker--kayak" src="{{ section.settings.sticker_kayak | asset_url }}" alt="" aria-hidden="true" width="600" height="600" loading="eager" fetchpriority="low">
+            {%- endif -%}
+            {%- if section.settings.sticker_logo != blank -%}
+              {%- if settings.social_instagram != blank -%}
+                <a class="paseo__sticker paseo__sticker--logo" href="{{ settings.social_instagram }}" target="_blank" rel="noopener" aria-label="{{ 'sections.hero.instagram' | t }}">
+                  <img src="{{ section.settings.sticker_logo | asset_url }}" alt="" width="581" height="581" loading="eager" fetchpriority="low">
+                </a>
+              {%- else -%}
+                <img class="paseo__sticker paseo__sticker--logo" src="{{ section.settings.sticker_logo | asset_url }}" alt="" aria-hidden="true" width="581" height="581" loading="eager" fetchpriority="low">
+              {%- endif -%}
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       </header>
 
       <div class="paseo__riel" data-riel>
@@ -238,6 +266,31 @@
       "id": "bajada",
       "label": "Bajada",
       "default": "La historia completa cabe en un paseo. Baja."
+    },
+    {
+      "type": "header",
+      "content": "Stickers de la esquina"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stickers",
+      "label": "Mostrar los stickers",
+      "default": true,
+      "info": "El perro en el kayak y el logo amarillo, a la derecha del título."
+    },
+    {
+      "type": "text",
+      "id": "sticker_kayak",
+      "label": "Sticker de atrás (asset del tema)",
+      "default": "bungot-sticker-kayak.png",
+      "info": "Nombre de archivo dentro de assets/. Vacío = sin sticker."
+    },
+    {
+      "type": "text",
+      "id": "sticker_logo",
+      "label": "Sticker de adelante (asset del tema)",
+      "default": "bungot-sticker-logo.webp",
+      "info": "Nombre de archivo dentro de assets/. Con el ajuste global de Instagram cargado, este sticker es un link al perfil. Vacío = sin sticker."
     },
     {
       "type": "checkbox",
