@@ -837,6 +837,34 @@ shopify-account::part(signed-out-avatar) {
 .hero__red:focus-visible { background: var(--hero-tinta); }
 .hero__red svg { width: 22px; height: 22px; display: block; }
 
+/* --- Sticker "Comprar ahora" (esquina superior derecha) ------------------ */
+/* Mismo eje que el claim de arriba (top 40 / lados 28) para que las dos
+   esquinas de arriba cuadren. Va sobre el perro (z-index 5, como las redes):
+   en compu el copete llega hasta esa esquina y un sticker pegado ENCIMA del
+   pelo se lee bien; tapado, no. Ladeado como los de Favoritos. */
+.hero__sticker {
+  position: absolute;
+  top: 40px;
+  right: 28px;
+  z-index: 5;
+  width: clamp(120px, 13vw, 200px);
+  transform: rotate(7deg);
+  transition: transform 0.18s var(--ease-bounce);
+}
+.hero__sticker img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 4px 10px rgba(1, 60, 62, 0.22));
+}
+.hero__sticker:hover,
+.hero__sticker:focus-visible { transform: rotate(3deg) scale(1.06); }
+@media (prefers-reduced-motion: reduce) {
+  .hero__sticker { transition: none; }
+  .hero__sticker:hover,
+  .hero__sticker:focus-visible { transform: rotate(7deg); }
+}
+
 /* --- La figura ------------------------------------------------------------ */
 /* La ventana recorta SOLO por abajo: el techo del inset va a -900px para que
    el copete (que desborda hacia arriba) salga entero, y los costados los
@@ -1013,6 +1041,9 @@ shopify-account::part(signed-out-avatar) {
   .hero__claim-top { top: 20px; left: 20px; }
   .hero__claim-holder { bottom: 16px; right: 20px; }
   .hero__redes { left: 20px; bottom: 18px; }
+  /* Al lado del claim (11.7vw × 2 renglones ≈ 42vw de ancho): cabe hasta
+     ~30vw sin pisarlo. */
+  .hero__sticker { top: 20px; right: 20px; width: min(28vw, 150px); }
 }
 
 /* Teléfono vertical: la ventana mide 94vw y el hero 100svh, y entre el claim

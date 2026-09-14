@@ -31,6 +31,32 @@
     </span>
   </h1>
 
+  {%- if section.settings.show_sticker -%}
+    {%- comment -%}
+      Sticker "Comprar ahora" pegado en la esquina superior derecha (la única
+      libre: el claim ocupa arriba-izquierda y abajo-derecha, las redes
+      abajo-izquierda). Es un link al catálogo, no adorno: el alt dice lo que
+      dice el sticker. Vive fuera de la ventana del perro, con z-index sobre
+      la figura, para que el copete no lo tape.
+    {%- endcomment -%}
+    {%- liquid
+      assign st_url = section.settings.sticker_url
+      if st_url == blank
+        assign st_url = routes.all_products_collection_url
+      endif
+    -%}
+    <a class="hero__sticker" href="{{ st_url }}">
+      <img
+        src="{{ 'bungot-sticker-comprar.webp' | asset_url }}"
+        alt="{{ 'sections.hero.comprar' | t }}"
+        width="640"
+        height="640"
+        loading="eager"
+        decoding="async"
+      >
+    </a>
+  {%- endif -%}
+
   <div class="hero__redes">
     {%- if settings.social_instagram != blank -%}
       <a class="hero__red" href="{{ settings.social_instagram }}" target="_blank" rel="noopener" aria-label="{{ 'sections.hero.instagram' | t }}">
@@ -110,7 +136,22 @@
 {% schema %}
 {
   "name": "Portada BUNGOT",
-  "settings": [],
+  "settings": [
+    { "type": "header", "content": "Sticker \"Comprar ahora\"" },
+    {
+      "type": "checkbox",
+      "id": "show_sticker",
+      "label": "Mostrar el sticker arriba a la derecha",
+      "default": true,
+      "info": "Es assets/bungot-sticker-comprar.webp y funciona como botón."
+    },
+    {
+      "type": "url",
+      "id": "sticker_url",
+      "label": "Destino del sticker",
+      "info": "Vacío = el catálogo completo."
+    }
+  ],
   "presets": [
     {
       "name": "Portada BUNGOT"
