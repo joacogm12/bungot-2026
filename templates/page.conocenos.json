@@ -20,13 +20,26 @@
         "img_casa": "shopify://shop_images/Captura_de_Pantalla_2024-08-05_a_la_s_11.57.34.png",
         "bote_titulo": "MUCHOS PRODUCTOS POCA CONFIANZA",
         "bote_texto": "Buscábamos algo bueno para ellos, pero leer las etiquetas nos dejaba con más y más dudas. Así que nos pusimos manos a la obra!",
+        "img_bote": "shopify://shop_images/CD080645-4310-4A93-86E4-78E02508DFBE.jpg",
         "pruebas_titulo": "PRUEBAS, PRUEBAS Y MÁS PRUEBAS",
         "pruebas_texto": "Queríamos hacerlo simple: un solo ingrediente y nada de más. Entre prueba y prueba, Bungot fue tomando forma.",
+        "img_pruebas": "shopify://shop_images/JOACO.png",
         "hidrante_titulo": "SE CORRIÓ LA VOZ",
         "hidrante_texto": "De dos peludos a cientos: en el barrio las noticias vuelan. Empezamos con dos clientes muy exigentes y hoy ya somos una manada.",
+        "img_hidrante": "shopify://shop_images/8C1A0D30-14E9-45DD-93F0-C852A503C7D5.jpg",
         "manada_titulo": "Y SI, ESTO APENAS EMPIEZA",
         "manada_texto": "Sin querer queriendo se nos salió de las patas... Seguimos creciendo, aprendiendo y poniendo el mismo cariño desde el primer día.",
-        "img_manada": "shopify://shop_images/03CAC555-515D-403D-875F-53E278F2173C.jpg"
+        "img_manada": "shopify://shop_images/03CAC555-515D-403D-875F-53E278F2173C.jpg",
+        "gracias_titulo": "Gracias por ser parte\nde esta historia",
+        "gracias_texto": "que todavía tiene cuerda para un rato...",
+        "rollo_1": "shopify://shop_images/bonche-1N0A0001.jpg",
+        "rollo_2": "shopify://shop_images/bonche-1N0A0620.jpg",
+        "rollo_3": "shopify://shop_images/JOACO.png",
+        "rollo_4": "shopify://shop_images/IMG_6283_Original.jpg",
+        "rollo_5": "shopify://shop_images/IMG_0076.jpg",
+        "rollo_6": "shopify://shop_images/Tezza-6311_Original.jpg",
+        "rollo_7": "shopify://shop_images/25-1N0A9693_Original.jpg",
+        "rollo_8": "shopify://shop_images/5C675881-A07A-4438-BB09-2ED58C468F49_Original.jpg"
       }
     }
   },
