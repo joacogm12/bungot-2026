@@ -1262,7 +1262,7 @@ shopify-account::part(signed-out-avatar) {
   top: clamp(1.25rem, 3vw, 2.5rem);
   right: clamp(1.25rem, 3vw, 2.5rem);
   z-index: 3;
-  width: clamp(110px, 14vw, 200px);
+  width: clamp(140px, 18vw, 260px);
   height: auto;
   transform: rotate(var(--fav-sticker-tilt, -6deg));
   /* Sombra cortita para que despegue de la foto sin verse "flotando". */
@@ -1273,7 +1273,7 @@ shopify-account::part(signed-out-avatar) {
 @media (max-width: 900px) {
   /* En celu/tablet el panel es más angosto: el sticker se achica pero no baja
      de 96px para que se lea "a partir de $550 pesos". */
-  .fav__sticker { width: clamp(96px, 26vw, 140px); }
+  .fav__sticker { width: clamp(120px, 33vw, 180px); }
 }
 
 /* --- Con enhancement: escenario pineado + capas superpuestas --- */
