@@ -1933,6 +1933,80 @@ a.chip { text-decoration: none; }
   .fpanel__bici { justify-self: center; width: min(62vw, 280px); }
 }
 
+/* --- Variante con foto (.fpanel__box--foto, portada desde 2026-09-14) ---
+   Foto redondeada a la izquierda (6:5, cover), el repartidor VOLTEADO y
+   montado sobre la esquina inferior derecha de la foto —pisa la foto y el
+   naranja a la vez, como sticker— y el copy a la derecha, en mayúsculas y
+   alineado a la derecha. Nada de esto toca al panel sin foto (el catálogo). */
+.fpanel__box--foto {
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  /* Más aire que el panel de siempre: la foto necesita marco por los cuatro
+     lados y la bici cuelga un poco por debajo de ella. */
+  padding: clamp(1.4rem, 3.5vw, 3.6rem) clamp(1.5rem, 5.5vw, 5.5rem);
+  gap: clamp(2rem, 8vw, 7.5rem);
+}
+.fpanel__foto {
+  position: relative;
+  border-radius: var(--radius-lg);
+  aspect-ratio: 6 / 5;
+  /* La bici se sale del rectángulo a propósito: el recorte al radio va en la
+     <img>, no acá. */
+}
+.fpanel__foto > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--fp-focus, 50% 35%);
+  border-radius: inherit;
+}
+/* La bici se cuelga de la esquina: arranca al 70% del ancho de la foto (más
+   y la canasta alcanza al párrafo de la derecha) con las llantas un pelo por
+   debajo de su borde. Mide en función de la foto
+   (66% de su ancho), no del viewport, para que la composición no cambie con
+   el ancho. scaleX(-1) la voltea sobre su propia caja, así el recorte medido
+   del lienzo (--bici-x/y/w/h) sigue valiendo tal cual. */
+.fpanel__box--foto .fpanel__bici {
+  position: absolute;
+  left: 70%;
+  bottom: -3%;
+  width: 66%;
+  justify-self: auto;
+  transform: scaleX(-1);
+}
+.fpanel__box--foto .fpanel__lead {
+  justify-self: end;
+  text-align: right;
+  max-width: none;
+}
+.fpanel__box--foto .fpanel__title {
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+  text-wrap: balance;
+}
+/* Párrafo corto a propósito (22ch ≈ 27 letras por renglón; el ch de Inter es ancho): la bici entra en el
+   hueco entre la foto y el texto y, como el párrafo va pegado a la derecha,
+   su borde izquierdo queda a la derecha de la canasta. Más ancho y la bici
+   se lo come. */
+.fpanel__box--foto .fpanel__text { margin-inline: auto 0; max-width: 22ch; }
+@media (max-width: 900px) and (min-width: 641px) {
+  /* Tablet: columnas parejas y bici más chica y menos salida de la foto para
+     que la canasta no alcance al texto. */
+  .fpanel__box--foto { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .fpanel__box--foto .fpanel__bici { left: 66%; width: 56%; }
+}
+@media (max-width: 640px) {
+  /* En columna: foto arriba a todo lo ancho con la bici colgando de su
+     esquina, y debajo el texto centrado como en el panel de siempre. El
+     margen de abajo de la foto es el hueco que ocupa la bici. */
+  .fpanel__box--foto { grid-template-columns: 1fr; gap: 1rem; padding: clamp(1.25rem, 5vw, 1.75rem); }
+  .fpanel__foto { margin-bottom: 14%; }
+  .fpanel__box--foto .fpanel__bici { left: auto; right: -3%; bottom: -20%; width: 56%; }
+  .fpanel__box--foto .fpanel__lead { justify-self: center; text-align: center; }
+  .fpanel__box--foto .fpanel__text { margin-inline: auto; }
+}
+
 /* Alternativa a la bici: un sticker quieto (lo usa la entrada a la suscripción
    del catálogo). El PNG ya viene recortado a alfa y padeado a cuadrado, así
    que acá no hay lienzo que recortar: la <img> mide lo que se ve. Va un poco

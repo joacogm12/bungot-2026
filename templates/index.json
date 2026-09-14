@@ -143,6 +143,9 @@
         "fg": "#ffffff",
         "cta_bg": "#fed140",
         "cta_fg": "#163c69",
+        "image": "shopify://shop_images/bonche-1N0A0651.jpg",
+        "image_alt": "Un shih tzu con paliacate posa en un sillón de cuero",
+        "image_focus": "50% 35%",
         "show_art": true
       }
     },

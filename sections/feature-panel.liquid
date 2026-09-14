@@ -19,11 +19,46 @@
   /#<ancla>. Sale de un ajuste para que dos instancias del panel no dupliquen
   el id.
 {%- endcomment -%}
+{%- liquid
+  # Variante "foto" (2026-09-14): con una foto elegida el panel cambia de
+  # layout — foto redondeada a la izquierda, el repartidor volteado y montado
+  # sobre la esquina inferior derecha de la foto, y titular en mayúsculas +
+  # texto + botón alineados a la derecha. Sin foto queda el panel de siempre
+  # (copy a la izquierda, bici a la derecha). Todo el cambio es CSS bajo
+  # .fpanel__box--foto; el catálogo monta el mismo .fpanel sin foto y no lo ve.
+  assign fp_foto = section.settings.image
+-%}
 <section class="fpanel"{% if section.settings.anchor != blank %} id="{{ section.settings.anchor | handleize }}"{% endif %}>
   <div
-    class="fpanel__box"
+    class="fpanel__box{% if fp_foto != blank %} fpanel__box--foto{% endif %}"
     style="--fp-bg: {{ section.settings.bg }}; --fp-fg: {{ section.settings.fg }};"
   >
+    {%- if fp_foto != blank -%}
+      <div class="fpanel__foto" style="--fp-focus: {{ section.settings.image_focus | default: '50% 35%' }};">
+        <img
+          src="{{ fp_foto | image_url: width: 1400 }}"
+          srcset="
+            {{ fp_foto | image_url: width: 700 }} 700w,
+            {{ fp_foto | image_url: width: 1000 }} 1000w,
+            {{ fp_foto | image_url: width: 1400 }} 1400w,
+            {{ fp_foto | image_url: width: 2000 }} 2000w"
+          sizes="(max-width: 640px) 100vw, 50vw"
+          alt="{{ section.settings.image_alt | default: fp_foto.alt | escape }}"
+          width="{{ fp_foto.width }}"
+          height="{{ fp_foto.height }}"
+          loading="lazy"
+        >
+        {%- if section.settings.show_art -%}
+          {%- comment -%}
+            En la variante foto la bici va DENTRO de la foto para posicionarse
+            contra su esquina (absolute sobre .fpanel__foto), no en la columna
+            de la derecha.
+          {%- endcomment -%}
+          {%- render 'fpanel-bici' -%}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
     <div class="fpanel__lead">
       {%- if section.settings.eyebrow != blank -%}
         <span class="fpanel__eyebrow">{{ section.settings.eyebrow }}</span>
@@ -31,7 +66,7 @@
 
 
       {%- if section.settings.title != blank -%}
-        <h2 class="fpanel__title">{{ section.settings.title }}</h2>
+        <h2 class="fpanel__title">{{ section.settings.title | newline_to_br }}</h2>
       {%- endif -%}
 
       {%- if section.settings.text != blank -%}
@@ -87,7 +122,7 @@
       {%- endif -%}
     </div>
 
-    {%- if section.settings.show_art -%}
+    {%- if section.settings.show_art and fp_foto == blank -%}
       {%- comment -%}
         El perro repartidor en bici. El markup y sus reglas (GIF con alfa vía
         asset_url, PNG fijo con reduced-motion) viven en el snippet porque el
@@ -184,6 +219,27 @@
       "default": "suscripcion",
       "info": "Para enlazar directo al panel desde otras páginas (el botón de suscripción del catálogo cae a /#suscripcion si no hay Caja configurada)."
     },
+    { "type": "header", "content": "Foto" },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Foto (subida a Shopify)",
+      "info": "Con foto el panel cambia de layout: la foto va a la izquierda con esquinas redondeadas, el perro repartidor se monta sobre su esquina y el texto pasa a la derecha, en mayúsculas y alineado a la derecha. Vacío = panel de siempre."
+    },
+    { "type": "text", "id": "image_alt", "label": "Texto alternativo de la foto" },
+    {
+      "type": "select",
+      "id": "image_focus",
+      "label": "Foco del recorte",
+      "options": [
+        { "value": "50% 20%", "label": "Arriba" },
+        { "value": "50% 35%", "label": "Arriba del centro" },
+        { "value": "50% 50%", "label": "Centro" },
+        { "value": "50% 80%", "label": "Abajo" }
+      ],
+      "default": "50% 35%",
+      "info": "Qué parte de la foto se conserva al recortarla a 6:5. Apunta a la cara."
+    },
     { "type": "header", "content": "Colores" },
     {
       "type": "color",
@@ -207,7 +263,7 @@
       "id": "show_art",
       "label": "Mostrar al perro repartidor en bici",
       "default": true,
-      "info": "Es un GIF que pedalea solo (assets/bungot-repartidor.gif). Va contenido dentro del panel, a la derecha del texto."
+      "info": "Es un GIF que pedalea solo (assets/bungot-repartidor.gif). Sin foto va a la derecha del texto; con foto se monta volteado sobre la esquina inferior derecha de la foto."
     }
   ],
   "blocks": [
