@@ -158,6 +158,26 @@
             </picture>
           {%- endif -%}
 
+          {%- if block.settings.sticker_asset != blank -%}
+            {%- comment -%}
+              Sticker pegado en la esquina superior derecha del panel. Va DENTRO
+              del panel a propósito: así lo revela la misma cortina que a la
+              foto y "cambia con el scroll" sin JS extra (cada panel trae el
+              suyo). La inclinación alterna por posición para que no se vean
+              pegados con regla. Lleva alt porque lo que dice (envío gratis,
+              10% off…) es información, no adorno.
+            {%- endcomment -%}
+            <img
+              class="fav__sticker"
+              src="{{ block.settings.sticker_asset | asset_url }}"
+              alt="{{ block.settings.sticker_alt | escape }}"
+              width="640"
+              height="640"
+              loading="{% if i == 1 %}eager{% else %}lazy{% endif %}"
+              style="--fav-sticker-tilt: {% cycle '-6deg', '5deg', '-4deg', '7deg' %};"
+            >
+          {%- endif -%}
+
           {%- if is_panel -%}
             {%- comment -%}
               El panel ES el degradado (marino 654 que sube a transparente):
@@ -282,6 +302,19 @@
           "default": "50% 50%",
           "info": "Qué parte de la foto se conserva al recortarla. Apunta a las caras y deja libre la esquina inferior izquierda, que es donde va el texto."
         },
+        { "type": "header", "content": "Sticker" },
+        {
+          "type": "text",
+          "id": "sticker_asset",
+          "label": "Sticker (asset del tema)",
+          "info": "Se pega arriba a la derecha de la foto y cambia con cada panel. Nombre de archivo dentro de assets/: bungot-sticker-envio.webp, bungot-sticker-10off.webp, bungot-sticker-ingrediente.webp o bungot-sticker-naturales.webp. Vacío = sin sticker."
+        },
+        {
+          "type": "text",
+          "id": "sticker_alt",
+          "label": "Texto del sticker (para lectores de pantalla)",
+          "info": "Lo que dice el sticker, ej: Envío gratis a partir de $550 pesos."
+        },
         { "type": "header", "content": "Texto sobre la foto" },
         {
           "type": "product",
@@ -370,6 +403,19 @@
           ],
           "default": "50% 62%",
           "info": "Qué parte de la foto se conserva al recortarla."
+        },
+        { "type": "header", "content": "Sticker" },
+        {
+          "type": "text",
+          "id": "sticker_asset",
+          "label": "Sticker (asset del tema)",
+          "info": "Se pega arriba a la derecha de la foto y cambia con cada panel. Nombre de archivo dentro de assets/: bungot-sticker-envio.webp, bungot-sticker-10off.webp, bungot-sticker-ingrediente.webp o bungot-sticker-naturales.webp. Vacío = sin sticker."
+        },
+        {
+          "type": "text",
+          "id": "sticker_alt",
+          "label": "Texto del sticker (para lectores de pantalla)",
+          "info": "Lo que dice el sticker, ej: Envío gratis a partir de $550 pesos."
         },
         { "type": "header", "content": "Panel de texto" },
         {

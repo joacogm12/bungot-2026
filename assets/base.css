@@ -1251,6 +1251,31 @@ shopify-account::part(signed-out-avatar) {
 }
 .fav__pcta:active { transform: translateY(1px); }
 
+/* --- Sticker en la esquina superior derecha ---
+   Uno por panel (ajuste sticker_asset del bloque): vive dentro del .fav, así
+   la cortina que sube la foto sube también su sticker y se "cambian" con el
+   scroll sin más JS. El margen copia el de la caja de texto para alinearse con
+   el radio del escenario. La inclinación la pone Liquid por panel
+   (--fav-sticker-tilt) para que no salgan los cuatro con el mismo ángulo. */
+.fav__sticker {
+  position: absolute;
+  top: clamp(1.25rem, 3vw, 2.5rem);
+  right: clamp(1.25rem, 3vw, 2.5rem);
+  z-index: 3;
+  width: clamp(110px, 14vw, 200px);
+  height: auto;
+  transform: rotate(var(--fav-sticker-tilt, -6deg));
+  /* Sombra cortita para que despegue de la foto sin verse "flotando". */
+  filter: drop-shadow(0 4px 10px rgba(22, 60, 105, 0.28));
+  pointer-events: none;
+  user-select: none;
+}
+@media (max-width: 900px) {
+  /* En celu/tablet el panel es más angosto: el sticker se achica pero no baja
+     de 96px para que se lea "a partir de $550 pesos". */
+  .fav__sticker { width: clamp(96px, 26vw, 140px); }
+}
+
 /* --- Con enhancement: escenario pineado + capas superpuestas --- */
 .favs[data-enhanced='true'] {
   /* El recorrido tiene que dar para: una pausa por panel, un cambio entre cada

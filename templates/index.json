@@ -19,6 +19,8 @@
         "terraza": {
           "type": "foto",
           "settings": {
+            "sticker_asset": "bungot-sticker-envio.webp",
+            "sticker_alt": "Envío gratis a partir de $550 pesos",
             "image_sm": "shopify://shop_images/716594F6-26AB-4D84-A63F-4E087012065B.jpg",
             "image_asset": "bungot-fav-terraza-1620.webp",
             "image_asset_sm": "bungot-fav-terraza-1000.webp",
@@ -35,6 +37,8 @@
         "gato": {
           "type": "foto",
           "settings": {
+            "sticker_asset": "bungot-sticker-10off.webp",
+            "sticker_alt": "10% off en tu primera compra",
             "image_sm": "shopify://shop_images/5EDD4329-BCED-4369-885C-416FE6485C0A.jpg",
             "image_asset": "bungot-fav-gato-1800.webp",
             "image_asset_sm": "bungot-fav-gato-1000.webp",
@@ -51,6 +55,8 @@
         "bulldog": {
           "type": "foto",
           "settings": {
+            "sticker_asset": "bungot-sticker-ingrediente.webp",
+            "sticker_alt": "Un solo ingrediente",
             "image_sm": "shopify://shop_images/3B8DF091-5537-4EEF-9B45-F8D3FC0A40B8.jpg",
             "image_asset": "bungot-fav-bulldog-1600.webp",
             "image_asset_sm": "bungot-fav-bulldog-1000.webp",
@@ -67,6 +73,8 @@
         "juguete": {
           "type": "panel",
           "settings": {
+            "sticker_asset": "bungot-sticker-naturales.webp",
+            "sticker_alt": "100% naturales",
             "image": "shopify://shop_images/Tezza-0045.jpg",
             "image_sm": "shopify://shop_images/95D52264-7A62-4590-B924-A9968B104060.jpg",
             "image_asset": "",
