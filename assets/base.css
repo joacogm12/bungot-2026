@@ -845,9 +845,11 @@ shopify-account::part(signed-out-avatar) {
 .hero__sticker {
   position: absolute;
   top: 40px;
-  right: 28px;
+  /* Despegado del borde y grande, a pedido (2026-09-14): se mete hacia el
+     copete del perro en vez de quedar en el rincón. */
+  right: clamp(48px, 8vw, 130px);
   z-index: 5;
-  width: clamp(120px, 13vw, 200px);
+  width: clamp(160px, 19vw, 290px);
   transform: rotate(7deg);
   transition: transform 0.18s var(--ease-bounce);
 }
