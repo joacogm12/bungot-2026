@@ -78,22 +78,22 @@
 
 /* --- Stickers de la esquina (kayak + logo) --------------------------------
    Posiciones en px del lienzo (1582), como todo lo del paseo: se encogen con
-   el zoom. El intro mide por lo menos lo que ocupan (min-height) para que el
-   logo, que cuelga más abajo que la bajada, no se meta en el riel: el riel
-   arranca donde el intro termina y ahí ya vive la escena sticky. El de
-   adelante (logo) pisa al kayak por la esquina inferior derecha, como en el
-   mockup, y va ladeado un pelo para que no se vean pegados con regla.
+   el zoom. El de adelante (logo) pisa al kayak por la esquina inferior
+   derecha, como en el mockup, y va ladeado un pelo para que no se vean
+   pegados con regla. El logo cuelga ~90px más abajo que la bajada, o sea
+   sobre el arranque del riel: NO se le hace lugar al intro (se probó con
+   min-height y bajaba al perro fuera de la primera pantalla). Ese pedazo de
+   la escena está vacío —el camino empieza en y=310 y del lado izquierdo—, y
+   el z-index deja los stickers encima del riel para que el link del logo
+   siga recibiendo el clic; al hacer scroll se van con el intro.
    OJO: el intro NO lleva position: relative a propósito. Su max-width es
    1100px y con él de contenedor los stickers caían sobre el título; se
    posicionan contra el lienzo (1582, ya relativo), que es el ancho de verdad. */
-.paseo__intro {
-  box-sizing: border-box;
-  min-height: 600px;
-}
 .paseo__stickers {
   position: absolute;
   top: 88px;
   right: 126px;
+  z-index: 2;
   width: 554px;
   height: 480px;
   pointer-events: none;
@@ -676,7 +676,6 @@ img.pest,
 .paseo--vertical .paseo__bajada { font-size: 17px; max-width: none; }
 /* En columna no hay "a la derecha del título": los stickers bajan a un
    renglón debajo de la bajada, chicos y encimados, pegados a la derecha. */
-.paseo--vertical .paseo__intro { min-height: 0; }
 .paseo--vertical .paseo__stickers {
   position: relative;
   top: auto;
