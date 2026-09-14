@@ -56,6 +56,14 @@
   data-bonche
   data-dispersion="{{ section.settings.dispersion | default: 100 | divided_by: 100.0 }}"
   {% if section.settings.acomodar %}data-acomodar-on{% endif %}
+  {%- comment -%}
+    En el customizer las fotos SÍ reciben clics (ver .bonche[data-design-mode]
+    en base.css): el editor selecciona el bloque al hacer clic sobre su
+    elemento, y con el pile en pointer-events: none el clic no llegaba y el
+    cliente no tenía cómo llegar a la foto que quería cambiar (los diez
+    bloques se llaman "Foto"). En la tienda el pile sigue sin robar clics.
+  {%- endcomment -%}
+  {% if request.design_mode %}data-design-mode{% endif %}
   style="--bonche-bg: {{ section.settings.bg }}; --z: {{ section.settings.escala | default: 100 | divided_by: 100.0 }};"
 >
   {%- comment -%}
@@ -144,6 +152,10 @@
   "max_blocks": 12,
   "settings": [
     {
+      "type": "paragraph",
+      "content": "Para cambiar una foto, haz clic sobre ella en la vista previa: se abre su bloque y ahí eliges la imagen nueva. También puedes abrir cada bloque \"Foto\" de la lista de abajo; al seleccionarlo, la foto se marca en la vista previa."
+    },
+    {
       "type": "textarea",
       "id": "headline",
       "label": "Titular",
@@ -221,8 +233,8 @@
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Foto (subida a Shopify)",
-          "info": "Tiene prioridad sobre el asset del tema."
+          "label": "Foto",
+          "info": "Elige o sube la imagen. Tiene prioridad sobre el asset del tema de abajo."
         },
         {
           "type": "text",

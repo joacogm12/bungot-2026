@@ -705,6 +705,11 @@
     document.querySelectorAll('[data-bonche]').forEach(function (root) {
       var pile = root.querySelector('[data-pile]');
       if (!pile) return;
+      // Idempotente: el customizer re-renderiza la sección (shopify:section:load)
+      // y volvemos a llamar init(); el root viejo ya no está en el DOM y el
+      // nuevo se arma desde cero.
+      if (root.dataset.boncheListo) return;
+      root.dataset.boncheListo = '1';
 
       // Medio alto del bloque de texto, en px, para que en celu las fotos se
       // cuelguen de su borde a una separación fija (ver el @media de .bonche
@@ -756,6 +761,19 @@
       function clamp01(v) { return Math.max(0, Math.min(1, v)); }
 
       function render() {
+        // El root viejo de un re-render del customizer: suelta sus listeners.
+        if (!root.isConnected) {
+          window.removeEventListener('scroll', onScroll);
+          return;
+        }
+        // Bloque seleccionado en el panel del customizer: el bonche se queda
+        // abierto y quieto (--s/--st a 1) para que el cliente vea la foto que
+        // está cambiando, aunque el editor haga scroll para enfocarla.
+        if (root.hasAttribute('data-bonche-fijo')) {
+          pile.style.setProperty('--s', '1');
+          pile.style.setProperty('--st', '1');
+          return;
+        }
         var rect = root.getBoundingClientRect();
         // 0 = borde superior entrando por abajo, 1 = la sección ya pasó entera.
         var p = (vh - rect.top) / (vh + rect.height);
@@ -782,7 +800,46 @@
         vh = altoVista();
         onScroll();
       });
+      root.addEventListener('bonche:refresca', render);
       render();
+    });
+  }
+
+  /* Eventos del customizer para el bonche. Al seleccionar un bloque "Foto" en
+     el panel (o al hacer clic en la foto en la vista previa) el bonche se
+     clava abierto y la tarjeta se marca (ver .bonche[data-design-mode] en
+     base.css); al deseleccionar vuelve a seguir el scroll. Fuera del editor
+     estos eventos no existen y nada de esto corre. */
+  function initBoncheEditor() {
+    if (!(window.Shopify && window.Shopify.designMode)) return;
+    function tarjeta(e) {
+      var el = e.target;
+      return el && el.closest ? el.closest('[data-bonche-card]') : null;
+    }
+    function refresca(root) {
+      root.dispatchEvent(new Event('bonche:refresca'));
+    }
+    document.addEventListener('shopify:block:select', function (e) {
+      var card = tarjeta(e);
+      if (!card) return;
+      var root = card.closest('[data-bonche]');
+      root.setAttribute('data-bonche-fijo', '');
+      card.setAttribute('data-seleccionada', '');
+      refresca(root);
+    });
+    document.addEventListener('shopify:block:deselect', function (e) {
+      var card = tarjeta(e);
+      if (!card) return;
+      var root = card.closest('[data-bonche]');
+      card.removeAttribute('data-seleccionada');
+      root.removeAttribute('data-bonche-fijo');
+      refresca(root);
+    });
+    // La sección re-renderizada llega sin inicializar: initBonche es
+    // idempotente por sección (data-bonche-listo), así que solo arma la nueva.
+    document.addEventListener('shopify:section:load', function (e) {
+      if (!e.target || !e.target.querySelector || !e.target.querySelector('[data-bonche]')) return;
+      initBonche();
     });
   }
 
@@ -896,6 +953,7 @@
     initFavoritos();
     initPeelStickers();
     initBonche();
+    initBoncheEditor();
     initFooterPushesNav();
   }
 

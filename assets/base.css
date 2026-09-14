@@ -2470,6 +2470,14 @@ a.chip { text-decoration: none; }
 /* Herramienta de maqueta: initBonche() clava la dispersión al 100%, deja
    arrastrar cada foto y pinta un HUD con los --fx/--fy resultantes (y botón
    de copiar) para pasarlos a los bloques del customizer. */
+/* En el customizer (request.design_mode) cada foto sí recibe el clic para que
+   el editor abra su bloque; el pile sigue en none para no tapar nada. La foto
+   seleccionada en el panel se marca con un contorno crema. */
+.bonche[data-design-mode] .bonche__card { pointer-events: auto; cursor: pointer; }
+.bonche[data-design-mode] .bonche__card[data-seleccionada] {
+  outline: 3px solid var(--cream);
+  outline-offset: 3px;
+}
 .bonche[data-acomodar] .bonche__pile { pointer-events: auto; }
 .bonche[data-acomodar] .bonche__card {
   cursor: grab;
