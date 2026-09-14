@@ -136,14 +136,14 @@
       "type": "feature-panel",
       "settings": {
         "eyebrow": "",
-        "title": "Una cajita para chuparse las patas",
+        "title": "NO ELIJAS UNO\nLLÉVATELOS\nEN COMBO!",
         "text": "Paquetes de premios armados por nosotros, listos para consentir o regalar.",
         "chips": "",
         "cta_label": "Ver los paquetes",
         "cta_url": "",
         "note": "",
         "anchor": "suscripcion",
-        "image": "shopify://shop_images/FED92549-B424-4C52-8DFF-5E93830CBF51.jpg",
+        "image": "shopify://shop_images/4-1N0A0476.jpg",
         "image_alt": "Un shih tzu con paliacate posa en un sillón de cuero",
         "image_focus": "50% 35%",
         "bg": "#e94925",
@@ -198,7 +198,7 @@
         "g-bolsas": {
           "type": "foto",
           "settings": {
-            "image": "shopify://shop_images/bonche-1N0A0513.jpg",
+            "image": "shopify://shop_images/23-1N0A9786.jpg",
             "image_asset": "",
             "alt": "Una fundadora abraza las bolsas de premios",
             "tam": "grande",
@@ -211,7 +211,7 @@
         "g-sentada": {
           "type": "foto",
           "settings": {
-            "image": "shopify://shop_images/bonche-1N0A0476.jpg",
+            "image": "shopify://shop_images/31-1N0A9525_1.jpg",
             "image_asset": "",
             "alt": "Una fundadora sentada con las bolsas de BUNGOT",
             "tam": "grande",
@@ -237,7 +237,7 @@
         "c-rie": {
           "type": "foto",
           "settings": {
-            "image": "shopify://shop_images/bonche-1N0A0413.jpg",
+            "image": "shopify://shop_images/22-1N0A9825.jpg",
             "image_asset": "",
             "alt": "Una fundadora ríe con los premios en brazos",
             "tam": "chica",
@@ -250,7 +250,7 @@
         "c-schnauzer": {
           "type": "foto",
           "settings": {
-            "image": "shopify://shop_images/bonche-1N0A9850.jpg",
+            "image": "shopify://shop_images/20-1N0A9854.jpg",
             "image_asset": "",
             "alt": "Un schnauzer negro echado junto a dos bolsas",
             "tam": "chica",
@@ -263,7 +263,7 @@
         "c-abrazo": {
           "type": "foto",
           "settings": {
-            "image": "shopify://shop_images/bonche-1N0A0147.jpg",
+            "image": "shopify://shop_images/29-1N0A9572.jpg",
             "image_asset": "",
             "alt": "Una fundadora abraza a su schnauzer",
             "tam": "chica",
@@ -276,7 +276,7 @@
         "c-cajas": {
           "type": "foto",
           "settings": {
-            "image": "shopify://shop_images/bonche-1N0A0339.jpg",
+            "image": "shopify://shop_images/9-1N0A0356.jpg",
             "image_asset": "",
             "alt": "Un fundador junto a las cajas de envío",
             "tam": "chica",
