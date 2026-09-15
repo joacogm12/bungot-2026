@@ -199,9 +199,17 @@
   border-bottom: 1px dashed rgba(1, 60, 62, 0.35);
 }
 
+/* Flex y no grid a propósito: con display: grid el height: 100% de la foto
+   se resolvía contra la fila automática, que crece con la foto —y las fotos
+   de producto son verticales—, así que la imagen medía 101 de alto en un
+   cuadro de 92 y se salía por abajo hasta encimarse con el stepper en
+   teléfono (≤389, donde el stepper cae justo debajo de la foto). En flex el
+   100% se resuelve contra los 76 de adentro del cuadro y object-fit la
+   contiene. */
 .rlinea__mini {
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 92px;
   height: 92px;
   padding: 8px;
