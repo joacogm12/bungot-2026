@@ -318,7 +318,10 @@
     if (btn && !btn.hasAttribute('data-ocupado')) {
       btn.setAttribute('data-ocupado', '');
       var textoConfirmacion = btn.getAttribute('data-label-added');
-      var textoOriginal = btn.textContent;
+      // innerHTML y no textContent: las píldoras del picker de variantes
+      // traen nombre y precio en dos <span>, y restaurar solo el texto los
+      // aplanaba en un renglón ("190 g$ 151.00").
+      var htmlOriginal = btn.innerHTML;
       var fondoOriginal = btn.style.background;
       setTimeout(function () {
         if (fallido) return; // el rótulo de error ya está puesto, no pisarlo
@@ -326,7 +329,7 @@
         btn.style.background = '#EA4A27'; // el coral de la pestaña (--nav-coral)
       }, vuela ? 380 : 0);
       setTimeout(function () {
-        btn.textContent = textoOriginal;
+        btn.innerHTML = htmlOriginal;
         btn.style.background = fondoOriginal;
         btn.removeAttribute('data-ocupado');
       }, 1800);
@@ -957,8 +960,50 @@
     readout();
   }
 
+  /* --- Picker de variantes de las tarjetas (banda-card) --------------------
+     El <details data-card-pick> abre y cierra solo; acá va lo que el navegador
+     no hace: cerrar con la ✕, al hacer clic fuera, con Escape, y cerrar los
+     demás pickers al abrir uno (en un riel no tiene sentido tener dos hojas
+     abiertas). Delegado en document para que sirva en el catálogo y en la
+     venta cruzada de la PDP sin que cada página lo cablee. cierraPicker(form)
+     lo usan productos.js / producto.js al terminar de agregar: espera a que
+     la píldora termine de decir "¡Listo!" (los 1800 ms de flyToCart) y
+     recién ahí baja la hoja. */
+  function initCardPickers() {
+    if (!document.querySelector('[data-card-pick]')) return;
+
+    function cierra(pick) { if (pick && pick.open) pick.open = false; }
+
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t.closest) return;
+      var cerrar = t.closest('[data-card-pick-close]');
+      if (cerrar) { cierra(cerrar.closest('[data-card-pick]')); return; }
+      var dentro = t.closest('[data-card-pick]');
+      document.querySelectorAll('[data-card-pick][open]').forEach(function (p) {
+        if (p !== dentro) cierra(p);
+      });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      document.querySelectorAll('[data-card-pick][open]').forEach(function (p) {
+        cierra(p);
+        var btn = p.querySelector('summary');
+        if (btn) btn.focus();
+      });
+    });
+
+    window.BUNGOT = window.BUNGOT || {};
+    window.BUNGOT.cierraPicker = function (form) {
+      var pick = form && form.querySelector ? form.querySelector('[data-card-pick]') : null;
+      if (!pick) return;
+      setTimeout(function () { cierra(pick); }, 1900);
+    };
+  }
+
   function init() {
     initPreloader();
+    initCardPickers();
     initHeroPerro();
     initNav();
     initFavoritos();

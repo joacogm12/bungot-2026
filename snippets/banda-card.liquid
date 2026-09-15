@@ -29,7 +29,26 @@
     selling_plan_id (id, opcional) · plan de suscripción que viaja con el
                                      agregado (productos de solo-suscripción)
     cta          (str)            · texto del botón
+    product      (obj, opcional)  · el producto real. Si trae más de una
+                                    variante (ej. "Contenido": 60 g / 190 g),
+                                    "Agregar" no agrega de una: se convierte
+                                    en las píldoras de cada variante y la que
+                                    tocan es la que se agrega (ver abajo).
 {%- endcomment -%}
+
+{%- comment -%}
+  Picker de variantes en la tarjeta (2026-09-15). Es un <details>: el <summary>
+  ES el botón "Agregar" y al abrirse se esconde y en su lugar salen las
+  píldoras (cada una un submit con name="id" = su variante). Así funciona sin
+  JS —abrir/cerrar es nativo y el submit navega a /cart/add con la variante
+  del botón pulsado— y con JS el submit va por fetch con el mismo vuelo de la
+  bolita, usando e.submitter. Con una sola variante no pasa nada de esto: el
+  form de siempre con el id escondido.
+{%- endcomment -%}
+{%- assign has_picker = false -%}
+{%- if product != blank and variant_id != blank and available != false and product.has_only_default_variant == false and product.variants.size > 1 -%}
+  {%- assign has_picker = true -%}
+{%- endif -%}
 
 {%- assign has_link = false -%}
 {%- if url != blank -%}{%- assign has_link = true -%}{%- endif -%}
@@ -82,6 +101,11 @@
     <div class="card__foot">
       <span class="card__price">
         {%- if price_html != blank -%}
+          {%- comment -%}
+            Con variantes de distinto precio el de la tarjeta es el más bajo
+            (product.price), así que se anuncia como "Desde".
+          {%- endcomment -%}
+          {%- if has_picker and product.price_varies -%}{{ 'products.card.from' | t }} {% endif -%}
           {{ price_html }}
         {%- else -%}
           {{ 'sections.collection_bandas.price_tbd' | t }}
@@ -95,6 +119,48 @@
           este cheque la tarjeta ofrecería un "Agregar" que Shopify rechaza.
         {%- endcomment -%}
         <button type="button" class="card__add card__add--soldout" disabled>{{ 'products.card.sold_out' | t }}</button>
+      {%- elsif has_picker -%}
+        <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="card__addform">
+          {%- comment -%}
+            Sin input "id": el id viaja en la píldora pulsada (name="id"). Si
+            fuera escondido además, Shopify leería dos ids.
+          {%- endcomment -%}
+          <input type="hidden" name="quantity" value="1">
+          {%- if selling_plan_id != blank -%}
+            <input type="hidden" name="selling_plan" value="{{ selling_plan_id }}">
+          {%- endif -%}
+          {%- assign pick_option = product.options.first | downcase -%}
+          <details class="card__pick" data-card-pick>
+            <summary class="card__add card__add--pick" role="button">{{ cta }}</summary>
+            <div class="card__pick-box">
+              <button type="button" class="card__pick-close" data-card-pick-close aria-label="{{ 'products.card.pick_close' | t }}">&times;</button>
+              <span class="card__pick-label">{{ 'products.card.pick' | t: option: pick_option }}</span>
+              <div class="card__pills">
+                {%- for v in product.variants -%}
+                  {%- comment -%}
+                    Cada píldora agrega SU variante. Agotada: se ve apagada y no
+                    manda (Shopify la rechazaría con 422). El precio solo se
+                    pinta si cambia entre variantes; si es el mismo, sobra.
+                  {%- endcomment -%}
+                  <button
+                    type="submit"
+                    name="id"
+                    value="{{ v.id }}"
+                    class="card__pill{% unless v.available %} card__pill--soldout{% endunless %}"
+                    {% unless v.available %}disabled{% endunless %}
+                    data-label-added="{{ 'products.card.added' | t }}"
+                    data-label-failed="{{ 'products.card.add_failed' | t }}"
+                  >
+                    <span class="card__pill-name">{{ v.title }}</span>
+                    {%- if product.price_varies and v.price > 0 -%}
+                      <span class="card__pill-price">{{ v.price | money }}</span>
+                    {%- endif -%}
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          </details>
+        </form>
       {%- elsif variant_id != blank -%}
         <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="card__addform">
           <input type="hidden" name="id" value="{{ variant_id }}">

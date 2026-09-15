@@ -40,7 +40,10 @@
       "added": "¡Listo!",
       "add_failed": "No se pudo agregar",
       "on_sale": "Oferta",
-      "sold_out": "Agotado"
+      "sold_out": "Agotado",
+      "from": "Desde",
+      "pick": "¿Qué {{ option }} quieres?",
+      "pick_close": "Cerrar"
     }
   },
   "sections": {

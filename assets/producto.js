@@ -495,14 +495,24 @@
      form, así que no pasan por acá. */
   function setupCrossSell() {
     toArray(document.querySelectorAll('.card__addform')).forEach(function (form) {
+      // Picker de variantes de la tarjeta: el id viaja en la píldora pulsada
+      // (name="id") y FormData(form) no la incluye. Se guarda el último clic
+      // por si e.submitter no existe (Safari viejo).
+      form.addEventListener('click', function (ev) {
+        var pill = ev.target.closest ? ev.target.closest('.card__pill') : null;
+        if (pill) form._bgPill = pill;
+      });
       form.addEventListener('submit', function (e) {
         e.preventDefault();
-        var btn = form.querySelector('.card__add');
+        var pill = e.submitter || form._bgPill;
+        var btn = pill && pill.name === 'id' ? pill : form.querySelector('.card__add');
+        var body = new FormData(form);
+        if (pill && pill.name === 'id') body.append('id', pill.value);
         var vuelo = despega(btn, 1);
         if (btn) btn.disabled = true;
         fetch('/cart/add.js', {
           method: 'POST',
-          body: new FormData(form),
+          body: body,
           headers: { Accept: 'application/json' }
         })
           .then(function (r) {
@@ -513,6 +523,7 @@
           .then(function (cart) {
             vuelo.ponTotal(cart.item_count);
             if (btn) btn.disabled = false;
+            if (window.BUNGOT && window.BUNGOT.cierraPicker) window.BUNGOT.cierraPicker(form);
           })
           .catch(function (err) {
             if (err && err.rechazado) vuelo.falla();

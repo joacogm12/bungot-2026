@@ -3131,9 +3131,103 @@ a.chip { text-decoration: none; }
 .cardset .card__add--soldout { opacity: 0.55; cursor: not-allowed; }
 .cardset .card__add--soldout:active { transform: none; }
 
+/* --- Picker de variantes en la tarjeta (2026-09-15) ------------------------
+   Productos con más de una variante (ej. Pulmón de Res: 60 g / 190 g). Es un
+   <details> del snippet: cerrado, el <summary> es el "Agregar" de siempre;
+   abierto, el summary se esconde y sale una hoja crema ENCIMA del cuerpo
+   entero (absoluta, para que la tarjeta no cambie de alto y no estire a sus
+   vecinas del riel; cubre también el título para no tapar la mitad de una
+   línea) con la pregunta, las píldoras y la ✕. Cada píldora es el
+   submit de su variante. Cerrar: ✕, clic fuera, Escape o al agregar
+   (initCardPickers en theme.js); sin JS solo abre/cierra el summary. */
+.cardset .card__body { position: relative; }
+.cardset .card__pick { margin: 0; }
+.cardset .card__add--pick {
+  display: inline-block;
+  list-style: none;
+  user-select: none;
+}
+.cardset .card__add--pick::-webkit-details-marker,
+.cardset .card__add--pick::marker { display: none; content: ''; }
+.cardset .card__pick[open] > .card__add--pick { display: none; }
+.cardset .card__pick-box {
+  position: absolute;
+  inset: 10px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 14px 16px 16px;
+  background: var(--cream);
+  color: var(--p-2217);
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(1, 60, 62, .22);
+}
+.cardset .card__pick-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: 400 24px/1 var(--font-body, 'Inter', sans-serif);
+  cursor: pointer;
+  border-radius: 50%;
+}
+.cardset .card__pick-close:hover { background: rgba(1, 60, 62, .08); }
+.cardset .card__pick-label {
+  display: block;
+  padding-right: 30px; /* aire para la ✕ */
+  margin-bottom: 10px;
+  font: 400 22px/1.05 Anton, Bayon, sans-serif;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+.cardset .card__pills { display: flex; flex-wrap: wrap; gap: 8px; }
+/* La píldora va del tamaño y letra del "Agregar", pero sobre crema es blanca
+   con borde; al pasar o enfocar se llena del color de la familia. */
+.cardset .card__pill {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 64px;
+  min-height: 44px;
+  padding: 8px 16px;
+  font: 600 14px/1.15 var(--font-body, 'Inter', sans-serif);
+  color: var(--p-2217);
+  background: #FFFFFF;
+  border: 2px solid rgba(1, 60, 62, .22);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform .12s ease, background-color .12s ease, color .12s ease, border-color .12s ease;
+}
+.cardset .card__pill:hover,
+.cardset .card__pill:focus-visible {
+  background: var(--banda-bg, var(--card-media));
+  border-color: var(--banda-bg, var(--card-media));
+  color: #FFFFFF;
+}
+.cardset .card__pill:active { transform: translateY(3px); }
+.cardset .card__pill-price { font-size: 12px; font-weight: 500; opacity: .85; }
+.cardset .card__pill--soldout,
+.cardset .card__pill--soldout:hover {
+  opacity: .45;
+  cursor: not-allowed;
+  text-decoration: line-through;
+  background: #FFFFFF;
+  color: var(--p-2217);
+  border-color: rgba(1, 60, 62, .22);
+}
+
 /* Piso táctil bajo 900px: el "Agregar" se toca con el dedo, mínimo 44px. */
 @media (max-width: 900px) {
   .cardset .card__add { min-height: 44px; }
+  /* El summary es inline-block: el min-height solo le llega con line-height. */
+  .cardset .card__add--pick { line-height: 22px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

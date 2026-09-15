@@ -39,6 +39,8 @@ Si `theme dev` responde 500 "Failed to Upload Theme Files" en todas las páginas
 1. **Llave literal dentro de `{{ }}`** — algo como `{{ 'clave' | t: amount: '{amount}' }}` truena con "Variable was not properly terminated". Para placeholders que sustituye JS usa corchetes: `[amount]`, `[pieces]` (así está el blob i18n de `cart-recibo.liquid`).
 2. **BOM en JSON** — `Set-Content` / `Out-File -Encoding utf8` en Windows PowerShell 5.1 escriben UTF-8 con BOM y Shopify responde "JSON inválido en templates/*.json". Escribe JSON del tema con la herramienta Write o con `printf`/heredoc de bash, nunca con Set-Content.
 
+3. **`sed -i` sobre `sections/` o `snippets/`** — deja un archivo temporal (`sections/sedXXXX`) que el watcher intenta subir, Shopify lo rechaza y todo queda en 500. Edita con Python/Write, nunca con `sed -i`.
+
 Si el server se quedó trabado con un upload viejo, mata el node del puerto 9292 y relanza `theme dev`.
 
 ## Estructura
@@ -89,6 +91,7 @@ Las páginas grandes NO usan las secciones `main-*` genéricas: cada una es **un
 
 - De las secciones `main-*` genéricas solo quedan `main-page`, `main-search` y `main-404` (las usan `page.json`, `search.json` y `404.json`). Las **páginas de Ayuda del footer** llevan sus propias plantillas `page.faq/envios/terminos/privacidad.json` (ver *Páginas de Ayuda* abajo). `main-collection`, `main-product`, `main-cart`, `product-grid` y las secciones de landing que ya no se montaban (`announcement-marquee`, `benefits`, `cta-closer`, `newsletter`, `product-carousel`, `testimonials`, `wave`, `word-marquee`) se borraron junto con su CSS/JS. Antes de borrar cualquier otra, `grep` en `templates/`, `sections/*-group.json` y `config/settings_data.json`.
 - El patrón para una página nueva es el mismo: sección → `assets/mipagina.css` + `assets/mipagina.js` cargados desde la sección → clase raíz propia → nada de nav ni footer adentro.
+- **Picker de variantes en la tarjeta del catálogo (2026-09-15).** `banda-card` recibe el param `product`; si trae más de una variante (hoy solo Pulmón de Res perro: "Contenido" 60 g / 190 g) el "Agregar" es el `<summary>` de un `<details data-card-pick>` y al abrirse lo reemplaza una hoja crema absoluta sobre el cuerpo (`.card__pick-box`, la tarjeta no cambia de alto) con la pregunta "¿Qué contenido quieres?" (`products.card.pick`, toma el nombre de la opción) y una píldora `<button type=submit name=id>` por variante (con precio si `price_varies`; agotada = disabled). Sin JS abre/cierra nativo y el submit navega; con JS `productos.js`/`producto.js` mandan por fetch el `id` de `e.submitter` (respaldo `form._bgPill`) y la píldora es la que "vuela"; `initCardPickers` en `theme.js` cierra con ✕, clic fuera, Escape y tras agregar (`window.BUNGOT.cierraPicker`). Con una sola variante nada de esto se pinta. El precio de la tarjeta lleva "Desde" cuando varía.
 - Los productos **juguete** llevan plantilla propia (`product.juguete.json`, mismo `producto-bungot` con otros bloques), las **cajas prearmadas** la suya (`product.caja.json`, `templateSuffix: caja`), y la **Caja BUNGOT** de suscripción la suya (`product.suscripcion.json`, `templateSuffix: suscripcion` — en pausa, el producto está en borrador).
 
 ## Convenciones que debes respetar

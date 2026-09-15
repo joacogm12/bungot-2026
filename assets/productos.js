@@ -44,18 +44,28 @@
   }
 
   function wireAddForm(form) {
+    // Picker de variantes: el id viaja en la píldora pulsada (name="id"), y
+    // FormData(form) no incluye al botón que mandó. Se guarda el último
+    // clic por si e.submitter no existe (Safari viejo).
+    form.addEventListener('click', function (ev) {
+      var pill = ev.target.closest ? ev.target.closest('.card__pill') : null;
+      if (pill) form._bgPill = pill;
+    });
     form.addEventListener('submit', function (e) {
       // Sin el helper (theme.js no cargó) que siga el submit clásico: agrega
       // navegando, que es peor pero nunca deja de agregar.
       if (!window.BUNGOT || !window.BUNGOT.flyToCart) return;
       e.preventDefault();
 
-      var btn = form.querySelector('.card__add');
+      var pill = e.submitter || form._bgPill;
+      var btn = pill && pill.name === 'id' ? pill : form.querySelector('.card__add');
+      var body = new FormData(form);
+      if (pill && pill.name === 'id') body.append('id', pill.value);
       var vuelo = window.BUNGOT.flyToCart(btn, { cantidad: 1 });
       if (btn) btn.disabled = true;
       fetch('/cart/add.js', {
         method: 'POST',
-        body: new FormData(form),
+        body: body,
         headers: { Accept: 'application/json' }
       })
         .then(function (r) {
@@ -66,6 +76,7 @@
         .then(function (cart) {
           vuelo.ponTotal(cart.item_count);
           if (btn) btn.disabled = false;
+          if (window.BUNGOT.cierraPicker) window.BUNGOT.cierraPicker(form);
         })
         .catch(function (err) {
           // Rechazado por Shopify: cancelar el festejo. Sin backend (red caída,

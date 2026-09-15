@@ -342,6 +342,7 @@
                 variant_id: product.selected_or_first_available_variant.id,
                 available: product.available,
                 selling_plan_id: sp,
+                product: product,
                 cta: cta -%}
             {%- endfor -%}
           {%- else -%}
@@ -380,6 +381,7 @@
                 variant_id: p_vid,
                 available: p_avail,
                 selling_plan_id: p_sp,
+                product: p_link,
                 cta: cta -%}
             {%- endfor -%}
           {%- endif -%}
