@@ -3190,10 +3190,8 @@ a.chip { text-decoration: none; }
    con borde; al pasar o enfocar se llena del color de la familia. */
 .cardset .card__pill {
   display: inline-flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
   min-width: 64px;
   min-height: 44px;
   padding: 8px 16px;
@@ -3212,7 +3210,6 @@ a.chip { text-decoration: none; }
   color: #FFFFFF;
 }
 .cardset .card__pill:active { transform: translateY(3px); }
-.cardset .card__pill-price { font-size: 12px; font-weight: 500; opacity: .85; }
 .cardset .card__pill--soldout,
 .cardset .card__pill--soldout:hover {
   opacity: .45;

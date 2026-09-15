@@ -139,8 +139,8 @@
                 {%- for v in product.variants -%}
                   {%- comment -%}
                     Cada píldora agrega SU variante. Agotada: se ve apagada y no
-                    manda (Shopify la rechazaría con 422). El precio solo se
-                    pinta si cambia entre variantes; si es el mismo, sobra.
+                    manda (Shopify la rechazaría con 422). Solo el nombre de la
+                    variante (el gramaje), sin precio: a pedido 2026-09-15.
                   {%- endcomment -%}
                   <button
                     type="submit"
@@ -152,9 +152,6 @@
                     data-label-failed="{{ 'products.card.add_failed' | t }}"
                   >
                     <span class="card__pill-name">{{ v.title }}</span>
-                    {%- if product.price_varies and v.price > 0 -%}
-                      <span class="card__pill-price">{{ v.price | money }}</span>
-                    {%- endif -%}
                   </button>
                 {%- endfor -%}
               </div>

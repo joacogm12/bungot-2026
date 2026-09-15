@@ -319,8 +319,7 @@
       btn.setAttribute('data-ocupado', '');
       var textoConfirmacion = btn.getAttribute('data-label-added');
       // innerHTML y no textContent: las píldoras del picker de variantes
-      // traen nombre y precio en dos <span>, y restaurar solo el texto los
-      // aplanaba en un renglón ("190 g$ 151.00").
+      // traen su nombre en un <span>, y restaurar solo el texto lo perdía.
       var htmlOriginal = btn.innerHTML;
       var fondoOriginal = btn.style.background;
       setTimeout(function () {
