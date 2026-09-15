@@ -729,22 +729,34 @@ img.pest,
    caja; las cotas salen de las reglas .pest--* de arriba llevadas a su
    estado final. Las capas van como img.ptar__dibujo-* para ganarle en
    especificidad a la regla genérica de abajo (si no, todas salen al 100%).
-   El lado lo da la retícula de .ptar (ver abajo); el ancho es MÁS que su
-   columna a propósito (a pedido 2026-09-15): el dibujo se monta ~20px sobre
-   la foto, por eso va por encima (z 2) y justify-self lo desborda hacia la
-   foto y no hacia la orilla. */
+   El dibujo vive en la MISMA celda que la foto (grid-area: foto) y se
+   pega a su esquina de abajo como sticker (a pedido 2026-09-15: chico, en
+   las esquinas de abajo de la foto): align-self end, justify-self al lado
+   que le toca y un translate que lo saca un poco del marco de la foto. Va
+   por encima (z 2). Cada composición trae su propio ancho, en % de la
+   tarjeta, porque las cajas tienen proporciones muy distintas (el hidrante
+   con su chorro es ancho y bajo, la casita casi cuadrada). El translate de
+   abajo se cubre con el margen extra de la copia (.ptar__texto). */
 .ptar__dibujo { display: none; }
 .paseo--vertical .ptar__dibujo {
-  grid-area: dibujo;
+  grid-area: foto;
   display: block;
   position: relative;
   z-index: 2;
-  width: 124%;
+  width: 30%;
   margin: 0;
+  align-self: end;
   justify-self: start;
+  transform: translate(-6%, 14%);
 }
 .paseo--vertical .ptar--1 .ptar__dibujo,
-.paseo--vertical .ptar--2 .ptar__dibujo { justify-self: end; }
+.paseo--vertical .ptar--2 .ptar__dibujo {
+  justify-self: end;
+  transform: translate(6%, 14%);
+}
+.paseo--vertical .ptar__dibujo--bote { width: 36%; }
+.paseo--vertical .ptar__dibujo--hidrante { width: 44%; }
+.paseo--vertical .ptar__dibujo--manada { width: 34%; }
 .paseo--vertical .ptar__dibujo img {
   position: absolute;
   left: 0;
@@ -882,12 +894,13 @@ img.pest,
   .ptar__dibujo--activo img { animation: none !important; }
 }
 
-/* La tarjeta en columna es una retícula de tres renglones: título, luego el
-   dibujo y la foto EN EL MISMO RENGLÓN (a pedido 2026-09-15, los dos chicos),
-   y la copia abajo. El dibujo y la foto se alinean por el piso (align-items:
-   end) para que la utilería "pise" la misma línea que la foto. El lado del
-   dibujo se alterna con las áreas: casa/pruebas/cámara a la izquierda,
-   bote/hidrante a la derecha (el chorro del hidrante sale hacia la izquierda). */
+/* La tarjeta en columna es una retícula de tres renglones: título, foto a
+   todo lo ancho y la copia. El dibujo NO tiene renglón propio: comparte la
+   celda de la foto y cuelga de su esquina de abajo (ver .ptar__dibujo
+   arriba; a pedido 2026-09-15). El lado se alterna: casa/pruebas/cámara a
+   la izquierda, bote/hidrante a la derecha (el chorro del hidrante sale
+   hacia la izquierda). La copia lleva más margen arriba para dejarle sitio
+   a lo que el dibujo cuelga por debajo de la foto. */
 .paseo--vertical .ptar {
   position: static !important;
   left: auto !important;
@@ -896,25 +909,15 @@ img.pest,
   opacity: 1 !important;
   transform: none !important;
   display: grid;
-  grid-template-columns: 40% 1fr;
+  grid-template-columns: 100%;
   grid-template-areas:
-    "titulo titulo"
-    "dibujo foto"
-    "texto  texto";
-  column-gap: 14px;
-  align-items: end;
-}
-.paseo--vertical .ptar--1,
-.paseo--vertical .ptar--2 {
-  grid-template-columns: 1fr 40%;
-  grid-template-areas:
-    "titulo titulo"
-    "foto   dibujo"
-    "texto  texto";
+    "titulo"
+    "foto"
+    "texto";
 }
 .paseo--vertical .ptar__titulo { grid-area: titulo; font-size: clamp(30px, 8.5vw, 44px); }
-.paseo--vertical .ptar__foto { grid-area: foto; height: clamp(120px, 40vw, 168px); border-radius: 18px; }
-.paseo--vertical .ptar__texto { grid-area: texto; }
+.paseo--vertical .ptar__foto { grid-area: foto; height: min(50vw, 210px); border-radius: 18px; }
+.paseo--vertical .ptar__texto { grid-area: texto; margin-top: 30px; }
 .paseo--vertical .ptar__texto { font-size: 17px; }
 .paseo--vertical .ptar__hueco { font-size: 14px; }
 .paseo--vertical .paseo__gracias { position: static; width: auto; }
