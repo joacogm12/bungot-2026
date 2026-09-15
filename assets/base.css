@@ -2831,6 +2831,28 @@ a.chip { text-decoration: none; }
 .rte ul li::before { content: '🐾'; position: absolute; left: 0; font-size: 0.85em; }
 .rte ol { padding-left: 1.3em; }
 .rte img { border-radius: var(--radius); border: 3px solid var(--ink); }
+/* Páginas legales y FAQ (Ayuda del footer): la fecha de "Última
+   actualización" va chica y apagada; cada pregunta del FAQ es un
+   <details> nativo, sin JS. El sumario lleva su propia flecha (la del
+   navegador se apaga con list-style / ::-webkit-details-marker) para que se
+   vea igual en Safari y Chrome. */
+.rte .rte__meta { font-size: 0.85em; color: color-mix(in srgb, var(--ink) 62%, transparent); margin-top: -0.4em; }
+.rte details { border-top: 2px solid color-mix(in srgb, var(--ink) 18%, transparent); padding: 0.55em 0; }
+.rte details:last-of-type { border-bottom: 2px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+.rte details + h2 { margin-top: 2em; }
+.rte summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75em;
+  font-weight: 600;
+  padding-block: 0.3em;
+}
+.rte summary::-webkit-details-marker { display: none; }
+.rte summary::before { content: '+'; flex: none; width: 1em; font-family: var(--font-display); font-size: 1.15em; color: var(--brand); line-height: 1; }
+.rte details[open] > summary::before { content: '–'; }
+.rte details > p { margin: 0.2em 0 0.6em 1.75em; }
 
 /* --- Buscador (main-search) --- */
 /* Antes colgaba de las clases del newsletter, que se dio de baja: el input
