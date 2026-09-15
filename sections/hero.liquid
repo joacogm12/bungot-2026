@@ -5,11 +5,19 @@
 
   Cómo está armado (los estilos viven en base.css, bloque "Portada"):
 
-  · La figura son TRECE PNG de 2048x2048 registrados sobre el mismo lienzo
-    (assets/perro2-cuerpo.png, perro2-pelo-01..11.png y perro2-patas.png): se
-    apilan con inset: 0 y cada mecha gira desde el punto donde nace del cuerpo.
-    Si una mecha aparece corrida, el PNG se recortó en vez de exportarse en el
-    lienzo completo — no se "corrige" con offsets.
+  · La figura son TRECE WebP de 2048x2048 registrados sobre el mismo lienzo
+    (assets/perro2-cuerpo.webp, perro2-pelo-01..11.webp y perro2-patas.webp):
+    se apilan con inset: 0 y cada mecha gira desde el punto donde nace del
+    cuerpo. Si una mecha aparece corrida, la capa se recortó en vez de
+    exportarse en el lienzo completo — no se "corrige" con offsets.
+  · Van en WebP con alfa (calidad 90) y no en PNG a propósito: los trece PNG
+    pesaban 1.4 MB y eran el LCP de la portada en celu (8 s en Lighthouse);
+    en WebP pesan 250 KB con la ilustración idéntica. Si re-exportas las
+    capas, conviértelas igual (Pillow: quality=90, method=6). El CDN de
+    Shopify respeta los .webp de assets, así que se sirven tal cual.
+  · Prioridad de descarga: el cuerpo es el LCP y va con fetchpriority="high";
+    el pelo y las patas son detalle de la animación y van "low" para que no le
+    compitan el ancho de banda al cuerpo ni a las fuentes.
   · La ventana recorta a la figura solo por abajo (se ve del pecho hacia
     arriba); las patas van en una capa aparte FUERA de la ventana, en z-index 6,
     para asomar sobre lo que siga en la página. Su caja la calca theme.js
@@ -85,23 +93,26 @@
         <div class="hero__cuerpo">
           <img
             class="hero__capa"
-            src="{{ 'perro2-cuerpo.png' | asset_url }}"
+            src="{{ 'perro2-cuerpo.webp' | asset_url }}"
             alt="{{ 'sections.hero.dog_alt' | t }}"
             width="2048"
             height="2048"
             loading="eager"
+            fetchpriority="high"
           >
           {%- for i in (1..11) -%}
             {%- comment -%} "1" → "01": el nombre del asset va con dos dígitos. {%- endcomment -%}
             {%- assign nn = i | prepend: '0' | slice: -2, 2 -%}
             <img
               class="hero__capa hero__pelo hero__pelo--{{ nn }}"
-              src="{{ 'perro2-pelo-' | append: nn | append: '.png' | asset_url }}"
+              src="{{ 'perro2-pelo-' | append: nn | append: '.webp' | asset_url }}"
               alt=""
               draggable="false"
               width="2048"
               height="2048"
               loading="eager"
+              fetchpriority="low"
+              decoding="async"
             >
           {%- endfor -%}
         </div>
@@ -121,12 +132,14 @@
       <div class="hero__patas-cuerpo">
         <img
           class="hero__capa"
-          src="{{ 'perro2-patas.png' | asset_url }}"
+          src="{{ 'perro2-patas.webp' | asset_url }}"
           alt=""
           draggable="false"
           width="2048"
           height="2048"
           loading="eager"
+          fetchpriority="low"
+          decoding="async"
         >
       </div>
     </div>
