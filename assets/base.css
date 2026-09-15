@@ -844,12 +844,22 @@ shopify-account::part(signed-out-avatar) {
    pelo se lee bien; tapado, no. Ladeado como los de Favoritos. */
 .hero__sticker {
   position: absolute;
-  top: 40px;
+  /* --hst-w es el ancho VISIBLE del sticker (el dibujo). La sombra va horneada
+     en el WebP (2026-09-15): un filter: drop-shadow sobre la <img> —dentro de
+     un <a> con transform y con decoding async— en iOS a veces se rasterizaba
+     sobre el rectángulo entero y salía un cuadro gris al cargar; horneada no
+     hay filtro que rasterizar. Por eso el lienzo trae 32px de aire por lado
+     (704 en vez de 640, un 10% más): el ancho real se escala y top/right
+     restan ese aire (5% del ancho visible) para que el dibujo quede donde
+     estaba. */
+  --hst-w: clamp(160px, 19vw, 290px);
+  --hst-aire: calc(var(--hst-w) * 0.05);
+  top: calc(40px - var(--hst-aire));
   /* Despegado del borde y grande, a pedido (2026-09-14): se mete hacia el
      copete del perro en vez de quedar en el rincón. */
-  right: clamp(36px, 5vw, 80px);
+  right: calc(clamp(36px, 5vw, 80px) - var(--hst-aire));
   z-index: 5;
-  width: clamp(160px, 19vw, 290px);
+  width: calc(var(--hst-w) * 1.1);
   transform: rotate(7deg);
   transition: transform 0.18s var(--ease-bounce);
 }
@@ -857,7 +867,6 @@ shopify-account::part(signed-out-avatar) {
   display: block;
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 4px 10px rgba(1, 60, 62, 0.22));
 }
 .hero__sticker:hover,
 .hero__sticker:focus-visible { transform: rotate(3deg) scale(1.06); }
@@ -1045,7 +1054,11 @@ shopify-account::part(signed-out-avatar) {
   .hero__redes { left: 20px; bottom: 18px; }
   /* Al lado del claim (11.7vw × 2 renglones ≈ 42vw de ancho): cabe hasta
      ~30vw sin pisarlo. */
-  .hero__sticker { top: 20px; right: 20px; width: min(28vw, 150px); }
+  .hero__sticker {
+    --hst-w: min(28vw, 150px);
+    top: calc(20px - var(--hst-aire));
+    right: calc(20px - var(--hst-aire));
+  }
 }
 
 /* Teléfono vertical: la ventana mide 94vw y el hero 100svh, y entre el claim
@@ -2030,11 +2043,14 @@ a.chip { text-decoration: none; }
   .fpanel__box--foto .fpanel__bici { left: 66%; width: 56%; }
 }
 @media (max-width: 640px) {
-  /* En columna: foto arriba a todo lo ancho con la bici colgando de su
-     esquina, y debajo el texto centrado como en el panel de siempre. El
-     margen de abajo de la foto es el hueco que ocupa la bici. */
-  .fpanel__box--foto { grid-template-columns: 1fr; gap: 1rem; padding: clamp(1.25rem, 5vw, 1.75rem); }
-  .fpanel__foto { margin-bottom: 14%; }
+  /* En columna: PRIMERO el texto centrado como en el panel de siempre y
+     debajo la foto a todo lo ancho con la bici colgando de su esquina (a
+     pedido 2026-09-15; en escritorio la foto sigue a la izquierda). La foto
+     va después en el markup por el orden de escritorio, así que acá se
+     manda al final con order. El margen de abajo de la foto es el hueco que
+     ocupa la bici antes del borde del panel. */
+  .fpanel__box--foto { grid-template-columns: 1fr; gap: 1.25rem; padding: clamp(1.25rem, 5vw, 1.75rem); }
+  .fpanel__foto { order: 1; margin-bottom: 14%; }
   .fpanel__box--foto .fpanel__bici { left: auto; right: -3%; bottom: -20%; width: 56%; }
   .fpanel__box--foto .fpanel__lead { justify-self: center; text-align: center; }
   .fpanel__box--foto .fpanel__text { margin-inline: auto; }
@@ -2517,58 +2533,71 @@ a.chip { text-decoration: none; }
 
 /* Teléfono: el reparto libre de las fotos (fx/fy del customizer, pensado
    para un viewport ancho) las dejaba encima del titular y del párrafo. Aquí
-   se ignoran esos destinos y se acomodan a mano. Hasta el 2026-09-11 iban las
-   diez en dos filas de cinco, pegaditas y alineadas; a pedido son SEIS
-   (cuatro grandes y dos chicas, las otras cuatro se esconden), más grandes,
-   tres arriba y tres abajo del texto, y PEGADAS al texto: en vertical ya no
-   usan --fy (fracción de la pantalla, que dejaba la separación al azar del
-   teléfono) sino que cada una se cuelga del borde del bloque de texto a una
-   separación fija --sep, distinta por foto para que no se lean como fila.
-   El medio alto del texto lo mide initBonche() (theme.js) y lo publica en
-   --copy-hh sobre el pile; sin JS cae a 150px. --lado dice si va arriba (-1)
-   o abajo (1). El montón inicial (--s: 0) y la apertura por scroll siguen
-   iguales: solo cambia el destino. --fx sí sigue con !important porque
-   llega en el style inline de cada tarjeta y una regla normal no le gana.
-   La primera hija del pile es el texto, por eso las tarjetas cuentan desde
-   nth-child(2): 2–7 son las seis grandes del layout de escritorio y 8–11
-   las cuatro chicas (ver el orden de bloques en templates/index.json).
+   se ignoran esos destinos —y también el formato del bloque— y las fotos se
+   acomodan a mano en SEIS huecos fijos calcados del mockup del 2026-09-15
+   (antes iban tres arriba y tres abajo en fila, sin tocarse): un collage en
+   dos racimos que se traslapan entre sí y se meten al renglón del titular y
+   del botón, más grandes que antes. Las otras cuatro fotos se esconden.
 
-   Cuáles se ven y dónde (fx: -1 borde izq … 1 borde der):
-     arriba: grande 3:4 en la esquina izq · chica 4:3 al centro, la más
-             pegada · grande 2:3 en la esquina der
-     abajo:  chica 2:3 a la izq · grande 4:3 al centro, la más separada ·
-             grande 3:4 a la der
-   Se esconden la 2ª y 5ª grandes y la 1ª y 4ª chicas. Si cambian las fotos
-   del customizer, el acomodo sigue siendo por posición de bloque. */
+   Unidad: --u es 1vw en un teléfono de 390×730 (390 de ancho con la barra de
+   Safari puesta, que es donde se dibujó el mockup) y se capa por el alto
+   estable --svh para que en un teléfono corto todo el collage encoja parejo
+   en vez de meterse bajo las pestañas del navbar. Cada hueco declara:
+     --mw   ancho FINAL visible en --u (ya descontada la escala 0.9 con la
+            que se abren las tarjetas, por eso --w lo divide);
+     --ar   forma del recorte (¡pisa el formato del bloque!, es lo que hace
+            que el collage se lea igual con cualquier foto);
+     --mx   corrimiento horizontal del centro de la tarjeta al centro de la
+            pantalla, en --u;
+     --lado arriba (-1) o abajo (1) del texto;
+     --sep  aire entre la tarjeta y el borde del bloque de texto, en --u.
+            NEGATIVO = la tarjeta se mete al renglón del titular / del botón
+            (el texto va en z-index 20, siempre queda encima).
+   En vertical no se usa --fy (fracción de la pantalla, que dejaba la
+   separación al azar del teléfono): cada tarjeta se cuelga del borde del
+   bloque de texto. El medio alto del texto lo mide initBonche() (theme.js)
+   y lo publica en --copy-hh sobre el pile; sin JS cae a 150px. El montón
+   inicial (--s: 0) y la apertura por scroll siguen iguales: solo cambia el
+   destino. --fx/--ar llegan en el style inline de cada tarjeta, por eso el
+   !important. La primera hija del pile es el texto, así que las tarjetas
+   cuentan desde nth-child(2): 2–7 son las seis grandes del layout de
+   escritorio y 8–11 las cuatro chicas (orden de bloques de index.json).
+
+   Huecos (de izquierda a derecha) y qué bloque los llena:
+     arriba: A esq. izq casi cuadrada, roza el titular ← 6 (sentada, 10:11)
+             B 4:3 al centro, la más alta                ← 9 (schnauzer, 4:3)
+             C 3:4 esq. der, baja hasta el titular       ← 2 (shih tzu, 3:4)
+     abajo:  D 3:4 esq. izq, sube junto al botón         ← 7 (caja, 3:4)
+             E 4:3 al centro, montada sobre la esquina
+               de D                                      ← 4 (familia, 4:3)
+             F 3:4 esq. der, sube por detrás del botón   ← 3 (risas, 2:3)
+   Se esconden 5, 8, 10 y 11. Si el cliente cambia las fotos en el
+   customizer, el acomodo sigue siendo por posición de bloque. El orden de
+   apilado va explícito (C sobre B, E sobre D) para que los traslapes se
+   lean como en el mockup. */
 @media (max-width: 640px) {
   .bonche__copy { width: min(33rem, 86vw); }
-  /* Con seis fotos caben más grandes: 30vw las grandes y 23vw las chicas.
-     El tope por svh (18 / 14) es el que deja que en un teléfono corto
-     (740 de alto) las de arriba libren las pestañas del navbar (72px). */
   .bonche__card {
-    --w: calc(min(30vw, calc(18 * var(--svh)) / var(--ar)) * var(--z, 1));
-    --lado: -1;
-    --sep: 16px;
+    --u: min(1vw, calc(var(--svh) * 0.534));
+    --w: calc(var(--mw) / 0.9 * var(--u) * var(--z, 1));
+    --dx: calc(var(--ox, 0) * (1 - var(--s, 0)) * 1vmin + var(--s, 0) * var(--mx) * var(--u));
     --dy: calc(
       var(--oy, 0) * (1 - var(--s, 0)) * 1vmin
-      + var(--s, 0) * var(--lado) * (var(--copy-hh, 150px) + var(--sep) + var(--hh))
+      + var(--s, 0) * var(--lado) * (var(--copy-hh, 150px) + var(--sep) * var(--u) + var(--hh))
     );
   }
-  .bonche__card--chica {
-    --w: calc(min(23vw, calc(14 * var(--svh)) / var(--ar)) * var(--z, 1));
-  }
-  .bonche__card:nth-child(3),
-  .bonche__card:nth-child(6),
+  .bonche__card:nth-child(5),
   .bonche__card:nth-child(8),
+  .bonche__card:nth-child(10),
   .bonche__card:nth-child(11) { display: none; }
   /* Arriba del texto */
-  .bonche__card:nth-child(2)  { --fx: -1    !important; --sep: 28px; }
-  .bonche__card:nth-child(9)  { --fx:  0.1  !important; --sep: 12px; }
-  .bonche__card:nth-child(5)  { --fx:  1    !important; --sep: 20px; }
+  .bonche__card:nth-child(6) { --mw: 31.5; --ar: 1.15 !important; --mx: -29;  --lado: -1; --sep: -4;    z-index: 1; }
+  .bonche__card:nth-child(9) { --mw: 29;   --ar: 0.75 !important; --mx: 5.4;  --lado: -1; --sep: 10;    z-index: 2; }
+  .bonche__card:nth-child(2) { --mw: 26.7; --ar: 1.25 !important; --mx: 33.3; --lado: -1; --sep: -12.3; z-index: 3; }
   /* Abajo del texto */
-  .bonche__card:nth-child(10) { --fx: -0.95 !important; --lado: 1; --sep: 14px; }
-  .bonche__card:nth-child(4)  { --fx:  0.05 !important; --lado: 1; --sep: 44px; }
-  .bonche__card:nth-child(7)  { --fx:  1    !important; --lado: 1; --sep: 22px; }
+  .bonche__card:nth-child(7) { --mw: 26;   --ar: 1.28 !important; --mx: -33.8; --lado: 1; --sep: -14;   z-index: 4; }
+  .bonche__card:nth-child(4) { --mw: 30;   --ar: 0.9  !important; --mx: -11;   --lado: 1; --sep: 6;     z-index: 5; }
+  .bonche__card:nth-child(3) { --mw: 31.8; --ar: 1.2  !important; --mx: 30;    --lado: 1; --sep: -16.7; z-index: 6; }
 }
 
 /* --------------------------------------------------------------------------
