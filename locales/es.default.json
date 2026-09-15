@@ -44,6 +44,9 @@
     }
   },
   "sections": {
+    "legal": {
+      "actualizado": "Última actualización"
+    },
     "feature_panel": {
       "bici_alt": "Perro repartidor en bici con una caja BUNGOT"
     },

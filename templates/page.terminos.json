@@ -1,0 +1,180 @@
+{
+  "sections": {
+    "main": {
+      "type": "texto-legal",
+      "blocks": {
+        "b1": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "1. Uso del sitio y mayoría de edad",
+            "nivel": "h2",
+            "texto": "<p>Al utilizar este sitio declaras que eres mayor de edad conforme a la legislación de tu lugar de residencia y que cuentas con capacidad legal para contratar. Si permites que un menor bajo tu responsabilidad use el sitio, lo haces bajo tu propia supervisión y responsabilidad.</p><p>Nos reservamos el derecho de negar el servicio a cualquier persona, por cualquier motivo y en cualquier momento.</p>"
+          }
+        },
+        "b2": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "2. Cuenta de usuario",
+            "nivel": "h2",
+            "texto": "<p>Si creas una cuenta, eres responsable de mantener la confidencialidad de tu contraseña y de toda la actividad que ocurra bajo ella. Avísanos de inmediato si detectas un uso no autorizado. Los datos que registres deben ser verídicos, completos y estar actualizados.</p>"
+          }
+        },
+        "b3": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "3. Productos",
+            "nivel": "h2",
+            "texto": "<p>Nuestros productos son complementos alimenticios y artículos de entretenimiento para perros y gatos. No son alimento completo y balanceado, no sustituyen la dieta principal de tu mascota ni ningún tratamiento veterinario.</p><p>Al tratarse de productos naturales, el color, tamaño, textura y aroma pueden variar entre lotes y entre piezas. Esa variación es normal y no constituye un defecto.</p><p>En el caso de los juguetes, los colores se asignan según el material disponible en cada lote, por lo que no es posible elegirlos.</p><p>Hemos hecho el esfuerzo de mostrar los colores y las imágenes de nuestros productos con la mayor precisión posible. No podemos garantizar que la pantalla de tu dispositivo los reproduzca de forma exacta.</p><p>Ciertos productos pueden estar disponibles exclusivamente en línea y en cantidades limitadas.</p>"
+          }
+        },
+        "b4": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "4. Uso seguro de los productos",
+            "nivel": "h2",
+            "texto": "<p>Todos nuestros snacks y huesos deben ofrecerse bajo supervisión constante y con agua fresca al alcance. Respeta la porción indicada en cada producto y retira las piezas cuando queden lo bastante pequeñas como para que tu mascota pueda tragarlas enteras.</p><p>Los huesos ahumados no se recomiendan para razas grandes ni para masticadores agresivos. Si tu mascota tiene problemas dentales, alergias, alguna condición de salud o está bajo tratamiento, consulta a tu médico veterinario antes de darle cualquier producto nuevo.</p><p>Ninguno de nuestros productos es apto para consumo humano.</p>"
+          }
+        },
+        "b5": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "5. Precios y modificaciones",
+            "nivel": "h2",
+            "texto": "<p>Los precios están expresados en pesos mexicanos e incluyen IVA, salvo que se indique lo contrario. Están sujetos a cambio sin previo aviso.</p><p>Nos reservamos el derecho de modificar o descontinuar cualquier producto o parte del servicio en cualquier momento y sin aviso previo.</p>"
+          }
+        },
+        "b6": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "6. Pagos",
+            "nivel": "h2",
+            "texto": "<p>Las formas de pago disponibles son las que se indiquen en el sitio al momento de finalizar tu compra. El pago se procesa a través de plataformas certificadas y BUNGOT no almacena los datos de tu tarjeta.</p><p>Tu pedido se considera confirmado hasta que recibimos la confirmación de pago de la plataforma correspondiente.</p>"
+          }
+        },
+        "b7": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "7. Exactitud de la información",
+            "nivel": "h2",
+            "texto": "<p>Ocasionalmente puede haber en el sitio errores tipográficos, inexactitudes u omisiones relacionadas con descripciones de producto, precios, promociones, costos de envío, tiempos de entrega o disponibilidad.</p><p>Nos reservamos el derecho de corregir cualquier error, actualizar la información o cancelar pedidos si alguna información resultó inexacta, en cualquier momento y sin aviso previo, incluso después de que hayas enviado tu orden. Si tu pedido se cancela por esta razón y ya lo habías pagado, te reembolsamos el monto completo.</p>"
+          }
+        },
+        "b8": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "8. Usos prohibidos",
+            "nivel": "h2",
+            "texto": "<p>Además de lo previsto en estos Términos, queda prohibido usar el sitio o su contenido:</p><ul><li>Para cualquier propósito ilícito.</li><li>Para inducir a terceros a realizar o participar en actos ilícitos.</li><li>Para violar cualquier ley, reglamento o disposición local, estatal, federal o internacional.</li><li>Para infringir nuestros derechos de propiedad intelectual o los de terceros.</li><li>Para acosar, abusar, insultar, dañar, difamar, calumniar, intimidar o discriminar por cualquier motivo.</li><li>Para presentar información falsa o engañosa.</li><li>Para cargar o transmitir virus o cualquier otro tipo de código malicioso.</li><li>Para recolectar o rastrear información personal de otros usuarios.</li></ul><p>Podemos suspender tu acceso al sitio si incumples cualquiera de estos puntos.</p>"
+          }
+        },
+        "b9": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "9. Propiedad intelectual",
+            "nivel": "h2",
+            "texto": "<p>Todo el contenido del sitio —textos, ilustraciones, fotografías, diseños, logotipos, empaques, nombres de producto y código— es propiedad de Cayetana Gómez Martínez, persona física con actividad empresarial o se usa con autorización, y está protegido por la legislación aplicable en materia de propiedad intelectual.</p><p>La marca BUNGOT, sus variantes, el aviso comercial y los logotipos son propiedad exclusiva de Cayetana Gómez Martínez, persona física con actividad empresarial. Queda prohibida su reproducción total o parcial.</p><p>No puedes modificar, copiar, reproducir, rentar, prestar, vender, distribuir ni crear obras derivadas del sitio o su contenido, ni usar nuestras marcas en relación con productos o servicios distintos de los nuestros, ni de ninguna forma que pueda causar confusión entre los usuarios o desacreditar a BUNGOT.</p>"
+          }
+        },
+        "b10": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "10. Contenido de usuario y comentarios",
+            "nivel": "h2",
+            "texto": "<p>Si nos envías comentarios, ideas, sugerencias, fotografías, reseñas u otros materiales —ya sea a petición nuestra o por iniciativa propia, por cualquier medio— aceptas que podamos editarlos, copiarlos, publicarlos, distribuirlos, traducirlos y usarlos por cualquier medio, sin restricción y sin compensación.</p><p>No tenemos obligación de mantenerlos confidenciales, de pagarte por ellos ni de responderlos.</p><p>Eres responsable de que el contenido que nos envíes sea tuyo o de que cuentes con los derechos para compartirlo, y de que no sea ilegal, ofensivo ni viole derechos de terceros.</p>"
+          }
+        },
+        "b11": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "11. Enlaces de terceros",
+            "nivel": "h2",
+            "texto": "<p>El sitio puede incluir enlaces o contenido de terceros. No somos responsables del contenido, la exactitud ni las prácticas de esos sitios, ni de cualquier transacción que realices con ellos. Revísalos bajo tu propia responsabilidad.</p>"
+          }
+        },
+        "b12": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "12. Exclusión de garantías y limitación de responsabilidad",
+            "nivel": "h2",
+            "texto": "<p>No garantizamos que el uso del sitio sea ininterrumpido, puntual, seguro o libre de errores, ni que los resultados obtenidos de su uso sean exactos o confiables. Podemos suspender o cancelar el servicio en cualquier momento sin previo aviso.</p><p>El sitio y todos los productos y servicios se proporcionan «tal cual» y «según disponibilidad», sin garantías de ningún tipo, expresas o implícitas, salvo las que expresamente otorgamos y las que la ley reconozca a tu favor como consumidor.</p><p>El consumo de nuestros productos es responsabilidad exclusiva del cliente. BUNGOT, sus socios, representantes, empleados, directivos y proveedores no serán responsables por efectos que pudieran presentarse en tu mascota como consecuencia del consumo o uso de los productos, ni por daños causados por un uso distinto al indicado en el empaque y en este sitio.</p><p>Nuestra responsabilidad se limita, en todo caso, al monto que pagaste por el producto de que se trate.</p><p>Nada en esta sección limita los derechos que la Ley Federal de Protección al Consumidor te reconoce como consumidor.</p>"
+          }
+        },
+        "b13": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "13. Indemnización",
+            "nivel": "h2",
+            "texto": "<p>Aceptas indemnizar y mantener en paz y a salvo a Cayetana Gómez Martínez, persona física con actividad empresarial, sus socios, representantes, empleados, directivos, proveedores y contratistas, de cualquier reclamación o demanda —incluyendo honorarios razonables de abogados— presentada por un tercero como consecuencia de tu incumplimiento de estos Términos o de la violación de cualquier ley o derecho de un tercero.</p>"
+          }
+        },
+        "b14": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "14. Terminación",
+            "nivel": "h2",
+            "texto": "<p>Estos Términos están vigentes hasta que tú o nosotros los demos por terminados. Puedes terminarlos en cualquier momento dejando de usar el sitio.</p><p>Si a nuestro juicio incumples cualquier disposición de estos Términos, podemos terminar el acuerdo en cualquier momento sin previo aviso y negarte el acceso al sitio. Las obligaciones y responsabilidades contraídas antes de la terminación sobreviven a la misma.</p>"
+          }
+        },
+        "b15": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "15. Cambios a estos Términos",
+            "nivel": "h2",
+            "texto": "<p>Podemos actualizar, modificar o reemplazar cualquier parte de estos Términos publicando los cambios en esta página. Es tu responsabilidad revisarla periódicamente. El uso continuo del sitio después de publicados los cambios implica tu aceptación.</p>"
+          }
+        },
+        "b16": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "16. Protección de datos personales",
+            "nivel": "h2",
+            "texto": "<p>El tratamiento de tus datos personales se rige por nuestro Aviso de Privacidad, disponible en este mismo sitio.</p>"
+          }
+        },
+        "b17": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "17. Legislación aplicable y jurisdicción",
+            "nivel": "h2",
+            "texto": "<p>Estos Términos se rigen por la legislación de los Estados Unidos Mexicanos. Para cualquier controversia derivada de su interpretación o cumplimiento, las partes se someten a los tribunales competentes de San Luis Potosí, S.L.P., renunciando a cualquier otra jurisdicción que pudiera corresponderles.</p><p>En caso de controversia como consumidor, la Procuraduría Federal del Consumidor (PROFECO) es competente en la vía administrativa para resolver reclamaciones.</p>"
+          }
+        },
+        "b18": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "18. Contacto",
+            "nivel": "h2",
+            "texto": "<p>Para cualquier duda sobre estos Términos: <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a> · 444 171 6559 · 444 580 6342</p>"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12",
+        "b13",
+        "b14",
+        "b15",
+        "b16",
+        "b17",
+        "b18"
+      ],
+      "settings": {
+        "fecha": "14 de septiembre de 2026",
+        "intro": "<p>Este sitio es operado por Cayetana Gómez Martínez, persona física con actividad empresarial (en adelante «BUNGOT», «nosotros» o «nuestro»). Al navegar, registrarte o comprar en www.bungot.com aceptas estos Términos y Condiciones en su totalidad. Si no estás de acuerdo con alguna parte, por favor no uses el sitio.</p>"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

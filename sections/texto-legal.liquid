@@ -1,0 +1,75 @@
+{%- comment -%}
+  BUNGOT — Texto legal (envíos y devoluciones, términos y condiciones, aviso
+  de privacidad; plantillas page.envios / page.terminos / page.privacidad).
+
+  Mismo criterio que faq.liquid: el texto vive en los bloques de la sección
+  para editarse desde el customizer, no en el cuerpo de la página del admin.
+  Cada bloque `apartado` es un subtítulo (h2, o h3 si es un sub-apartado) con
+  su texto enriquecido (párrafos, listas y links). La fecha de "Última
+  actualización" es un ajuste de la sección para que cambiarla sea un solo
+  campo. Estilos: .rte de base.css.
+{%- endcomment -%}
+
+<section class="page-section">
+  <div class="wrap wrap--narrow">
+    <h1 class="page-section__title">{{ page.title }}</h1>
+    <div class="rte">
+      {%- if section.settings.fecha != blank -%}
+        <p class="rte__meta">{{ 'sections.legal.actualizado' | t }}: {{ section.settings.fecha }}</p>
+      {%- endif -%}
+      {{ section.settings.intro }}
+      {%- for block in section.blocks -%}
+        {%- if block.settings.nivel == 'h3' -%}
+          <h3 {{ block.shopify_attributes }}>{{ block.settings.titulo }}</h3>
+        {%- else -%}
+          <h2 {{ block.shopify_attributes }}>{{ block.settings.titulo }}</h2>
+        {%- endif -%}
+        {{ block.settings.texto }}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Texto legal",
+  "tag": "section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "text",
+      "id": "fecha",
+      "label": "Última actualización",
+      "default": "14 de septiembre de 2026",
+      "info": "Vacío = no se muestra la línea."
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introducción",
+      "info": "Opcional. Va antes del primer apartado."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "apartado",
+      "name": "Apartado",
+      "settings": [
+        { "type": "text", "id": "titulo", "label": "Subtítulo", "default": "1. Apartado" },
+        {
+          "type": "select",
+          "id": "nivel",
+          "label": "Jerarquía",
+          "options": [
+            { "value": "h2", "label": "Apartado" },
+            { "value": "h3", "label": "Sub-apartado" }
+          ],
+          "default": "h2"
+        },
+        { "type": "richtext", "id": "texto", "label": "Texto", "default": "<p>Texto del apartado.</p>" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Texto legal" }]
+}
+{% endschema %}

@@ -1,0 +1,67 @@
+{%- comment -%}
+  BUNGOT — Preguntas frecuentes (plantilla page.faq).
+
+  El contenido vive en los bloques de la sección, no en el cuerpo de la
+  página del admin: así el cliente edita cada pregunta desde el customizer
+  igual que el resto del sitio. Bloques: `grupo` (un subtítulo que abre una
+  tanda de preguntas) y `pregunta` (pregunta + respuesta). Cada pregunta es
+  un <details> nativo —sin JS— con los estilos de .rte en base.css. El
+  título viene de la página (page.title) para que el admin y el customizer
+  digan lo mismo.
+{%- endcomment -%}
+
+<section class="page-section">
+  <div class="wrap wrap--narrow">
+    <h1 class="page-section__title">{{ page.title }}</h1>
+    {%- if section.settings.intro != blank -%}
+      <div class="rte">{{ section.settings.intro }}</div>
+    {%- endif -%}
+    <div class="rte">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'grupo' -%}
+            <h2 {{ block.shopify_attributes }}>{{ block.settings.titulo }}</h2>
+          {%- when 'pregunta' -%}
+            <details {{ block.shopify_attributes }}>
+              <summary>{{ block.settings.pregunta }}</summary>
+              {{ block.settings.respuesta }}
+            </details>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Preguntas frecuentes",
+  "tag": "section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introducción",
+      "info": "Opcional. Va entre el título y la primera tanda de preguntas."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "grupo",
+      "name": "Subtítulo",
+      "settings": [
+        { "type": "text", "id": "titulo", "label": "Subtítulo", "default": "Sobre los productos" }
+      ]
+    },
+    {
+      "type": "pregunta",
+      "name": "Pregunta",
+      "settings": [
+        { "type": "text", "id": "pregunta", "label": "Pregunta", "default": "¿Qué son los snacks BUNGOT?" },
+        { "type": "richtext", "id": "respuesta", "label": "Respuesta", "default": "<p>Premios 100% naturales para perros y gatos, elaborados en México.</p>" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Preguntas frecuentes" }]
+}
+{% endschema %}

@@ -1,0 +1,72 @@
+{
+  "sections": {
+    "main": {
+      "type": "texto-legal",
+      "blocks": {
+        "b1": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "Envíos",
+            "nivel": "h2",
+            "texto": "<p>Enviamos a todo México. Por ahora no hacemos envíos internacionales.</p><p>Tu pedido se procesa en cuanto confirmamos el pago y llega en un plazo de 5 a 7 días hábiles. Los pedidos realizados en fin de semana o día festivo empiezan a contar el siguiente día hábil.</p><p>El envío es gratis en compras desde $550. En pedidos menores, el costo se calcula al finalizar la compra según tu código postal.</p><p>En cuanto tu paquete sale de nuestro almacén te enviamos el número de guía al correo con el que hiciste la compra. Si no lo recibes dentro de los 4 días hábiles siguientes a tu pedido, escríbenos a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a> con tu número de pedido y lo revisamos.</p><p>Es responsabilidad del cliente proporcionar una dirección de entrega completa y correcta. Si necesitas corregirla, avísanos antes de que el pedido salga de nuestro almacén. Si el paquete se pierde o se retrasa por un dato incorrecto, o si no hay quien lo reciba después de los intentos de entrega de la paquetería, el costo del reenvío corre por cuenta del cliente.</p><p>Los tiempos de entrega son estimados y dependen de la paquetería. No somos responsables por retrasos causados por condiciones climáticas adversas, contingencias, bloqueos, huelgas u otras causas fuera de nuestro control. Si eso ocurre, te avisamos y le damos seguimiento contigo hasta que tu paquete llegue.</p>"
+          }
+        },
+        "b2": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "Si tu pedido llegó mal",
+            "nivel": "h2",
+            "texto": "<p>Si el paquete llegó visiblemente dañado, ábrelo frente al repartidor cuando sea posible y toma fotos antes de firmar.</p><p>Si el producto llegó dañado, abierto, incompleto o equivocado, escríbenos dentro de los 15 días naturales siguientes a la entrega, a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a>, con:</p><ul><li>Tu número de pedido.</li><li>Una foto del producto y del empaque como los recibiste.</li><li>Una descripción breve de lo que pasó.</li></ul><p>Te reponemos el producto sin costo o te devolvemos tu dinero, lo que prefieras. Sin formularios eternos y sin letras chiquitas.</p>"
+          }
+        },
+        "b3": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "Devoluciones y reembolsos",
+            "nivel": "h2",
+            "texto": "<p>Si el producto no le gustó a tu peludo o no era lo que esperabas, puedes solicitar la devolución de tu dinero dentro de los 15 días naturales siguientes a la entrega.</p><p>Escríbenos a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a> con tu número de pedido y el motivo. Nos interesa saber por qué no funcionó: nos sirve para mejorar.</p><p>Una vez autorizada la devolución, procesamos el reembolso en un plazo máximo de 10 días hábiles por el mismo medio de pago que usaste. El tiempo en que se refleje en tu estado de cuenta depende de tu banco.</p><p>No necesitas devolvernos el producto ni pagar ningún envío de retorno. Basta con que nos envíes fotos del producto y del empaque como comprobante junto con tu solicitud.</p>"
+          }
+        },
+        "b4": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "Qué no aplica para devolución",
+            "nivel": "h2",
+            "texto": "<ul><li>Solicitudes presentadas después de los 15 días naturales siguientes a la entrega.</li><li>Productos consumidos en su totalidad.</li><li>Variaciones normales de color, tamaño, textura o aroma entre piezas y entre lotes: nuestros productos son naturales y esa variación no es un defecto.</li><li>El color de los juguetes, que se asigna según el material disponible en cada lote y no puede elegirse.</li><li>Daños causados por almacenamiento inadecuado, por no cerrar la bolsa o por un uso distinto al indicado en el empaque.</li><li>Productos adquiridos con un distribuidor o punto de venta distinto a nuestro sitio. En ese caso aplica la política del establecimiento donde compraste.</li></ul>"
+          }
+        },
+        "b5": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "Cancelaciones",
+            "nivel": "h2",
+            "texto": "<p>Puedes cancelar tu pedido sin costo siempre que no haya salido de nuestro almacén. Escríbenos lo antes posible a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a> con tu número de pedido.</p><p>Si el pedido ya salió, tendremos que esperar a que la paquetería nos lo regrese para procesar el reembolso.</p>"
+          }
+        },
+        "b6": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "Contacto",
+            "nivel": "h2",
+            "texto": "<p>Para cualquier tema de envíos o devoluciones:</p><ul><li>Correo: <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a></li><li>Instagram y Facebook: @bungot_mx</li><li>Teléfono: 444 171 6559 · 444 580 6342</li></ul><p>Te contesta alguno de nosotros, no un bot.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6"
+      ],
+      "settings": {
+        "fecha": "14 de septiembre de 2026",
+        "intro": ""
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

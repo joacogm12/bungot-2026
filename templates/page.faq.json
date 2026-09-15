@@ -1,0 +1,331 @@
+{
+  "sections": {
+    "main": {
+      "type": "faq",
+      "blocks": {
+        "b1": {
+          "type": "grupo",
+          "settings": {
+            "titulo": "Sobre los productos"
+          }
+        },
+        "b2": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Qué son los snacks BUNGOT?",
+            "respuesta": "<p>Los snacks BUNGOT son premios 100% naturales para perros y gatos, elaborados en México. Partimos de un solo ingrediente —pulmón, hígado o tráquea de cerdo y de res, patas de pollo, pechuga de pollo— deshidratados para concentrar su sabor sin alterar sus nutrientes. Sin conservadores, químicos, rellenos ni saborizantes: lo que dice la etiqueta es lo único que hay en la bolsa.</p>"
+          }
+        },
+        "b3": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Qué significa que sean de un solo ingrediente?",
+            "respuesta": "<p>Que en la bolsa encuentras exactamente lo que dice la etiqueta. Si el producto es pulmón de cerdo, el contenido es pulmón de cerdo: sin harinas, rellenos, conservadores, colorantes ni saborizantes artificiales. La única excepción de la línea es el Chicken Jerky, que contiene pollo, glicerina vegetal y sal.</p>"
+          }
+        },
+        "b4": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Contienen conservadores o aditivos químicos?",
+            "respuesta": "<p>No. El proceso de deshidratado es lo que conserva el producto: al retirar la humedad no se requiere ningún aditivo para mantenerlo estable. Por la misma razón, tampoco necesita refrigeración.</p>"
+          }
+        },
+        "b5": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Los productos son para perro o para gato?",
+            "respuesta": "<p>Depende de la línea. La mayoría de nuestros snacks tiene versión para perro y versión para gato: mismo ingrediente, con presentación y porción adaptadas a cada especie. Los huesos ahumados y los juguetes son exclusivos para perro.</p>"
+          }
+        },
+        "b6": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿A partir de qué edad se pueden dar?",
+            "respuesta": "<p>Nuestros snacks deshidratados son aptos para cachorros y adultos de todas las razas. Si tu mascota es cachorro o no ha probado antes un producto deshidratado, comienza con media porción y ofrécesela siempre bajo supervisión. Los huesos ahumados no se recomiendan para cachorros en etapa de dentición. Recuerda siempre consultar a tu veterinario antes de introducir un nuevo alimento en la dieta de tu peludo.</p>"
+          }
+        },
+        "b7": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Reemplazan el alimento principal de mi mascota?",
+            "respuesta": "<p>No. Nuestros productos son complementos alimenticios diseñados como premio. No sustituyen un alimento completo y balanceado, por lo que deben ofrecerse de forma adicional a la dieta habitual de tu mascota y respetando la porción indicada en cada producto.</p>"
+          }
+        },
+        "b8": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "Mi perro es alérgico al pollo. ¿Qué opciones tengo?",
+            "respuesta": "<p>Contamos con línea de cerdo y línea de res, ambas en pulmón, hígado y tráquea. Al ser productos de un solo ingrediente, sabes con precisión qué está consumiendo tu mascota, lo cual facilita el manejo de alergias e intolerancias. Si tu peludo tiene una alergia diagnosticada, consulta a tu médico veterinario antes de introducir cualquier alimento nuevo.</p>"
+          }
+        },
+        "b9": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Por qué las piezas varían en tamaño y color?",
+            "respuesta": "<p>Porque se trata de producto natural, no de un producto moldeado o extruido. Cada pieza proviene de un corte distinto, por lo que el tamaño, el tono y la textura cambian entre piezas y entre lotes. Es una característica normal del producto y no representa un defecto.</p>"
+          }
+        },
+        "b10": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿De qué material están hechos los juguetes?",
+            "respuesta": "<p>De fibras 100% naturales de bambú y algodón, biodegradables y libres de plásticos y tintes sintéticos. El bambú es naturalmente antibacterial, transpirable y suave, lo que lo hace adecuado para un juguete que va a la boca de tu mascota.</p>"
+          }
+        },
+        "b11": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Puedo elegir el color del juguete?",
+            "respuesta": "<p>No. Cada pieza se teje con los hilos disponibles en cada lote, por lo que los colores varían y no hay dos juguetes iguales. Este proceso nos permite aprovechar el material en su totalidad y reducir el desperdicio. El color se asigna de forma aleatoria al momento del envío.</p>"
+          }
+        },
+        "b12": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuentan con registro sanitario?",
+            "respuesta": "<p>Sí. Operamos bajo el Aviso de Inicio de Funcionamiento AIF SADER SENASICA N.º11742. Todos nuestros productos se elaboran en México.</p>"
+          }
+        },
+        "b13": {
+          "type": "grupo",
+          "settings": {
+            "titulo": "Cómo dárselos"
+          }
+        },
+        "b14": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Qué cantidad debo darle al día?",
+            "respuesta": "<p>Para perro, la porción diaria recomendada según su peso es:</p><ul><li>0 a 5 kg: 1 pieza</li><li>5 a 12 kg: 2 piezas</li><li>12 a 25 kg: 3 piezas</li><li>Más de 25 kg: 4 piezas</li></ul><p>Para gato, una porción diaria partida en trozos pequeños. En cada ficha de producto encontrarás la indicación específica.</p>"
+          }
+        },
+        "b15": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Se los puedo dar todos los días?",
+            "respuesta": "<p>Los snacks deshidratados sí, siempre que respetes la porción indicada. Los huesos ahumados no: por su duración y densidad, recomendamos ofrecerlos dos o tres veces por semana, y una o dos veces en el caso del Pig Bone.</p>"
+          }
+        },
+        "b16": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "Mi mascota nunca ha comido snacks deshidratados. ¿Cómo empiezo?",
+            "respuesta": "<p>Ofrece media porción durante los primeros días y observa cómo responde su digestión. Los productos de un solo ingrediente suelen tolerarse muy bien, pero cualquier alimento nuevo conviene introducirlo de forma gradual. Recuerda siempre consultar a tu veterinario antes de introducir cualquier alimento nuevo a la dieta de tu peludo.</p>"
+          }
+        },
+        "b17": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Existe riesgo de atragantamiento?",
+            "respuesta": "<p>Como con cualquier premio, ofrécelo siempre bajo supervisión y con agua fresca disponible. Fracciona las piezas grandes antes de dárselas y retira el trozo final cuando sea lo suficientemente pequeño para que tu mascota pueda tragarlo entero.</p>"
+          }
+        },
+        "b18": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "Tengo un perro de raza grande. ¿Puedo darle los huesos?",
+            "respuesta": "<p>No lo recomendamos. El Jaw Breaker, el Mini Bone y el Pig Bone son fémur de cerdo, una pieza más pequeña y menos densa que la de res, por lo que un perro grande puede fracturarla o ingerir fragmentos de tamaño peligroso.</p>"
+          }
+        },
+        "b19": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cómo debo conservar el producto?",
+            "respuesta": "<p>En un lugar fresco y seco, sin refrigeración. Cierra bien la bolsa después de cada uso: es lo único necesario para preservar la textura, el aroma y el sabor.</p>"
+          }
+        },
+        "b20": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Tienen fecha de caducidad?",
+            "respuesta": "<p>Sí, viene impresa en cada bolsa. Una vez abierta, consume el producto dentro del periodo indicado en el empaque y mantén la bolsa siempre bien cerrada.</p>"
+          }
+        },
+        "b21": {
+          "type": "grupo",
+          "settings": {
+            "titulo": "Pedidos y envíos"
+          }
+        },
+        "b22": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuánto tarda en llegar mi pedido?",
+            "respuesta": "<p>De 5 a 7 días hábiles a cualquier punto de la República Mexicana, contados a partir de la confirmación de tu pago. Los pedidos realizados en fin de semana o día festivo comienzan a procesarse el siguiente día hábil.</p>"
+          }
+        },
+        "b23": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuánto cuesta el envío?",
+            "respuesta": "<p>El envío es gratuito en pedidos desde $550. En compras de menor monto, el costo se calcula automáticamente al finalizar tu pedido según el código postal de entrega.</p>"
+          }
+        },
+        "b24": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Envían a toda la República?",
+            "respuesta": "<p>Sí, enviamos a todo México. Por el momento no realizamos envíos internacionales.</p>"
+          }
+        },
+        "b25": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cómo puedo rastrear mi pedido?",
+            "respuesta": "<p>En cuanto tu paquete sale de nuestro almacén te enviamos el número de guía al correo electrónico registrado en tu compra. Si no lo recibes dentro de los 4 días hábiles siguientes, escríbenos a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a> con tu número de pedido y lo revisamos.</p>"
+          }
+        },
+        "b26": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "Registré mal mi dirección. ¿Puedo corregirla?",
+            "respuesta": "<p>Sí, siempre que el pedido no haya salido de nuestro almacén. Escríbenos cuanto antes a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a> indicando tu número de pedido y la dirección correcta. Si el paquete ya fue enviado, será necesario esperar a que la paquetería lo devuelva para reprogramar la entrega.</p>"
+          }
+        },
+        "b27": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Puedo recoger mi pedido en persona?",
+            "respuesta": "<p>Por el momento todos nuestros pedidos se entregan a domicilio. Enviamos a cualquier punto de la República Mexicana en 5 a 7 días hábiles, con envío gratuito en compras desde $550.</p>"
+          }
+        },
+        "b28": {
+          "type": "grupo",
+          "settings": {
+            "titulo": "Pagos y facturación"
+          }
+        },
+        "b29": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Qué formas de pago aceptan?",
+            "respuesta": "<p>Aceptamos tarjetas de crédito y débito Visa, Mastercard y American Express, así como pagos con Shop Pay, Apple Pay y Google Pay. Todos los pagos se procesan a través de Shopify, con cifrado de datos y sin que BUNGOT almacene en ningún momento la información de tu tarjeta.</p>"
+          }
+        },
+        "b30": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Es seguro pagar en su sitio?",
+            "respuesta": "<p>Sí. Los pagos se procesan a través de una plataforma certificada y BUNGOT no almacena en ningún momento los datos de tu tarjeta.</p>"
+          }
+        },
+        "b31": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Emiten factura?",
+            "respuesta": "<p>Sí. Escríbenos a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a> con tu número de pedido y tu constancia de situación fiscal dentro del mismo mes en que realizaste la compra.</p>"
+          }
+        },
+        "b32": {
+          "type": "grupo",
+          "settings": {
+            "titulo": "Cambios y devoluciones"
+          }
+        },
+        "b33": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "Mi pedido llegó dañado o incompleto. ¿Qué hago?",
+            "respuesta": "<p>Escríbenos a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a> dentro de los 15 días naturales siguientes a la entrega, indicando tu número de pedido y adjuntando fotografías del producto y del empaque tal como los recibiste. Una vez revisado tu caso, te reponemos el producto sin costo o te reembolsamos el importe, según prefieras.</p>"
+          }
+        },
+        "b34": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "El producto no le gustó a mi mascota. ¿Puedo solicitar un reembolso?",
+            "respuesta": "<p>Sí. Si el producto no cumplió tus expectativas, puedes solicitar la devolución de tu dinero dentro de los 15 días naturales siguientes a la entrega. Escríbenos a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a> con tu número de pedido y el motivo; nos ayuda mucho conocerlo para seguir mejorando.</p>"
+          }
+        },
+        "b35": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuánto tarda el reembolso?",
+            "respuesta": "<p>Una vez autorizada la devolución, procesamos el reembolso en un plazo máximo de 10 días hábiles por el mismo medio de pago que utilizaste. El tiempo en que se refleje en tu estado de cuenta depende de tu institución bancaria.</p>"
+          }
+        },
+        "b36": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Debo devolver el producto?",
+            "respuesta": "<p>No. No es necesario que nos devuelvas el producto ni que cubras ningún envío de retorno. Basta con que adjuntes fotografías del producto y del empaque como comprobante al momento de solicitar tu devolución.</p>"
+          }
+        },
+        "b37": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Puedo cancelar mi pedido?",
+            "respuesta": "<p>Sí, sin costo, siempre que el pedido no haya salido de nuestro almacén. Escríbenos cuanto antes a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a> con tu número de pedido.</p>"
+          }
+        },
+        "b38": {
+          "type": "grupo",
+          "settings": {
+            "titulo": "Otras dudas"
+          }
+        },
+        "b39": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Venden a tiendas o manejan precio de mayoreo?",
+            "respuesta": "<p>Sí. Escríbenos a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a> y con gusto te compartimos nuestra lista de precios y condiciones para distribuidores.</p>"
+          }
+        },
+        "b40": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cómo puedo contactarlos?",
+            "respuesta": "<p>Por correo electrónico en <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a>, por Instagram o Facebook en @bungot_mx, o por teléfono a los números 444 171 6559 y 444 580 6342. Respondemos de forma directa, sin intermediarios.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12",
+        "b13",
+        "b14",
+        "b15",
+        "b16",
+        "b17",
+        "b18",
+        "b19",
+        "b20",
+        "b21",
+        "b22",
+        "b23",
+        "b24",
+        "b25",
+        "b26",
+        "b27",
+        "b28",
+        "b29",
+        "b30",
+        "b31",
+        "b32",
+        "b33",
+        "b34",
+        "b35",
+        "b36",
+        "b37",
+        "b38",
+        "b39",
+        "b40"
+      ],
+      "settings": {
+        "intro": ""
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

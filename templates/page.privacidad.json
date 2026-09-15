@@ -1,0 +1,126 @@
+{
+  "sections": {
+    "main": {
+      "type": "texto-legal",
+      "blocks": {
+        "b1": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "1. Datos personales que recabamos",
+            "nivel": "h2",
+            "texto": "<p>Para las finalidades descritas en este aviso, podemos recabar los siguientes datos:</p><ul><li>De identificación y contacto: nombre completo, domicilio de entrega, domicilio fiscal, teléfono y correo electrónico.</li><li>De facturación: RFC, régimen fiscal y razón social, cuando solicitas factura.</li><li>De navegación: dirección IP, tipo de dispositivo, navegador, páginas visitadas y tiempo de permanencia, recabados mediante cookies y tecnologías similares.</li><li>De tu mascota, si decides compartirlos: nombre, especie, raza, edad, peso y preferencias alimenticias.</li></ul><p>No recabamos datos personales sensibles. Los datos de tu tarjeta bancaria son procesados directamente por la plataforma de pago y BUNGOT no los almacena en ningún momento.</p>"
+          }
+        },
+        "b2": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "2. Finalidades del tratamiento",
+            "nivel": "h2",
+            "texto": ""
+          }
+        },
+        "b3": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "Finalidades primarias",
+            "nivel": "h3",
+            "texto": "<p>Necesarias para la relación que tenemos contigo:</p><ul><li>Procesar, confirmar y entregar tus pedidos.</li><li>Gestionar pagos, facturación y, en su caso, devoluciones o reembolsos.</li><li>Atender tus dudas, comentarios, quejas y solicitudes de soporte.</li><li>Cumplir con obligaciones fiscales, contables y legales.</li></ul>"
+          }
+        },
+        "b4": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "Finalidades secundarias",
+            "nivel": "h3",
+            "texto": "<p>No son necesarias para la relación, pero nos ayudan a mejorar el servicio:</p><ul><li>Enviarte promociones, novedades de producto y contenido de nuestro boletín.</li><li>Realizar encuestas de satisfacción y estudios de mercado.</li><li>Personalizar recomendaciones de producto según tu historial de compra o el perfil de tu mascota.</li></ul><p>Si no quieres que tus datos se usen para estas finalidades secundarias, puedes decírnoslo en cualquier momento escribiendo a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a>. Tu negativa no será motivo para negarte los productos o servicios que solicites.</p>"
+          }
+        },
+        "b5": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "3. Transferencia de datos",
+            "nivel": "h2",
+            "texto": "<p>Tus datos pueden compartirse con terceros únicamente cuando sea necesario para cumplir con las finalidades anteriores:</p><ul><li>Empresas de paquetería y mensajería, para entregarte tu pedido.</li><li>Plataformas de procesamiento de pagos y facturación electrónica.</li><li>Proveedores de servicios tecnológicos, como alojamiento del sitio y envío de correos.</li><li>Autoridades competentes, cuando exista requerimiento fundado y motivado.</li></ul><p>Estos terceros están obligados a tratar tus datos conforme a este aviso. No vendemos ni rentamos tus datos personales a nadie, para ningún fin.</p>"
+          }
+        },
+        "b6": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "4. Derechos ARCO",
+            "nivel": "h2",
+            "texto": "<p>Tienes derecho a Acceder a tus datos personales, a Rectificarlos cuando sean inexactos, a Cancelarlos cuando consideres que no se requieren para alguna de las finalidades señaladas, y a Oponerte a su uso para fines específicos. También puedes revocar el consentimiento que nos hayas otorgado.</p><p>Para ejercer cualquiera de estos derechos, envía tu solicitud a <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a> con:</p><ul><li>Tu nombre completo y un medio para comunicarte la respuesta.</li><li>Copia de una identificación oficial que acredite tu identidad.</li><li>Una descripción clara de los datos sobre los que buscas ejercer el derecho y de lo que solicitas.</li></ul><p>Te responderemos en un plazo máximo de 20 días hábiles a partir de que recibamos tu solicitud. Si procede, se hará efectiva dentro de los 15 días hábiles siguientes a la respuesta.</p>"
+          }
+        },
+        "b7": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "5. Cookies y tecnologías similares",
+            "nivel": "h2",
+            "texto": "<p>Nuestro sitio utiliza cookies para recordar tu carrito, mantener tu sesión iniciada, medir el tráfico y mostrarte contenido relevante. Puedes deshabilitarlas desde la configuración de tu navegador, aunque algunas funciones del sitio podrían dejar de operar correctamente.</p>"
+          }
+        },
+        "b8": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "6. Seguridad de la información",
+            "nivel": "h2",
+            "texto": "<p>Implementamos medidas de seguridad administrativas, técnicas y físicas razonables para proteger tus datos contra daño, pérdida, alteración, destrucción o uso no autorizado. Ningún sistema es infalible, pero trabajamos para reducir el riesgo al mínimo.</p>"
+          }
+        },
+        "b9": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "7. Menores de edad",
+            "nivel": "h2",
+            "texto": "<p>Nuestros productos y nuestro sitio están dirigidos a mayores de edad. No recabamos intencionalmente datos de menores. Si detectamos que recibimos datos de un menor sin el consentimiento de quien ejerce la patria potestad, los eliminaremos.</p>"
+          }
+        },
+        "b10": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "8. Aviso sobre orientación veterinaria",
+            "nivel": "h2",
+            "texto": "<p>BUNGOT no presta servicios veterinarios ni de consultoría clínica. Nada de lo publicado en nuestro sitio, redes sociales, empaques o cualquier otro medio constituye ni debe interpretarse como diagnóstico, prescripción, recomendación o práctica veterinaria.</p><p>Nuestros productos son complementos alimenticios y no sustituyen un alimento completo y balanceado ni el tratamiento indicado por un médico veterinario. Antes de introducir cualquier producto nuevo en la dieta de tu mascota, especialmente si tiene alguna condición de salud, alergias o está bajo tratamiento, consulta a tu veterinario.</p><p>El consumo de nuestros productos es responsabilidad exclusiva del cliente. Todos los snacks y huesos deben ofrecerse bajo supervisión constante y con agua fresca disponible.</p>"
+          }
+        },
+        "b11": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "9. Cambios a este aviso",
+            "nivel": "h2",
+            "texto": "<p>Podemos actualizar este Aviso de Privacidad en cualquier momento para reflejar cambios en nuestras prácticas, en la legislación o en nuestros servicios. La versión vigente siempre estará publicada en nuestro sitio web con su fecha de última actualización. Te recomendamos revisarla periódicamente.</p>"
+          }
+        },
+        "b12": {
+          "type": "apartado",
+          "settings": {
+            "titulo": "10. Contacto",
+            "nivel": "h2",
+            "texto": "<p>Si tienes dudas sobre este Aviso de Privacidad o sobre el tratamiento de tus datos:</p><ul><li>Correo: <a href=\"mailto:contacto@bungot.com\">contacto@bungot.com</a></li><li>Teléfono: 444 171 6559 · 444 580 6342</li><li>Domicilio: Av. Industrias 3824, Col. Industrias, C.P. 78090, San Luis Potosí, S.L.P.</li></ul><p>Si consideras que tu derecho a la protección de datos personales ha sido vulnerado, puedes acudir ante la autoridad competente en materia de protección de datos personales.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12"
+      ],
+      "settings": {
+        "fecha": "14 de septiembre de 2026",
+        "intro": "<p>Cayetana Gómez Martínez, persona física con actividad empresarial (en adelante «BUNGOT»), con domicilio en Av. Industrias 3824, Col. Industrias, C.P. 78090, San Luis Potosí, S.L.P., es responsable del tratamiento de tus datos personales y del uso que se les dé, conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, su Reglamento y demás disposiciones aplicables.</p>"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
