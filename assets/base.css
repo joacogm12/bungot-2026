@@ -2556,9 +2556,10 @@ a.chip { text-decoration: none; }
    En vertical no se usa --fy (fracción de la pantalla, que dejaba la
    separación al azar del teléfono): cada tarjeta se cuelga del borde del
    bloque de texto. El medio alto del texto lo mide initBonche() (theme.js)
-   y lo publica en --copy-hh sobre el pile; sin JS cae a 150px. El montón
-   inicial (--s: 0) y la apertura por scroll siguen iguales: solo cambia el
-   destino. --fx/--ar llegan en el style inline de cada tarjeta, por eso el
+   y lo publica en --copy-hh sobre el pile; sin JS cae a 150px. En este
+   corte NO hay animación (a pedido, 2026-09-15): initBonche() clava --s y
+   --st en 1 cuando el ancho es ≤640, así que el montón inicial y la
+   apertura por scroll solo existen de 641 para arriba. --fx/--ar llegan en el style inline de cada tarjeta, por eso el
    !important. La primera hija del pile es el texto, así que las tarjetas
    cuentan desde nth-child(2): 2–7 son las seis grandes del layout de
    escritorio y 8–11 las cuatro chicas (orden de bloques de index.json).

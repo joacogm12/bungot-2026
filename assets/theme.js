@@ -774,6 +774,17 @@
           pile.style.setProperty('--st', '1');
           return;
         }
+        // Teléfono (≤640, el mismo corte del collage fijo en base.css): sin
+        // animación, a pedido (2026-09-15). Las fotos ya están en su hueco y
+        // el texto visible desde que la sección entra; nada se mueve con el
+        // scroll. Se decide en cada render con el ancho, así al rotar o al
+        // angostar la ventana de escritorio cambia solo (el resize de abajo
+        // ya dispara un render cuando cambia el ANCHO).
+        if (window.innerWidth <= 640) {
+          pile.style.setProperty('--s', '1');
+          pile.style.setProperty('--st', '1');
+          return;
+        }
         var rect = root.getBoundingClientRect();
         // 0 = borde superior entrando por abajo, 1 = la sección ya pasó entera.
         var p = (vh - rect.top) / (vh + rect.height);
