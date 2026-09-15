@@ -1102,7 +1102,8 @@ body[data-login-abierta] .shopify-section:has(> .footer) {
      Las filas van auto + 1fr a propósito: .cpage trae min-height de pantalla
      completa y, si el contenido es corto (Mis pedidos con un solo pedido), la
      retícula repartía el sobrante entre las dos filas y la fila de pestañas se
-     inflaba; así el sobrante se lo queda siempre el contenido. */
+     inflaba (se veía más gorda en Mis pedidos que en la ficha); así el
+     sobrante se lo queda siempre el contenido. */
   .cpage {
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(0, 1fr);
