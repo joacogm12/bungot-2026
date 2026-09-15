@@ -3,11 +3,11 @@
 
    El repartidor pedaleando sobre el crema mientras carga la página.
 
-   El truco: bungot-carga.mp4 trae el fondo NEGRO horneado (no transparente).
-   Ni pintar la hoja de negro (deja de verse de la marca) ni mix-blend-mode
-   (el crema es más claro que casi todo el dibujo y se come al perro)
-   sirvieron; lo que va es recortar el negro cuadro por cuadro en un <canvas>:
-   el <video> se esconde y lo que se ve es el canvas.
+   El dibujo lo mueve el CSS del snippet (dos cuadros WebP alternados con
+   steps(1)); aquí solo vive CUÁNDO se ve y cuándo se va. Hasta 2026-09-15
+   esto además recortaba cuadro por cuadro un mp4 con fondo negro en un
+   canvas: eran ~4 s de CPU en un celu lento durante la carga, justo cuando
+   el hilo principal tenía que pintar el LCP. No lo regreses.
 
    Cuándo se ve — el modo lo decide el script inline del snippet ANTES del
    primer pintado (data-carga-modo): `sesion` (primera página de la sesión),
@@ -21,14 +21,6 @@
    mostrar cuando haga falta.
 
    Reglas:
-   · Un solo requestAnimationFrame, pero el trabajo pesado corre máximo cada
-     70 ms: es un loop de 2 cuadros y procesarlo a 60 fps es tirar CPU.
-   · Umbral 62 sobre la SUMA de los tres canales, no por canal. Los contornos
-     son azul marino (#011670, suma 135): 62 solo mata el negro del fondo y su
-     antialias cerrado. A partir de ~110 se comen las líneas. No lo subas.
-   · willReadFrequently: true es obligatorio; sin él cada getImageData lee
-     desde GPU y el bucle da tirones.
-   · video.muted = true también en JS: sin eso Safari bloquea el autoplay.
    · Nunca deja al usuario atrapado: se va en `load` (con un mínimo en
      pantalla para no parpadear) y, pase lo que pase, a los 3 s. La que entra
      por un clic se va sola a los 5 s si la navegación no ocurrió, y se
@@ -51,14 +43,6 @@
   var TOPE_IDA = 5000;
   var ESPERA_IDA = 450; // mismo número que el script inline del snippet
   var TRANSICION_MS = 550; // > .5s del CSS, por si transitionend no llega (pestaña oculta)
-  var T = 620;
-
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var video = el.querySelector('[data-carga-video]');
-  var canvas = el.querySelector('[data-carga-canvas]');
-  var ctx = null;
-  var rafId = 0;
-  var ultimo = 0;
 
   var estado = 'oculta'; // 'visible' | 'saliendo' | 'oculta'
   var desde = 0;
@@ -67,38 +51,6 @@
 
   function luego(fn, ms) { timers.push(setTimeout(fn, ms)); }
   function limpiaTimers() { timers.forEach(clearTimeout); timers = []; }
-
-  /* ---- video → canvas ---------------------------------------------------- */
-  function cuadro(ahora) {
-    if (estado === 'oculta') { rafId = 0; return; }
-    rafId = requestAnimationFrame(cuadro);
-    if (!video.videoWidth || ahora - ultimo < 70) return;
-    ultimo = ahora;
-    ctx.clearRect(0, 0, T, T);
-    ctx.drawImage(video, 0, 0, T, T);
-    var img = ctx.getImageData(0, 0, T, T);
-    var d = img.data;
-    for (var i = 0; i < d.length; i += 4) {
-      if (d[i] + d[i + 1] + d[i + 2] < 62) d[i + 3] = 0;
-    }
-    ctx.putImageData(img, 0, 0);
-  }
-
-  function arranca() {
-    if (reduce || !video || !canvas) return;
-    if (!ctx) ctx = canvas.getContext('2d', { willReadFrequently: true });
-    if (!video.getAttribute('src')) video.src = video.getAttribute('data-src');
-    video.muted = true;
-    var p = video.play();
-    if (p && p.catch) p.catch(function () { /* autoplay bloqueado: el tope nos saca */ });
-    if (!rafId) rafId = requestAnimationFrame(cuadro);
-  }
-
-  function para() {
-    if (rafId) cancelAnimationFrame(rafId);
-    rafId = 0;
-    if (video) { try { video.pause(); } catch (e) { /* no-op */ } }
-  }
 
   /* ---- mostrar / salir / ocultar ---------------------------------------- */
   function mostrar(modo, suave) {
@@ -109,7 +61,6 @@
     el.classList.remove('carga--fuera');
     el.classList.toggle('carga--suave', !!suave);
     el.hidden = false;
-    arranca();
   }
 
   function salir() {
@@ -132,7 +83,6 @@
     if (estado === 'oculta') return;
     estado = 'oculta';
     limpiaTimers();
-    para();
     el.hidden = true;
     el.classList.remove('carga--fuera', 'carga--suave');
   }
@@ -150,7 +100,7 @@
     mostrar(modo, false);
     if (document.readyState === 'complete') cuandoCargue();
     else window.addEventListener('load', cuandoCargue);
-    luego(salir, TOPE); // si el video no carga o load se atora, igual nos vamos
+    luego(salir, TOPE); // si load se atora, igual nos vamos
   }
 
   /* ---- reutilización al navegar ------------------------------------------ */

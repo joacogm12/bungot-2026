@@ -3,10 +3,17 @@
   centro. Nada más. La renderiza layout/theme.liquid justo después del
   skip-link, solo si el ajuste global `pantalla_carga` está activo.
 
-  El video (bungot-carga.mp4, loop de 2 cuadros a 2048) trae el fondo negro
-  horneado: pantalla-carga.js lo recorta cuadro por cuadro en el canvas, que
-  es lo único que se ve. Con prefers-reduced-motion se muestra el primer
-  cuadro fijo (bungot-repartidor-estatico.png, con transparencia).
+  El repartidor son DOS cuadros con alfa (bungot-carga-a/-b.webp, sacados
+  del GIF bungot-repartidor.gif, 640×640) alternados con CSS steps(1) cada
+  100 ms, igual que el perro del carrito del catálogo. Hasta 2026-09-15 era
+  un mp4 con fondo negro que pantalla-carga.js recortaba cuadro por cuadro
+  en un canvas: en celu eso costaba ~4 s de CPU (Lighthouse) más 376 KB de
+  descarga compitiendo con el LCP, y la hoja aparte bloqueaba el render. Con
+  prefers-reduced-motion no hay animación y queda el cuadro A.
+
+  Los estilos van inline y no en una hoja: son 40 líneas, la cortina es lo
+  primero que se pinta y una hoja aparte era una petición bloqueante más
+  antes del primer pintado.
 
   Cuándo se ve — lo decide el script inline ANTES del primer pintado, para que
   no haya flash de contenido ni de cortina en las páginas rápidas:
@@ -40,7 +47,65 @@
   endfor
 -%}
 
-{{ 'pantalla-carga.css' | asset_url | stylesheet_tag }}
+<style>
+  .carga {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: #F7F1E3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow: hidden;
+    transition: opacity .5s ease, visibility .5s;
+  }
+  /* Oculta (lo decide el script inline de abajo antes de que pinte, o el JS
+     cuando ya se fue). `display: flex` le ganaría al atributo hidden. */
+  .carga[hidden] { display: none; }
+  .carga--fuera {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  /* Entrada suave: cuando la cortina se pone sobre una página ya pintada
+     (clic en un link cuya página siguiente tarda). Con fill `both` para que
+     no parpadee al arrancar; el JS quita la clase antes de salir porque la
+     animación le ganaría a la transición de opacidad. */
+  .carga--suave { animation: carga-entra .25s ease both; }
+  @keyframes carga-entra { from { opacity: 0; } to { opacity: 1; } }
+  /* El repartidor: máximo 380px, chiquito y nítido en pantallas densas.
+     svh y no vh: en celu la cortina puede salir a mitad de scroll (modo
+     transición) y con vh cambiaría de tamaño cuando la barra del navegador
+     se esconde. La línea vh queda de respaldo. */
+  .carga__bici {
+    position: relative;
+    width: min(46vh, 52vw, 380px);
+    width: min(calc(46 * var(--svh)), 52vw, 380px);
+    height: min(46vh, 52vw, 380px);
+    height: min(calc(46 * var(--svh)), 52vw, 380px);
+  }
+  .carga__cuadro {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  /* Dos cuadros que se turnan cada 100 ms (el ritmo del GIF original). B
+     arranca invisible: los dos tienen fondo transparente y si A siguiera
+     debajo se vería doble. */
+  .carga__cuadro--a { animation: carga-cuadro-a 200ms steps(1, end) infinite; }
+  .carga__cuadro--b { opacity: 0; animation: carga-cuadro-b 200ms steps(1, end) infinite; }
+  @keyframes carga-cuadro-a { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  @keyframes carga-cuadro-b { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .carga__cuadro { animation: none; }
+    .carga__cuadro--b { display: none; }
+    .carga--suave { animation: none; }
+  }
+</style>
 
 {%- comment -%}
   Sin JS no hay quién la quite: la cortina taparía la tienda para siempre.
@@ -49,33 +114,34 @@
   <style>.carga { display: none; }</style>
 </noscript>
 
+{%- comment -%}
+  loading="lazy" a propósito: en las páginas donde la cortina va oculta
+  (hidden antes del primer pintado) un lazy sin caja no se descarga, así que
+  no piden nada. Cuando sí se ve, el script inline los pasa a eager para que
+  arranquen ya. Chiquitos (≈45 KB cada uno): no le pelean el ancho de banda
+  a las imágenes del LCP como lo hacía el mp4.
+{%- endcomment -%}
 <div class="carga" data-carga data-carga-pesada="{{ pesada }}" role="presentation">
-  {%- comment -%}
-    El src lo pone el script inline solo cuando la cortina se va a ver: así
-    las páginas donde va oculta no piden el mp4 (y sin `autoplay` en el
-    markup el navegador tampoco lo descarga por su cuenta; lo arranca el JS).
-  {%- endcomment -%}
-  <video
-    class="carga__video"
-    data-carga-video
-    data-src="{{ 'bungot-carga.mp4' | asset_url }}"
-    muted
-    loop
-    playsinline
-    preload="auto"
-    aria-hidden="true"
-    tabindex="-1"
-  ></video>
-  <canvas class="carga__canvas" data-carga-canvas width="620" height="620" aria-hidden="true"></canvas>
-  <img
-    class="carga__estatico"
-    src="{{ 'bungot-repartidor-estatico.png' | asset_url }}"
-    alt=""
-    aria-hidden="true"
-    width="2048"
-    height="2048"
-    decoding="async"
-  >
+  <div class="carga__bici" aria-hidden="true">
+    <img
+      class="carga__cuadro carga__cuadro--a"
+      src="{{ 'bungot-carga-a.webp' | asset_url }}"
+      alt=""
+      width="640"
+      height="640"
+      loading="lazy"
+      decoding="async"
+    >
+    <img
+      class="carga__cuadro carga__cuadro--b"
+      src="{{ 'bungot-carga-b.webp' | asset_url }}"
+      alt=""
+      width="640"
+      height="640"
+      loading="lazy"
+      decoding="async"
+    >
+  </div>
 </div>
 <script>
   /* Decide el modo antes del primer pintado (ver comentario de arriba). */
@@ -97,9 +163,9 @@
     el.setAttribute('data-carga-modo', modo);
     if (modo === 'oculta') {
       el.hidden = true;
-    } else if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      var v = el.querySelector('video');
-      if (v) v.src = v.getAttribute('data-src');
+    } else {
+      var imgs = el.querySelectorAll('img');
+      for (var i = 0; i < imgs.length; i++) imgs[i].loading = 'eager';
     }
   })();
 </script>
