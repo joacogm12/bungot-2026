@@ -729,15 +729,22 @@ img.pest,
    caja; las cotas salen de las reglas .pest--* de arriba llevadas a su
    estado final. Las capas van como img.ptar__dibujo-* para ganarle en
    especificidad a la regla genérica de abajo (si no, todas salen al 100%).
-   El ancho y el lado los da la retícula de .ptar (ver arriba). */
+   El lado lo da la retícula de .ptar (ver abajo); el ancho es MÁS que su
+   columna a propósito (a pedido 2026-09-15): el dibujo se monta ~20px sobre
+   la foto, por eso va por encima (z 2) y justify-self lo desborda hacia la
+   foto y no hacia la orilla. */
 .ptar__dibujo { display: none; }
 .paseo--vertical .ptar__dibujo {
   grid-area: dibujo;
   display: block;
   position: relative;
-  width: 100%;
+  z-index: 2;
+  width: 124%;
   margin: 0;
+  justify-self: start;
 }
+.paseo--vertical .ptar--1 .ptar__dibujo,
+.paseo--vertical .ptar--2 .ptar__dibujo { justify-self: end; }
 .paseo--vertical .ptar__dibujo img {
   position: absolute;
   left: 0;
@@ -747,39 +754,133 @@ img.pest,
 }
 /* La casita tal cual, con el hueso y la cuerda en el pasto. */
 .paseo--vertical .ptar__dibujo--casa { aspect-ratio: 768 / 726; }
+.paseo--vertical .ptar__dibujo--casa img { transform-origin: 50% 90%; }
 
 /* El bote (300) con la tapa puesta (292 a 4 / -34, como en el mapa) y el
    plátano tirado a su derecha, sobre la misma línea de piso: caja 420×311. */
 .paseo--vertical .ptar__dibujo--bote { aspect-ratio: 420 / 311; }
-.paseo--vertical img.ptar__dibujo-tapa { left: 0.95%; top: 0; width: 69.5%; z-index: 2; }
-.paseo--vertical img.ptar__dibujo-bote { top: 10.9%; width: 71.4%; }
-.paseo--vertical img.ptar__dibujo-platano { left: 63.8%; top: 58%; width: 35.7%; }
+.paseo--vertical img.ptar__dibujo-tapa { left: 0.95%; top: 0; width: 69.5%; z-index: 2; transform-origin: 50% 50%; }
+.paseo--vertical img.ptar__dibujo-bote { top: 10.9%; width: 71.4%; transform-origin: 10% 100%; }
+.paseo--vertical img.ptar__dibujo-platano { left: 63.8%; top: 58%; width: 35.7%; transform-origin: 50% 90%; }
 
-/* La mesa con sus chispas (pruebas-anim2 es el dibujo completo). El PNG
-   trae un cuarto de aire arriba: la caja es más chata y la foto se recorta
-   por arriba pegada al piso. */
+/* La mesa en dos capas como en el mapa: la base (558×768) y la de chispas
+   (593×768) son el mismo dibujo alineado por la esquina inferior IZQUIERDA
+   (contain por el alto, ver .pest--pruebas). El PNG trae un cuarto de aire
+   arriba: la caja mide 580 de alto y las capas la desbordan hacia arriba
+   (132.4% = 768/580) en vez de recortarse, para que las chispas más altas
+   no se corten. */
 .paseo--vertical .ptar__dibujo--pruebas { aspect-ratio: 593 / 580; }
 .paseo--vertical .ptar__dibujo--pruebas img {
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 100%;
+  top: auto;
+  bottom: 0;
+  height: 132.4%;
+  object-fit: contain;
+  object-position: 0 100%;
+  transform-origin: 50% 96%;
 }
+.paseo--vertical img.ptar__dibujo-chispas { z-index: 2; }
 
 /* El hidrante volteado como en el mapa (mira a la izquierda) y el chorro
    naciendo en su boca izquierda. En el PNG del hidrante el dibujo ocupa el
    56% izquierdo del lienzo; volteado queda pegado a la derecha de la caja.
-   Caja 560×378: hidrante de 421 a la derecha, boca en ≈(324, 173); el agua
-   (324 de ancho, su punta al 0.2%/66.7% volteada al borde derecho) arranca
-   ahí. */
+   Caja 560×378: hidrante de 421 a la derecha, boca en ≈(324, 173). El agua
+   se planta con su borde IZQUIERDO en la boca y se voltea sobre su punta
+   (origen 0.2% / 66.7%, igual que .pest--agua): así el dibujo cae a la
+   izquierda de la boca y el scale() de la animación crece desde ahí. */
 .paseo--vertical .ptar__dibujo--hidrante { aspect-ratio: 560 / 378; }
 .paseo--vertical img.ptar__dibujo-hidrante { left: auto; right: 0; width: 75.2%; transform: scaleX(-1); }
-.paseo--vertical img.ptar__dibujo-agua { top: 3.7%; width: 57.9%; transform: scaleX(-1); z-index: 2; }
+.paseo--vertical img.ptar__dibujo-agua {
+  left: 57.9%;
+  top: 3.7%;
+  width: 57.9%;
+  z-index: 2;
+  transform-origin: 0.2% 66.7%;
+  transform: scaleX(-1);
+}
 
 /* La cámara con el flash disparado: mismas cotas del mapa (cámara 486 en
    (0, 61), flash 317 en (72, 0)); caja 486×377. */
 .paseo--vertical .ptar__dibujo--manada { aspect-ratio: 486 / 377; }
-.paseo--vertical img.ptar__dibujo-camara { top: 16.2%; }
-.paseo--vertical img.ptar__dibujo-flash { left: 14.8%; width: 65.2%; z-index: 2; }
+.paseo--vertical img.ptar__dibujo-camara { top: 16.2%; transform-origin: 50% 82%; }
+.paseo--vertical img.ptar__dibujo-flash { left: 14.8%; width: 65.2%; z-index: 2; transform-origin: 60% 47%; }
+
+/* --- La acción de cada dibujo (a pedido 2026-09-15) -------------------------
+   Sin perro que llegue, la estación actúa sola cuando entra en pantalla:
+   conocenos-paseo.js (initDibujos) le pone .ptar__dibujo--activo una vez.
+   Son las mismas acciones que anima el JS en el mapa, pasadas a @keyframes
+   que TERMINAN en el estado en reposo de arriba (fill-mode both). Las piezas
+   que "aparecen" (plátano, chispas, agua, flash) arrancan invisibles solo
+   con JS (.paseo--js): sin script se quedan puestas. Con reduced-motion no
+   hay animación y la clase deja todo en su estado final. */
+.paseo--js .ptar__dibujo:not(.ptar__dibujo--activo) .ptar__dibujo-platano,
+.paseo--js .ptar__dibujo:not(.ptar__dibujo--activo) .ptar__dibujo-chispas,
+.paseo--js .ptar__dibujo:not(.ptar__dibujo--activo) .ptar__dibujo-agua,
+.paseo--js .ptar__dibujo:not(.ptar__dibujo--activo) .ptar__dibujo-flash { opacity: 0; }
+
+.ptar__dibujo--activo.ptar__dibujo--casa img { animation: pd-casa .7s var(--ease-bounce, cubic-bezier(.34, 1.56, .64, 1)) both; }
+.ptar__dibujo--activo .ptar__dibujo-bote { animation: pd-bote .9s ease-out both; }
+.ptar__dibujo--activo .ptar__dibujo-tapa { animation: pd-tapa .9s ease-in-out both; }
+.ptar__dibujo--activo .ptar__dibujo-platano { animation: pd-platano .9s .12s cubic-bezier(.22, 1, .36, 1) both; }
+.ptar__dibujo--activo .ptar__dibujo-mesa { animation: pd-mesa .8s ease-in-out both; }
+.ptar__dibujo--activo .ptar__dibujo-chispas { animation: pd-mesa .8s ease-in-out both, pd-aparece .5s .3s ease-out both; }
+.ptar__dibujo--activo .ptar__dibujo-agua { animation: pd-agua .8s cubic-bezier(.22, 1, .36, 1) both; }
+.ptar__dibujo--activo .ptar__dibujo-camara { animation: pd-camara .6s ease-in-out both; }
+.ptar__dibujo--activo .ptar__dibujo-flash { animation: pd-flash .7s cubic-bezier(.22, 1, .36, 1) both; }
+
+/* La casita brota. */
+@keyframes pd-casa {
+  from { transform: scale(.82); }
+  to   { transform: scale(1); }
+}
+/* El bote se sacude, la tapa brinca y cae de vuelta, el plátano sale
+   volando de adentro y aterriza a su lado. */
+@keyframes pd-bote {
+  0%   { transform: rotate(0); }
+  28%  { transform: rotate(-7deg); }
+  58%  { transform: rotate(3deg); }
+  100% { transform: rotate(0); }
+}
+@keyframes pd-tapa {
+  0%   { transform: translate(0, 0) rotate(0); }
+  38%  { transform: translate(-8%, -70%) rotate(-30deg); }
+  100% { transform: translate(0, 0) rotate(0); }
+}
+@keyframes pd-platano {
+  0%   { opacity: 0; transform: translate(-70%, -60%) rotate(-150deg) scale(.4); }
+  25%  { opacity: 1; }
+  100% { opacity: 1; transform: translate(0, 0) rotate(0) scale(1); }
+}
+/* La mesa recibe el golpe y salen las chispas. */
+@keyframes pd-mesa {
+  0%   { transform: rotate(0); }
+  30%  { transform: rotate(1.8deg); }
+  62%  { transform: rotate(-1.2deg); }
+  100% { transform: rotate(0); }
+}
+@keyframes pd-aparece {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+/* El chorro crece desde la boca del hidrante (el scaleX(-1) va ADENTRO del
+   transform animado, si no el agua sale al revés). */
+@keyframes pd-agua {
+  from { opacity: 0; transform: scaleX(-1) scale(.25); }
+  to   { opacity: 1; transform: scaleX(-1) scale(1); }
+}
+/* La cámara da el golpe del disparo y el flash se abre y se asienta. */
+@keyframes pd-camara {
+  0%   { transform: rotate(0) scale(1); }
+  35%  { transform: rotate(-5deg) scale(1.05); }
+  100% { transform: rotate(0) scale(1); }
+}
+@keyframes pd-flash {
+  0%   { opacity: 0; transform: rotate(-28deg) scale(.15); }
+  45%  { opacity: 1; transform: rotate(-10deg) scale(1.2); }
+  100% { opacity: 1; transform: rotate(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ptar__dibujo--activo img { animation: none !important; }
+}
 
 /* La tarjeta en columna es una retícula de tres renglones: título, luego el
    dibujo y la foto EN EL MISMO RENGLÓN (a pedido 2026-09-15, los dos chicos),

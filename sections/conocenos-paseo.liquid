@@ -152,7 +152,10 @@
                   el camino y el perro no existen, así que cada tarjeta trae
                   su pieza compuesta a mano con los mismos PNG, en su estado
                   final (tapa puesta y plátano afuera, chispas, chorro, flash).
-                  Las cotas de cada capa están en .ptar__dibujo--* del CSS.
+                  Las cotas de cada capa están en .ptar__dibujo--* del CSS, y
+                  la acción de cada estación se repite en CSS (@keyframes
+                  pd-*) cuando el observador del JS le pone
+                  .ptar__dibujo--activo al entrar en pantalla.
                 {%- endcomment -%}
                 <div class="ptar__dibujo ptar__dibujo--{{ clave }}" aria-hidden="true">
                   {%- case clave -%}
@@ -163,7 +166,8 @@
                       <img class="ptar__dibujo-bote" src="{{ 'bote-solido.png' | asset_url }}" alt="" width="768" height="708" loading="lazy">
                       <img class="ptar__dibujo-platano" src="{{ 'platano-solido.png' | asset_url }}" alt="" width="768" height="706" loading="lazy">
                     {%- when 'pruebas' -%}
-                      <img src="{{ 'pruebas-anim2.png' | asset_url }}" alt="" width="593" height="768" loading="lazy">
+                      <img class="ptar__dibujo-mesa" src="{{ 'pruebas-anim1.png' | asset_url }}" alt="" width="558" height="768" loading="lazy">
+                      <img class="ptar__dibujo-chispas" src="{{ 'pruebas-anim2.png' | asset_url }}" alt="" width="593" height="768" loading="lazy">
                     {%- when 'hidrante' -%}
                       <img class="ptar__dibujo-hidrante" src="{{ 'hidrante-solido.png' | asset_url }}" alt="" width="768" height="689" loading="lazy">
                       <img class="ptar__dibujo-agua" src="{{ 'agua-nueva.png' | asset_url }}" alt="" width="768" height="565" loading="lazy">
