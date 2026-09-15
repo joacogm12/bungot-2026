@@ -46,7 +46,8 @@
           amarillo con el @). Viven DENTRO del intro, que está en el lienzo con
           zoom, así que sus px se encogen junto con el título y siempre quedan
           a la derecha de él sin medir nada; en teléfono (.paseo--vertical)
-          bajan a un renglón debajo de la bajada. Sin data-peel a propósito:
+          no se pintan (a pedido 2026-09-15: en columna estorbaban entre la
+          bajada y la primera tarjeta). Sin data-peel a propósito:
           son lo primero de la página y el peel por scroll los dejaría medio
           tapados de gris en la primera pantalla (mismo criterio que el panel
           del catálogo). El del logo lleva el @ de Instagram, así que con el
@@ -55,15 +56,15 @@
         {%- if section.settings.show_stickers -%}
           <div class="paseo__stickers" aria-hidden="{% if settings.social_instagram == blank %}true{% else %}false{% endif %}">
             {%- if section.settings.sticker_kayak != blank -%}
-              <img class="paseo__sticker paseo__sticker--kayak" src="{{ section.settings.sticker_kayak | asset_url }}" alt="" aria-hidden="true" width="600" height="600" loading="eager" fetchpriority="low">
+              <img class="paseo__sticker paseo__sticker--kayak" src="{{ section.settings.sticker_kayak | asset_url }}" alt="" aria-hidden="true" width="600" height="600" loading="lazy">
             {%- endif -%}
             {%- if section.settings.sticker_logo != blank -%}
               {%- if settings.social_instagram != blank -%}
                 <a class="paseo__sticker paseo__sticker--logo" href="{{ settings.social_instagram }}" target="_blank" rel="noopener" aria-label="{{ 'sections.hero.instagram' | t }}">
-                  <img src="{{ section.settings.sticker_logo | asset_url }}" alt="" width="581" height="581" loading="eager" fetchpriority="low">
+                  <img src="{{ section.settings.sticker_logo | asset_url }}" alt="" width="581" height="581" loading="lazy">
                 </a>
               {%- else -%}
-                <img class="paseo__sticker paseo__sticker--logo" src="{{ section.settings.sticker_logo | asset_url }}" alt="" aria-hidden="true" width="581" height="581" loading="eager" fetchpriority="low">
+                <img class="paseo__sticker paseo__sticker--logo" src="{{ section.settings.sticker_logo | asset_url }}" alt="" aria-hidden="true" width="581" height="581" loading="lazy">
               {%- endif -%}
             {%- endif -%}
           </div>
@@ -143,6 +144,34 @@
                 assign hueco_key = 'conocenos.hueco.' | append: clave
               -%}
               <article class="ptar ptar--{{ num }}" data-tarjeta="{{ num }}">
+                {%- comment -%}
+                  El dibujo de la estación, SOLO para la columna de teléfono
+                  (.paseo--vertical; afuera de ahí va display: none y con
+                  loading="lazy" ni se descarga). En el mapa la utilería vive
+                  suelta en la escena y el JS la ancla al camino; en columna
+                  el camino y el perro no existen, así que cada tarjeta trae
+                  su pieza compuesta a mano con los mismos PNG, en su estado
+                  final (tapa puesta y plátano afuera, chispas, chorro, flash).
+                  Las cotas de cada capa están en .ptar__dibujo--* del CSS.
+                {%- endcomment -%}
+                <div class="ptar__dibujo ptar__dibujo--{{ clave }}" aria-hidden="true">
+                  {%- case clave -%}
+                    {%- when 'casa' -%}
+                      <img src="{{ 'casita-nueva.png' | asset_url }}" alt="" width="768" height="726" loading="lazy">
+                    {%- when 'bote' -%}
+                      <img class="ptar__dibujo-tapa" src="{{ 'bote-tapa-solida.png' | asset_url }}" alt="" width="768" height="264" loading="lazy">
+                      <img class="ptar__dibujo-bote" src="{{ 'bote-solido.png' | asset_url }}" alt="" width="768" height="708" loading="lazy">
+                      <img class="ptar__dibujo-platano" src="{{ 'platano-solido.png' | asset_url }}" alt="" width="768" height="706" loading="lazy">
+                    {%- when 'pruebas' -%}
+                      <img src="{{ 'pruebas-anim2.png' | asset_url }}" alt="" width="593" height="768" loading="lazy">
+                    {%- when 'hidrante' -%}
+                      <img class="ptar__dibujo-hidrante" src="{{ 'hidrante-solido.png' | asset_url }}" alt="" width="768" height="689" loading="lazy">
+                      <img class="ptar__dibujo-agua" src="{{ 'agua-nueva.png' | asset_url }}" alt="" width="768" height="565" loading="lazy">
+                    {%- when 'manada' -%}
+                      <img class="ptar__dibujo-camara" src="{{ 'camara-rec.png' | asset_url }}" alt="" width="768" height="500" loading="lazy">
+                      <img class="ptar__dibujo-flash" src="{{ 'flash-rec.png' | asset_url }}" alt="" width="768" height="508" loading="lazy">
+                  {%- endcase -%}
+                </div>
                 <h2 class="ptar__titulo">{{ titulo }}</h2>
                 <div class="ptar__foto" id="conoce-{{ clave }}">
                   {%- if img -%}
@@ -276,7 +305,7 @@
       "id": "show_stickers",
       "label": "Mostrar los stickers",
       "default": true,
-      "info": "El perro en el kayak y el logo amarillo, a la derecha del título."
+      "info": "El perro en el kayak y el logo amarillo, a la derecha del título. Solo en escritorio y tablet; en teléfono no se pintan."
     },
     {
       "type": "text",

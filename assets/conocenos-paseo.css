@@ -674,20 +674,10 @@ img.pest,
 .paseo--vertical .paseo__intro { padding: 32px 20px 0; max-width: none; }
 .paseo--vertical .paseo__titulo { font-size: clamp(46px, 13vw, 72px); }
 .paseo--vertical .paseo__bajada { font-size: 17px; max-width: none; }
-/* En columna no hay "a la derecha del título": los stickers bajan a un
-   renglón debajo de la bajada, chicos y encimados, pegados a la derecha. */
-.paseo--vertical .paseo__stickers {
-  position: relative;
-  top: auto;
-  right: auto;
-  width: auto;
-  height: 176px;
-  margin: 12px 0 0 auto;
-  max-width: 300px;
-}
-.paseo--vertical .paseo__sticker { width: 150px; height: 150px; }
-.paseo--vertical .paseo__sticker--kayak { left: auto; right: 118px; }
-.paseo--vertical .paseo__sticker--logo { top: 26px; right: 0; }
+/* En columna los stickers no se pintan (a pedido 2026-09-15): bajaban a un
+   renglón entre la bajada y la primera tarjeta y solo estorbaban. Llevan
+   loading="lazy", así que escondidos ni se descargan. */
+.paseo--vertical .paseo__stickers { display: none; }
 
 /* --- iPad (641–900): el recorrido corre encogido, la copia se contraescala --
    El JS encoge el lienzo con zoom (a 820px queda en .51) y publica el factor
@@ -725,11 +715,73 @@ img.pest,
   gap: 44px;
   padding: 28px 20px 8px;
 }
-/* El camino, el perro y toda la utilería son piezas de un mapa que ya no
-   existe: en columna sobran. Las fotos y el texto sí viajan. */
+/* El camino, el perro y toda la utilería suelta son piezas de un mapa que ya
+   no existe: en columna sobran. Las fotos y el texto sí viajan, y el dibujo
+   de cada estación vuelve DENTRO de su tarjeta (.ptar__dibujo, abajo). */
 .paseo--vertical .paseo__camino,
 .paseo--vertical .paseo__dachs,
 .paseo--vertical .pest { display: none !important; }
+
+/* --- El dibujo de cada tarjeta (solo en columna) ---------------------------
+   Cada .ptar trae su utilería compuesta a mano con los mismos PNG del mapa
+   (a pedido 2026-09-15: que en teléfono salgan los dibujos pero no el perro).
+   Cada composición es una caja con aspect-ratio y sus capas en % de esa
+   caja; las cotas salen de las reglas .pest--* de arriba llevadas a su
+   estado final. Las capas van como img.ptar__dibujo-* para ganarle en
+   especificidad a la regla genérica de abajo (si no, todas salen al 100%). Se alternan izquierda/derecha como en el mapa, y el
+   hidrante va a la derecha porque su chorro sale hacia la izquierda. */
+.ptar__dibujo { display: none; }
+.paseo--vertical .ptar__dibujo {
+  display: block;
+  position: relative;
+  width: min(62%, 250px);
+  margin: 0 0 4px;
+}
+.paseo--vertical .ptar__dibujo img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto;
+}
+.paseo--vertical .ptar__dibujo--bote,
+.paseo--vertical .ptar__dibujo--hidrante { margin-left: auto; }
+
+/* La casita tal cual, con el hueso y la cuerda en el pasto. */
+.paseo--vertical .ptar__dibujo--casa { aspect-ratio: 768 / 726; }
+
+/* El bote (300) con la tapa puesta (292 a 4 / -34, como en el mapa) y el
+   plátano tirado a su derecha, sobre la misma línea de piso: caja 420×311. */
+.paseo--vertical .ptar__dibujo--bote { aspect-ratio: 420 / 311; width: min(72%, 290px); margin-bottom: 10px; }
+.paseo--vertical img.ptar__dibujo-tapa { left: 0.95%; top: 0; width: 69.5%; z-index: 2; }
+.paseo--vertical img.ptar__dibujo-bote { top: 10.9%; width: 71.4%; }
+.paseo--vertical img.ptar__dibujo-platano { left: 63.8%; top: 58%; width: 35.7%; }
+
+/* La mesa con sus chispas (pruebas-anim2 es el dibujo completo). El PNG
+   trae un cuarto de aire arriba: la caja es más chata y la foto se recorta
+   por arriba pegada al piso. */
+.paseo--vertical .ptar__dibujo--pruebas { aspect-ratio: 593 / 580; }
+.paseo--vertical .ptar__dibujo--pruebas img {
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 100%;
+}
+
+/* El hidrante volteado como en el mapa (mira a la izquierda) y el chorro
+   naciendo en su boca izquierda. En el PNG del hidrante el dibujo ocupa el
+   56% izquierdo del lienzo; volteado queda pegado a la derecha de la caja.
+   Caja 560×378: hidrante de 421 a la derecha, boca en ≈(324, 173); el agua
+   (324 de ancho, su punta al 0.2%/66.7% volteada al borde derecho) arranca
+   ahí. */
+.paseo--vertical .ptar__dibujo--hidrante { aspect-ratio: 560 / 378; width: min(78%, 300px); }
+.paseo--vertical img.ptar__dibujo-hidrante { left: auto; right: 0; width: 75.2%; transform: scaleX(-1); }
+.paseo--vertical img.ptar__dibujo-agua { top: 3.7%; width: 57.9%; transform: scaleX(-1); z-index: 2; }
+
+/* La cámara con el flash disparado: mismas cotas del mapa (cámara 486 en
+   (0, 61), flash 317 en (72, 0)); caja 486×377. */
+.paseo--vertical .ptar__dibujo--manada { aspect-ratio: 486 / 377; }
+.paseo--vertical img.ptar__dibujo-camara { top: 16.2%; }
+.paseo--vertical img.ptar__dibujo-flash { left: 14.8%; width: 65.2%; z-index: 2; }
 
 .paseo--vertical .ptar {
   position: static !important;
