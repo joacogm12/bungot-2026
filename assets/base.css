@@ -958,24 +958,36 @@ shopify-account::part(signed-out-avatar) {
 
 /* --- Las patas, encima de lo que venga debajo ----------------------------- */
 /* Fuera de la ventana recortada, para poder sobresalir por el borde de abajo
-   del hero SOBRE la sección siguiente. Su caja (left/top/width/height) la
-   calca theme.js (initHeroPerro) de la del perro con geometría de maqueta
-   (offsetLeft/offsetTop) — nunca getBoundingClientRect(), que devuelve la
-   caja inflada y ladeada por la respiración y el balanceo. La pareja de cajas
-   es la MISMA que la del perro (respiración envolviendo balanceo) y con la
-   animación del CUERPO, no la del pelo: así su desplazamiento relativo es
-   constante en todo el ciclo, como si estuvieran pintadas dentro del PNG del
-   cuerpo. */
+   del hero SOBRE la sección siguiente. Su caja tiene que ser EXACTAMENTE la
+   del perro, y se consigue por construcción, no por medición: la capa es una
+   copia absoluta del hero (inset 0 + el mismo padding, heredado, + la misma
+   columna flex pegada abajo) y adentro repite la cadena
+   .hero__ventana > .hero__interior > .hero__perro con las mismas clases, así
+   que todas las reglas de arriba —y sus media queries— la dimensionan igual
+   que a la figura. Antes la caja la calcaba theme.js (initHeroPerro) con
+   offset*, y hasta que corría el script las patas medían 0×0: en celu ese
+   retraso era el LCP entero de la portada (2026-09-15). No lo regreses a JS.
+   La pareja de animaciones es la MISMA que la del perro (respiración en
+   .hero__perro envolviendo el balanceo del CUERPO en .hero__patas-cuerpo, no
+   el del pelo): así su desplazamiento relativo es constante en todo el
+   ciclo, como si estuvieran pintadas dentro de la capa del cuerpo. */
 .hero__patas {
   position: absolute;
+  inset: 0;
   z-index: 6;
   pointer-events: none;
+  box-sizing: border-box;
+  padding: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
-.hero__patas-breath {
-  position: absolute;
-  inset: 0;
-  transform-origin: 50% 100%;
-  animation: perro-breath 3.7s ease-in-out infinite;
+/* La copia de la ventana no recorta nada: las patas cuelgan por abajo. Los
+   costados los sigue recortando el overflow-x del hero, como antes. */
+.hero__ventana--patas {
+  z-index: auto;
+  clip-path: none;
+  overflow: visible;
 }
 .hero__patas-cuerpo {
   position: absolute;
@@ -1003,7 +1015,6 @@ shopify-account::part(signed-out-avatar) {
   .hero__perro,
   .hero__cuerpo,
   .hero__pelo,
-  .hero__patas-breath,
   .hero__patas-cuerpo { animation: none !important; }
 }
 

@@ -520,56 +520,13 @@
      base.css. Sin el panel congelado, congelar el statement solo hacía que le
      recortara el titular al panel. */
 
-  /* --- Portada: las patas calcan la caja del perro ----------------------- */
-  /* La figura del perro vive recortada en su ventana, pero las patas
-     delanteras tienen que asomar por el borde de abajo del hero SOBRE la
-     sección siguiente, así que van en una capa aparte (z-index 6) que no se
-     recorta. Acá se le calca la caja del perro con geometría de MAQUETA
-     (offsetLeft/offsetTop): nunca getBoundingClientRect(), porque el perro
-     está respirando y balanceándose, así que su bounding box va inflada y
-     ladeada y ese sesgo se copiaría a las patas. Con la caja calcada y la
-     misma animación que el cuerpo (ver base.css), las patas quedan soldadas
-     al pecho: su desplazamiento relativo es constante en todo el ciclo, como
-     si estuvieran pintadas dentro del PNG del cuerpo. */
-  function initHeroPerro() {
-    if (!document.querySelector('[data-hero-patas]')) return;
-
-    function place() {
-      // Se re-buscan las referencias por si el hot-reload de `shopify theme
-      // dev` re-renderizó la sección (mismo motivo que initFooterPushesNav).
-      var hero = document.querySelector('.hero');
-      var perro = hero && hero.querySelector('[data-hero-perro]');
-      var patas = hero && hero.querySelector('[data-hero-patas]');
-      if (!perro || !patas) return;
-
-      var x = 0;
-      var y = 0;
-      var el = perro;
-      while (el && el !== hero) {
-        x += el.offsetLeft;
-        y += el.offsetTop;
-        el = el.offsetParent;
-      }
-      patas.style.width = perro.offsetWidth + 'px';
-      patas.style.height = perro.offsetHeight + 'px';
-      patas.style.left = x + 'px';
-      patas.style.top = y + 'px';
-    }
-
-    place();
-    // Solo el resize que cambia el ancho: el alto del hero va en svh, así que
-    // la barra del navegador de celu (que dispara resize sin mover el ancho)
-    // no cambia ninguna medida — re-calcar ahí es trabajo tirado a mitad de
-    // scroll.
-    var lastW = window.innerWidth;
-    window.addEventListener('resize', function () {
-      if (window.innerWidth === lastW) return;
-      lastW = window.innerWidth;
-      place();
-    });
-    // Anton entra tarde y puede recolocar el layout: se vuelve a medir.
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
-  }
+  /* Portada: acá vivía initHeroPerro(), que le calcaba a la capa de las
+     patas la caja del perro con offset*. Se fue el 2026-09-15: las patas no
+     tenían tamaño hasta que corría este script (deferred), y en celu eso era
+     el LCP entero de la portada (4 s de "render delay" en Lighthouse). Hoy la
+     capa repite en el markup la misma cadena ventana → interior → perro que
+     dimensiona el CSS, así que se pinta con el primer render y sin JS. Ver
+     .hero__patas en base.css. */
 
   /* --- El footer empuja al nav fuera de la pantalla --------------------- */
   /* Cuando el footer sube, la barra sticky no se queda flotando encima: se va
@@ -1003,7 +960,6 @@
   function init() {
     initPreloader();
     initCardPickers();
-    initHeroPerro();
     initNav();
     initFavoritos();
     initPeelStickers();

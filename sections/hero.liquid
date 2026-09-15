@@ -15,13 +15,15 @@
     en WebP pesan 250 KB con la ilustración idéntica. Si re-exportas las
     capas, conviértelas igual (Pillow: quality=90, method=6). El CDN de
     Shopify respeta los .webp de assets, así que se sirven tal cual.
-  · Prioridad de descarga: el cuerpo es el LCP y va con fetchpriority="high";
-    el pelo y las patas son detalle de la animación y van "low" para que no le
-    compitan el ancho de banda al cuerpo ni a las fuentes.
+  · Prioridad de descarga: el cuerpo y las patas son los candidatos a LCP
+    (las patas ganan en celu: cuelgan enteras, sin recorte) y van con
+    fetchpriority="high"; el pelo es detalle de la animación y va "low" para
+    que no le compita el ancho de banda a esos dos ni a las fuentes.
   · La ventana recorta a la figura solo por abajo (se ve del pecho hacia
     arriba); las patas van en una capa aparte FUERA de la ventana, en z-index 6,
-    para asomar sobre lo que siga en la página. Su caja la calca theme.js
-    (initHeroPerro) de la caja del perro.
+    para asomar sobre lo que siga en la página. Esa capa repite la misma
+    cadena ventana → interior → perro con las mismas clases, así que el CSS
+    le da la caja exacta del perro sin JS (ver .hero__patas en base.css).
   · El hero asume el chrome del theme: navbar de 72px fijos y transparente.
     De ahí el alto de calc(100svh - 72px).
 {%- endcomment -%}
@@ -89,7 +91,7 @@
   {%- endcomment -%}
   <div class="hero__ventana" aria-hidden="true">
     <div class="hero__interior">
-      <div class="hero__perro" data-hero-perro>
+      <div class="hero__perro">
         <div class="hero__cuerpo">
           <img
             class="hero__capa"
@@ -123,24 +125,31 @@
   {%- comment -%}
     Las patas, último hijo y fuera de la ventana recortada: sobresalen por el
     borde de abajo del hero y quedan SOBRE la sección siguiente (z-index 6
-    dentro del hero, que a su vez va en z-index 5 sobre la página). La pareja
+    dentro del hero, que a su vez va en z-index 5 sobre la página). La capa
+    repite la cadena ventana → interior → perro con las MISMAS clases para
+    heredar la caja exacta de la figura desde el CSS (sin JS: así se pintan
+    con el primer render, ver .hero__patas en base.css). La pareja
     respiración→balanceo es la MISMA que la del perro, no la del pelo: con el
     retraso del pelo se moverían distinto al pecho al que están pegadas.
   {%- endcomment -%}
-  <div class="hero__patas" aria-hidden="true" data-hero-patas>
-    <div class="hero__patas-breath">
-      <div class="hero__patas-cuerpo">
-        <img
-          class="hero__capa"
-          src="{{ 'perro2-patas.webp' | asset_url }}"
-          alt=""
-          draggable="false"
-          width="2048"
-          height="2048"
-          loading="eager"
-          fetchpriority="low"
-          decoding="async"
-        >
+  <div class="hero__patas" aria-hidden="true">
+    <div class="hero__ventana hero__ventana--patas">
+      <div class="hero__interior">
+        <div class="hero__perro">
+          <div class="hero__patas-cuerpo">
+            <img
+              class="hero__capa"
+              src="{{ 'perro2-patas.webp' | asset_url }}"
+              alt=""
+              draggable="false"
+              width="2048"
+              height="2048"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            >
+          </div>
+        </div>
       </div>
     </div>
   </div>
