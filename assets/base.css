@@ -944,6 +944,10 @@ shopify-account::part(signed-out-avatar) {
   animation: perro-hair calc(var(--p) * var(--k)) ease-in-out infinite;
   animation-delay: calc(var(--lag) - var(--p) * var(--k));
 }
+/* Mientras las patas (el LCP) no se pinten, las mechas no existen: sin caja,
+   un loading="lazy" no se descarga. La marca la pone y la quita el propio
+   hero.liquid (ver ahí el porqué). */
+.hero[data-hero-espera] .hero__pelo { display: none; }
 .hero__pelo--01 { transform-origin: 37.67% 12.31%; --ah: calc(4.3deg * var(--inertia)); }
 .hero__pelo--02 { transform-origin: 35.47% 18.11%; --ah: calc(5.1deg * var(--inertia)); }
 .hero__pelo--03 { transform-origin: 34.79% 23.97%; --ah: calc(5.0deg * var(--inertia)); }
@@ -1334,6 +1338,11 @@ shopify-account::part(signed-out-avatar) {
 }
 
 /* --- Con enhancement: escenario pineado + capas superpuestas --- */
+/* Paneles 2..n sin caja hasta que favoritos.liquid los suelte (primer gesto
+   de scroll o poco después del load): así sus fotos y stickers lazy no bajan
+   mientras carga el hero. */
+.favs[data-favs-espera] .fav ~ .fav { display: none; }
+
 .favs[data-enhanced='true'] {
   /* El recorrido tiene que dar para: una pausa por panel, un cambio entre cada
      par, y la pantalla que ocupa el escenario pineado. Esta cuenta es la misma

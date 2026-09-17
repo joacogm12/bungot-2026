@@ -49,6 +49,38 @@
     data-favs
     style="--fav-count: {{ panels }}; --fav-hold: {{ section.settings.hold }}; --fav-trans: {{ section.settings.trans }};"
   >
+    {%- comment -%}
+      Los paneles 2..n esperan. Van apilados en el mismo lugar que el primero,
+      así que para el navegador están "en pantalla" y sus fotos y stickers
+      (lazy) bajaban de inmediato en prioridad alta: ~430 KB que nadie ve
+      hasta hacer scroll, compitiéndole la red al perro del hero y contando
+      para el LCP que estima PageSpeed (suma todo lo que termina antes de que
+      el LCP se pinte). Con la marca van display:none (base.css) y un lazy
+      sin caja no se descarga. Se sueltan al primer gesto de scroll o poco
+      después del load, lo que pase primero; el tope es el seguro. Sin JS no
+      hay marca. En el editor de temas no se marca: ahí hay que ver todo.
+      El alto del riel sale de --fav-count, no de los paneles, así que
+      esconderlos no mueve nada.
+    {%- endcomment -%}
+    <script>
+      (function () {
+        if (window.Shopify && window.Shopify.designMode) return;
+        var favs = document.currentScript.parentElement;
+        var gestos = ['scroll', 'wheel', 'touchstart', 'keydown'];
+        var suelto = false;
+        function suelta() {
+          if (suelto) return;
+          suelto = true;
+          favs.removeAttribute('data-favs-espera');
+          gestos.forEach(function (g) { window.removeEventListener(g, suelta); });
+        }
+        favs.setAttribute('data-favs-espera', '');
+        gestos.forEach(function (g) { window.addEventListener(g, suelta, { passive: true }); });
+        if (document.readyState === 'complete') setTimeout(suelta, 300);
+        else window.addEventListener('load', function () { setTimeout(suelta, 300); });
+        setTimeout(suelta, 8000);
+      })();
+    </script>
     <div class="favs__stage" data-favs-stage>
       {%- comment -%}
         El título va DENTRO del escenario y por encima de los paneles: así queda

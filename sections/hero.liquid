@@ -17,8 +17,8 @@
     Shopify respeta los .webp de assets, así que se sirven tal cual.
   · Prioridad de descarga: el cuerpo y las patas son los candidatos a LCP
     (las patas ganan en celu: cuelgan enteras, sin recorte) y van con
-    fetchpriority="high"; el pelo es detalle de la animación y va "low" para
-    que no le compita el ancho de banda a esos dos ni a las fuentes.
+    fetchpriority="high"; el pelo es detalle de la animación: va "low", lazy
+    y además espera a que las patas se pinten (ver data-hero-espera abajo).
   · La ventana recorta a la figura solo por abajo (se ve del pecho hacia
     arriba); las patas van en una capa aparte FUERA de la ventana, en z-index 6,
     para asomar sobre lo que siga en la página. Esa capa repite la misma
@@ -28,6 +28,18 @@
     De ahí el alto de calc(100svh - 72px).
 {%- endcomment -%}
 <section class="hero">
+  {%- comment -%}
+    El pelo espera a las patas. Lighthouse/PageSpeed estiman el LCP sumando
+    TODA descarga que termina antes de que el LCP se pinte, y en sus
+    servidores (red rápida, CPU lenta) las 11 mechas terminaban antes: 140 KB
+    que inflaban el LCP simulado sin ser el LCP. Este script marca la sección
+    ANTES de que el parser llegue a las mechas; con la marca van display:none
+    (base.css) y, como son loading="lazy", sin caja no se descargan. El script
+    del final de la sección quita la marca cuando las patas ya se pintaron.
+    Sin JS no hay marca y todo carga como siempre. En la primera página de la
+    sesión esto pasa debajo de la cortina; después las mechas ya están en caché.
+  {%- endcomment -%}
+  <script>document.currentScript.parentElement.setAttribute('data-hero-espera', '');</script>
   {%- comment -%}
     El h1 de la portada. Va con display: contents: los dos pedazos se posicionan
     en absoluto directo contra la sección (esquinas opuestas, la figura pasa por
@@ -112,7 +124,7 @@
               draggable="false"
               width="2048"
               height="2048"
-              loading="eager"
+              loading="lazy"
               fetchpriority="low"
               decoding="async"
             >
@@ -153,6 +165,23 @@
       </div>
     </div>
   </div>
+  <script>
+    /* Suelta las mechas cuando las patas (el LCP) ya se pintaron: load de la
+       imagen + dos cuadros + un respiro. El tope cubre pestañas en segundo
+       plano, donde rAF no corre, y una imagen que nunca llegue. */
+    (function () {
+      var hero = document.currentScript.parentElement;
+      var lcp = hero.querySelector('.hero__patas img');
+      var suelto = false;
+      function suelta() { if (suelto) return; suelto = true; hero.removeAttribute('data-hero-espera'); }
+      function trasPintar() {
+        requestAnimationFrame(function () { requestAnimationFrame(function () { setTimeout(suelta, 120); }); });
+      }
+      if (!lcp || lcp.complete) trasPintar();
+      else { lcp.addEventListener('load', trasPintar, { once: true }); lcp.addEventListener('error', suelta, { once: true }); }
+      setTimeout(suelta, 4000);
+    })();
+  </script>
 </section>
 
 {% schema %}

@@ -4,7 +4,7 @@
   skip-link, solo si el ajuste global `pantalla_carga` está activo.
 
   El repartidor son DOS cuadros con alfa (bungot-carga-a/-b.webp, sacados
-  del GIF bungot-repartidor.gif, 640×640) alternados con CSS steps(1) cada
+  del GIF bungot-repartidor.gif, 480×480: se pintan a 380px como mucho) alternados con CSS steps(1) cada
   100 ms, igual que el perro del carrito del catálogo. Hasta 2026-09-15 era
   un mp4 con fondo negro que pantalla-carga.js recortaba cuadro por cuadro
   en un canvas: en celu eso costaba ~4 s de CPU (Lighthouse) más 376 KB de
@@ -118,7 +118,7 @@
   loading="lazy" a propósito: en las páginas donde la cortina va oculta
   (hidden antes del primer pintado) un lazy sin caja no se descarga, así que
   no piden nada. Cuando sí se ve, el script inline los pasa a eager para que
-  arranquen ya. Chiquitos (≈45 KB cada uno): no le pelean el ancho de banda
+  arranquen ya. Chiquitos (≈30 KB cada uno): no le pelean el ancho de banda
   a las imágenes del LCP como lo hacía el mp4.
 {%- endcomment -%}
 <div class="carga" data-carga data-carga-pesada="{{ pesada }}" role="presentation">
@@ -127,8 +127,8 @@
       class="carga__cuadro carga__cuadro--a"
       src="{{ 'bungot-carga-a.webp' | asset_url }}"
       alt=""
-      width="640"
-      height="640"
+      width="480"
+      height="480"
       loading="lazy"
       decoding="async"
     >
@@ -136,8 +136,8 @@
       class="carga__cuadro carga__cuadro--b"
       src="{{ 'bungot-carga-b.webp' | asset_url }}"
       alt=""
-      width="640"
-      height="640"
+      width="480"
+      height="480"
       loading="lazy"
       decoding="async"
     >
