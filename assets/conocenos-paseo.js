@@ -335,6 +335,17 @@
     var rect = riel.getBoundingClientRect();
     geo.escV = (rect.height / geo.altoPista) || 1;
     geo.topDoc = rect.top + window.scrollY;
+    /* Safari de iPhone reporta los rects de lo que vive bajo `zoom` SIN el
+       zoom (px reales ÷ zoom): el cociente de arriba daba 1 en vez de .25,
+       la ventana se escribía de 664px de LIENZO (164 reales: se veía una
+       franja y el resto crema) y finScroll salía 4× más largo, así que el
+       footer subía con el perro apenas en la segunda estación (visto en el
+       celular del cliente, 2026-09-17). Si el rect no refleja el zoom que
+       acabamos de poner, manda el zoom y el top se regresa a px reales. */
+    if (zoom < 0.95 && geo.escV > (zoom + 1) / 2) {
+      geo.escV = zoom;
+      geo.topDoc = rect.top * zoom + window.scrollY;
+    }
     // El alto estable que también usa el CSS (--svh, ver theme.liquid), no
     // innerHeight: en Chrome/Firefox de iOS este último cambia con la barra.
     var altoVista = (window.BUNGOT && window.BUNGOT.altoVista) ? window.BUNGOT.altoVista() : window.innerHeight;
