@@ -692,11 +692,20 @@
                 assign acc_body = mf.instrucciones.value
               endif
 
-              # "Beneficios" (a pedido, 2026-09-17): la descripción del
-              # producto tal cual, con su HTML — no pasa por newline_to_br.
-              assign acc_html = blank
-              if src == 'descripcion'
-                assign acc_html = product.description
+              # "Beneficios" (a pedido, 2026-09-17) es un campo APARTE de la
+              # descripción, que ya sale arriba del precio. Por producto manda
+              # el metafield de texto custom.beneficios_texto; si está vacío,
+              # la lista sale de los mismos beneficios del cinturón (metaobjetos
+              # del producto, con su título Y su texto, que el cinturón no
+              # pinta) y al final de los bloques "beneficio" de la plantilla.
+              assign acc_list = false
+              if src == 'beneficios'
+                assign acc_body = mf.beneficios_texto.value
+                if acc_body == blank
+                  assign acc_list = true
+                  assign acc_bens = mf.beneficios.value
+                  assign acc_ben_blocks = section.blocks | where: 'type', 'beneficio'
+                endif
               endif
 
               # La tabla del análisis garantizado solo acompaña a ingredientes.
@@ -705,7 +714,7 @@
                 assign show_analisis = true
               endif
             -%}
-            {%- if acc_body != blank or acc_html != blank or block.settings.body != blank -%}
+            {%- if acc_body != blank or acc_list or block.settings.body != blank -%}
               {%- comment -%} Todos los acordeones arrancan cerrados: la ficha se lee de un vistazo y el usuario abre lo que le interese. {%- endcomment -%}
               <details class="pdacc__item" {{ block.shopify_attributes }}>
                 <summary class="pdacc__head">
@@ -713,8 +722,18 @@
                   <span class="pdacc__sign" aria-hidden="true"></span>
                 </summary>
                 <div class="pdacc__body">
-                  {%- if acc_html != blank -%}
-                    <div class="pdacc__desc">{{ acc_html }}</div>
+                  {%- if acc_list -%}
+                    <ul class="pdacc__bens">
+                      {%- if acc_bens != blank and acc_bens.size > 0 -%}
+                        {%- for b in acc_bens -%}
+                          <li><strong>{{ b.titulo.value }}</strong>{% if b.texto.value != blank %} — {{ b.texto.value }}{% endif %}</li>
+                        {%- endfor -%}
+                      {%- else -%}
+                        {%- for bb in acc_ben_blocks -%}
+                          <li><strong>{{ bb.settings.title }}</strong>{% if bb.settings.text != blank %} — {{ bb.settings.text }}{% endif %}</li>
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </ul>
                   {%- elsif acc_body != blank -%}
                     <p>{{ acc_body | newline_to_br }}</p>
                   {%- else -%}
@@ -1230,7 +1249,7 @@
             { "value": "ingredientes", "label": "Ingredientes + análisis del producto" },
             { "value": "recomendacion", "label": "Recomendación diaria del producto" },
             { "value": "instrucciones", "label": "Conservación del producto" },
-            { "value": "descripcion", "label": "Descripción del producto" },
+            { "value": "beneficios", "label": "Beneficios del producto" },
             { "value": "manual", "label": "Texto fijo (el de abajo)" }
           ]
         },

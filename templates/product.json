@@ -16,7 +16,7 @@
           "type": "acordeon",
           "settings": {
             "title": "Beneficios",
-            "source": "descripcion",
+            "source": "beneficios",
             "body": ""
           }
         },

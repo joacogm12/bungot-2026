@@ -387,7 +387,6 @@
 /* La descripción del admin llega con su HTML (párrafos, y en los paquetes la
    lista de lo que traen). El editor de Shopify cuela font-family/font-size
    inline al pegar texto: se pisan para que todo salga en la letra de la PDP. */
-.pdacc__desc *,
 .pdbuy__lead * { font-family: inherit !important; font-size: inherit !important; color: inherit !important; }
 .pdbuy__lead p { margin: 0 0 12px; }
 .pdbuy__lead ul,
@@ -780,6 +779,12 @@
 }
 .pdacc__body p { margin: 0 0 10px; }
 .pdacc__body p:last-child { margin-bottom: 0; }
+/* Lista del desplegable "Beneficios": título en firme + su explicación. */
+.pdacc__bens { margin: 0; padding-left: 1.2em; }
+.pdacc__bens li { margin: 0 0 8px; }
+.pdacc__bens li:last-child { margin-bottom: 0; }
+.pdacc__bens li::marker { color: var(--pd-fam, var(--pd-naranja)); }
+.pdacc__bens strong { font-weight: 600; color: var(--pd-green); }
 
 /* Análisis garantizado: filas etiqueta/valor con guía de puntos, como en la
    tabla de la bolsa. */
