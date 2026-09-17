@@ -729,34 +729,38 @@ img.pest,
    caja; las cotas salen de las reglas .pest--* de arriba llevadas a su
    estado final. Las capas van como img.ptar__dibujo-* para ganarle en
    especificidad a la regla genérica de abajo (si no, todas salen al 100%).
-   El dibujo vive en la MISMA celda que la foto (grid-area: foto) y se
-   pega a su esquina de abajo como sticker (a pedido 2026-09-15: chico, en
-   las esquinas de abajo de la foto): align-self end, justify-self al lado
-   que le toca y un translate que lo saca un poco del marco de la foto. Va
-   por encima (z 2). Cada composición trae su propio ancho, en % de la
-   tarjeta, porque las cajas tienen proporciones muy distintas (el hidrante
-   con su chorro es ancho y bajo, la casita casi cuadrada). El translate de
-   abajo se cubre con el margen extra de la copia (.ptar__texto). */
+   El dibujo va AL LADO de la foto, como en el mapa (a pedido 2026-09-17,
+   con captura de la estación del hidrante: foto a la izquierda, dibujo
+   grande a la derecha; antes colgaba chico de la esquina de la foto). Tiene
+   su propia columna de la retícula (grid-area: dibujo), centrado a lo alto
+   de la foto. Cada composición trae su ancho en % de ESA columna, porque
+   las cajas tienen proporciones muy distintas; las que pasan de 100%
+   (hidrante con su chorro) se cargan a la derecha y lo que sobra se monta
+   sobre la orilla de la foto, igual que el chorro en el mapa (z 2). */
 .ptar__dibujo { display: none; }
 .paseo--vertical .ptar__dibujo {
-  grid-area: foto;
+  grid-area: dibujo;
   display: block;
   position: relative;
   z-index: 2;
-  width: 30%;
+  width: 88%;
   margin: 0;
-  align-self: end;
-  justify-self: start;
-  transform: translate(-6%, 14%);
-}
-.paseo--vertical .ptar--1 .ptar__dibujo,
-.paseo--vertical .ptar--2 .ptar__dibujo {
+  align-self: center;
   justify-self: end;
-  transform: translate(6%, 14%);
 }
-.paseo--vertical .ptar__dibujo--bote { width: 36%; }
-.paseo--vertical .ptar__dibujo--hidrante { width: 33%; }
-.paseo--vertical .ptar__dibujo--manada { width: 34%; }
+/* El lado se turna igual que en el mapa de la compu (a pedido 2026-09-17):
+   casita, probetas y cámara a la IZQUIERDA de su foto (.ptar--3/5/4, la
+   retícula se voltea abajo), bote e hidrante a la derecha. Cada dibujo se
+   carga hacia afuera, contra la orilla de la tarjeta. */
+.paseo--vertical .ptar--3 .ptar__dibujo,
+.paseo--vertical .ptar--4 .ptar__dibujo,
+.paseo--vertical .ptar--5 .ptar__dibujo { justify-self: start; }
+.paseo--vertical .ptar__dibujo--bote { width: 100%; }
+/* Las probetas son la excepción: van pegadas a la FOTO, porque espejeadas
+   su humo desborda hacia afuera y contra la orilla se salía de la pantalla. */
+.paseo--vertical .ptar--5 .ptar__dibujo--pruebas { width: 66%; align-self: end; justify-self: end; }
+.paseo--vertical .ptar__dibujo--hidrante { width: 112%; }
+.paseo--vertical .ptar__dibujo--manada { width: 96%; }
 .paseo--vertical .ptar__dibujo img {
   position: absolute;
   left: 0;
@@ -766,6 +770,7 @@ img.pest,
 }
 /* La casita tal cual, con el hueso y la cuerda en el pasto. */
 .paseo--vertical .ptar__dibujo--casa { aspect-ratio: 768 / 726; }
+.paseo--vertical .ptar__dibujo--casa img { transform-origin: 50% 90%; }
 
 /* El bote (300) con la tapa puesta (292 a 4 / -34 del bote, como en el mapa)
    va a la DERECHA de la caja y el plátano tirado en su esquina inferior
@@ -773,9 +778,9 @@ img.pest,
    2026-09-17; antes el plátano iba suelto a la derecha). Misma línea de
    piso: caja 420×311. */
 .paseo--vertical .ptar__dibujo--bote { aspect-ratio: 420 / 311; }
-.paseo--vertical img.ptar__dibujo-tapa { left: 27.1%; top: 0; width: 69.5%; z-index: 2; }
-.paseo--vertical img.ptar__dibujo-bote { left: 26.2%; top: 10.9%; width: 71.4%; }
-.paseo--vertical img.ptar__dibujo-platano { left: 0; top: 58%; width: 35.7%; z-index: 3; }
+.paseo--vertical img.ptar__dibujo-tapa { left: 27.1%; top: 0; width: 69.5%; z-index: 2; transform-origin: 50% 50%; }
+.paseo--vertical img.ptar__dibujo-bote { left: 26.2%; top: 10.9%; width: 71.4%; transform-origin: 10% 100%; }
+.paseo--vertical img.ptar__dibujo-platano { left: 0; top: 58%; width: 35.7%; z-index: 3; transform-origin: 50% 90%; }
 
 /* La mesa en dos capas como en el mapa: la base (558×768) y la de chispas
    (593×768) son el mismo dibujo alineado por la esquina inferior IZQUIERDA
@@ -783,14 +788,12 @@ img.pest,
    arriba: la caja mide 580 de alto y las capas la desbordan hacia arriba
    (132.4% = 768/580) en vez de recortarse, para que las chispas más altas
    no se corten. */
-/* Espejeada (a pedido 2026-09-17): la probeta alta y su humo quedan del lado
-   de afuera. El scaleX(-1) va en la caja entera, junto al translate de
-   sticker, para no recalcular las cotas de las tres capas; y como el humo
-   ahora desborda hacia la IZQUIERDA, la caja se corre a la derecha (24% en
-   vez de -6%) para que no se salga de la pantalla. */
+/* Espejeada (a pedido 2026-09-17): el scaleX(-1) va en la caja entera para
+   no recalcular las cotas de las tres capas. La probeta alta y su humo
+   quedan del lado de afuera (la mesa va a la izquierda de su foto). */
 .paseo--vertical .ptar__dibujo--pruebas {
   aspect-ratio: 593 / 580;
-  transform: translate(24%, 14%) scaleX(-1);
+  transform: scaleX(-1);
 }
 .paseo--vertical .ptar__dibujo--pruebas img {
   top: auto;
@@ -798,51 +801,149 @@ img.pest,
   height: 132.4%;
   object-fit: contain;
   object-position: 0 100%;
+  transform-origin: 50% 96%;
 }
 .paseo--vertical img.ptar__dibujo-chispas { z-index: 2; }
 /* El humo (a pedido 2026-09-17), con las cotas del mapa pasadas a esta caja,
    donde 1 unidad = 1px del PNG de la mesa (el mapa la pinta a 620/768):
    300 de ancho → 372, y su base angosta (30% / 94% de su caja) plantada en
    la boca de la probeta alta, ≈(490, 285) del PNG. Desborda la caja hacia
-   arriba y a la derecha, sobre la foto. Lleva sus propias cotas porque la
-   regla de arriba lo estiraría al alto de la mesa. */
+   arriba. Lleva sus propias cotas porque la regla de arriba lo estiraría al
+   alto de la mesa. Desde que el dibujo va al lado de la foto (2026-09-17)
+   el humo mide 44% en vez de 62.7%, con la MISMA base en la boca de la
+   probeta (82.3% / 13.7% de la caja): a tamaño de mapa se subía encima del
+   título. El resto de lo que sube lo cubre el margen de .ptar--5 abajo. */
 .paseo--vertical img.ptar__dibujo-humo {
-  left: 63.5%;
-  top: -60.4%;
+  left: 69.1%;
+  top: -38.3%;
   bottom: auto;
-  width: 62.7%;
+  width: 44%;
   height: auto;
   z-index: 3;
+  transform-origin: 30% 94%;
 }
 
-/* El hidrante solo, volteado como en el mapa (mira a la izquierda). En el
-   PNG el dibujo ocupa el 56% izquierdo del lienzo; volteado queda pegado a
-   la derecha de la caja, que es el lado del que cuelga. SIN chorro en
-   columna (a pedido 2026-09-17): el agua sigue en el mapa (.pest--agua),
-   aquí no se pinta. */
-.paseo--vertical .ptar__dibujo--hidrante { aspect-ratio: 768 / 689; }
-.paseo--vertical img.ptar__dibujo-hidrante { transform: scaleX(-1); }
+/* El hidrante volteado como en el mapa (mira a la izquierda) y el chorro
+   naciendo en su boca izquierda, hacia la foto (el chorro se quitó y
+   regresó el 2026-09-17, cuando el dibujo pasó a ir al lado de la foto).
+   En el PNG del hidrante el dibujo ocupa el 56% izquierdo del lienzo;
+   volteado queda pegado a la derecha de la caja. Caja 560×378: hidrante de
+   421 a la derecha, boca en ≈(324, 173). El agua se planta con su borde
+   IZQUIERDO en la boca y se voltea sobre su punta (origen 0.2% / 66.7%,
+   igual que .pest--agua): así el dibujo cae a la izquierda de la boca y el
+   scale() de la animación crece desde ahí. */
+.paseo--vertical .ptar__dibujo--hidrante { aspect-ratio: 560 / 378; }
+.paseo--vertical img.ptar__dibujo-hidrante { left: auto; right: 0; width: 75.2%; transform: scaleX(-1); }
+.paseo--vertical img.ptar__dibujo-agua {
+  left: 57.9%;
+  top: 3.7%;
+  width: 57.9%;
+  z-index: 2;
+  transform-origin: 0.2% 66.7%;
+  transform: scaleX(-1);
+}
 
 /* La cámara (486 en (0, 61)) con el flash disparado; caja 486×377. El mapa
    planta en el foquito la PUNTA de la estrella y la deja arriba a la
    derecha; aquí, en reposo y tan chica, se leía despegada de la cámara, así
    que el CENTRO de la estrella (67% / 26.6% de su PNG) cae justo sobre el
-   cuadrito blanco del flash, ≈(264, 96) de la caja (a pedido 2026-09-17). */
+   cuadrito blanco del flash, ≈(264, 96) de la caja, y desde ahí se abre
+   (a pedido 2026-09-17). */
 .paseo--vertical .ptar__dibujo--manada { aspect-ratio: 486 / 377; }
-.paseo--vertical img.ptar__dibujo-camara { top: 16.2%; }
-.paseo--vertical img.ptar__dibujo-flash { left: 10.7%; top: 10.7%; width: 65.2%; z-index: 2; }
+.paseo--vertical img.ptar__dibujo-camara { top: 16.2%; transform-origin: 50% 82%; }
+.paseo--vertical img.ptar__dibujo-flash { left: 10.7%; top: 10.7%; width: 65.2%; z-index: 2; transform-origin: 67% 26.6%; }
 
-/* Los dibujos van QUIETOS, en su estado final (a pedido 2026-09-17). Hubo
-   una acción por estación al entrar en pantalla (initDibujos en el JS +
-   @keyframes pd-*: tapa que brinca, chispas, humo, flash); se quitó, no la
-   revivas sin que se pida. */
+/* --- La acción de cada dibujo (a pedido 2026-09-15; se quitó y se regresó el 2026-09-17) -------------------------
+   Sin perro que llegue, la estación actúa sola cuando entra en pantalla:
+   conocenos-paseo.js (initDibujos) le pone .ptar__dibujo--activo una vez.
+   Son las mismas acciones que anima el JS en el mapa, pasadas a @keyframes
+   que TERMINAN en el estado en reposo de arriba (fill-mode both). Las piezas
+   que "aparecen" (plátano, chispas, humo, flash) arrancan invisibles solo
+   con JS (.paseo--js): sin script se quedan puestas. Con reduced-motion no
+   hay animación y la clase deja todo en su estado final. */
+.paseo--js .ptar__dibujo:not(.ptar__dibujo--activo) .ptar__dibujo-platano,
+.paseo--js .ptar__dibujo:not(.ptar__dibujo--activo) .ptar__dibujo-chispas,
+.paseo--js .ptar__dibujo:not(.ptar__dibujo--activo) .ptar__dibujo-humo,
+.paseo--js .ptar__dibujo:not(.ptar__dibujo--activo) .ptar__dibujo-agua,
+.paseo--js .ptar__dibujo:not(.ptar__dibujo--activo) .ptar__dibujo-flash { opacity: 0; }
 
-/* La tarjeta en columna es una retícula de tres renglones: título, foto a
-   todo lo ancho y la copia. El dibujo NO tiene renglón propio: comparte la
-   celda de la foto y cuelga de su esquina de abajo (ver .ptar__dibujo
-   arriba; a pedido 2026-09-15). El lado se alterna: casa/pruebas/cámara a
-   la izquierda, bote/hidrante a la derecha. La copia lleva más margen arriba para dejarle sitio
-   a lo que el dibujo cuelga por debajo de la foto. */
+.ptar__dibujo--activo.ptar__dibujo--casa img { animation: pd-casa .7s var(--ease-bounce, cubic-bezier(.34, 1.56, .64, 1)) both; }
+.ptar__dibujo--activo .ptar__dibujo-bote { animation: pd-bote .9s ease-out both; }
+.ptar__dibujo--activo .ptar__dibujo-tapa { animation: pd-tapa .9s ease-in-out both; }
+.ptar__dibujo--activo .ptar__dibujo-platano { animation: pd-platano .9s .12s cubic-bezier(.22, 1, .36, 1) both; }
+.ptar__dibujo--activo .ptar__dibujo-mesa { animation: pd-mesa .8s ease-in-out both; }
+.ptar__dibujo--activo .ptar__dibujo-chispas { animation: pd-mesa .8s ease-in-out both, pd-aparece .5s .3s ease-out both; }
+.ptar__dibujo--activo .ptar__dibujo-humo { animation: pd-humo 1.1s .3s cubic-bezier(.22, 1, .36, 1) both; }
+.ptar__dibujo--activo .ptar__dibujo-agua { animation: pd-agua .8s cubic-bezier(.22, 1, .36, 1) both; }
+.ptar__dibujo--activo .ptar__dibujo-camara { animation: pd-camara .6s ease-in-out both; }
+.ptar__dibujo--activo .ptar__dibujo-flash { animation: pd-flash .7s cubic-bezier(.22, 1, .36, 1) both; }
+
+/* La casita brota. */
+@keyframes pd-casa {
+  from { transform: scale(.82); }
+  to   { transform: scale(1); }
+}
+/* El bote se sacude, la tapa brinca y cae de vuelta, el plátano sale
+   volando de adentro (el bote le queda a la derecha) y aterriza a su pie. */
+@keyframes pd-bote {
+  0%   { transform: rotate(0); }
+  28%  { transform: rotate(-7deg); }
+  58%  { transform: rotate(3deg); }
+  100% { transform: rotate(0); }
+}
+@keyframes pd-tapa {
+  0%   { transform: translate(0, 0) rotate(0); }
+  38%  { transform: translate(-8%, -70%) rotate(-30deg); }
+  100% { transform: translate(0, 0) rotate(0); }
+}
+@keyframes pd-platano {
+  0%   { opacity: 0; transform: translate(70%, -60%) rotate(150deg) scale(.4); }
+  25%  { opacity: 1; }
+  100% { opacity: 1; transform: translate(0, 0) rotate(0) scale(1); }
+}
+/* La mesa recibe el golpe y salen las chispas. */
+@keyframes pd-mesa {
+  0%   { transform: rotate(0); }
+  30%  { transform: rotate(1.8deg); }
+  62%  { transform: rotate(-1.2deg); }
+  100% { transform: rotate(0); }
+}
+@keyframes pd-aparece {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+/* El humo nace en la boca de la probeta alta (su origen) y sube creciendo,
+   igual que en el mapa. */
+@keyframes pd-humo {
+  from { opacity: 0; transform: translateY(8%) scale(.55); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+/* El chorro crece desde la boca del hidrante (el scaleX(-1) va ADENTRO del
+   transform animado, si no el agua sale al revés). */
+@keyframes pd-agua {
+  from { opacity: 0; transform: scaleX(-1) scale(.25); }
+  to   { opacity: 1; transform: scaleX(-1) scale(1); }
+}
+/* La cámara da el golpe del disparo y el flash se abre y se asienta. */
+@keyframes pd-camara {
+  0%   { transform: rotate(0) scale(1); }
+  35%  { transform: rotate(-5deg) scale(1.05); }
+  100% { transform: rotate(0) scale(1); }
+}
+@keyframes pd-flash {
+  0%   { opacity: 0; transform: rotate(-28deg) scale(.15); }
+  45%  { opacity: 1; transform: rotate(-10deg) scale(1.2); }
+  100% { opacity: 1; transform: rotate(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ptar__dibujo--activo img { animation: none !important; }
+}
+
+/* La tarjeta en columna es una retícula de dos columnas: título arriba y
+   copia abajo a todo lo ancho, y en medio la foto a la izquierda con su
+   dibujo a la derecha (a pedido 2026-09-17, ver .ptar__dibujo arriba); en
+   casita, probetas y cámara se voltea: dibujo a la izquierda, como en el
+   mapa. */
 .paseo--vertical .ptar {
   position: static !important;
   left: auto !important;
@@ -851,15 +952,34 @@ img.pest,
   opacity: 1 !important;
   transform: none !important;
   display: grid;
-  grid-template-columns: 100%;
+  grid-template-columns: 52% 48%;
   grid-template-areas:
-    "titulo"
-    "foto"
-    "texto";
+    "titulo titulo"
+    "foto dibujo"
+    "texto texto";
 }
+.paseo--vertical .ptar--3,
+.paseo--vertical .ptar--4,
+.paseo--vertical .ptar--5 {
+  grid-template-columns: 48% 52%;
+  grid-template-areas:
+    "titulo titulo"
+    "dibujo foto"
+    "texto texto";
+}
+/* Aire entre el título y el renglón de las probetas: es lo que sube el humo
+   por encima de su caja. */
+.paseo--vertical .ptar--5 .ptar__foto { margin-top: 26px; }
 .paseo--vertical .ptar__titulo { grid-area: titulo; font-size: clamp(30px, 8.5vw, 44px); }
-.paseo--vertical .ptar__foto { grid-area: foto; height: min(50vw, 210px); border-radius: 18px; }
-.paseo--vertical .ptar__texto { grid-area: texto; margin-top: 30px; }
+/* La foto ocupa su columna entera con proporción fija (la del mapa, 14:9):
+   chica a propósito, para que el dibujo de al lado pese lo mismo. */
+.paseo--vertical .ptar__foto {
+  grid-area: foto;
+  height: auto;
+  aspect-ratio: 14 / 9;
+  border-radius: 18px;
+}
+.paseo--vertical .ptar__texto { grid-area: texto; margin-top: 18px; }
 .paseo--vertical .ptar__texto { font-size: 17px; }
 .paseo--vertical .ptar__hueco { font-size: 14px; }
 .paseo--vertical .paseo__gracias { position: static; width: auto; }

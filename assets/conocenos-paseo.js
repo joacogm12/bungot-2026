@@ -255,6 +255,7 @@
 
     armarTabla();
     initArrastre();
+    initDibujos();
     decidir();
 
     /* Solo el resize que cambia el ANCHO (rotación, ventana de escritorio):
@@ -310,7 +311,13 @@
        así entra y sale con cada resize, rotación y ResizeObserver. Si el
        estado cambió, decidir() rehace el modo plano (rAF, transforms) y
        vuelve a entrar aquí ya con la clase puesta. */
-    var vertical = anchoMarco <= 640;
+    /* Desde 2026-09-17, a pedido, el teléfono corre el MISMO mapa que la compu
+       encogido con zoom (a 390 queda en .25): el corte de la columna va en 0,
+       así que .paseo--vertical ya no se activa en ningún ancho. La maqueta en
+       columna sigue entera en el CSS y aquí: para regresarla, este corte
+       vuelve a 640. */
+    var CORTE_VERTICAL = 0;
+    var vertical = anchoMarco <= CORTE_VERTICAL;
     if (root.classList.contains('paseo--vertical') !== vertical) {
       root.classList.toggle('paseo--vertical', vertical);
       decidir();
@@ -649,6 +656,30 @@
       var dentro = 1 - suave5(des);
       rollo.tira.style.transform = 'translateX(' + px(-722 * dentro) + ')';
     }
+  }
+
+  /* Los dibujos de las tarjetas en columna (.ptar__dibujo, solo teléfono):
+     acá no hay perro que llegue a la estación, así que la acción de cada
+     una (tapa que brinca y plátano que sale, chispas y humo, flash) es un
+     @keyframes de CSS que arranca cuando el dibujo entra en pantalla. Solo
+     se pone la clase; el CSS decide qué se mueve y respeta reduced-motion.
+     Fuera de la columna el dibujo es display: none y nunca interseca. Una
+     sola vez por dibujo: al volver a subir no se repite. */
+  function initDibujos() {
+    var dibujos = root.querySelectorAll('.ptar__dibujo');
+    if (!dibujos.length) return;
+    if (!('IntersectionObserver' in window)) {
+      dibujos.forEach(function (d) { d.classList.add('ptar__dibujo--activo'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('ptar__dibujo--activo');
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0.5 });
+    dibujos.forEach(function (d) { io.observe(d); });
   }
 
   /* --- El carrusel del rollo ------------------------------------------------
