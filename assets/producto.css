@@ -30,8 +30,8 @@
      arriba y abajo (--pd-gal-pad), con tope de --pd-frame-h para que en un
      monitor alto el marco no se vuelva una torre. El marco toma ese alto y a
      lo ancho lo que sobra de la columna hasta --pd-frame-w; su proporción
-     sale de ahí, no de las fotos ni del video: la bolsa va a sangre, el
-     resto de fotos y el video se contienen con franjas crema. Las miniaturas
+     sale de ahí, no de las fotos ni del video: fotos y video van a sangre y
+     solo las infografías se contienen, sobre blanco. Las miniaturas
      se reparten el alto (cuadradas, entre 56 y --pd-thumb). El alto de
      pantalla es --svh (nunca svh/dvh directo, ver CLAUDE.md). El mínimo
      evita un marco ridículo en ventanas muy bajas: ahí la galería rebasa la
@@ -265,13 +265,14 @@
   overflow: hidden;
   box-sizing: border-box;
 }
-/* Tres tratamientos. Por defecto la foto se CONTIENE completa sobre el crema
-   del marco: el marco tiene una proporción propia (la de la pantalla en
-   escritorio, la del video en celu) y las fotos son cuadradas; a sangre se
-   cortaban infografías y textos. Solo la foto principal (la bolsa) va a
-   sangre (is-cover): tolera el recorte y se ve grande. La bolsa recortada
-   de respaldo del tema (is-recorte, cuando el producto no tiene fotos)
-   respira con padding. El JS mueve las clases al cambiar de miniatura. */
+/* Tres tratamientos. Las FOTOS (la bolsa, los perros, el producto en acción)
+   van a sangre y llenan el marco (is-cover; a pedido 2026-09-17, contenidas
+   sobre crema se veían "cortadas"). Las INFOGRAFÍAS se contienen completas
+   para no perder texto, sobre blanco (is-info): es el fondo que traen, así el
+   sobrante del marco se funde con ellas — quién es infografía lo decide
+   Liquid, ver producto-bungot. La bolsa recortada de respaldo del tema
+   (is-recorte, cuando el producto no tiene fotos) respira con padding sobre
+   crema. El JS mueve las clases al cambiar de miniatura. */
 .pdframe__img {
   display: block;
   width: 100%;
@@ -280,6 +281,8 @@
   box-sizing: border-box;
 }
 .pdframe__img.is-cover { object-fit: cover; }
+/* #FFF muestreado de las infografías (todas traen blanco puro de fondo). */
+.pdframe__img.is-info { background: #FFFFFF; }
 .pdframe__img.is-recorte { padding: 46px; }
 /* El display: block de arriba le ganaría al atributo hidden que pone el JS al
    alternar foto <-> video: se vuelve a bajar a mano. */
@@ -289,10 +292,12 @@
 .pdvideo__poster[hidden] { display: none; }
 
 /* --- Video en el marco ------------------------------------------------------
-   El video se contiene dentro del marco (contain, nunca cover): un video
-   vertical o panorámico deja franjas crema a los lados, el mismo piso que ya
-   le damos a las fotos. El play es un botón propio sobre el poster; los
-   controles nativos aparecen hasta que arranca. */
+   El video LLENA el marco (cover), igual que las fotos — a pedido, 2026-09-17:
+   contenido con franjas crema se veía chico y "cortado". Los videos son 9:16
+   y el marco de escritorio es más ancho, así que se recorta algo de arriba y
+   abajo. El embed externo (iframe) no sabe de object-fit y se queda como
+   está. El play es un botón propio sobre el poster; los controles nativos
+   aparecen hasta que arranca. */
 .pdframe__media {
   width: 100%;
   height: 100%;
@@ -310,7 +315,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   border: 0;
   background: var(--pd-crema);
 }
@@ -379,6 +384,17 @@
   line-height: 1.6;
   color: rgba(1, 60, 62, .82);
 }
+/* La descripción del admin llega con su HTML (párrafos, y en los paquetes la
+   lista de lo que traen). El editor de Shopify cuela font-family/font-size
+   inline al pegar texto: se pisan para que todo salga en la letra de la PDP. */
+.pdbuy__lead * { font-family: inherit !important; font-size: inherit !important; color: inherit !important; }
+.pdbuy__lead p { margin: 0 0 12px; }
+.pdbuy__lead ul,
+.pdbuy__lead ol { margin: 0 0 12px; padding-left: 1.2em; }
+.pdbuy__lead li { margin: 0 0 8px; }
+.pdbuy__lead li::marker { color: var(--pd-fam, var(--pd-naranja)); }
+.pdbuy__lead strong { font-weight: 600; color: var(--pd-green) !important; }
+.pdbuy__lead > :last-child { margin-bottom: 0; }
 
 /* Tira de cifras, separadas por reglas verticales de 2px. */
 .pdstats {
@@ -407,6 +423,58 @@
   font-weight: 600;
   font-size: 14px;
   color: rgba(1, 60, 62, .75);
+}
+
+/* Variante de ahorro (paquetes): por separado tachado y apagado, en paquete
+   en pastilla del color de la familia —es lo que tiene que jalar el ojo— y un
+   sello de estrella con lo que se ahorra. Mismo sistema de la PDP: borde de
+   3px y sombra dura, nada difuso. */
+.pdstats--ahorro { align-items: center; flex-wrap: wrap; row-gap: 16px; }
+.pdstats--ahorro .pdstat { text-align: center; }
+.pdstats--ahorro .pdstat__value,
+.pdstats--ahorro .pdstat__label { white-space: nowrap; }
+.pdstat__value--antes { color: rgba(1, 60, 62, .45); }
+.pdstat__value--antes s { text-decoration-thickness: 3px; }
+.pdstat__value--oferta {
+  display: inline-block;
+  padding: 9px 20px 8px;
+  border: 3px solid var(--pd-green);
+  border-radius: 999px;
+  background: var(--pd-fam, var(--pd-naranja));
+  color: var(--pd-crema);
+  font-size: 40px;
+  letter-spacing: -.01em;
+  box-shadow: 4px 4px 0 var(--pd-green);
+}
+.pdstat--oferta .pdstat__label { margin-top: 12px; color: var(--pd-green); }
+.pdstat--sello { border-right: 0; }
+.pdstat__sello {
+  width: 96px;
+  height: 96px;
+  margin: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  background: var(--pd-mango);
+  color: var(--pd-green);
+  transform: rotate(-10deg);
+  /* Estrella de 12 puntas, la de las etiquetas de descuento. */
+  clip-path: polygon(50% 0%, 60.4% 11.4%, 75% 6.7%, 78.3% 21.7%, 93.3% 25%, 88.6% 39.6%, 100% 50%, 88.6% 60.4%, 93.3% 75%, 78.3% 78.3%, 75% 93.3%, 60.4% 88.6%, 50% 100%, 39.6% 88.6%, 25% 93.3%, 21.7% 78.3%, 6.7% 75%, 11.4% 60.4%, 0% 50%, 11.4% 39.6%, 6.7% 25%, 21.7% 21.7%, 25% 6.7%, 39.6% 11.4%);
+}
+.pdstat__sello small {
+  display: block;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+.pdstat__sello span {
+  display: block;
+  font-family: var(--font-display, 'Anton', sans-serif);
+  font-size: 24px;
+  line-height: 1.05;
 }
 
 /* --- Selectores ---------------------------------------------------------- */
@@ -1219,8 +1287,8 @@
      ven igual. SIEMPRE a todo lo ancho del panel, el mismo que la tira de
      miniaturas; el tope de alto evita que el 9:16 rebase la pantalla y, si
      lo alcanza, solo recorta el alto (el marco NO se angosta: se probó y
-     quedaba más flaco que la tira). Las fotos van a sangre y el video se
-     contiene con franjas crema chicas. */
+     quedaba más flaco que la tira). Fotos y video van a sangre; solo las
+     infografías se contienen, sobre blanco. */
   .pdframe {
     --pd-frame-ar: 9 / 16;
     flex: none;
@@ -1247,8 +1315,24 @@
 
 @media (max-width: 620px) {
   .pdopts { grid-template-columns: 1fr; }
+  /* Cifras de ahorro: las tres piezas en UN renglón también en teléfono (el
+     sello solo en el segundo renglón dejaba una regla colgando). */
+  .pdstats--ahorro { flex-wrap: nowrap; }
+  .pdstats--ahorro .pdstat { padding-right: 12px; margin-right: 12px; }
+  .pdstats--ahorro .pdstat--sello { padding-right: 0; margin-right: 0; }
+  .pdstat__value--antes { font-size: 28px; }
+  .pdstat__value--oferta { font-size: 30px; padding: 7px 12px 6px; }
+  .pdstat__sello { width: 76px; height: 76px; }
+  .pdstat__sello small { font-size: 9px; }
+  .pdstat__sello span { font-size: 20px; }
   /* Una columna, pero nunca más ancha que la tarjeta del catálogo. */
   .pdcross__grid { grid-template-columns: minmax(0, 344px); }
+/* En teléfonos muy angostos ya no caben las tres: el sello baja solo y la
+   pastilla pierde su regla para que no quede colgando. */
+@media (max-width: 370px) {
+  .pdstats--ahorro { flex-wrap: wrap; }
+  .pdstats--ahorro .pdstat--oferta { border-right: 0; padding-right: 0; margin-right: 0; }
+}
   .pdbuyrow { flex-wrap: wrap; }
   .pdcta { flex: 1 1 100%; }
   /* El botón de escribir baja debajo del título y se estira: al lado no le

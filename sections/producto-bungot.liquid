@@ -61,11 +61,14 @@
     assign title = 'onboarding.product_title' | t
   endif
 
+  # La descripción va COMPLETA y con su HTML (a pedido, 2026-09-17): antes se
+  # cortaba a 26 palabras y quedaba en "…" sin forma de leer el resto, y en los
+  # paquetes ahí vive la lista de lo que trae. La columna crece con ella, igual
+  # que con los desplegables. El párrafo del customizer, si lo llenan, gana.
   assign lead = section.settings.lead
+  assign lead_html = ''
   if lead == blank
-    # Corto a propósito: la columna tiene alto fijo, y un párrafo largo se come
-    # el espacio del acordeón hasta dejarlo en su mínimo.
-    assign lead = product.description | strip_html | truncatewords: 26
+    assign lead_html = product.description
   endif
 
   # --- Cifras ---
@@ -102,6 +105,21 @@
 
   assign stat3_value = section.settings.stat3_value
   assign stat3_label = section.settings.stat3_label
+
+  # --- Cifras de ahorro (paquetes) ---
+  # Con el ajuste prendido y un precio de comparación mayor al precio, la tira
+  # ya no habla del producto sino del descuento: cuánto cuesta lo mismo por
+  # separado (compare_at_price de la variante, lo carga el cliente en el admin)
+  # contra cuánto cuesta en paquete. Sin precio de comparación cae a las cifras
+  # de siempre.
+  assign stats_ahorro = false
+  if section.settings.stats_ahorro and product != blank
+    assign pv = product.selected_or_first_available_variant
+    if pv.compare_at_price > pv.price
+      assign stats_ahorro = true
+      assign ahorro = pv.compare_at_price | minus: pv.price
+    endif
+  endif
 
   # --- Galería ---
   # Solo las fotos que el producto trae en Shopify, a sangre (cover): las fotos
@@ -233,11 +251,28 @@
             {%- if media.media_type == 'image' -%}
               {%- if media.preview_image.src == bag.src -%}{%- continue -%}{%- endif -%}
               {%- comment -%}
-                Solo la foto principal (la bolsa, arriba) va a sangre: tolera
-                el recorte a la proporción del marco. Las demás —infografías,
-                fotos con el perro— se CONTIENEN completas sobre crema: a
-                sangre se les cortaban los textos y las orillas (2026-09-07).
+                Las fotos van A SANGRE, llenando el marco como la principal (a
+                pedido, 2026-09-17: contenidas sobre crema se veían "cortadas").
+                La excepción son las INFOGRAFÍAS, que a sangre pierden texto:
+                esas se contienen completas sobre BLANCO, el mismo fondo que
+                traen, para que el sobrante del marco no se note. Liquid no
+                sabe qué hay en una foto, así que se reconocen por cómo las
+                sube el cliente: PNG en proporción 3:4 exacta (las fotos son
+                JPG, y las capturas PNG viejas traen otras proporciones). Si
+                algún día una no cae en la regla, basta ponerle "infografía"
+                en el texto alternativo de la foto en el admin.
               {%- endcomment -%}
+              {%- liquid
+                assign fit = 'cover'
+                assign ar100 = media.aspect_ratio | times: 100 | round
+                assign alt_d = media.alt | downcase
+                if media.preview_image.src contains '.png' and ar100 == 75
+                  assign fit = 'info'
+                endif
+                if alt_d contains 'infograf'
+                  assign fit = 'info'
+                endif
+              -%}
               <button
                 type="button"
                 class="pdthumb"
@@ -245,7 +280,7 @@
                 data-kind="image"
                 data-full="{{ media | image_url: width: 1200 }}"
                 data-full-alt="{{ media.alt | default: title | escape }}"
-                data-fit="contain"
+                data-fit="{{ fit }}"
                 aria-pressed="false"
               >
                 <img src="{{ media | image_url: width: 200 }}" alt="{{ media.alt | default: title | escape }}" width="92" height="92" loading="lazy">
@@ -370,9 +405,30 @@
 
       {%- if lead != blank -%}
         <p class="pdbuy__lead">{{ lead }}</p>
+      {%- elsif lead_html != blank -%}
+        <div class="pdbuy__lead">{{ lead_html }}</div>
       {%- endif -%}
 
       {%- comment -%} Tira de tres cifras, separadas por reglas verticales. {%- endcomment -%}
+      {%- if stats_ahorro -%}
+      {%- comment -%}
+        Paquetes: por separado (tachado) vs. en paquete (en pastilla de color,
+        que es lo que tiene que jalar el ojo) y el sello con lo que se ahorra.
+      {%- endcomment -%}
+      <dl class="pdstats pdstats--ahorro">
+        <div class="pdstat">
+          <dt class="pdstat__value pdstat__value--antes"><s>{{ pv.compare_at_price | money_without_trailing_zeros }}</s></dt>
+          <dd class="pdstat__label">{{ section.settings.ahorro_label_antes }}</dd>
+        </div>
+        <div class="pdstat pdstat--oferta">
+          <dt class="pdstat__value pdstat__value--oferta">{{ pv.price | money_without_trailing_zeros }}</dt>
+          <dd class="pdstat__label">{{ section.settings.ahorro_label_paquete }}</dd>
+        </div>
+        <div class="pdstat pdstat--sello">
+          <dt class="pdstat__sello"><small>{{ 'sections.producto.ahorro_sello' | t }}</small><span>{{ ahorro | money_without_trailing_zeros }}</span></dt>
+        </div>
+      </dl>
+      {%- else -%}
       <dl class="pdstats">
         {%- if stat1_value != blank -%}
           <div class="pdstat">
@@ -393,6 +449,7 @@
           </div>
         {%- endif -%}
       </dl>
+      {%- endif -%}
 
       <form class="pdform" data-pd-form>
         <div class="pdopts">
@@ -1131,6 +1188,9 @@
     { "type": "collection", "id": "caja_collection", "label": "Premios para elegir", "info": "Vacío = la colección de la familia Premios deshidratados (Ajustes del tema → Familias del catálogo)." },
 
     { "type": "header", "content": "Cifras" },
+    { "type": "checkbox", "id": "stats_ahorro", "label": "Cifras de ahorro (paquetes)", "info": "En lugar de las tres cifras muestra cuánto cuesta por separado (el precio de comparación del producto) contra el precio en paquete. Si el producto no trae precio de comparación, salen las cifras de siempre.", "default": false },
+    { "type": "text", "id": "ahorro_label_antes", "label": "Etiqueta del precio por separado", "default": "Por separado" },
+    { "type": "text", "id": "ahorro_label_paquete", "label": "Etiqueta del precio en paquete", "default": "En paquete" },
     { "type": "text", "id": "stat1_value", "label": "Cifra 1", "default": "62%" },
     { "type": "text", "id": "stat1_label", "label": "Etiqueta 1", "default": "Proteína" },
     { "type": "text", "id": "stat2_value", "label": "Cifra 2", "default": "1" },

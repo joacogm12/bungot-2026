@@ -11,6 +11,7 @@
         "cta_prefix_plan": "Suscribirme",
         "note": "Envío gratis desde $500 · llega en 2 a 4 días",
         "show_stepper": true,
+        "stats_ahorro": true,
         "stat1_value": "100%",
         "stat1_label": "Natural",
         "stat2_value": "0",
