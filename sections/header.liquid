@@ -11,7 +11,8 @@
   · "Mi cuenta" es un enlace más del nav, igual que los otros: con sesión
     navega directo a Mis pedidos (la casa de la cuenta — hubo un desplegable y
     se quitó a pedido, no lo revivas); sin sesión abre la hoja de acceso de
-    Shopify (<shopify-account>) sin salir de la tienda.
+    Shopify (<shopify-account>) sin salir de la tienda — la hoja se monta al
+    acercarse al botón, no al cargar la página (ver el comentario de abajo).
   · data-me / data-logged los lee cuenta.js para ofrecer iniciar sesión antes
     del checkout: se quedan aunque ya no haya pastilla con avatar.
   · En celu/tablet las pestañas de logo y carrito se quedan colgadas del techo
@@ -59,11 +60,36 @@
           data-logged="true"
         >{{ 'accessibility.account' | t }}</a>
       {%- else -%}
-        <shopify-account menu="customer-account-main-menu">
-          <span slot="signed-out-avatar" class="header__link" data-me data-logged="false">
-            {{- 'accessibility.account' | t -}}
-          </span>
-        </shopify-account>
+        {%- comment -%}
+          Sin sesión: un link normal a la página de acceso hospedada por
+          Shopify, y la hoja <shopify-account> guardada en un <template>
+          inerte. theme.js (initCuentaHoja) la monta en su lugar cuando el
+          usuario se acerca al botón (hover con mouse o foco) o, en táctil,
+          en el propio clic, y la hoja abre sin salir de la tienda, como
+          siempre; si llega a tocar antes de que el script de Shopify esté
+          listo, el link navega al acceso hospedado y no se queda sin
+          respuesta.
+          Se hace así porque el componente, con solo estar en la página,
+          deja animaciones corriendo dentro de su diálogo CERRADO y obliga al
+          navegador a producir un cuadro del hilo principal en cada vsync en
+          todas las páginas (2026-09-15, medido con CDP: ~40% del hilo
+          principal en reposo en un celu lento). El <template> se queda para
+          que Shopify siga inyectando web-components/account.js.
+        {%- endcomment -%}
+        <a
+          class="header__link"
+          href="{{ routes.account_login_url }}"
+          data-me
+          data-logged="false"
+          data-cuenta-hoja
+        >{{ 'accessibility.account' | t }}</a>
+        <template data-cuenta-hoja-plantilla>
+          <shopify-account menu="customer-account-main-menu">
+            <span slot="signed-out-avatar" class="header__link" data-me data-logged="false">
+              {{- 'accessibility.account' | t -}}
+            </span>
+          </shopify-account>
+        </template>
       {%- endif -%}
 
       <a

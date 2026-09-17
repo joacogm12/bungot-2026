@@ -528,6 +528,75 @@
      dimensiona el CSS, así que se pinta con el primer render y sin JS. Ver
      .hero__patas en base.css. */
 
+  /* --- Hilo principal libre en reposo ------------------------------------ */
+  /* Las animaciones del perro del hero van en el compositor, pero Chrome
+     vuelve a calcular su estilo (13 capas) en CADA cuadro del hilo principal
+     que ocurra por otra razón. Y había dos cosas produciendo un cuadro por
+     vsync todo el tiempo: la ola del bonche (anima `d`, siempre en el hilo
+     principal) y la hoja de cuenta de Shopify (deja animaciones corriendo
+     en su diálogo cerrado). Con las dos quietas, el hilo principal en reposo
+     baja ~90% (medido con CDP el 2026-09-15, CPU ×4). De ahí estas dos:
+     · initWaveEdges: la ola solo corre mientras está en pantalla.
+     · initCuentaHoja: la hoja se monta cuando el usuario se acerca al botón.
+     Si vuelve a aparecer un cuadro por vsync en reposo, buscar qué lo pide
+     antes de tocar el hero. */
+  function initWaveEdges() {
+    var paths = document.querySelectorAll('.wave-edge__path');
+    if (!paths.length || !('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        e.target.style.animationPlayState = e.isIntersecting ? 'running' : 'paused';
+      });
+    }, { rootMargin: '80px 0px' });
+    paths.forEach(function (path) {
+      path.style.animationPlayState = 'paused';
+      io.observe(path);
+    });
+  }
+
+  function initCuentaHoja() {
+    var link = document.querySelector('[data-cuenta-hoja]');
+    var plantilla = document.querySelector('[data-cuenta-hoja-plantilla]');
+    if (!link || !plantilla) return;
+    var montada = false;
+    function montar() {
+      if (montada || !document.body.contains(link)) return;
+      montada = true;
+      var hoja = plantilla.content.cloneNode(true);
+      link.replaceWith(hoja);
+    }
+    // Hover con mouse y foco con teclado llegan antes del clic: se monta ahí
+    // y al clic la hoja ya responde sola. En táctil NO se monta en el toque
+    // (pointerenter/touchstart/focus): quitar del DOM el elemento que está bajo el
+    // dedo hace que el navegador ya no dispare el clic y el primer tap se
+    // perdía. Ahí se monta en el propio clic y se le pasa el clic a la hoja.
+    link.addEventListener('pointerenter', function (e) {
+      if (e.pointerType === 'mouse') montar();
+    });
+    // Solo foco de TECLADO: un tap o un clic también enfocan el link antes
+    // del click, y montar ahí lo quita del DOM y el clic se pierde (foco-teclado).
+    link.addEventListener('focus', function () {
+      if (link.matches(':focus-visible')) montar();
+    });
+    link.addEventListener('click', function (e) {
+      // Si el script de Shopify todavía no definió el componente, el link
+      // navega al acceso hospedado: nunca se queda sin respuesta.
+      if (!window.customElements || !customElements.get('shopify-account')) return;
+      e.preventDefault();
+      montar();
+      // UN solo clic, sin reintentos: el componente abre su diálogo de forma
+      // asíncrona (hasta ~2 s la primera vez, baja sus scripts) y un segundo
+      // clic mientras tanto lo cierra de rebote (marca: clic-unico).
+      // Y fuera del despacho del clic original (setTimeout 0): si se le pasa
+      // dentro, ese mismo clic sigue burbujeando hasta el documento y el
+      // componente lo toma como "clic fuera" y cancela la apertura (clic-diferido).
+      setTimeout(function () {
+        var me = document.querySelector('shopify-account [data-me]');
+        if (me) me.click();
+      }, 0);
+    });
+  }
+
   /* --- El footer empuja al nav fuera de la pantalla --------------------- */
   /* Cuando el footer sube, la barra sticky no se queda flotando encima: se va
      hacia arriba hasta salir del viewport, como si el footer la empujara. El
@@ -965,6 +1034,8 @@
     initPeelStickers();
     initBonche();
     initBoncheEditor();
+    initWaveEdges();
+    initCuentaHoja();
     initFooterPushesNav();
   }
 
