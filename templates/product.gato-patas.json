@@ -1,0 +1,238 @@
+{
+  "sections": {
+    "main": {
+      "type": "producto-bungot",
+      "blocks": {
+        "acc-0": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Beneficios",
+            "source": "beneficios",
+            "body": "<ul><li><strong>Ricas en colágeno</strong> — El colágeno de la pata de pollo es el mismo que forma sus cartílagos, sus tendones y su piel.</li><li><strong>Fortalece huesos y articulaciones</strong> — Le ayuda a moverse sin molestias: subir al sillón, bajar escaleras y perseguir la pelota como siempre.</li><li><strong>Mejora salud de piel y pelaje</strong> — Se nota por fuera: menos rasquiña, pelo más suave y ese brillo que se ve de lejos.</li><li><strong>Reduce el estrés</strong> — Masticar lo relaja de verdad. Es un rato de ocupación que le baja la ansiedad y el aburrimiento.</li></ul>",
+            "propio": true
+          }
+        },
+        "acc-1": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Ingredientes y análisis",
+            "source": "ingredientes",
+            "body": "<p>UNICO INGREDIENTE</p><p>Patas de pollo 100% naturales</p>",
+            "propio": true
+          }
+        },
+        "acc-2": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Porción diaria",
+            "source": "recomendacion",
+            "body": "<p>Una pieza al día es suficiente. Si tu gato es pequeño o es la primera vez que la prueba, córtala a la mitad. Déjalo masticar a su ritmo, siempre en un lugar donde lo puedas ver.</p>",
+            "propio": true
+          }
+        },
+        "acc-3": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Cuidados y conservación",
+            "source": "instrucciones",
+            "body": "<p>En un lugar fresco y seco. No necesita refrigeración. Cierra bien la bolsa después de cada uso. Ofrécela siempre bajo tu supervisión y con agua limpia al alcance. No apto para consumo humano.</p>",
+            "propio": true
+          }
+        },
+        "acc-4": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Envíos y devoluciones",
+            "source": "manual",
+            "body": "<p>Enviamos a todo México en 5 a 7 días hábiles. Envío gratis en pedidos desde $550.</p><p>Si la bolsa llegó abierta, rota o algo no está bien, escríbenos dentro de los primeros 15 días y te la reponemos sin vueltas. Sin formularios eternos, sin letras chiquitas.</p><p>¿Dudas antes de comprar? Escríbenos a contacto@bungot.com o por Instagram @bungot_mx y te contestamos nosotros, no un bot.</p>"
+          }
+        },
+        "ben-1": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Ayuda al desarrollo muscular",
+            "text": ""
+          }
+        },
+        "ben-2": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Aumenta niveles de energía",
+            "text": ""
+          }
+        },
+        "ben-3": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Refuerza sistema inmune",
+            "text": ""
+          }
+        },
+        "ben-4": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Favorece la función cardiaca",
+            "text": ""
+          }
+        },
+        "ben-5": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Aporta vitamina B12",
+            "text": ""
+          }
+        },
+        "op-1": {
+          "type": "opinion",
+          "settings": {
+            "rating": "5",
+            "text": "Se lo doy en el parque y hace caso a la primera. Antes ni volteaba.",
+            "autor": "Ana · Frida"
+          }
+        },
+        "op-2": {
+          "type": "opinion",
+          "settings": {
+            "rating": "5",
+            "text": "Huele fuerte, pero eso es justo lo que le gusta. La bolsa nos dura una semana.",
+            "autor": "Rodrigo · Nube"
+          }
+        },
+        "op-3": {
+          "type": "opinion",
+          "settings": {
+            "rating": "4",
+            "text": "Buen tamaño para partirlo. Mi perra es chiquita y le rinde un montón.",
+            "autor": "Mariana · Chispa"
+          }
+        },
+        "op-4": {
+          "type": "opinion",
+          "settings": {
+            "rating": "5",
+            "text": "Un solo ingrediente y se nota. Mi perro es alérgico y con esto no le pasa nada.",
+            "autor": "Diego · Otto"
+          }
+        },
+        "op-5": {
+          "type": "opinion",
+          "settings": {
+            "rating": "5",
+            "text": "Llegó rapidísimo y bien sellado. Ya es el premio oficial de la casa.",
+            "autor": "Paulina · Rocco"
+          }
+        },
+        "op-6": {
+          "type": "opinion",
+          "settings": {
+            "rating": "4",
+            "text": "Me gustaría que la bolsa viniera más grande, se nos acaba muy pronto.",
+            "autor": "Iván · Lupe"
+          }
+        },
+        "op-7": {
+          "type": "opinion",
+          "settings": {
+            "rating": "3",
+            "text": "A la mía le costó agarrarle el gusto, pero a la semana ya lo pedía.",
+            "autor": "Sofía · Kira"
+          }
+        },
+        "op-8": {
+          "type": "opinion",
+          "settings": {
+            "rating": "5",
+            "text": "Lo usamos en el entrenamiento y funciona increíble. Cero desperdicio.",
+            "autor": "Carlos · Bruno"
+          }
+        },
+        "op-9": {
+          "type": "opinion",
+          "settings": {
+            "rating": "4",
+            "text": "Se ve que es producto de verdad, no relleno. Vale lo que cuesta.",
+            "autor": "Renata · Pecas"
+          }
+        },
+        "xs-1": {
+          "type": "cruzada",
+          "settings": {
+            "title": "Hígado deshidratado",
+            "detail": "cerdo y res · 80 g",
+            "price": "$70.00",
+            "url": "",
+            "color": "#85ccc6"
+          }
+        },
+        "xs-2": {
+          "type": "cruzada",
+          "settings": {
+            "title": "Patas de pollo",
+            "detail": "colágeno · 14 piezas",
+            "price": "$95.00",
+            "url": "",
+            "color": "#f59e28"
+          }
+        },
+        "xs-3": {
+          "type": "cruzada",
+          "settings": {
+            "title": "Caja de la manada",
+            "detail": "cuatro premios surtidos",
+            "price": "$260.00",
+            "url": "",
+            "color": "#6cc2ea"
+          }
+        }
+      },
+      "block_order": [
+        "acc-0",
+        "acc-1",
+        "acc-2",
+        "acc-3",
+        "acc-4",
+        "ben-1",
+        "ben-2",
+        "ben-3",
+        "ben-4",
+        "ben-5",
+        "op-1",
+        "op-2",
+        "op-3",
+        "op-4",
+        "op-5",
+        "op-6",
+        "op-7",
+        "op-8",
+        "op-9",
+        "xs-1",
+        "xs-2",
+        "xs-3"
+      ],
+      "settings": {
+        "family_color": "",
+        "lote": "",
+        "eyebrow": "Salud articular",
+        "title": "",
+        "lead": "",
+        "cta_prefix": "Agregar",
+        "cta_prefix_plan": "Suscribirme",
+        "note": "Envío gratis desde $550 · llega en 5 a 7 días hábiles",
+        "stat1_value": "",
+        "stat1_label": "Proteína",
+        "stat2_value": "",
+        "stat2_label": "",
+        "stat3_value": "0",
+        "stat3_label": "Conservadores",
+        "reviews_title": "Opiniones de los clientes",
+        "cross_title": "La manada también se lleva",
+        "cross_link_label": "Ver todos los productos",
+        "cross_link_url": "",
+        "cross_collection": ""
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

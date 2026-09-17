@@ -1,0 +1,168 @@
+{
+  "sections": {
+    "main": {
+      "type": "producto-bungot",
+      "settings": {
+        "lote": "Tejido a mano · México",
+        "eyebrow": "Juguete",
+        "lead": "",
+        "cta_prefix": "Agregar",
+        "note": "Envío gratis desde $550 · llega en 5 a 7 días hábiles",
+        "stat1_value": "100%",
+        "stat1_label": "Natural",
+        "stat2_value": "0",
+        "stat2_label": "Plásticos",
+        "stat3_value": "100%",
+        "stat3_label": "Biodegradable",
+        "reviews_title": "Opiniones de los clientes",
+        "cross_title": "La manada también se lleva",
+        "cross_link_label": "Ver todos los productos"
+      },
+      "blocks": {
+        "acc-0": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Beneficios",
+            "source": "beneficios",
+            "body": "<ul><li><strong>Materiales 100% naturales</strong> — Bambú y algodón, sin plásticos ni tintes sintéticos.</li><li><strong>Bambú antibacterial</strong> — Transpirable y suave: aguanta el juego sin criar bacterias.</li><li><strong>Libera energía</strong> — Jalar, morder y perseguir: ejercicio de verdad para la manada.</li><li><strong>Color sorpresa</strong> — Cada pieza se teje con los hilos del lote: no hay dos iguales.</li></ul>",
+            "propio": true
+          }
+        },
+        "acc-1": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Materiales",
+            "source": "ingredientes",
+            "body": "<p>Fibras biodegradables 100% naturales de bambú y algodón. Sin plásticos ni tintes sintéticos. El bambú es naturalmente antibacterial, transpirable y suave, y al final de su vida el juguete se degrada.</p><p>COLOR SORPRESA: tejemos cada pieza con los hilos disponibles de cada lote, así que los colores cambian y no hay dos juguetes iguales. Así aprovechamos hasta el último metro de fibra: nada se desperdicia.</p>",
+            "propio": true
+          }
+        },
+        "acc-2": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Cómo se juega",
+            "source": "recomendacion",
+            "body": "<p>Úsalo para jalar, para lanzar o para esconderlo y que lo busque. Juega tú con él: las cuerdas son para morder, no para dejárselas solo. Revísalo seguido y retíraselo cuando empiece a deshilacharse mucho o le falten pedazos.</p>",
+            "propio": true
+          }
+        },
+        "acc-3": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Cuidados y conservación",
+            "source": "instrucciones",
+            "body": "<p>Se lava a mano con agua tibia y jabón neutro, o en la lavadora dentro de una bolsa de malla, y se deja secar al aire. Revísalo seguido y reemplázalo cuando esté muy deshilachado o le falten trozos: ningún juguete de cuerda es indestructible.</p>",
+            "propio": true
+          }
+        },
+        "acc-4": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Envíos y devoluciones",
+            "source": "manual",
+            "body": "<p>Enviamos a todo México en 5 a 7 días hábiles. Envío gratis en pedidos desde $550.</p><p>Si la bolsa llegó abierta, rota o algo no está bien, escríbenos dentro de los primeros 15 días y te la reponemos sin vueltas. Sin formularios eternos, sin letras chiquitas.</p><p>¿Dudas antes de comprar? Escríbenos a contacto@bungot.com o por Instagram @bungot_mx y te contestamos nosotros, no un bot.</p>"
+          }
+        },
+        "ben-1": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Materiales 100% naturales",
+            "text": "Bambú y algodón, sin plásticos ni tintes sintéticos."
+          }
+        },
+        "ben-2": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Bambú antibacterial",
+            "text": "Transpirable y suave: aguanta el juego sin criar bacterias."
+          }
+        },
+        "ben-3": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Libera energía",
+            "text": "Jalar, morder y perseguir: ejercicio de verdad para la manada."
+          }
+        },
+        "ben-4": {
+          "type": "beneficio",
+          "settings": {
+            "title": "Color sorpresa",
+            "text": "Cada pieza se teje con los hilos del lote: no hay dos iguales."
+          }
+        },
+        "op-1": {
+          "type": "opinion",
+          "settings": {
+            "rating": "5",
+            "text": "Aguanta muchísimo más que los de plástico y no suelta pedazos.",
+            "autor": "Ana · Frida"
+          }
+        },
+        "op-2": {
+          "type": "opinion",
+          "settings": {
+            "rating": "5",
+            "text": "Lo lavamos en la lavadora y quedó como nuevo. Buen tamaño.",
+            "autor": "Rodrigo · Nube"
+          }
+        },
+        "op-3": {
+          "type": "opinion",
+          "settings": {
+            "rating": "4",
+            "text": "El color que llegó no era el de la foto, pero está bonito igual.",
+            "autor": "Mariana · Chispa"
+          }
+        },
+        "xs-1": {
+          "type": "cruzada",
+          "settings": {
+            "title": "Hígado deshidratado",
+            "detail": "cerdo y res · 80 g",
+            "price": "$70.00",
+            "color": "#85CCC6"
+          }
+        },
+        "xs-2": {
+          "type": "cruzada",
+          "settings": {
+            "title": "Patas de pollo",
+            "detail": "colágeno · 14 piezas",
+            "price": "$95.00",
+            "color": "#F59E28"
+          }
+        },
+        "xs-3": {
+          "type": "cruzada",
+          "settings": {
+            "title": "Caja de la manada",
+            "detail": "cuatro premios surtidos",
+            "price": "$260.00",
+            "color": "#6CC2EA"
+          }
+        }
+      },
+      "block_order": [
+        "acc-0",
+        "acc-1",
+        "acc-2",
+        "acc-3",
+        "acc-4",
+        "ben-1",
+        "ben-2",
+        "ben-3",
+        "ben-4",
+        "op-1",
+        "op-2",
+        "op-3",
+        "xs-1",
+        "xs-2",
+        "xs-3"
+      ]
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

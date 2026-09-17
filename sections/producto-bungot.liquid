@@ -54,9 +54,12 @@
   # ajuste de la plantilla queda de respaldo para los que no lo llenen. El
   # antetítulo es el beneficio principal de la etiqueta ("Masa muscular",
   # "Salud dental"): dice más que un genérico y ya está cargado por producto.
-  assign eyebrow = mf.beneficio_principal.value
+  # Desde 2026-09-17 cada producto tiene SU plantilla (product.<sufijo>.json,
+  # ver el schema del acordeón): lo que se escribe en el personalizador manda
+  # y el dato del producto es el respaldo.
+  assign eyebrow = section.settings.eyebrow
   if eyebrow == blank
-    assign eyebrow = section.settings.eyebrow | default: product.type
+    assign eyebrow = mf.beneficio_principal.value | default: product.type
   endif
 
   # Línea debajo del botón: la del producto (custom.nota_compra) o la de la
@@ -688,7 +691,10 @@
             {%- liquid
               # Cada entrada dice de qué metafield se llena. Si ese metafield
               # está vacío (producto sin etiqueta cargada), cae al texto del
-              # bloque; si tampoco hay, la entrada no se dibuja.
+              # bloque; si tampoco hay, la entrada no se dibuja. Con "propio"
+              # marcado es al revés: el texto del bloque manda — así cada
+              # producto edita sus desplegables desde el personalizador en su
+              # propia plantilla (a pedido, 2026-09-17).
               assign src = block.settings.source
               assign acc_body = blank
               if src == 'ingredientes'
@@ -715,6 +721,14 @@
                   assign acc_bens = mf.beneficios.value
                   assign acc_ben_blocks = section.blocks | where: 'type', 'beneficio'
                 endif
+              endif
+
+              if block.settings.propio and block.settings.body != blank
+
+                assign acc_body = blank
+
+                assign acc_list = false
+
               endif
 
               # La tabla del análisis garantizado solo acompaña a ingredientes.
@@ -1212,7 +1226,7 @@
     { "type": "header", "content": "Compra" },
     { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Premios deshidratados" },
     { "type": "text", "id": "title", "label": "Título", "info": "Vacío = el nombre del producto." },
-    { "type": "textarea", "id": "lead", "label": "Párrafo", "info": "Vacío = la descripción del producto." },
+    { "type": "richtext", "id": "lead", "label": "Párrafo", "info": "Vacío = la descripción del producto (la de su ficha en el admin)." },
     { "type": "text", "id": "cta_prefix", "label": "Texto del botón", "default": "Agregar", "info": "Al lado se agrega solo lo que esté elegido." },
     { "type": "text", "id": "cta_prefix_plan", "label": "Texto del botón con suscripción", "default": "Suscribirme", "info": "Se usa cuando el cliente elige un plan de suscripción (Shopify Subscriptions)." },
     { "type": "text", "id": "note", "label": "Línea debajo del botón", "default": "Precio por confirmar · envío gratis desde $550" },
@@ -1263,6 +1277,7 @@
             { "value": "manual", "label": "Texto fijo (el de abajo)" }
           ]
         },
+        { "type": "checkbox", "id": "propio", "label": "Usar el texto de abajo para este producto", "info": "Marcado: manda el texto de abajo. Sin marcar: manda el dato del producto y el texto de abajo es solo respaldo.", "default": false },
         { "type": "richtext", "id": "body", "label": "Texto fijo / respaldo", "default": "<p>Un solo ingrediente, deshidratado a baja temperatura.</p>" }
       ]
     },
