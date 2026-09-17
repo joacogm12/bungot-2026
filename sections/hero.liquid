@@ -173,7 +173,16 @@
       var hero = document.currentScript.parentElement;
       var lcp = hero.querySelector('.hero__patas img');
       var suelto = false;
-      function suelta() { if (suelto) return; suelto = true; hero.removeAttribute('data-hero-espera'); }
+      function suelta() {
+        if (suelto) return;
+        suelto = true;
+        hero.removeAttribute('data-hero-espera');
+        // Aviso para quien más esté esperando al LCP (hoy, la primera foto
+        // de Favoritos): bandera por si llega tarde + evento.
+        window.BUNGOT = window.BUNGOT || {};
+        window.BUNGOT.lcpListo = true;
+        window.dispatchEvent(new Event('bungot:lcp'));
+      }
       function trasPintar() {
         requestAnimationFrame(function () { requestAnimationFrame(function () { setTimeout(suelta, 120); }); });
       }

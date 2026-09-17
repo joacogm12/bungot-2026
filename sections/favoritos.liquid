@@ -74,7 +74,18 @@
           favs.removeAttribute('data-favs-espera');
           gestos.forEach(function (g) { window.removeEventListener(g, suelta); });
         }
-        favs.setAttribute('data-favs-espera', '');
+        // Dos tiempos. 'todo': ni el primer panel baja su foto ni su sticker
+        // (por eso TODAS las imágenes de la sección son lazy, también la
+        // primera: a un eager no lo frena el display:none) hasta que el hero
+        // avisa que el perro ya se pintó; después quedan esperando solo los
+        // paneles 2..n. Sin hero en la página, el respaldo es el reloj.
+        favs.setAttribute('data-favs-espera', 'todo');
+        function primero() {
+          if (favs.getAttribute('data-favs-espera') === 'todo') favs.setAttribute('data-favs-espera', '');
+        }
+        if (window.BUNGOT && window.BUNGOT.lcpListo) primero();
+        else window.addEventListener('bungot:lcp', primero, { once: true });
+        setTimeout(primero, 2500);
         gestos.forEach(function (g) { window.addEventListener(g, suelta, { passive: true }); });
         if (document.readyState === 'complete') setTimeout(suelta, 300);
         else window.addEventListener('load', function () { setTimeout(suelta, 300); });
@@ -150,7 +161,7 @@
                 alt="{{ block.settings.image.alt | default: alt }}"
                 width="{{ block.settings.image.width }}"
                 height="{{ block.settings.image.height }}"
-                loading="{% if i == 1 %}eager{% else %}lazy{% endif %}"
+                loading="lazy"
               >
             </picture>
           {%- else -%}
@@ -184,7 +195,7 @@
                 class="fav__img"
                 src="{{ block.settings.image_asset | asset_url }}"
                 alt="{{ alt }}"
-                loading="{% if i == 1 %}eager{% else %}lazy{% endif %}"
+                loading="lazy"
               >
               {%- # theme-check-enable ImgWidthAndHeight -%}
             </picture>
@@ -205,7 +216,7 @@
               alt="{{ block.settings.sticker_alt | escape }}"
               width="640"
               height="640"
-              loading="{% if i == 1 %}eager{% else %}lazy{% endif %}"
+              loading="lazy"
               style="--fav-sticker-tilt: {% cycle '-6deg', '5deg', '-4deg', '7deg' %};"
             >
           {%- endif -%}

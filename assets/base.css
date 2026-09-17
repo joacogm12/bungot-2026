@@ -1342,6 +1342,10 @@ shopify-account::part(signed-out-avatar) {
    de scroll o poco después del load): así sus fotos y stickers lazy no bajan
    mientras carga el hero. */
 .favs[data-favs-espera] .fav ~ .fav { display: none; }
+/* Primer tiempo: tampoco las imágenes del primer panel, hasta que el hero
+   avise que el LCP ya se pintó. Solo las imágenes: el panel conserva su caja
+   (alto fijo, foto absoluta), así que nada se mueve. */
+.favs[data-favs-espera='todo'] .fav img { display: none; }
 
 .favs[data-enhanced='true'] {
   /* El recorrido tiene que dar para: una pausa por panel, un cambio entre cada
