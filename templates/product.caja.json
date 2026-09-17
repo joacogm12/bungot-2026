@@ -38,7 +38,7 @@
           "type": "acordeon",
           "settings": {
             "title": "¿Qué trae este paquete?",
-            "source": "manual",
+            "source": "contenido",
             "body": "<p>Cada paquete lo armamos nosotros con premios 100% naturales, sin conservadores ni colorantes. Lo que trae exactamente viene en la descripción de cada paquete.</p>"
           }
         },

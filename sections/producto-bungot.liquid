@@ -48,13 +48,20 @@
   assign mf = product.metafields.custom
   assign gramaje = mf.gramaje.value
 
-  # --- Textos de la columna derecha (override → producto → default) ---
-  # El antetítulo es el beneficio principal de la etiqueta ("Masa muscular",
+  # --- Textos de la columna derecha (producto → plantilla → default) ---
+  # Todo texto de la PDP se puede editar POR PRODUCTO desde el admin de
+  # Shopify (a pedido, 2026-09-17): el metafield del producto manda y el
+  # ajuste de la plantilla queda de respaldo para los que no lo llenen. El
+  # antetítulo es el beneficio principal de la etiqueta ("Masa muscular",
   # "Salud dental"): dice más que un genérico y ya está cargado por producto.
-  assign eyebrow = section.settings.eyebrow
+  assign eyebrow = mf.beneficio_principal.value
   if eyebrow == blank
-    assign eyebrow = mf.beneficio_principal.value | default: product.type
+    assign eyebrow = section.settings.eyebrow | default: product.type
   endif
+
+  # Línea debajo del botón: la del producto (custom.nota_compra) o la de la
+  # plantilla.
+  assign note = mf.nota_compra.value | default: section.settings.note
 
   assign title = section.settings.title | default: product.title
   if title == blank
@@ -665,8 +672,8 @@
           >
         {%- endif -%}
 
-        {%- if section.settings.note != blank -%}
-          <p class="pdnote">{{ section.settings.note }}</p>
+        {%- if note != blank -%}
+          <p class="pdnote">{{ note }}</p>
         {%- endif -%}
       </form>
 
@@ -690,6 +697,8 @@
                 assign acc_body = mf.recomendacion.value
               elsif src == 'instrucciones'
                 assign acc_body = mf.instrucciones.value
+              elsif src == 'contenido'
+                assign acc_body = mf.contenido_paquete.value
               endif
 
               # "Beneficios" (a pedido, 2026-09-17) es un campo APARTE de la
@@ -1250,6 +1259,7 @@
             { "value": "recomendacion", "label": "Recomendación diaria del producto" },
             { "value": "instrucciones", "label": "Conservación del producto" },
             { "value": "beneficios", "label": "Beneficios del producto" },
+            { "value": "contenido", "label": "Qué trae el paquete (del producto)" },
             { "value": "manual", "label": "Texto fijo (el de abajo)" }
           ]
         },
