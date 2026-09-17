@@ -311,12 +311,12 @@
        así entra y sale con cada resize, rotación y ResizeObserver. Si el
        estado cambió, decidir() rehace el modo plano (rAF, transforms) y
        vuelve a entrar aquí ya con la clase puesta. */
-    /* Desde 2026-09-17, a pedido, el teléfono corre el MISMO mapa que la compu
-       encogido con zoom (a 390 queda en .25): el corte de la columna va en 0,
-       así que .paseo--vertical ya no se activa en ningún ancho. La maqueta en
-       columna sigue entera en el CSS y aquí: para regresarla, este corte
-       vuelve a 640. */
-    var CORTE_VERTICAL = 0;
+    /* El 2026-09-17 se probó en vivo correr en teléfono el MISMO mapa de la
+       compu encogido con zoom (corte en 0) y se regresó a la columna ese
+       mismo día, a pedido: sin perro ni camino, solo las secciones. Los
+       arreglos de Safari de iPhone que salieron de esa prueba (ajustarTexto
+       y el escV de abajo) se quedan: aplican a cualquier ancho con zoom. */
+    var CORTE_VERTICAL = 640;
     var vertical = anchoMarco <= CORTE_VERTICAL;
     if (root.classList.contains('paseo--vertical') !== vertical) {
       root.classList.toggle('paseo--vertical', vertical);
