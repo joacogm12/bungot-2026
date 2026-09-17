@@ -255,7 +255,6 @@
 
     armarTabla();
     initArrastre();
-    initDibujos();
     decidir();
 
     /* Solo el resize que cambia el ANCHO (rotación, ventana de escritorio):
@@ -667,30 +666,6 @@
      el desplazamiento se acota entre el reposo (o = O0) y el track entero
      pasado hacia la punta (o = 0). Los deltas del puntero llegan en px de
      pantalla: se dividen por el zoom del lienzo y la escala del grupo. */
-  /* Los dibujos de las tarjetas en columna (.ptar__dibujo, solo teléfono):
-     acá no hay perro que llegue a la estación, así que la acción de cada
-     una (tapa que brinca y plátano que sale, chispas, chorro, flash) es un
-     @keyframes de CSS que arranca cuando el dibujo entra en pantalla. Solo
-     se pone la clase; el CSS decide qué se mueve y respeta reduced-motion.
-     Fuera de la columna el dibujo es display: none y nunca interseca. Una
-     sola vez por dibujo: al volver a subir no se repite. */
-  function initDibujos() {
-    var dibujos = root.querySelectorAll('.ptar__dibujo');
-    if (!dibujos.length) return;
-    if (!('IntersectionObserver' in window)) {
-      dibujos.forEach(function (d) { d.classList.add('ptar__dibujo--activo'); });
-      return;
-    }
-    var io = new IntersectionObserver(function (entradas) {
-      entradas.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        e.target.classList.add('ptar__dibujo--activo');
-        io.unobserve(e.target);
-      });
-    }, { threshold: 0.5 });
-    dibujos.forEach(function (d) { io.observe(d); });
-  }
-
   function initArrastre() {
     var pista = rollo.pista;
     if (!pista) return;

@@ -153,10 +153,9 @@
                   su pieza compuesta a mano con los mismos PNG, en su estado
                   final (tapa puesta y plátano afuera, chispas y humo, flash;
                   el hidrante va sin chorro).
-                  Las cotas de cada capa están en .ptar__dibujo--* del CSS, y
-                  la acción de cada estación se repite en CSS (@keyframes
-                  pd-*) cuando el observador del JS le pone
-                  .ptar__dibujo--activo al entrar en pantalla.
+                  Las cotas de cada capa están en .ptar__dibujo--* del CSS. Van
+                  quietos: la animación al entrar en pantalla se quitó a pedido
+                  (2026-09-17).
                 {%- endcomment -%}
                 <div class="ptar__dibujo ptar__dibujo--{{ clave }}" aria-hidden="true">
                   {%- case clave -%}
