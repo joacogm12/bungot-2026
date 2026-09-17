@@ -151,7 +151,8 @@
                   suelta en la escena y el JS la ancla al camino; en columna
                   el camino y el perro no existen, así que cada tarjeta trae
                   su pieza compuesta a mano con los mismos PNG, en su estado
-                  final (tapa puesta y plátano afuera, chispas, chorro, flash).
+                  final (tapa puesta y plátano afuera, chispas y humo, flash;
+                  el hidrante va sin chorro).
                   Las cotas de cada capa están en .ptar__dibujo--* del CSS, y
                   la acción de cada estación se repite en CSS (@keyframes
                   pd-*) cuando el observador del JS le pone
@@ -168,9 +169,9 @@
                     {%- when 'pruebas' -%}
                       <img class="ptar__dibujo-mesa" src="{{ 'pruebas-anim1.png' | asset_url }}" alt="" width="558" height="768" loading="lazy">
                       <img class="ptar__dibujo-chispas" src="{{ 'pruebas-anim2.png' | asset_url }}" alt="" width="593" height="768" loading="lazy">
+                      <img class="ptar__dibujo-humo" src="{{ 'pruebas-humo.png' | asset_url }}" alt="" width="625" height="768" loading="lazy">
                     {%- when 'hidrante' -%}
                       <img class="ptar__dibujo-hidrante" src="{{ 'hidrante-solido.png' | asset_url }}" alt="" width="768" height="689" loading="lazy">
-                      <img class="ptar__dibujo-agua" src="{{ 'agua-nueva.png' | asset_url }}" alt="" width="768" height="565" loading="lazy">
                     {%- when 'manada' -%}
                       <img class="ptar__dibujo-camara" src="{{ 'camara-rec.png' | asset_url }}" alt="" width="768" height="500" loading="lazy">
                       <img class="ptar__dibujo-flash" src="{{ 'flash-rec.png' | asset_url }}" alt="" width="768" height="508" loading="lazy">
