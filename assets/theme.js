@@ -452,9 +452,11 @@
 
       // Ritmo en "pantallas" de scroll. Tiene que coincidir con el alto que
       // calcula el CSS, o el último panel se corta antes de tiempo.
-      var cs = getComputedStyle(root);
-      var hold = parseFloat(cs.getPropertyValue('--fav-hold')) || 0.6;
-      var trans = parseFloat(cs.getPropertyValue('--fav-trans')) || 0.8;
+      // Del style inline que escribe favoritos.liquid, no de getComputedStyle:
+      // pedir el estilo computado justo después de poner data-enhanced obliga
+      // a recalcular estilos en el arranque, y el valor es el mismo.
+      var hold = parseFloat(root.style.getPropertyValue('--fav-hold')) || 0.6;
+      var trans = parseFloat(root.style.getPropertyValue('--fav-trans')) || 0.8;
       var n = panels.length;
 
       // La línea de tiempo alterna pausa y cambio:
@@ -750,14 +752,25 @@
       function mideCopy() {
         if (copy) pile.style.setProperty('--copy-hh', (copy.offsetHeight / 2) + 'px');
       }
-      mideCopy();
-      if (document.fonts && document.fonts.ready) document.fonts.ready.then(mideCopy);
-      var anchoCopy = window.innerWidth;
-      window.addEventListener('resize', function () {
-        if (window.innerWidth === anchoCopy) return;
-        anchoCopy = window.innerWidth;
+      // Con ResizeObserver y no midiendo al arrancar: leer offsetHeight en el
+      // init obligaba al navegador a maquetar la página ENTERA en ese momento
+      // (reprocesamiento forzado, ~100 ms en un celu lento, PageSpeed lo
+      // marcaba). El observer entrega la medida cuando el layout ya está
+      // hecho, y avisa solo cuando la caja del texto cambia: al entrar Anton
+      // y al cambiar el ancho, que son justo los dos casos de arriba. La barra
+      // del navegador de celu no cambia el alto del texto, así que no dispara.
+      if (copy && 'ResizeObserver' in window) {
+        new ResizeObserver(mideCopy).observe(copy);
+      } else {
         mideCopy();
-      });
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(mideCopy);
+        var anchoCopy = window.innerWidth;
+        window.addEventListener('resize', function () {
+          if (window.innerWidth === anchoCopy) return;
+          anchoCopy = window.innerWidth;
+          mideCopy();
+        });
+      }
 
       // Modo acomodar (checkbox de la sección o ?acomodar en la URL):
       // herramienta de maqueta, no UI de la tienda. Dispersión clavada al

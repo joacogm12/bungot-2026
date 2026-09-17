@@ -15,6 +15,14 @@
     en WebP pesan 250 KB con la ilustración idéntica. Si re-exportas las
     capas, conviértelas igual (Pillow: quality=90, method=6). El CDN de
     Shopify respeta los .webp de assets, así que se sirven tal cual.
+  · Dos tamaños por capa: 2048 y una copia a 1024 (perro2-*-1024.webp, la
+    mitad de peso: 123 KB las trece contra 250). Como son assets no hay
+    image_url, así que el srcset va a mano. El `sizes` repite el ancho real de
+    la figura (--figura en base.css: min(94vw, 142% del alto útil) en compu,
+    min(112vw, 112vh) en celu/tablet) para que el navegador elija bien: un
+    Android de densidad media toma la de 1024, un iPhone (×3) y cualquier
+    compu siguen en la de 2048. Si cambias --figura, cambia el sizes. Las
+    trece capas llevan el MISMO srcset/sizes para que todas elijan igual.
   · Prioridad de descarga: el cuerpo y las patas son los candidatos a LCP
     (las patas ganan en celu: cuelgan enteras, sin recorte) y van con
     fetchpriority="high"; el pelo es detalle de la animación: va "low", lazy
@@ -108,6 +116,8 @@
           <img
             class="hero__capa"
             src="{{ 'perro2-cuerpo.webp' | asset_url }}"
+            srcset="{{ 'perro2-cuerpo-1024.webp' | asset_url }} 1024w, {{ 'perro2-cuerpo.webp' | asset_url }} 2048w"
+            sizes="(max-width: 900px) min(112vw, 112vh), min(94vw, calc(142vh - 207px))"
             alt="{{ 'sections.hero.dog_alt' | t }}"
             width="2048"
             height="2048"
@@ -120,6 +130,8 @@
             <img
               class="hero__capa hero__pelo hero__pelo--{{ nn }}"
               src="{{ 'perro2-pelo-' | append: nn | append: '.webp' | asset_url }}"
+              srcset="{{ 'perro2-pelo-' | append: nn | append: '-1024.webp' | asset_url }} 1024w, {{ 'perro2-pelo-' | append: nn | append: '.webp' | asset_url }} 2048w"
+              sizes="(max-width: 900px) min(112vw, 112vh), min(94vw, calc(142vh - 207px))"
               alt=""
               draggable="false"
               width="2048"
@@ -152,6 +164,8 @@
             <img
               class="hero__capa"
               src="{{ 'perro2-patas.webp' | asset_url }}"
+              srcset="{{ 'perro2-patas-1024.webp' | asset_url }} 1024w, {{ 'perro2-patas.webp' | asset_url }} 2048w"
+              sizes="(max-width: 900px) min(112vw, 112vh), min(94vw, calc(142vh - 207px))"
               alt=""
               draggable="false"
               width="2048"

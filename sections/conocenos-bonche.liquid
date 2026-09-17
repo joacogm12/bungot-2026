@@ -115,6 +115,8 @@
                 class="bonche__photo"
                 src="{{ block.settings.image | image_url: width: 840 }}"
                 srcset="
+                  {{ block.settings.image | image_url: width: 240 }} 240w,
+                  {{ block.settings.image | image_url: width: 320 }} 320w,
                   {{ block.settings.image | image_url: width: 420 }} 420w,
                   {{ block.settings.image | image_url: width: 840 }} 840w,
                   {{ block.settings.image | image_url: width: 1200 }} 1200w"
