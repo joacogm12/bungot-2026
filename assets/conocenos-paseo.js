@@ -329,6 +329,7 @@
        zoom es .51 y la copia de 22px caería a 11px. El dibujo se encoge, las
        letras no. */
     lienzo.style.setProperty('--paseo-zoom', zoom);
+    ajustarTexto(zoom);
 
     geo.altoPista = riel.offsetHeight || 1;
     var rect = riel.getBoundingClientRect();
@@ -359,6 +360,36 @@
 
     geo.listo = true;
     sucio = true;
+  }
+
+  /* Safari de iPhone NO encoge el texto con `zoom`: encoge cajas e imágenes
+     y deja las letras a su tamaño de lienzo (título de 128px reales en una
+     pantalla de 390; visto en el celular del cliente el 2026-09-17, ni
+     Chromium ni el WebKit de escritorio lo hacen). Ahí el tamaño del texto
+     se gobierna con -webkit-text-size-adjust, así que se mide en vez de
+     olfatear el navegador: una sonda con una caja de 100px y una letra de
+     100px; si la letra sale mucho más alta que la caja, el zoom no la tocó
+     y se le pone el mismo factor por text-size-adjust. Se mide una sola vez
+     (la primera con zoom < 1) y después solo se actualiza el porcentaje. */
+  var textoSinZoom = null;
+  function ajustarTexto(zoom) {
+    if (textoSinZoom === null) {
+      if (zoom > 0.9) return; // sin encoger no hay nada que comparar
+      var sonda = document.createElement('div');
+      sonda.setAttribute('aria-hidden', 'true');
+      sonda.style.cssText = 'position:absolute;left:0;top:0;visibility:hidden;pointer-events:none;';
+      sonda.innerHTML = '<div style="width:100px;height:100px"></div>' +
+        '<span style="display:inline-block;font:100px/1 sans-serif;white-space:nowrap">M</span>';
+      lienzo.appendChild(sonda);
+      var caja = sonda.firstChild.getBoundingClientRect().height;
+      var letra = sonda.lastChild.getBoundingClientRect().height;
+      lienzo.removeChild(sonda);
+      if (!caja || !letra) return; // sin layout todavía: se reintenta en la próxima medición
+      textoSinZoom = letra / caja > 1.5;
+    }
+    var pct = textoSinZoom && zoom < 1 ? (zoom * 100).toFixed(3) + '%' : '';
+    lienzo.style.webkitTextSizeAdjust = pct;
+    lienzo.style.textSizeAdjust = pct;
   }
 
   function cuadro() {
