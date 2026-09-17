@@ -117,7 +117,6 @@
     assign pv = product.selected_or_first_available_variant
     if pv.compare_at_price > pv.price
       assign stats_ahorro = true
-      assign ahorro = pv.compare_at_price | minus: pv.price
     endif
   endif
 
@@ -413,7 +412,8 @@
       {%- if stats_ahorro -%}
       {%- comment -%}
         Paquetes: por separado (tachado) vs. en paquete (en pastilla de color,
-        que es lo que tiene que jalar el ojo) y el sello con lo que se ahorra.
+        que es lo que tiene que jalar el ojo). Hubo un sello de estrella con el
+        ahorro y se quitó a pedido (2026-09-17).
       {%- endcomment -%}
       <dl class="pdstats pdstats--ahorro">
         <div class="pdstat">
@@ -423,9 +423,6 @@
         <div class="pdstat pdstat--oferta">
           <dt class="pdstat__value pdstat__value--oferta">{{ pv.price | money_without_trailing_zeros }}</dt>
           <dd class="pdstat__label">{{ section.settings.ahorro_label_paquete }}</dd>
-        </div>
-        <div class="pdstat pdstat--sello">
-          <dt class="pdstat__sello"><small>{{ 'sections.producto.ahorro_sello' | t }}</small><span>{{ ahorro | money_without_trailing_zeros }}</span></dt>
         </div>
       </dl>
       {%- else -%}

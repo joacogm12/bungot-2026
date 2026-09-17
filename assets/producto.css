@@ -426,8 +426,7 @@
 }
 
 /* Variante de ahorro (paquetes): por separado tachado y apagado, en paquete
-   en pastilla del color de la familia —es lo que tiene que jalar el ojo— y un
-   sello de estrella con lo que se ahorra. Mismo sistema de la PDP: borde de
+   en pastilla del color de la familia, que es lo que tiene que jalar el ojo. Mismo sistema de la PDP: borde de
    3px y sombra dura, nada difuso. */
 .pdstats--ahorro { align-items: center; flex-wrap: wrap; row-gap: 16px; }
 .pdstats--ahorro .pdstat { text-align: center; }
@@ -447,35 +446,7 @@
   box-shadow: 4px 4px 0 var(--pd-green);
 }
 .pdstat--oferta .pdstat__label { margin-top: 12px; color: var(--pd-green); }
-.pdstat--sello { border-right: 0; }
-.pdstat__sello {
-  width: 96px;
-  height: 96px;
-  margin: 0;
-  display: grid;
-  place-content: center;
-  text-align: center;
-  background: var(--pd-mango);
-  color: var(--pd-green);
-  transform: rotate(-10deg);
-  /* Estrella de 12 puntas, la de las etiquetas de descuento. */
-  clip-path: polygon(50% 0%, 60.4% 11.4%, 75% 6.7%, 78.3% 21.7%, 93.3% 25%, 88.6% 39.6%, 100% 50%, 88.6% 60.4%, 93.3% 75%, 78.3% 78.3%, 75% 93.3%, 60.4% 88.6%, 50% 100%, 39.6% 88.6%, 25% 93.3%, 21.7% 78.3%, 6.7% 75%, 11.4% 60.4%, 0% 50%, 11.4% 39.6%, 6.7% 25%, 21.7% 21.7%, 25% 6.7%, 39.6% 11.4%);
-}
-.pdstat__sello small {
-  display: block;
-  font-family: var(--font-body, 'Inter', sans-serif);
-  font-weight: 600;
-  font-size: 11px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  line-height: 1.1;
-}
-.pdstat__sello span {
-  display: block;
-  font-family: var(--font-display, 'Anton', sans-serif);
-  font-size: 24px;
-  line-height: 1.05;
-}
+
 
 /* --- Selectores ---------------------------------------------------------- */
 .pdform { margin: 0; }
@@ -1315,23 +1286,10 @@
 
 @media (max-width: 620px) {
   .pdopts { grid-template-columns: 1fr; }
-  /* Cifras de ahorro: las tres piezas en UN renglón también en teléfono (el
-     sello solo en el segundo renglón dejaba una regla colgando). */
-  .pdstats--ahorro { flex-wrap: nowrap; }
-  .pdstats--ahorro .pdstat { padding-right: 12px; margin-right: 12px; }
-  .pdstats--ahorro .pdstat--sello { padding-right: 0; margin-right: 0; }
   .pdstat__value--antes { font-size: 28px; }
-  .pdstat__value--oferta { font-size: 30px; padding: 7px 12px 6px; }
-  .pdstat__sello { width: 76px; height: 76px; }
-  .pdstat__sello small { font-size: 9px; }
-  .pdstat__sello span { font-size: 20px; }
+  .pdstat__value--oferta { font-size: 32px; padding: 7px 14px 6px; }
   /* Una columna, pero nunca más ancha que la tarjeta del catálogo. */
   .pdcross__grid { grid-template-columns: minmax(0, 344px); }
-/* En teléfonos muy angostos ya no caben las tres: el sello baja solo y la
-   pastilla pierde su regla para que no quede colgando. */
-@media (max-width: 370px) {
-  .pdstats--ahorro { flex-wrap: wrap; }
-  .pdstats--ahorro .pdstat--oferta { border-right: 0; padding-right: 0; margin-right: 0; }
 }
   .pdbuyrow { flex-wrap: wrap; }
   .pdcta { flex: 1 1 100%; }
