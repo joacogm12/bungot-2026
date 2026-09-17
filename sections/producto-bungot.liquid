@@ -692,13 +692,20 @@
                 assign acc_body = mf.instrucciones.value
               endif
 
+              # "Beneficios" (a pedido, 2026-09-17): la descripción del
+              # producto tal cual, con su HTML — no pasa por newline_to_br.
+              assign acc_html = blank
+              if src == 'descripcion'
+                assign acc_html = product.description
+              endif
+
               # La tabla del análisis garantizado solo acompaña a ingredientes.
               assign show_analisis = false
               if src == 'ingredientes' and mf.proteina_cruda.value != blank
                 assign show_analisis = true
               endif
             -%}
-            {%- if acc_body != blank or block.settings.body != blank -%}
+            {%- if acc_body != blank or acc_html != blank or block.settings.body != blank -%}
               {%- comment -%} Todos los acordeones arrancan cerrados: la ficha se lee de un vistazo y el usuario abre lo que le interese. {%- endcomment -%}
               <details class="pdacc__item" {{ block.shopify_attributes }}>
                 <summary class="pdacc__head">
@@ -706,7 +713,9 @@
                   <span class="pdacc__sign" aria-hidden="true"></span>
                 </summary>
                 <div class="pdacc__body">
-                  {%- if acc_body != blank -%}
+                  {%- if acc_html != blank -%}
+                    <div class="pdacc__desc">{{ acc_html }}</div>
+                  {%- elsif acc_body != blank -%}
                     <p>{{ acc_body | newline_to_br }}</p>
                   {%- else -%}
                     {{ block.settings.body }}
@@ -1178,7 +1187,7 @@
     { "type": "textarea", "id": "lead", "label": "Párrafo", "info": "Vacío = la descripción del producto." },
     { "type": "text", "id": "cta_prefix", "label": "Texto del botón", "default": "Agregar", "info": "Al lado se agrega solo lo que esté elegido." },
     { "type": "text", "id": "cta_prefix_plan", "label": "Texto del botón con suscripción", "default": "Suscribirme", "info": "Se usa cuando el cliente elige un plan de suscripción (Shopify Subscriptions)." },
-    { "type": "text", "id": "note", "label": "Línea debajo del botón", "default": "Precio por confirmar · envío gratis desde $500" },
+    { "type": "text", "id": "note", "label": "Línea debajo del botón", "default": "Precio por confirmar · envío gratis desde $550" },
     { "type": "checkbox", "id": "show_stepper", "label": "Mostrar selector de cantidad", "default": true, "info": "Apágalo en la Caja BUNGOT: una suscripción es una caja por mes." },
     { "type": "header", "content": "Arma tu caja", "info": "Solo aparece en el producto de la Caja (Ajustes del tema → Suscripción)." },
     { "type": "range", "id": "caja_count", "min": 1, "max": 6, "step": 1, "label": "Premios por caja", "default": 3 },
@@ -1221,6 +1230,7 @@
             { "value": "ingredientes", "label": "Ingredientes + análisis del producto" },
             { "value": "recomendacion", "label": "Recomendación diaria del producto" },
             { "value": "instrucciones", "label": "Conservación del producto" },
+            { "value": "descripcion", "label": "Descripción del producto" },
             { "value": "manual", "label": "Texto fijo (el de abajo)" }
           ]
         },
@@ -1277,7 +1287,7 @@
         { "type": "acordeon", "settings": { "title": "Ingredientes y análisis", "source": "ingredientes", "body": "<p>Un solo ingrediente, deshidratado a baja temperatura. Sin conservadores, químicos ni colorantes.</p>" } },
         { "type": "acordeon", "settings": { "title": "Porción diaria", "source": "recomendacion", "body": "<p>Como premio, en el entrenamiento o partido encima de su comida. Deja siempre agua fresca cerca.</p>" } },
         { "type": "acordeon", "settings": { "title": "Cuidados y conservación", "source": "instrucciones", "body": "<p>En un lugar fresco y seco. No necesita refrigeración.</p>" } },
-        { "type": "acordeon", "settings": { "title": "Envíos y devoluciones", "source": "manual", "body": "<p>Enviamos a todo México en 2 a 4 días hábiles. Envío gratis en pedidos desde $500. Si algo llegó mal, escríbenos dentro de los primeros 15 días y te lo reponemos sin vueltas.</p>" } },
+        { "type": "acordeon", "settings": { "title": "Envíos y devoluciones", "source": "manual", "body": "<p>Enviamos a todo México en 5 a 7 días hábiles. Envío gratis en pedidos desde $550. Si algo llegó mal, escríbenos dentro de los primeros 15 días y te lo reponemos sin vueltas.</p>" } },
         { "type": "beneficio", "settings": { "title": "Ayuda al desarrollo muscular" } },
         { "type": "beneficio", "settings": { "title": "Aumenta niveles de energía" } },
         { "type": "beneficio", "settings": { "title": "Refuerza sistema inmune" } },

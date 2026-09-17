@@ -9,7 +9,7 @@
         "lead": "",
         "cta_prefix": "Agregar",
         "cta_prefix_plan": "Suscribirme",
-        "note": "Envío gratis desde $500 · llega en 2 a 4 días",
+        "note": "Envío gratis desde $550 · llega en 5 a 7 días hábiles",
         "show_stepper": true,
         "stats_ahorro": true,
         "stat1_value": "100%",
@@ -26,6 +26,14 @@
         "cross_collection": "productos-perros"
       },
       "blocks": {
+        "acc-0": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Beneficios",
+            "source": "descripcion",
+            "body": ""
+          }
+        },
         "acc-1": {
           "type": "acordeon",
           "settings": {
@@ -47,7 +55,7 @@
           "settings": {
             "title": "Envíos y devoluciones",
             "source": "manual",
-            "body": "<p>Enviamos a todo México en 2 a 4 días hábiles. Envío gratis en pedidos desde $500.</p><p>Si el paquete llegó abierto, roto o algo no está bien, escríbenos dentro de los primeros 15 días y te lo reponemos sin vueltas. Sin formularios eternos, sin letras chiquitas.</p><p>¿Dudas antes de comprar? Escríbenos a bungot.contacto@gmail.com o por Instagram @bungot_mx y te contestamos nosotros, no un bot.</p>"
+            "body": "<p>Enviamos a todo México en 5 a 7 días hábiles. Envío gratis en pedidos desde $550.</p><p>Si el paquete llegó abierto, roto o algo no está bien, escríbenos dentro de los primeros 15 días y te lo reponemos sin vueltas. Sin formularios eternos, sin letras chiquitas.</p><p>¿Dudas antes de comprar? Escríbenos a contacto@bungot.com o por Instagram @bungot_mx y te contestamos nosotros, no un bot.</p>"
           }
         },
         "ben-1": { "type": "beneficio", "settings": { "title": "Armado por nosotros" } },
@@ -55,7 +63,7 @@
         "ben-3": { "type": "beneficio", "settings": { "title": "Listo para regalar" } },
         "ben-4": { "type": "beneficio", "settings": { "title": "Compra única, sin suscripción" } }
       },
-      "block_order": ["acc-1", "acc-2", "acc-3", "ben-1", "ben-2", "ben-3", "ben-4"]
+      "block_order": ["acc-0", "acc-1", "acc-2", "acc-3", "ben-1", "ben-2", "ben-3", "ben-4"]
     }
   },
   "order": ["main"]

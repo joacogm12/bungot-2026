@@ -12,6 +12,14 @@
     "main": {
       "type": "producto-bungot",
       "blocks": {
+        "acc-0": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Beneficios",
+            "source": "descripcion",
+            "body": ""
+          }
+        },
         "acc-1": {
           "type": "acordeon",
           "settings": {
@@ -41,7 +49,7 @@
           "settings": {
             "title": "Envíos y devoluciones",
             "source": "manual",
-            "body": "<p>Enviamos a todo México en 2 a 4 días hábiles. Envío gratis en pedidos desde $500.</p><p>Si la bolsa llegó abierta, rota o algo no está bien, escríbenos dentro de los primeros 15 días y te la reponemos sin vueltas. Sin formularios eternos, sin letras chiquitas.</p><p>¿Dudas antes de comprar? Escríbenos a bungot.contacto@gmail.com o por Instagram @bungot_mx y te contestamos nosotros, no un bot.</p>"
+            "body": "<p>Enviamos a todo México en 5 a 7 días hábiles. Envío gratis en pedidos desde $550.</p><p>Si la bolsa llegó abierta, rota o algo no está bien, escríbenos dentro de los primeros 15 días y te la reponemos sin vueltas. Sin formularios eternos, sin letras chiquitas.</p><p>¿Dudas antes de comprar? Escríbenos a contacto@bungot.com o por Instagram @bungot_mx y te contestamos nosotros, no un bot.</p>"
           }
         },
         "ben-1": {
@@ -183,7 +191,7 @@
         }
       },
       "block_order": [
-        "acc-1",
+        "acc-0", "acc-1",
         "acc-2",
         "acc-3",
         "acc-4",
@@ -213,7 +221,7 @@
         "lead": "",
         "cta_prefix": "Agregar",
         "cta_prefix_plan": "Suscribirme",
-        "note": "Envío gratis desde $500 · llega en 2 a 4 días",
+        "note": "Envío gratis desde $550 · llega en 5 a 7 días hábiles",
         "stat1_value": "",
         "stat1_label": "Proteína",
         "stat2_value": "",

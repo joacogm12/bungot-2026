@@ -27,7 +27,7 @@
 <script src="{{ 'carrito.js' | asset_url }}" defer></script>
 
 {%- liquid
-  assign umbral_mxn = section.settings.free_threshold | default: 500
+  assign umbral_mxn = section.settings.free_threshold | default: 550
   assign envio_mxn = section.settings.shipping_cost | default: 99
   assign umbral_cents = umbral_mxn | times: 100
   assign envio_cents = envio_mxn | times: 100
@@ -226,7 +226,7 @@
       "type": "number",
       "id": "free_threshold",
       "label": "Umbral de envío gratis (MXN)",
-      "default": 500
+      "default": 550
     },
     {
       "type": "number",

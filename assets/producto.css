@@ -387,6 +387,7 @@
 /* La descripción del admin llega con su HTML (párrafos, y en los paquetes la
    lista de lo que traen). El editor de Shopify cuela font-family/font-size
    inline al pegar texto: se pisan para que todo salga en la letra de la PDP. */
+.pdacc__desc *,
 .pdbuy__lead * { font-family: inherit !important; font-size: inherit !important; color: inherit !important; }
 .pdbuy__lead p { margin: 0 0 12px; }
 .pdbuy__lead ul,

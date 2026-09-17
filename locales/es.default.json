@@ -137,7 +137,7 @@
     "seal_missing": "Faltan {{ amount }} para envío gratis",
     "seal_free": "Envío gratis aplicado",
     "keep_shopping": "‹ Seguir comprando",
-    "footnote": "Enviamos a todo México en 2 a 4 días hábiles · Impuestos incluidos",
+    "footnote": "Enviamos a todo México en 5 a 7 días hábiles · Impuestos incluidos",
     "upsell_eyebrow": "Se lleva bien con",
     "upsell_lead": "Lo que más se agrega junto a lo que ya llevas.",
     "upsell_add": "Agregar {{ product }} al carrito",
@@ -272,7 +272,7 @@
       "f_zip": "Código postal",
       "f_phone": "Teléfono",
       "set_default": "Usar como predeterminada",
-      "note_title": "Envío gratis desde $500",
+      "note_title": "Envío gratis desde $550",
       "note_text": "Guardamos tu dirección para que el próximo pedido salga en dos toques."
     },
     "signed_out": {

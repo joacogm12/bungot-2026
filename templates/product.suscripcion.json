@@ -9,7 +9,7 @@
         "lead": "",
         "cta_prefix": "Suscribirme",
         "cta_prefix_plan": "Suscribirme",
-        "note": "Cada caja llega en 2 a 4 días hábiles",
+        "note": "Cada caja llega en 5 a 7 días hábiles",
         "show_stepper": false,
         "stat1_value": "3",
         "stat1_label": "Premios",
@@ -23,6 +23,14 @@
         "cross_link_label": ""
       },
       "blocks": {
+        "acc-0": {
+          "type": "acordeon",
+          "settings": {
+            "title": "Beneficios",
+            "source": "descripcion",
+            "body": ""
+          }
+        },
         "acc-1": {
           "type": "acordeon",
           "settings": {
@@ -52,7 +60,7 @@
         "ben-3": { "type": "beneficio", "settings": { "title": "100% natural, sin conservadores" } },
         "ben-4": { "type": "beneficio", "settings": { "title": "Cancela cuando quieras" } }
       },
-      "block_order": ["acc-1", "acc-2", "acc-3", "ben-1", "ben-2", "ben-3", "ben-4"]
+      "block_order": ["acc-0", "acc-1", "acc-2", "acc-3", "ben-1", "ben-2", "ben-3", "ben-4"]
     }
   },
   "order": ["main"]
