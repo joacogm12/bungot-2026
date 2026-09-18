@@ -18,7 +18,7 @@
             "title": "Beneficios",
             "source": "beneficios",
             "propio": true,
-            "body": "<ul><li><strong>Armado por nosotros</strong></li><li><strong>100% natural, sin conservadores</strong></li><li><strong>Listo para regalar</strong></li><li><strong>Compra única, sin suscripción</strong></li></ul>"
+            "body": "<p>TODO LO BUENO VIENE EN COMBO.</p><ul><li><strong>Premios 100% naturales:</strong> cada uno de un solo ingrediente.</li><li><strong>Variedad para explorar:</strong> distintos sabores y texturas para descubrir sus favoritos.</li><li><strong>Momentos juntos:</strong> para consentir, recompensar y compartir.</li><li><strong>Más por menos:</strong> sus premios en paquete, a mejor precio que por separado.</li></ul>"
           }
         },
         "acc-1": {
@@ -89,7 +89,7 @@
       ],
       "settings": {
         "family_color": "",
-        "lote": "",
+        "lote": "Armado a mano · México",
         "eyebrow": "Paquete de premios",
         "title": "",
         "lead": "",
