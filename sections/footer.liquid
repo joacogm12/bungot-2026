@@ -20,6 +20,12 @@
           <p class="footer__signup-label">{{ section.settings.signup_text }}</p>
         {%- endif -%}
 
+        {%- comment -%}
+          El alta se manda por fetch (initFooterSignup en theme.js) y la
+          confirmación se queda aquí mismo: con el envío nativo la página
+          recargaba y no se notaba que algo había pasado. Sin JS el form navega
+          y estos mismos estados los pinta Liquid a la vuelta.
+        {%- endcomment -%}
         {%- form 'customer', class: 'footer__signup' -%}
           <input type="hidden" name="contact[tags]" value="newsletter">
           <input
@@ -27,15 +33,26 @@
             name="contact[email]"
             class="footer__signup-input"
             placeholder="{{ section.settings.signup_placeholder | default: 'tu@email.com' }}"
-            aria-label="Email"
+            aria-label="{{ 'footer.signup.email_label' | t }}"
             required
           >
-          <button type="submit" class="footer__signup-btn">{{ section.settings.signup_button | default: 'Suscribirme' }}</button>
-          {%- if form.posted_successfully? -%}
-            <p class="footer__signup-msg">¡Listo! Revisá tu correo.</p>
-          {%- elsif form.errors -%}
-            <p class="footer__signup-msg">Revisá el mail e intentá de nuevo.</p>
-          {%- endif -%}
+          <button
+            type="submit"
+            class="footer__signup-btn"
+            data-signup-btn
+            data-sending="{{ 'footer.signup.sending' | t | escape }}"
+          >{{ section.settings.signup_button | default: 'Suscribirme' }}</button>
+          <p class="footer__signup-ok" data-signup-ok role="status"{% unless form.posted_successfully? %} hidden{% endunless %}>
+            <svg class="footer__signup-check" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">
+              <circle cx="16" cy="16" r="14"/>
+              <path d="M9.5 16.5l4.5 4.5 8.5-9.5"/>
+            </svg>
+            <span>
+              <strong>{{ 'footer.signup.ok_title' | t }}</strong>
+              {{ 'footer.signup.ok_text' | t }}
+            </span>
+          </p>
+          <p class="footer__signup-msg" data-signup-error role="alert"{% unless form.errors %} hidden{% endunless %}>{{ 'footer.signup.error' | t }}</p>
         {%- endform -%}
       </div>
 

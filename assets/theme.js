@@ -1039,7 +1039,78 @@
     };
   }
 
+  /* --- Alta al newsletter del footer ---------------------------------------
+     Se manda por fetch para que la confirmación (con su animación) salga en
+     el mismo lugar: el envío nativo recargaba la página y no se notaba que
+     algo había pasado. Mismo enganche con el anti-spam que contacto.js: el
+     binder de hCaptcha envuelve form.submit, consigue el token y llama a lo
+     que form.submit ERA — por eso se deja apuntando al fetch desde ya. */
+  function initFooterSignup() {
+    var form = document.querySelector('form.footer__signup');
+    if (!form || !window.fetch || !window.FormData) return;
+    var btn = form.querySelector('[data-signup-btn]');
+    var ok = form.querySelector('[data-signup-ok]');
+    var error = form.querySelector('[data-signup-error]');
+    var correo = form.querySelector('input[type="email"]');
+    if (!btn || !ok || !error || !correo) return;
+
+    var submitNativo = HTMLFormElement.prototype.submit.bind(form);
+    var textoBtn = btn.textContent;
+    var enviando = false;
+
+    function ocupado(si) {
+      enviando = si;
+      btn.setAttribute('aria-busy', si ? 'true' : 'false');
+      btn.textContent = si ? (btn.getAttribute('data-sending') || textoBtn) : textoBtn;
+    }
+
+    function enviaPorFetch() {
+      if (enviando) return;
+      if (!correo.checkValidity()) { correo.reportValidity(); return; }
+      ocupado(true);
+      error.hidden = true;
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        credentials: 'same-origin',
+        headers: { Accept: 'text/html' }
+      })
+        .then(function (res) {
+          // Sin token válido Shopify manda al /challenge del anti-spam: por
+          // fetch no hay cómo pasarlo, así que va el envío nativo.
+          if (!res.ok || res.url.indexOf('/challenge') !== -1) {
+            submitNativo();
+            return;
+          }
+          ocupado(false);
+          // Shopify redirige con ?customer_posted=true solo si el alta pasó.
+          if (res.url.indexOf('customer_posted=true') === -1) {
+            error.hidden = false;
+            return;
+          }
+          ok.hidden = false;
+        })
+        .catch(function () {
+          submitNativo();
+        });
+    }
+
+    form.submit = enviaPorFetch;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      // Con el captcha enlazado su listener corre después y acaba llamando a
+      // form.submit (= enviaPorFetch) con el token ya puesto.
+      if (form.dataset.hcaptchaBound || form.dataset.recaptchaBound) return;
+      enviaPorFetch();
+    });
+
+    correo.addEventListener('input', function () { error.hidden = true; });
+  }
+
   function init() {
+    initFooterSignup();
     initPreloader();
     initCardPickers();
     initNav();

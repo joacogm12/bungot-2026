@@ -155,7 +155,14 @@
     "empty": "No encontramos nada con eso. Probá con otra cosa."
   },
   "footer": {
-    "rights": "Todos los derechos reservados."
+    "rights": "Todos los derechos reservados.",
+    "signup": {
+      "email_label": "Tu correo",
+      "sending": "Enviando…",
+      "ok_title": "¡Listo! Ya eres de la manada.",
+      "ok_text": "Si es tu primera vez, te llega tu código de descuento a tu correo.",
+      "error": "Revisa tu correo e inténtalo de nuevo."
+    }
   },
   "cuenta": {
     "perro": {
