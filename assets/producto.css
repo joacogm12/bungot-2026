@@ -851,15 +851,17 @@
   margin: 0;
 }
 /* Paquetes: un solo lema en grande en vez de la retícula de beneficios. El
-   tamaño es fluido para que quepa en un renglón en compu y se parta parejo
-   (balance) en teléfono, sin media query propio. */
+   tamaño es fluido y va grande a propósito (a pedido): se parte en renglones
+   parejos (balance) en todos los anchos, sin media query propio. */
 .pdbelt__lema {
-  max-width: var(--pd-max);
+  /* 8em y no --pd-max: a lo ancho cabían cinco palabras y "COMBO!" se quedaba
+     huérfano abajo; así siempre son dos renglones parejos. */
+  max-width: 8em;
   margin: 0 auto;
   font-family: var(--font-display, 'Anton', sans-serif);
   font-weight: 400;
-  font-size: clamp(34px, 5.6vw, 84px);
-  line-height: 1.02;
+  font-size: clamp(40px, 13.5vw, 156px);
+  line-height: 1.04;
   letter-spacing: 0.01em;
   text-transform: uppercase;
   text-align: center;
