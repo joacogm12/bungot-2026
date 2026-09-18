@@ -1,38 +1,24 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "producto-bungot",
-      "settings": {
-        "lote": "Armado a mano · México",
-        "eyebrow": "Paquete de premios",
-        "title": "",
-        "lead": "",
-        "cta_prefix": "Agregar",
-        "cta_prefix_plan": "Suscribirme",
-        "note": "Envío gratis desde $550 · llega en 5 a 7 días hábiles",
-        "show_stepper": true,
-        "stats_ahorro": true,
-        "stat1_value": "100%",
-        "stat1_label": "Natural",
-        "stat2_value": "0",
-        "stat2_label": "Conservadores",
-        "stat3_value": "",
-        "stat3_label": "",
-        "reviews_title": "Opiniones de la manada",
-        "show_cross": true,
-        "cross_title": "Complétala con más premios",
-        "cross_link_label": "Ver todos los productos",
-        "cross_link_url": "",
-        "cross_collection": "productos-perros"
-      },
       "blocks": {
         "acc-0": {
           "type": "acordeon",
           "settings": {
             "title": "Beneficios",
             "source": "beneficios",
-            "body": "<ul><li><strong>Armado por nosotros</strong></li><li><strong>100% natural, sin conservadores</strong></li><li><strong>Listo para regalar</strong></li><li><strong>Compra única, sin suscripción</strong></li></ul>",
-            "propio": true
+            "propio": true,
+            "body": "<ul><li><strong>Armado por nosotros</strong></li><li><strong>100% natural, sin conservadores</strong></li><li><strong>Listo para regalar</strong></li><li><strong>Compra única, sin suscripción</strong></li></ul>"
           }
         },
         "acc-1": {
@@ -40,8 +26,8 @@
           "settings": {
             "title": "¿Qué trae este paquete?",
             "source": "contenido",
-            "body": "<p>Cada paquete lo armamos nosotros con premios 100% naturales, sin conservadores ni colorantes. Lo que trae exactamente viene en la descripción de cada paquete.</p>",
-            "propio": true
+            "propio": true,
+            "body": "<ul><li><strong>Pulmón de Cerdo</strong>— Rico en vitamina D, hierro y vitamina B12. Apoya salud dental y desarrollo muscular (40g)</li><li><strong>Pulmón de Res</strong> —  bajo en grasa y rico en proteínas que fortalece los músculos de tu gato y es ideal para su digestión por no contener aditivos artificiales. (70g)</li><li><strong>Chicken Jerky</strong> — textura blanda que se parte fácil: sirve igual con gatitos que con gatos mayores (140g)</li></ul>"
           }
         },
         "acc-2": {
@@ -49,8 +35,8 @@
           "settings": {
             "title": "Cuidados y conservación",
             "source": "instrucciones",
-            "body": "<p>En un lugar fresco y seco, no necesita refrigeración. Cierra bien cada bolsa para que conserve el sabor.</p>",
-            "propio": true
+            "propio": true,
+            "body": "<p>En un lugar fresco y seco, no necesita refrigeración. Cierra bien cada bolsa para que conserve el sabor.</p>"
           }
         },
         "acc-3": {
@@ -58,31 +44,36 @@
           "settings": {
             "title": "Envíos y devoluciones",
             "source": "manual",
+            "propio": false,
             "body": "<p>Enviamos a todo México en 5 a 7 días hábiles. Envío gratis en pedidos desde $550.</p><p>Si el paquete llegó abierto, roto o algo no está bien, escríbenos dentro de los primeros 15 días y te lo reponemos sin vueltas. Sin formularios eternos, sin letras chiquitas.</p><p>¿Dudas antes de comprar? Escríbenos a contacto@bungot.com o por Instagram @bungot_mx y te contestamos nosotros, no un bot.</p>"
           }
         },
         "ben-1": {
           "type": "beneficio",
           "settings": {
-            "title": "Armado por nosotros"
+            "title": "Armado por nosotros",
+            "text": ""
           }
         },
         "ben-2": {
           "type": "beneficio",
           "settings": {
-            "title": "100% natural, sin conservadores"
+            "title": "100% natural, sin conservadores",
+            "text": ""
           }
         },
         "ben-3": {
           "type": "beneficio",
           "settings": {
-            "title": "Listo para regalar"
+            "title": "Listo para regalar",
+            "text": ""
           }
         },
         "ben-4": {
           "type": "beneficio",
           "settings": {
-            "title": "Compra única, sin suscripción"
+            "title": "Compra única, sin suscripción",
+            "text": ""
           }
         }
       },
@@ -95,7 +86,35 @@
         "ben-2",
         "ben-3",
         "ben-4"
-      ]
+      ],
+      "settings": {
+        "family_color": "",
+        "lote": "Armado a mano · México",
+        "eyebrow": "Paquete de premios",
+        "title": "",
+        "lead": "",
+        "cta_prefix": "Agregar",
+        "cta_prefix_plan": "Suscribirme",
+        "note": "Envío gratis desde $550 · llega en 5 a 7 días hábiles",
+        "show_stepper": true,
+        "caja_count": 3,
+        "caja_collection": "",
+        "stats_ahorro": true,
+        "ahorro_label_antes": "Por separado",
+        "ahorro_label_paquete": "En paquete",
+        "stat1_value": "100%",
+        "stat1_label": "Natural",
+        "stat2_value": "0",
+        "stat2_label": "Conservadores",
+        "stat3_value": "",
+        "stat3_label": "",
+        "reviews_title": "Opiniones de la manada",
+        "show_cross": true,
+        "cross_title": "Complétala con más premios",
+        "cross_link_label": "Ver todos los productos",
+        "cross_link_url": "",
+        "cross_collection": "productos-perros"
+      }
     }
   },
   "order": [
