@@ -850,6 +850,22 @@
   color: var(--pd-mango);
   margin: 0;
 }
+/* Paquetes: un solo lema en grande en vez de la retícula de beneficios. El
+   tamaño es fluido para que quepa en un renglón en compu y se parta parejo
+   (balance) en teléfono, sin media query propio. */
+.pdbelt__lema {
+  max-width: var(--pd-max);
+  margin: 0 auto;
+  font-family: var(--font-display, 'Anton', sans-serif);
+  font-weight: 400;
+  font-size: clamp(34px, 5.6vw, 84px);
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--pd-mango);
+}
 
 /* --------------------------------------------------------------------------
    3. Opiniones de los clientes

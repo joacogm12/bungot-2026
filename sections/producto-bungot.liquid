@@ -836,7 +836,16 @@
     el metaobjeto y en el bloque (para no perder lo ya cargado) pero no se
     pinta. Sin ícono, el ítem se dibuja solo con su texto — sin hueco reservado.
   {%- endcomment -%}
-  {%- if product_benefits != blank and product_benefits.size > 0 -%}
+  {%- comment -%}
+    En los paquetes el cinturón no lista beneficios (juntaba los de todos sus
+    premios y salía un renglón cojo): lleva un solo lema en grande. Con el
+    ajuste lleno, el lema manda sobre metafield y bloques.
+  {%- endcomment -%}
+  {%- if section.settings.belt_lema != blank -%}
+    <div class="pdbelt pdbelt--lema">
+      <p class="pdbelt__lema">{{ section.settings.belt_lema | escape }}</p>
+    </div>
+  {%- elsif product_benefits != blank and product_benefits.size > 0 -%}
     <div class="pdbelt">
       <div class="{{ belt_grid_class }}">
         {%- for benefit in product_benefits -%}
@@ -1245,6 +1254,9 @@
     { "type": "text", "id": "stat2_label", "label": "Etiqueta 2", "default": "Ingrediente" },
     { "type": "text", "id": "stat3_value", "label": "Cifra 3", "default": "0" },
     { "type": "text", "id": "stat3_label", "label": "Etiqueta 3", "default": "Conservadores" },
+
+    { "type": "header", "content": "Cinturón" },
+    { "type": "text", "id": "belt_lema", "label": "Lema del cinturón", "info": "Si lo llenas, la banda verde muestra solo este texto en grande en lugar de los beneficios. Así va en los paquetes." },
 
     { "type": "header", "content": "Opiniones" },
     { "type": "text", "id": "reviews_title", "label": "Título", "default": "Opiniones de los clientes", "info": "Las opiniones se cargan como bloques \"Opinión\". Sin ninguno, la sección invita a dejar la primera." },
