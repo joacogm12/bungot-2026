@@ -3,7 +3,7 @@
     "main": {
       "type": "producto-bungot",
       "settings": {
-        "lote": "Tejido a mano · México",
+        "lote": "",
         "eyebrow": "",
         "lead": "",
         "cta_prefix": "Agregar",

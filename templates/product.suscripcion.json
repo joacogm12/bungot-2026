@@ -3,7 +3,7 @@
     "main": {
       "type": "producto-bungot",
       "settings": {
-        "lote": "Se arma cada mes · México",
+        "lote": "",
         "eyebrow": "Suscripción mensual",
         "title": "",
         "lead": "",
