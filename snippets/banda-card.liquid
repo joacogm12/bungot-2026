@@ -105,6 +105,15 @@
             Con variantes de distinto precio el de la tarjeta es el más bajo
             (product.price), así que se anuncia como "Desde".
           {%- endcomment -%}
+          {%- comment -%}
+            Precio de comparación (hoy los paquetes: lo que cuestan sus premios
+            por separado, el mismo compare_at_price que usa la PDP). Va tachado
+            ARRIBA del precio y no al lado: junto al botón no caben los dos en
+            el ancho de la tarjeta.
+          {%- endcomment -%}
+          {%- if product != blank and product.compare_at_price > product.price -%}
+            <s class="card__price-antes"><span class="visually-hidden">{{ 'products.card.price_before' | t }} </span>{{ product.compare_at_price | money }}</s>
+          {%- endif -%}
           {%- if has_picker and product.price_varies -%}{{ 'products.card.from' | t }} {% endif -%}
           {{ price_html }}
         {%- else -%}

@@ -410,7 +410,24 @@
         <p class="pdbuy__eyebrow">{{ eyebrow }}</p>
       {%- endif -%}
 
-      <h1 class="pdbuy__title">{{ title }}</h1>
+      {%- comment -%}
+        El precio va AL LADO del nombre (a pedido, 2026-09-18: no salía en
+        ninguna parte de la PDP), sobre su línea base; si el nombre es largo o
+        la pantalla angosta, baja al renglón siguiente. Los paquetes con cifras
+        de ahorro ya lo traen en su pastilla, y con selector de suscripción
+        cada plan pinta el suyo: ahí no se repite. producto.js lo repinta al
+        cambiar de variante.
+      {%- endcomment -%}
+      <div class="pdbuy__head">
+        <h1 class="pdbuy__title">{{ title }}</h1>
+        {%- if product != blank and has_plans != true and stats_ahorro != true -%}
+          <p class="pdprice">
+            <span class="visually-hidden">{{ 'sections.producto.price' | t }}</span>
+            <span class="pdprice__value" data-pd-price>{{ cur_variant.price | money_without_trailing_zeros }}</span>
+            <span class="pdprice__cur">{{ cart.currency.iso_code }}</span>
+          </p>
+        {%- endif -%}
+      </div>
 
       {%- if lead != blank -%}
         <p class="pdbuy__lead">{{ lead }}</p>
@@ -1212,7 +1229,7 @@
   {%- comment -%} Variantes reales para el JS (precio/id/disponibilidad). {%- endcomment -%}
   {%- if use_real_options -%}
     <script type="application/json" data-pd-variants>
-      [{% for v in product.variants %}{% unless forloop.first %},{% endunless %}{"id":{{ v.id }},"options":{{ v.options | json }},"available":{{ v.available }},"price":{{ v.price | money | json }},"plans":[{% for a in v.selling_plan_allocations %}{% unless forloop.first %},{% endunless %}[{{ a.selling_plan.id | json }},{{ a.price | money | json }}]{% endfor %}]}{% endfor %}]
+      [{% for v in product.variants %}{% unless forloop.first %},{% endunless %}{"id":{{ v.id }},"options":{{ v.options | json }},"available":{{ v.available }},"price":{{ v.price | money | json }},"precio":{{ v.price | money_without_trailing_zeros | json }},"plans":[{% for a in v.selling_plan_allocations %}{% unless forloop.first %},{% endunless %}[{{ a.selling_plan.id | json }},{{ a.price | money | json }}]{% endfor %}]}{% endfor %}]
     </script>
   {%- endif -%}
 </section>

@@ -236,6 +236,9 @@
         return;
       }
       if (idInput) idInput.value = v.id;
+      // El precio suelto de la PDP sigue a la variante (60 g / 190 g).
+      var precio = root.querySelector('[data-pd-price]');
+      if (precio && v.precio) precio.textContent = v.precio;
       addBtn.disabled = !v.available;
       addBtn.textContent = v.available ? label : addBtn.getAttribute('data-label-soldout');
       refreshPlanPrices(root, v);

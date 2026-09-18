@@ -396,6 +396,41 @@
 .pdbuy__lead strong { font-weight: 600; color: var(--pd-green) !important; }
 .pdbuy__lead > :last-child { margin-bottom: 0; }
 
+/* Precio del producto suelto, AL LADO del nombre: los dos sobre la misma línea
+   base, y si no caben (nombre largo, teléfono) el precio baja al renglón de
+   abajo. La cifra va en Anton, en el color de la familia para despegarse del
+   nombre, y la moneda chica al lado. Los paquetes no lo llevan, traen su
+   pastilla. */
+.pdbuy__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 22px;
+  row-gap: 10px;
+}
+.pdprice {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  white-space: nowrap;
+  color: var(--pd-fam, var(--pd-naranja));
+}
+.pdprice__value {
+  font-family: var(--font-display, 'Anton', sans-serif);
+  font-weight: 400;
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: -.01em;
+}
+.pdprice__cur {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: .08em;
+  color: rgba(1, 60, 62, .75);
+}
+
 /* Tira de cifras, separadas por reglas verticales de 2px. */
 .pdstats {
   display: flex;
@@ -850,17 +885,17 @@
   color: var(--pd-mango);
   margin: 0;
 }
-/* Paquetes: un solo lema en grande en vez de la retícula de beneficios. El
-   tamaño es fluido y va grande a propósito (a pedido): se parte en renglones
-   parejos (balance) en todos los anchos, sin media query propio. */
+/* Paquetes: un solo lema en grande en vez de la retícula de beneficios. Va en
+   UN solo renglón en todos los anchos (a pedido; se probó en dos renglones y
+   no gustó): el tamaño va en vw, medido para que "¡Todo lo bueno viene en
+   combo!" (~12.7em en Anton) quepa entre los márgenes de la página. No lleva
+   nowrap a propósito: si el cliente escribe una frase más larga se parte
+   parejo (balance) en vez de desbordar la página. */
 .pdbelt__lema {
-  /* 8em y no --pd-max: a lo ancho cabían cinco palabras y "COMBO!" se quedaba
-     huérfano abajo; así siempre son dos renglones parejos. */
-  max-width: 8em;
   margin: 0 auto;
   font-family: var(--font-display, 'Anton', sans-serif);
   font-weight: 400;
-  font-size: clamp(40px, 13.5vw, 156px);
+  font-size: min(6.7vw, 132px);
   line-height: 1.04;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -1306,6 +1341,17 @@
   .pdcross__title { font-size: clamp(2rem, 8vw, 2.5rem); }
   /* Cuatro columnas ya no dan tarjeta legible: dos filas de dos. */
   .pdcross__grid { grid-template-columns: repeat(2, minmax(0, 344px)); }
+}
+
+/* Tablet (iPad): la tira de miniaturas va CENTRADA bajo el marco (a pedido,
+   2026-09-18): a ese ancho cuatro miniaturas se quedaban arrinconadas a la
+   izquierda. Con márgenes auto en las puntas y no con justify-content: center,
+   que en una tira con scroll deja inalcanzable lo que desborda por la
+   izquierda; así, si no caben, los márgenes valen 0 y se desplaza como antes.
+   En teléfono sigue pegada a la izquierda. */
+@media (min-width: 641px) and (max-width: 1000px) {
+  .pdthumb:first-child { margin-left: auto; }
+  .pdthumb:last-child { margin-right: auto; }
 }
 
 @media (max-width: 620px) {

@@ -42,6 +42,7 @@
       "on_sale": "Oferta",
       "sold_out": "Agotado",
       "from": "Desde",
+      "price_before": "Por separado:",
       "pick": "¿Qué {{ option }} quieres?",
       "pick_close": "Cerrar"
     }
@@ -85,6 +86,7 @@
       "caja_placeholder": "Elige un premio",
       "added": "¡Va en el carrito!",
       "unavailable": "No disponible",
+      "price": "Precio:",
       "content": "Contenido",
       "plan_legend": "Forma de compra",
       "plan_one_time": "Compra única",

@@ -3186,6 +3186,18 @@ a.chip { text-decoration: none; }
   font: 600 19px var(--font-body, 'Inter', sans-serif);
   color: inherit;
 }
+/* Precio por separado, tachado, en su propio renglón arriba del precio del
+   paquete. Gana a la regla vieja `.card__price s` (gris al 50%, en línea). */
+.cardset .card__price .card__price-antes {
+  display: block;
+  margin: 0 0 3px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
+  opacity: .85;
+  text-decoration-thickness: 1.5px;
+}
 /* Invertido para no perderse sobre el color del pie: crema con tinta verde
    oscura, el mismo par que la pastilla del eyebrow. */
 .cardset .card__add {
