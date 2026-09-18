@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -8,8 +17,8 @@
           "settings": {
             "title": "Beneficios",
             "source": "beneficios",
-            "body": "<ul><li><strong>Hierro y vitamina B12</strong> — El hígado es de lo más rico en hierro que hay. Junto con la B12 apoya la formación de sangre y el buen ánimo.</li><li><strong>Refuerza sistema inmune</strong> — Los nutrientes de la proteína animal apoyan sus defensas, que son las que lo aguantan todo el año.</li><li><strong>Apoya la salud ocular</strong> — La vitamina A del hígado es la que le cuida la vista, sobre todo cuando ya va entrando en años.</li><li><strong>Aumenta niveles de energía</strong> — Proteína de verdad, sin rellenos. Se nota en un perro con ganas de jugar y no con bajón a media tarde.</li></ul>",
-            "propio": true
+            "propio": true,
+            "body": "<ul><li><strong>Hierro y vitamina B12</strong> — El hígado es de lo más rico en hierro que hay. Junto con la B12 apoya la formación de sangre y el buen ánimo.</li><li><strong>Refuerza sistema inmune</strong> — Los nutrientes de la proteína animal apoyan sus defensas.</li><li><strong>Apoya la salud ocular</strong> — La vitamina A del hígado es la que le cuida la vista, sobre todo cuando ya va entrando en años.</li><li><strong>Aumenta niveles de energía</strong> — Proteína de verdad, sin rellenos. </li></ul>"
           }
         },
         "acc-1": {
@@ -17,8 +26,8 @@
           "settings": {
             "title": "Ingredientes y análisis",
             "source": "ingredientes",
-            "body": "<p>UNICO INGREDIENTE</p><p>Hígado de cerdo 100% natural</p>",
-            "propio": true
+            "propio": true,
+            "body": "<p>UNICO INGREDIENTE</p><p>Hígado de cerdo 100% natural</p>"
           }
         },
         "acc-2": {
@@ -26,8 +35,8 @@
           "settings": {
             "title": "Porción diaria",
             "source": "recomendacion",
-            "body": "<p>Rompe los trozos en pedazos pequeños y ofrece una porción al día. El hígado es muy concentrado, así que con poquito basta: no lo conviertas en su comida principal.</p>",
-            "propio": true
+            "propio": true,
+            "body": "<p>Rompe los trozos en pedazos pequeños y ofrece una porción al día. El hígado es muy concentrado, así que con poquito basta: no lo conviertas en su comida principal.</p>"
           }
         },
         "acc-3": {
@@ -35,8 +44,8 @@
           "settings": {
             "title": "Cuidados y conservación",
             "source": "instrucciones",
-            "body": "<p>En un lugar fresco y seco. No necesita refrigeración. Cierra muy bien la bolsa después de cada uso: es el snack más aromático de la línea. Dáselo siempre bajo tu supervisión y con agua limpia al alcance. No apto para consumo humano.</p>",
-            "propio": true
+            "propio": true,
+            "body": "<p>En un lugar fresco y seco. No necesita refrigeración. Cierra muy bien la bolsa después de cada uso: es el snack más aromático de la línea. Dáselo siempre bajo tu supervisión y con agua limpia al alcance. No apto para consumo humano.</p>"
           }
         },
         "acc-4": {
@@ -44,6 +53,7 @@
           "settings": {
             "title": "Envíos y devoluciones",
             "source": "manual",
+            "propio": false,
             "body": "<p>Enviamos a todo México en 5 a 7 días hábiles. Envío gratis en pedidos desde $550.</p><p>Si la bolsa llegó abierta, rota o algo no está bien, escríbenos dentro de los primeros 15 días y te la reponemos sin vueltas. Sin formularios eternos, sin letras chiquitas.</p><p>¿Dudas antes de comprar? Escríbenos a contacto@bungot.com o por Instagram @bungot_mx y te contestamos nosotros, no un bot.</p>"
           }
         },
@@ -218,6 +228,12 @@
         "cta_prefix": "Agregar",
         "cta_prefix_plan": "Suscribirme",
         "note": "Envío gratis desde $550 · llega en 5 a 7 días hábiles",
+        "show_stepper": true,
+        "caja_count": 3,
+        "caja_collection": "",
+        "stats_ahorro": false,
+        "ahorro_label_antes": "Por separado",
+        "ahorro_label_paquete": "En paquete",
         "stat1_value": "",
         "stat1_label": "Proteína",
         "stat2_value": "",
@@ -225,6 +241,7 @@
         "stat3_value": "0",
         "stat3_label": "Conservadores",
         "reviews_title": "Opiniones de los clientes",
+        "show_cross": true,
         "cross_title": "La manada también se lleva",
         "cross_link_label": "Ver todos los productos",
         "cross_link_url": "",
