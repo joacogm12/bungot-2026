@@ -2701,6 +2701,11 @@ a.chip { text-decoration: none; }
   /* El sticker baja debajo del texto y va CENTRADO (a pedido, 2026-09-07):
      pegado a la izquierda se veía suelto bajo un titular que ocupa todo el
      ancho. */
+  /* En teléfono el collage del bonche ya deja su propio aire abajo (la sección
+     mide una pantalla y las fotos no llegan al borde): con los 9rem de la
+     regla base quedaba un hueco azul de media pantalla entre las fotos y el
+     "Gracias por llegar hasta acá" (a pedido, 2026-09-21). */
+  .despedida { padding-top: 2.5rem; }
   .despedida__inner {
     grid-template-columns: 1fr;
     align-items: start;
