@@ -113,6 +113,82 @@
     </script>
 
     {%- comment -%}
+      window.BUNGOT.cuidaImg(img): que una imagen que no llegó NUNCA se vea
+      rota. Safari en iOS pinta cada <img> fallida como un cuadrito azul con
+      "?" centrado en su caja MÁS un contorno gris de la caja entera, aunque
+      lleve alt="": con las once mechas del perro (cajas de 112vw giradas por
+      el balanceo) salían un montón de "?" en el hocico y rayas cruzando la
+      portada (captura del 2026-09-21, con los archivos bien en el CDN: fue la
+      red del teléfono, que tumbó justo las descargas de prioridad baja).
+      Reintenta dos veces con otra URL (&r=n: a la misma, WebKit responde con
+      el error que ya tiene en memoria) y mientras no llegue va invisible; la vuelve a
+      pedir cuando regresa la conexión. Va en el head porque lo llaman los
+      scripts inline de las secciones (hero, Favoritos) ANTES de soltar sus
+      imágenes lazy, mucho antes de que cargue theme.js. Cualquier sección
+      nueva con imágenes decorativas sueltas por JS debe pasarlas por aquí.
+    {%- endcomment -%}
+    <script>
+      (function () {
+        var ESPERAS = [1500, 4000];
+        function conIntento(url, n) {
+          var limpia = url.replace(/([?&])r=\d+(&|$)/, function (m, a, b) { return b ? a : ''; });
+          return limpia + (limpia.indexOf('?') === -1 ? '?' : '&') + 'r=' + n;
+        }
+        function conIntentoSet(srcset, n) {
+          return srcset.split(',').map(function (c) {
+            var p = c.trim().split(/\s+/);
+            if (!p[0]) return '';
+            p[0] = conIntento(p[0], n);
+            return p.join(' ');
+          }).filter(Boolean).join(', ');
+        }
+        function pide(img, n) {
+          // El reintento no espera al lazy: ya se sabe que esta imagen se ve.
+          img.loading = 'eager';
+          var pic = img.parentElement && img.parentElement.tagName === 'PICTURE' ? img.parentElement : null;
+          if (pic) {
+            Array.prototype.forEach.call(pic.querySelectorAll('source[srcset]'), function (s) {
+              s.srcset = conIntentoSet(s.getAttribute('srcset'), n);
+            });
+          }
+          if (img.getAttribute('srcset')) img.srcset = conIntentoSet(img.getAttribute('srcset'), n);
+          if (img.getAttribute('src')) img.src = conIntento(img.getAttribute('src'), n);
+        }
+        window.BUNGOT = window.BUNGOT || {};
+        window.BUNGOT.cuidaImg = function (img) {
+          if (!img || img._bgCuidada) return;
+          img._bgCuidada = true;
+          var intentos = 0;
+          var rota = false;
+          // visibility y no display: sin caja, una lazy ya no vuelve a pedirse
+          // y el reintento se quedaría esperando para siempre.
+          function esconde() {
+            rota = true;
+            img.style.visibility = 'hidden';
+          }
+          function falla() {
+            // Escondida desde el primer error: el "?" no se ve ni mientras reintenta.
+            esconde();
+            if (intentos < ESPERAS.length) {
+              var n = ++intentos;
+              setTimeout(function () { pide(img, n); }, ESPERAS[n - 1]);
+            }
+          }
+          img.addEventListener('error', falla);
+          img.addEventListener('load', function () {
+            if (rota) { rota = false; img.style.visibility = ''; }
+          });
+          window.addEventListener('online', function () {
+            if (rota) pide(img, ++intentos);
+          });
+          // Ya venía rota (una eager puede fallar antes de que corra el script).
+          // Solo las eager: una lazy que aún no se pide no está rota.
+          if (img.loading !== 'lazy' && img.complete && img.naturalWidth === 0 && (img.currentSrc || img.getAttribute('src'))) falla();
+        };
+      })();
+    </script>
+
+    {%- comment -%}
       Quién tiene la sesión, para que la ficha del perro se guarde POR USUARIO
       (theme.js arma la clave del localStorage con este id). Y si la cuenta ya
       trae la ficha en metafields (la escribió el workflow de Flow con un

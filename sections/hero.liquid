@@ -187,6 +187,12 @@
       var hero = document.currentScript.parentElement;
       var lcp = hero.querySelector('.hero__patas img');
       var suelto = false;
+      // Ninguna capa puede verse rota (en iOS: "?" azul + contorno de la caja,
+      // ver cuidaImg en theme.liquid). Se engancha ANTES de soltar las mechas:
+      // escondidas todavía no pidieron nada, así que ningún error se escapa.
+      if (window.BUNGOT && window.BUNGOT.cuidaImg) {
+        Array.prototype.forEach.call(hero.querySelectorAll('img.hero__capa'), window.BUNGOT.cuidaImg);
+      }
       function suelta() {
         if (suelto) return;
         suelto = true;

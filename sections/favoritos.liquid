@@ -64,8 +64,19 @@
     {%- endcomment -%}
     <script>
       (function () {
-        if (window.Shopify && window.Shopify.designMode) return;
         var favs = document.currentScript.parentElement;
+        // Foto o sticker que no llegue se reintenta y, si no, se esconde: en
+        // iOS una <img> rota es un "?" azul con contorno (ver cuidaImg en
+        // theme.liquid). Las imágenes van DESPUÉS de este script en el
+        // markup, por eso se enganchan cuando el DOM ya está completo; son
+        // todas lazy y siguen escondidas, así que ningún error se escapa.
+        function cuida() {
+          if (!window.BUNGOT || !window.BUNGOT.cuidaImg) return;
+          Array.prototype.forEach.call(favs.querySelectorAll('img.fav__img, img.fav__sticker'), window.BUNGOT.cuidaImg);
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cuida);
+        else cuida();
+        if (window.Shopify && window.Shopify.designMode) return;
         var gestos = ['scroll', 'wheel', 'touchstart', 'keydown'];
         var suelto = false;
         function suelta() {
