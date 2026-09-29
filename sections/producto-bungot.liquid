@@ -49,17 +49,18 @@
   assign gramaje = mf.gramaje.value
 
   # --- Textos de la columna derecha (producto → plantilla → default) ---
-  # Todo texto de la PDP se puede editar POR PRODUCTO desde el admin de
-  # Shopify (a pedido, 2026-09-17): el metafield del producto manda y el
-  # ajuste de la plantilla queda de respaldo para los que no lo llenen. El
+  # Lo que es de UN producto vive en sus metafields y se edita en su ficha del
+  # admin; la plantilla es de la LÍNEA (product = snacks/gatos/huesos,
+  # product.juguete, product.caja, product.suscripcion) y sus ajustes son el
+  # respaldo de los productos que no traigan el dato. Del 2026-09-17 al
+  # 2026-09-29 hubo una plantilla por producto (24) con los textos copiados al
+  # personalizador; se regresó a una por línea porque cada producto nuevo
+  # pedía plantilla nueva y heredaba los textos del producto copiado. El
   # antetítulo es el beneficio principal de la etiqueta ("Masa muscular",
   # "Salud dental"): dice más que un genérico y ya está cargado por producto.
-  # Desde 2026-09-17 cada producto tiene SU plantilla (product.<sufijo>.json,
-  # ver el schema del acordeón): lo que se escribe en el personalizador manda
-  # y el dato del producto es el respaldo.
-  assign eyebrow = section.settings.eyebrow
+  assign eyebrow = mf.beneficio_principal.value | default: section.settings.eyebrow
   if eyebrow == blank
-    assign eyebrow = mf.beneficio_principal.value | default: product.type
+    assign eyebrow = product.type
   endif
 
   # Línea debajo del botón: la del producto (custom.nota_compra) o la de la
@@ -709,11 +710,12 @@
               # Cada entrada dice de qué metafield se llena. Si ese metafield
               # está vacío (producto sin etiqueta cargada), cae al texto del
               # bloque; si tampoco hay, la entrada no se dibuja. Con "propio"
-              # marcado es al revés: el texto del bloque manda — así cada
-              # producto edita sus desplegables desde el personalizador en su
-              # propia plantilla (a pedido, 2026-09-17).
+              # marcado es al revés: el texto del bloque manda para TODOS los
+              # productos de la plantilla (sirve para un texto de línea, no
+              # para uno de producto: la plantilla es una por línea).
               assign src = block.settings.source
               assign acc_body = blank
+              assign acc_rich = blank
               if src == 'ingredientes'
                 assign acc_body = mf.ingredientes.value
               elsif src == 'recomendacion'
@@ -721,7 +723,15 @@
               elsif src == 'instrucciones'
                 assign acc_body = mf.instrucciones.value
               elsif src == 'contenido'
-                assign acc_body = mf.contenido_paquete.value
+                # "Qué trae el paquete" es texto enriquecido (negritas y
+                # listas): se pinta con metafield_tag, no renglón por renglón.
+                if mf.contenido_paquete.type == 'rich_text_field'
+                  if mf.contenido_paquete.value != blank
+                    assign acc_rich = mf.contenido_paquete
+                  endif
+                else
+                  assign acc_body = mf.contenido_paquete.value
+                endif
               endif
 
               # "Beneficios" (a pedido, 2026-09-17) es un campo APARTE de la
@@ -741,11 +751,9 @@
               endif
 
               if block.settings.propio and block.settings.body != blank
-
                 assign acc_body = blank
-
+                assign acc_rich = blank
                 assign acc_list = false
-
               endif
 
               # La tabla del análisis garantizado solo acompaña a ingredientes.
@@ -754,7 +762,7 @@
                 assign show_analisis = true
               endif
             -%}
-            {%- if acc_body != blank or acc_list or block.settings.body != blank -%}
+            {%- if acc_body != blank or acc_rich != blank or acc_list or block.settings.body != blank -%}
               {%- comment -%} Todos los acordeones arrancan cerrados: la ficha se lee de un vistazo y el usuario abre lo que le interese. {%- endcomment -%}
               <details class="pdacc__item" {{ block.shopify_attributes }}>
                 <summary class="pdacc__head">
@@ -774,8 +782,23 @@
                         {%- endfor -%}
                       {%- endif -%}
                     </ul>
+                  {%- elsif acc_rich != blank -%}
+                    {{ acc_rich | metafield_tag }}
                   {%- elsif acc_body != blank -%}
-                    <p>{{ acc_body | newline_to_br }}</p>
+                    {%- comment -%}
+                      Un párrafo por renglón del metafield (los renglones
+                      vacíos se saltan): es el mismo markup que el richtext
+                      del bloque, así un texto se ve igual venga de donde
+                      venga. Con un solo <p> y <br> la tabla de porciones
+                      quedaba pegada a su explicación.
+                    {%- endcomment -%}
+                    {%- assign acc_lines = acc_body | newline_to_br | split: '<br />' -%}
+                    {%- for acc_line in acc_lines -%}
+                      {%- assign acc_line_txt = acc_line | strip -%}
+                      {%- if acc_line_txt != blank -%}
+                        <p>{{ acc_line_txt }}</p>
+                      {%- endif -%}
+                    {%- endfor -%}
                   {%- else -%}
                     {{ block.settings.body }}
                   {%- endif -%}
@@ -1141,6 +1164,22 @@
               endif
             endfor
           endif
+          # Un producto que no está en productos-perros / productos-gatos (hoy
+          # un paquete sin plantilla propia: solo vive en `paquetes`) caía a
+          # las tarjetas manuales de muestra, sin link ni carrito. Antes de
+          # eso: cualquier colección suya con más productos, y al final la de
+          # los premios. Las manuales quedan solo para una tienda sin catálogo.
+          if xcoll == blank
+            for c in product.collections
+              if c.products.size > 1
+                assign xcoll = c
+                break
+              endif
+            endfor
+          endif
+          if xcoll == blank
+            assign xcoll = settings.fam_deshidratados_collection
+          endif
           assign cross_blocks = section.blocks | where: 'type', 'cruzada'
           # Assets de respaldo, en el orden de las tarjetas del diseño.
           assign fallback_cards = 'bungot-higado.webp,bungot-patas.webp,bungot-sticker-manada.webp' | split: ','
@@ -1250,7 +1289,7 @@
     { "type": "text", "id": "lote", "label": "Línea de lote", "info": "Texto chico bajo la galería. Vacío = no se pinta (así va hoy en todos los productos, a pedido)." },
 
     { "type": "header", "content": "Compra" },
-    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Premios deshidratados" },
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo de respaldo", "info": "Solo sale en los productos que no traen su Beneficio principal en la ficha. Vacío = el tipo de producto." },
     { "type": "text", "id": "title", "label": "Título", "info": "Vacío = el nombre del producto." },
     { "type": "richtext", "id": "lead", "label": "Párrafo", "info": "Vacío = la descripción del producto (la de su ficha en el admin)." },
     { "type": "text", "id": "cta_prefix", "label": "Texto del botón", "default": "Agregar", "info": "Al lado se agrega solo lo que esté elegido." },
@@ -1296,7 +1335,7 @@
           "id": "source",
           "label": "De dónde sale el contenido",
           "default": "ingredientes",
-          "info": "Si el producto no tiene ese dato cargado, se usa el texto de abajo.",
+          "info": "El dato se edita en la ficha del producto. Si no lo trae, sale el texto de abajo.",
           "options": [
             { "value": "ingredientes", "label": "Ingredientes + análisis del producto" },
             { "value": "recomendacion", "label": "Recomendación diaria del producto" },
@@ -1306,7 +1345,7 @@
             { "value": "manual", "label": "Texto fijo (el de abajo)" }
           ]
         },
-        { "type": "checkbox", "id": "propio", "label": "Usar el texto de abajo para este producto", "info": "Marcado: manda el texto de abajo. Sin marcar: manda el dato del producto y el texto de abajo es solo respaldo.", "default": false },
+        { "type": "checkbox", "id": "propio", "label": "Usar siempre el texto de abajo", "info": "Marcado: el texto de abajo sale en TODOS los productos de esta plantilla, aunque traigan su dato. Sin marcar: manda el dato del producto.", "default": false },
         { "type": "richtext", "id": "body", "label": "Texto fijo / respaldo", "default": "<p>Un solo ingrediente, deshidratado a baja temperatura.</p>" }
       ]
     },
